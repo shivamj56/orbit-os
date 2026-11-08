@@ -119,10 +119,14 @@ final class RemoteKeys {
      * runs, since the flag is also declared in the manifest metadata.
      */
     static void applyKeyFilter(AccessibilityService service, boolean keyFilter) {
-        if (keyFilter) return;
         AccessibilityServiceInfo info = service.getServiceInfo();
         if (info == null) return;
-        info.flags &= ~AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
+        // Both ways: Android keeps what was set here for the next binding too, until the package is replaced, so a
+        // theme that turns filtering back on would otherwise stay off.
+        int flags = keyFilter ? info.flags | AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
+                : info.flags & ~AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
+        if (flags == info.flags) return;
+        info.flags = flags;
         service.setServiceInfo(info);
     }
 

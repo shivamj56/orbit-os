@@ -7,6 +7,10 @@
     <uses-feature android:name="android.hardware.wifi" android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
 
+    <!-- The recent videos on Home: what apps publish to Continue watching (granted with pm grant), and the pictures
+         of those titles, which those apps give as addresses on the internet. Nothing else here uses the network. -->
+    <uses-permission android:name="android.permission.READ_TV_LISTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- Needed since Android 10 to read the Wi-Fi network name for the network pill. Never requested at
@@ -25,6 +29,7 @@
     <!-- Android 11+ package visibility: lets the launcher list the TV apps it shows as tiles, and the
          apps that declare a module card (docs/specs/card.md). -->
     <queries>
+        <provider android:authorities="android.media.tv" />
         <!-- The standard settings handlers, so package visibility doesn't hide them and send the pills to a vendor fallback by mistake. -->
         <intent>
             <action android:name="android.settings.SETTINGS" />
@@ -140,6 +145,13 @@
             android:noHistory="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
+            android:name=".SearchActivity"
+            android:exported="false"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing"
+            android:theme="@style/Theme.TvHome" />
+        <activity
             android:name=".HomeSettingsActivity"
             android:exported="false"
             android:taskAffinity=""
@@ -238,6 +250,19 @@
             <intent-filter>
                 <action android:name="com.gathin.tvhome.GUARD" />
             </intent-filter>
+        </receiver>
+
+        <!-- The keyboard layout that renames the remote's volume keys: see VolumeSlider. -->
+        <receiver
+            android:name=".RemoteLayout"
+            android:exported="true"
+            android:label="Remote">
+            <intent-filter>
+                <action android:name="android.hardware.input.action.QUERY_KEYBOARD_LAYOUTS" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.input.metadata.KEYBOARD_LAYOUTS"
+                android:resource="@xml/remote_layouts" />
         </receiver>
 
         <service

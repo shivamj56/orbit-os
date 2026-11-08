@@ -59,6 +59,8 @@ public class HomeKeyService extends AccessibilityService {
     private boolean settingsPanel;
     /** consume_volume_keys: Volume Up/Down go to VolumeKeys instead of on to the firmware. */
     private boolean consumeVolumeKeys;
+    /** gallery_home: the owner's volume slider, in this service's window; null where it does not apply. */
+    private VolumeSlider volumeSlider;
     /** app_keys, the same maps InputKeyService reads, for setups that run only this service. */
     private Map<Integer, String> appKeys = Collections.emptyMap();
     private Map<Integer, String> appScancodes = Collections.emptyMap();
@@ -150,6 +152,11 @@ public class HomeKeyService extends AccessibilityService {
         }
         if (gamepads != null) gamepads.stop();
         if (consumeVolumeKeys) VolumeKeys.stop();
+        if (volumeSlider != null) {
+            volumeSlider.release();
+            volumeSlider = null;
+            WatchHistory.stop();
+        }
         super.onDestroy();
     }
 
@@ -195,6 +202,11 @@ public class HomeKeyService extends AccessibilityService {
         appKeys = RemoteKeys.parseAppKeys(config.appKeys);
         appScancodes = RemoteKeys.parseAppScancodes(config.appKeys);
         RemoteKeys.applyKeyFilter(this, config.keyFilter);
+        if (volumeSlider == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && getResources().getBoolean(R.bool.gallery_home)) {
+            volumeSlider = new VolumeSlider(this);
+            WatchHistory.start(this);
+        }
         homeLongPressHome = config.homeLongPressHome;
         frontAppKeys = RemoteKeys.parseFrontAppKeys(config.appKeys);
         frontAppScancodes = RemoteKeys.parseFrontAppScancodes(config.appKeys);
@@ -259,6 +271,7 @@ public class HomeKeyService extends AccessibilityService {
                 && event.getKeyCode() != KeyEvent.KEYCODE_POWER && event.getKeyCode() != KeyEvent.KEYCODE_WAKEUP) {
             powerOnUntil = 0;
         }
+        if (volumeSlider != null && volumeSlider.onKey(event)) return true;
         if (consumeVolumeKeys && VolumeKeys.handle(this, event)) return true;
         // A scancode entry is more specific than any keycode, so it goes first.
         if (RemoteKeys.handle(this, event, inFront(appScancodes, frontAppScancodes, event.getScanCode()),

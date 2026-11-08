@@ -143,6 +143,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private AppAdapter adapter;
     private RecyclerView grid;
     private FrameLayout root;
+    /** gallery_home: the curved gallery in place of the grid; null on the ordinary Home. */
+    private GalleryHomeView gallery;
     private WallpaperPlayer wallpaperPlayer;
     private GlassView glass;
     private View ambient;
@@ -931,6 +933,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (!onTile) hideGlass();
         });
 
+        if (getResources().getBoolean(R.bool.gallery_home) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) setUpGallery();
+
         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
         packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         packageFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
@@ -965,6 +969,55 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (savedInstanceState == null && !openLauncherSettingsIfAsked(getIntent()) && !openLibraryIfAsked(getIntent())) {
             openInputsIfAsked(getIntent());
         }
+    }
+
+    /** gallery_home: the gallery in place of the grid and the header. The adapter still loads the apps. */
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private void setUpGallery() {
+        grid.setVisibility(View.GONE);
+        glass.setVisibility(View.GONE);
+        clockBlock.setVisibility(View.INVISIBLE);
+        findViewById(R.id.topButtons).setVisibility(View.INVISIBLE);
+        gallery = new GalleryHomeView(this, new GalleryHomeView.Host() {
+            @Override
+            public void onGalleryLaunch(AppAdapter.Entry entry, Bundle options) {
+                adapter.launch(entry, options);
+            }
+
+            @Override
+            public void onGalleryAppInfo(AppAdapter.Entry entry) {
+                open(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + entry.pkg)));
+            }
+
+            @Override
+            public void onGallerySearch(boolean voice) {
+                open(new Intent(MainActivity.this, SearchActivity.class).putExtra(SearchActivity.EXTRA_VOICE, voice));
+            }
+
+            @Override
+            public void onGalleryTopButton(int which) {
+                // The gallery draws these three itself; the real buttons stay laid out, for their actions and as the
+                // place the Inputs menu drops from.
+                int id = which == GalleryHomeView.TOP_INPUTS ? R.id.btnInputs
+                        : which == GalleryHomeView.TOP_WIFI ? R.id.btnWifi : R.id.btnSettings;
+                findViewById(id).performClick();
+            }
+
+            @Override
+            public void onGalleryRecent(RecentVideos.Item item, android.app.ActivityOptions options) {
+                RecentVideos.open(MainActivity.this, item, options);
+            }
+        });
+        root.addView(gallery, 0, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        float design = getResources().getDisplayMetrics().widthPixels / 1280f;
+        FrameLayout.LayoutParams under = new FrameLayout.LayoutParams(
+                Math.round(ScrollCue.VIEW_W * design), Math.round(ScrollCue.VIEW_H * design),
+                android.view.Gravity.TOP | android.view.Gravity.CENTER_HORIZONTAL);
+        under.topMargin = Math.round(642f * design);
+        ScrollCue cue = new ScrollCue(this);
+        root.addView(cue, 1, under);
+        gallery.setCue(cue);
     }
 
     /**
@@ -1052,6 +1105,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (openInputsIfAsked(intent)) return;
         if (intent == null || !intent.hasCategory(Intent.CATEGORY_HOME)) return;
         if (gameDay != null && !stopped) gameDay.read();
+        // From an app the gallery stays on the app that was open; pressed on Home itself, it goes back to the first.
+        if (gallery != null && !stopped) gallery.onHomePressedOnHome();
         grid.scrollToPosition(0);
         lastFocused = 0;
         lastFocusedKey = adapter.getItemCount() > 0 ? adapter.keyAt(0) : null;
@@ -1096,6 +1151,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             return;
         }
         restartIdleClock();
+        if (gallery != null) gallery.onResumed();
         promptsPaused = false;
         if (grid.getAdapter() == null) grid.setAdapter(adapter);   // dropped by onTrimMemory
         switch (tileRefresh.onResume(packagesChangedSinceRebuild())) {
@@ -1260,6 +1316,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         cards = moduleCards ? CardFeature.run(() -> Cards.discover(this, hiddenApps,
                 () -> Cards.load(Cards.storeFile(this)), leanback), none) : none;
         adapter.reload(cards.isEmpty() ? none : CardFeature.run(() -> Cards.shown(cards), none), leanback);
+        if (gallery != null) gallery.setEntries(adapter.galleryEntries());
         lastFocusedKey = returnKey;
         lastFocused = returnSlot;
         packageSequence = currentPackageSequence(packageSequence);
@@ -1299,6 +1356,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onPause() {
         super.onPause();
         resumed = false;
+        if (gallery != null) gallery.onPaused();
         // No UP reaches a paused Home, so a vendor-key hold it saw go down would still open its app later.
         // Only Home's own share is dropped: a key service that saw the same DOWN keeps its hold.
         RemoteKeys.release(this);
@@ -1346,6 +1404,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // RUNNING_LOW and CRITICAL also arrive while Home is visible when an accessibility service keeps the
         // process in the foreground; never blank the screen the owner is looking at.
         if (!MemoryTrimPolicy.shouldRelease(level, started)) return;
+        if (gallery != null) gallery.releaseArt();
         adapter.clear();
         // Detach the adapter too: with Home stopped no layout pass runs, so the tile views (and the bitmaps
         // they hold) would stay attached until Home comes back. setAdapter(null) recycles them now.
@@ -1374,6 +1433,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onDestroy();
         RemoteKeys.release(this);
         cancelHoldOk();
+        if (gallery != null) gallery.shutdown();
         if (gameDay != null) gameDay.shutdown();
         unregisterReceiver(packageReceiver);
         if (openOnStartOnWake) unregisterReceiver(wakeReceiver);
@@ -1425,6 +1485,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (resumed && event.getKeyCode() >= 1000 && RemoteKeys.handle(this, event, homeAppKeys.get(event.getKeyCode()),
                 homeHoldAppKeys.get(event.getKeyCode()))) return true;
         if (handleSettingsKey(event)) return true;
+        if (gallery != null && (gallery.isFocused() || getCurrentFocus() == null)) {
+            if (!gallery.isFocused()) gallery.requestFocus();
+            if (gallery.handleKey(event)) return true;
+        }
         if (holdOk(event)) return true;
         if (tileMenuEnabled && !reordering && openPopup == null && cardPrompt == null
                 && event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
@@ -2650,6 +2714,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     private void focusTile(int position) {
+        if (gallery != null) {
+            gallery.requestFocus();
+            return;
+        }
         libraryFocusPending = false;
         cancelPendingFocusScroll();
         if (adapter.appCount() == 0) {
@@ -2698,7 +2766,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     private void updateClockVisibility() {
         boolean valid = System.currentTimeMillis() >= TIME_VALID_AFTER_MS;
-        clockBlock.setVisibility(valid ? View.VISIBLE : View.INVISIBLE);
+        // Invisible rather than gone under the gallery: the top buttons are laid out against it.
+        clockBlock.setVisibility(valid && gallery == null ? View.VISIBLE : View.INVISIBLE);
         handler.removeCallbacks(clockCheck);
         if (valid) {
             updateGreeting();

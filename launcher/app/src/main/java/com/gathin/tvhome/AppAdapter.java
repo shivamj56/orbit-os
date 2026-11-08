@@ -528,6 +528,12 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /** Opens the tile's activity by explicit component, with no extras: a card can name nothing else. */
     @SuppressWarnings("deprecation")
     private void launch(Entry e) {
+        launch(e, null);
+    }
+
+    /** @param options how the app's window arrives (the gallery has it grow out of its card), or null. */
+    @SuppressWarnings("deprecation")
+    void launch(Entry e, android.os.Bundle options) {
         if (e.kind == Entry.HOME_SETTINGS) {
             ctx.startActivity(new Intent(ctx, HomeSettingsActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -552,7 +558,8 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (ctx.getPackageManager().resolveActivity(byAction, 0) != null) i = byAction;
         }
         try {
-            ctx.startActivity(i);
+            if (options != null) ctx.startActivity(i, options);
+            else ctx.startActivity(i);
             if (cinematic) LastOpened.record(ctx, e.pkg);
             if (advancedEffects && !reducedMotion && ctx instanceof Activity) {
                 ((Activity) ctx).overridePendingTransition(R.anim.app_open_enter, R.anim.app_open_exit);
@@ -568,6 +575,13 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     int appCount() { return items.size(); }
+
+    /** The apps, in Home's order, without the empty dock slots and the settings tile. */
+    List<Entry> galleryEntries() {
+        List<Entry> apps = new ArrayList<>();
+        for (Entry e : items) if (e.kind == Entry.APP || e.kind == Entry.CARD) apps.add(e);
+        return apps;
+    }
 
     boolean isLibraryAt(int position) { return showLibrary && position == items.size(); }
 
@@ -849,7 +863,7 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return Math.max(0, Math.min(255, Math.round(v)));
     }
 
-    private static int vividColor(Drawable live) {
+    static int vividColor(Drawable live) {
         if (live == null) return 0xFF444444;
         // Draw a private copy: changing the bounds of the drawable an ImageView shows would blank the tile.
         Drawable d = live.getConstantState() != null ? live.getConstantState().newDrawable().mutate() : live;

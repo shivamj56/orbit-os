@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.UserManager;
 import android.service.notification.NotificationListenerService;
 
@@ -19,6 +20,7 @@ public class GuardRevival extends NotificationListenerService {
 
     @Override
     public void onListenerConnected() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) WatchHistory.listenerConnected();
         UserManager users = getSystemService(UserManager.class);
         if (users != null && !users.isUserUnlocked()) {
             if (unlocked != null) return;
@@ -37,6 +39,9 @@ public class GuardRevival extends NotificationListenerService {
             return;
         }
         GuardKeep.ensureHomeKey(this);
+        // A force stop also takes the key helper off the list, and with the remote's volume keys going through it
+        // (VolumeSlider), that should not have to wait until someone next opens Home.
+        ServiceRepair.restore(this);
     }
 
     private void stopWaiting() {

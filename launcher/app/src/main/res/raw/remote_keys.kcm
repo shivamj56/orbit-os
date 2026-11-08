@@ -1,0 +1,19 @@
+# A keyboard layout for the remote (see VolumeSlider). The TV's own volume bar shows whenever a volume key reaches the
+# system, and the firmware takes Settings before anything else can see it, so these keys get names that mean nothing to
+# the system. Only the key helper answers them. Without the helper running they do nothing at all.
+type OVERLAY
+
+# Volume Up. 104 is the same button through the remote's infrared side.
+map key 115 NUMPAD_RIGHT_PAREN
+map key 104 NUMPAD_RIGHT_PAREN
+
+# Volume Down.
+map key 114 NUMPAD_LEFT_PAREN
+map key 109 NUMPAD_LEFT_PAREN
+
+# Mute.
+map key 113 NUMPAD_EQUALS
+
+# Settings: 357 through the Google remote service, 577 straight from the remote.
+map key 357 NUMPAD_COMMA
+map key 577 NUMPAD_COMMA

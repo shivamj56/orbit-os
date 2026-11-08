@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Inter's display cut at weight 200, built once per process, as outfit_light.xml does for Outfit. Licence: launcher/third_party/Inter-OFL.txt. -->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <font
+        android:font="@font/inter"
+        android:fontStyle="normal"
+        android:fontWeight="200"
+        android:fontVariationSettings="'wght' 200"
+        tools:targetApi="28" />
+</font-family>
