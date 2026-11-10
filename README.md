@@ -36,7 +36,7 @@ never uninstalled, and one command brings the TV back the way it was.
 
 ### On the TV
 
-| | |
+| Feature | What it does |
 |---|---|
 | **Boot film** | A short film, *Developed by Shiv*, plays once per start-up and cuts straight into Home. Any key skips it. |
 | **Gallery Home** | Your apps on a curved row of glass cards, lit in each app's own colour. Search and voice search across apps, movies and shows. A greeting with the time of day, the date, the weather and festival colours. |
@@ -54,7 +54,7 @@ never uninstalled, and one command brings the TV back the way it was.
   <img alt="Orbit on a phone: it finds the TV on the Wi-Fi, then asks for the code the TV shows" src="docs/assets/orbit-phone.jpg" width="78%">
 </p>
 
-| | |
+| Feature | What it does |
 |---|---|
 | **Remote** | A globe-shaped touchpad that moves a pointer on the TV, the D-pad, volume, sleep, and a keyboard that types straight into the TV's search boxes. |
 | **From anywhere** | Pair once on the Wi-Fi with the code on the TV; link with Google sign-in and an 8-digit code, and the remote works away from home through the cloud. |

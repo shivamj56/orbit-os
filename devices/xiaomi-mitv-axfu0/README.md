@@ -2,7 +2,7 @@
 
 The first TV Orbit OS ran on, in daily use since November 2026.
 
-| | |
+| Detail | This TV |
 |---|---|
 | Model code | MiTV-AXFU0, codename `arctictale` |
 | System | Google TV 14 (Android 14, SDK 34), firmware V816.0.26.9.16 |
