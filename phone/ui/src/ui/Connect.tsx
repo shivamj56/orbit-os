@@ -367,7 +367,7 @@ function ManualAddress() {
               autoFocus
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="192.168.1.7"
+              placeholder="192.168.1.20"
               inputMode="decimal"
               aria-label="The TV's address"
               className="tabular min-w-0 flex-1 bg-transparent text-[16px] text-text placeholder:text-faint focus:outline-none"

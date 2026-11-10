@@ -3,7 +3,7 @@
 # packages that were already disabled stay disabled, Home goes back to the component that owned it,
 # and the animation scales go back to their recorded values. Pass the same list you ran disable with.
 #
-# Usage: TV_HOST=192.168.1.50 tools/restore.sh examples/xiaomi-mi-tv-4a/debloat.txt [stock.launcher.package]
+# Usage: TV_HOST=192.168.1.50 tools/restore.sh devices/xiaomi-mitv-axfu0/debloat.txt [stock.launcher.package]
 #
 # Exit status: 0 the recorded states are back; 1 the restore did not finish; 2 the command line is not a
 # list plus an optional stock launcher package - no list word at all, an empty one, or a dash-led word

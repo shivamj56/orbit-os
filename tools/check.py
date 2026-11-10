@@ -62,7 +62,7 @@ FACTORY_HOME_RE = re.compile(r"factorytest|factory_test|factorymode", re.I)
 SETUPWRAITH = "com.google.android.tungsten.setupwraith"
 INPUT_PERMISSION = "android.permission.TV_INPUT_HARDWARE"
 # What asks_for_input_hardware answers when Android's watchdog has switched dumps off: "Service dumps
-# disabled due to hung system process" until a reboot (docs/TROUBLESHOOTING.md).
+# disabled due to hung system process" until a reboot (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md).
 HUNG = "hung"
 # Only the package's own "requested permissions" block counts: a vendor app in a shared UID would
 # otherwise match through its shared user's permissions, the same reason disable.sh scopes its grep.
@@ -366,7 +366,7 @@ def main():
         # TV that drifted: exit 2, not the 1 a weekly job reads as drift.
         sys.stderr.write(f"could not read {list_path} ({e.strerror or e}). Nothing was checked or changed: "
                          f"pass the debloat list this TV was cleaned with, e.g. "
-                         f"examples/<your tv>/debloat.txt.\n")
+                         f"devices/<your tv>/debloat.txt.\n")
         return 2
     except SystemExit as e:
         # The same for a line that is not a package name and for a list with every line commented

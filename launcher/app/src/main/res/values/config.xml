@@ -283,7 +283,7 @@
     <string name="locale" translatable="false"></string>
 
     <!-- A name after the greeting: "Mr. Trịnh" shows GOOD MORNING, MR. TRỊNH. Empty: the greeting alone. -->
-    <string name="greeting_name" translatable="false">Jha Ji</string>
+    <string name="greeting_name" translatable="false"></string>
     <!-- The town for the weather beside the date on the gallery Home; empty uses Android's last known position. -->
     <string name="weather_city" translatable="false"></string>
     <!-- India's match in the TV Island: the key of a free CricketData.org account (100 reads a day). Empty: off. -->

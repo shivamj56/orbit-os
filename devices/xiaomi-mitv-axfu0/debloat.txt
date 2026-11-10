@@ -1,0 +1,59 @@
+# Xiaomi TV A Pro / A series, model code MiTV-AXFU0 (arctictale), Google TV 14.
+# Tested on firmware UKG3.241124.001.V816.0.26.9.16.UXFAATV: the first TV Orbit OS ran on (8 Nov 2026).
+# Started from CleanYourTV's examples/xiaomi-mitv-axfu0/debloat.txt (MIT), with this household's choices.
+# Kept on by choice: voice search, screen mirroring, the remote's shortcut buttons (partnercustomizer),
+# firmware updates, every streaming app but YouTube Music. Chromecast and Xiaomi TV+ are off, see below.
+# Apply: TV_HOST=<tv ip> tools/disable.sh devices/xiaomi-mitv-axfu0/debloat.txt
+# Undo:  TV_HOST=<tv ip> tools/restore.sh devices/xiaomi-mitv-axfu0/debloat.txt com.google.android.apps.tv.launcherx
+#        Undo with the same list path you applied: the restore record is keyed on that path.
+#        Then, if Orbit's screensaver was chosen: TV_HOST=<tv ip> tools/tv.py "settings delete secure screensaver_components"
+
+# Xiaomi + Google telemetry
+com.miui.tv.analytics
+com.xiaomi.statistic
+com.xiaomi.mitv.detection
+com.xiaomi.tvqs.overseas.y24
+com.xiaomo.tv.milegal
+com.google.android.feedback
+
+# PatchWall, promoted channels and advertising (partnercustomizer stays on by choice)
+com.mitv.tvhome.atv
+com.mitv.tvhome.michannel
+com.mitv.tvhome.oemtab
+com.mitv.toolhouse
+com.xm.webcontent
+android.autoinstalls.config.soc.amlogic
+
+# Background Xiaomi services (the firmware updaters stay on)
+com.xiaomi.mitv.tvmanager
+com.xiaomi.mitv.manualhelp
+
+# Stock media players and unused apps (no USB playback here; YouTube Music not used)
+com.mitv.videoplayer
+com.xiaomi.mimusic2
+com.mitv.gallery
+com.xiaomi.mitv.mediaexplorer
+com.xiaomi.mitv.scenemode
+com.google.android.youtube.tvmusic
+com.google.android.play.games
+
+# Google TV setup wizard and stock launcher. setupwraith first: with launcherx off and setupwraith on, Home
+# crash-loops on this set. Costs phone casting if it costs anything. Re-enable both before a factory reset.
+com.google.android.tungsten.setupwraith
+com.google.android.apps.tv.launcherx
+com.google.android.apps.tv.launcherx.overlay
+com.google.android.apps.tv.dreamx
+
+# Chromecast built-in: this household does not cast (8 Nov), and with setupwraith off it only logs errors. Frees about 24 MB.
+com.google.android.apps.mediashell
+
+# Woken at every boot for nothing on this TV. Measured 9 Nov: the boot's 30-odd wake-ups keep the CPU above 90% for 35 s after Home.
+com.google.android.partnersetup
+com.google.android.syncadapters.calendar
+com.android.providers.calendar
+com.android.dynsystem
+
+# 10 Nov: Xiaomi TV+'s free live channels are not watched, and Mi Connect (Xiaomi phone to TV) is not used.
+# The remote's Xiaomi TV+ button then does nothing. Live TV (com.mitv.livetv) stays: HDMI goes through it.
+com.mitv.tvhome.mitvplus
+com.xiaomi.mi_connect_service

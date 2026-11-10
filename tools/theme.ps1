@@ -1,5 +1,5 @@
 # Windows version of theme.sh: push a theme folder (config.json, and optionally a wallpaper.jpg or a
-# wallpapers/ collection) to the launcher on the TV and restart Home. See themes/README.md for the keys.
+# wallpapers/ collection) to the launcher on the TV and restart Home. See https://github.com/Gathin23/CleanYourTV/blob/main/themes/README.md for the keys.
 #
 # Usage: tools\theme.ps1 -TvHost 192.168.1.50 themes\aurora
 #        tools\theme.ps1 -TvHost 192.168.1.50 -Reset
@@ -101,14 +101,14 @@ if (-not (Test-Path -LiteralPath $config)) {
 }
 try { $themeJson = Get-Content $config -Raw | ConvertFrom-Json }
 catch {
-    [Console]::Error.WriteLine("$config is not valid JSON, so there is no theme to push (themes/README.md says what the file holds). Nothing was sent to the TV.")
+    [Console]::Error.WriteLine("$config is not valid JSON, so there is no theme to push (https://github.com/Gathin23/CleanYourTV/blob/main/themes/README.md says what the file holds). Nothing was sent to the TV.")
     exit 2
 }
 # Config.read() answers "no overlay" for anything that is not a JSON object, so an array, a number or a
 # string is a theme the launcher drops - and it replaces the theme the set had with the built-in config.
 # Judged here, before anything is pushed, so "is on the TV" cannot mean the opposite.
 if ($themeJson -isnot [System.Management.Automation.PSCustomObject]) {
-    [Console]::Error.WriteLine("$config is not a JSON object of theme keys, so the launcher would ignore it and the TV would go back to its built-in config (themes/README.md). Nothing was sent to the TV.")
+    [Console]::Error.WriteLine("$config is not a JSON object of theme keys, so the launcher would ignore it and the TV would go back to its built-in config (https://github.com/Gathin23/CleanYourTV/blob/main/themes/README.md). Nothing was sent to the TV.")
     exit 2
 }
 # Every collection name is checked before anything changes on the TV, as in theme.sh: a name refused halfway

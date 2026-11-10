@@ -2,7 +2,7 @@
 # Disable every package listed in a debloat file on the TV (one package per line, # comments allowed).
 # Packages are disabled for user 0, never uninstalled. Undo with tools/restore.sh <same file>.
 #
-# Usage: TV_HOST=192.168.1.50 tools/disable.sh examples/xiaomi-mi-tv-4a/debloat.txt
+# Usage: TV_HOST=192.168.1.50 tools/disable.sh devices/xiaomi-mitv-axfu0/debloat.txt
 set -euo pipefail
 LIST="${1:?usage: disable.sh <debloat list>}"
 # Resolve the list against the caller's directory before moving into the repo. Git Bash's pwd says
@@ -99,14 +99,14 @@ fi
 
 # On firmware with ro.adb.secure=0, port 5555 gives a shell to any device on the network without the
 # "Allow" prompt. An empty value counts too: on a debug (userdebug or eng) build, and on Android 4.4,
-# adbd reads a missing ro.adb.secure as 0, and sets in examples/ give a shell that way (#1720). Read it
+# adbd reads a missing ro.adb.secure as 0, and sets in CleanYourTV's examples/ give a shell that way (#1720). Read it
 # now and say so once the list is done; a failed read only skips the note, so it is kept apart from an
 # empty answer.
 ADB_SECURE="$("$PY" -I tools/tv.py "getprop ro.adb.secure" 2>/dev/null | tr -d '[:space:]')" || ADB_SECURE="unread"
 
 # Home guard (#239): a list that disables the app owning Home leaves the TV with nothing to start the
 # next time Home is pressed, and on Google TV the setup wizard can take the category instead and
-# crash-loop system_server (docs/TROUBLESHOOTING.md). Skip the owner while nothing else on the TV can
+# crash-loop system_server (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md). Skip the owner while nothing else on the TV can
 # answer HOME; FORCE_HOME=1 disables it anyway, for a TV reachable another way.
 HOME_QUERY='cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME'
 CLAIM_QUERY='cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME'
@@ -192,7 +192,7 @@ if [ -z "${FORCE_HOME:-}" ] && [ -n "$PKGS" ]; then
       elif [ -n "$SETUP_HOME" ]; then
         echo "Skipping $HOME_PKG: it owns Home, and $SETUP stays enabled and answers Home" >&2
         echo "ahead of the other launchers here, so with $HOME_PKG disabled Home would go to its" >&2
-        echo "RecoveryActivity, the black screen system_server can crash-loop on (docs/TROUBLESHOOTING.md)." >&2
+        echo "RecoveryActivity, the black screen system_server can crash-loop on (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md)." >&2
         echo "Make the new launcher Home first (launcher/build-and-install.sh), or disable setupwraith in" >&2
         echo "the same run (if it was skipped for the Wi-Fi network, forget the network and join it again" >&2
         echo "in Settings > Network & Internet), then run this list again; or set FORCE_HOME=1 if you can" >&2
@@ -295,7 +295,7 @@ if [ -n "$PKGS" ] && [ -z "${TVINPUT_ALLOW:-}" ]; then
       echo "system process\", so the input-driver check cannot read them. Android's watchdog turns every" >&2
       echo "dump off after system_server hangs, and only a restart turns them back on. Reboot the TV" >&2
       echo "first (tools/tv.py --reboot), then run the list again. TVINPUT_ALLOW=1 is not the way past" >&2
-      echo "this: the check did not run, which is not the same as passing (docs/TROUBLESHOOTING.md)." >&2
+      echo "this: the check did not run, which is not the same as passing (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md)." >&2
     fi
     UNCHECKED="$(printf '%s\n' "$TV_HW" | sed -n -E 's/^NOCHK ([^[:space:]]+)$/\1/p')"
     for p in $UNCHECKED; do
@@ -318,7 +318,7 @@ if [ -n "$PKGS" ] && [ -z "${TVINPUT_ALLOW:-}" ]; then
       echo "input at all. What settles it is which packages actually serve the input service:" >&2
       echo "  pm query-services --components -a android.media.tv.TvInputService" >&2
       echo "If $p is absent from that list it is a false positive on your set, as a MediaTek USB media" >&2
-      echo "player turned out to be (examples/cecotec-shandao). Check every input after a reboot before" >&2
+      echo "player turned out to be (https://github.com/Gathin23/CleanYourTV/blob/main/examples/cecotec-shandao). Check every input after a reboot before" >&2
       echo "trusting it, then set TVINPUT_ALLOW=1 to disable it." >&2
       PKGS="$(printf '%s\n' "$PKGS" | grep -vxF "$p" || true)"
     done
@@ -425,7 +425,7 @@ if [ -n "$PKGS" ]; then
           echo "above), or the change did not hold. Do not run the list again in a loop. Run"
           echo "tools/tv.py 'pm disable-user --user 0 <package>' once by hand for each, or the list once"
           echo "more after a reboot. If every listed package stays enabled, this firmware refuses"
-          echo "pm disable-user: stop there and say so (docs/TROUBLESHOOTING.md,"
+          echo "pm disable-user: stop there and say so (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md,"
           echo "\"Every way of disabling a package is refused\")."
         fi; } >&2
     fi

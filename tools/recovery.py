@@ -99,7 +99,7 @@ def read_list(path):
         text = Path(path).read_text(encoding="utf-8-sig", errors="replace")
     except OSError as e:
         raise SystemExit(f"could not read {path} ({e.strerror or e}). Nothing was sent to the TV: "
-                         f"pass the debloat list, e.g. examples/<your tv>/debloat.txt")
+                         f"pass the debloat list, e.g. devices/<your tv>/debloat.txt")
     names = []
     for number, line in enumerate(text.splitlines(), 1):
         line = line.split("#", 1)[0].strip()
@@ -130,7 +130,7 @@ def split_host_port(endpoint):
 def lan_address(host):
     """The TV's IP address when TV_HOST names a TV on the network, else None.
 
-    A loopback address (a relay, tools/relay.md) and a host name keep TV_HOST exactly as typed as the
+    A loopback address (a relay, https://github.com/Gathin23/CleanYourTV/blob/main/tools/relay.md) and a host name keep TV_HOST exactly as typed as the
     record's name, as they always have; TV_PORT is not part of that name.
     """
     name, _ = split_host_port(host or "")
@@ -504,7 +504,7 @@ def save(list_path, host):
     home_package = home.split("/", 1)[0] if home else None
     targets = packages + ([home_package] if home_package and home_package not in packages else [])
     # So may an installed stock launcher: undo needs its state from before, so that it turns it back
-    # on only when it was on (#1714). One the factory had disabled (examples/verizon-stream-tv), or
+    # on only when it was on (#1714). One the factory had disabled (https://github.com/Gathin23/CleanYourTV/blob/main/examples/verizon-stream-tv), or
     # that launcher/build-and-install.sh had disabled before this list, is recorded as disabled and
     # stays off.
     targets += [name for name in STOCK_LAUNCHERS if name in installed and name not in targets]

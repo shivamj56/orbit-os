@@ -61,7 +61,7 @@ Flutter sends a fresh status event whenever any of it changes.
 | key | `{"key":"up"}` | POST /api/key | `{}` |
 | media | `{"action":"play_pause"}` | POST /api/media | `{}` |
 | volume | `{"level":12}` | POST /api/volume | `{"volume":12,"max":100}` |
-| volumeStep | `{"dir":"up"|"down"}` | POST /api/key `{"key":"volup"|"voldown"}` | `{}` |
+| volumeStep | `{"dir":"up"\|"down"}` | POST /api/key `{"key":"volup"\|"voldown"}` | `{}` |
 | type | `{"text":"…","submit":false}` | POST /api/type | the TV's answer |
 | open | `{"url":"https://…"}` | POST /api/open | the TV's answer |
 | launch | `{"pkg":"…"}` | POST /api/launch | the TV's answer |
@@ -69,7 +69,7 @@ Flutter sends a fresh status event whenever any of it changes.
 | pointer | `{"type":"move","dx":3.5,"dy":-1.2}` (id 0) | one UDP datagram (below), nothing else | – |
 | pointer | `{"type":"scroll","dx":0,"dy":-8}` (id 0) | one UDP datagram | – |
 | pointer | `{"type":"click"}` / `{"type":"longpress"}` / `{"type":"hide"}` | POST /api/pointer `{"action":…}` | the TV's answer |
-| haptic | `{"kind":"tick"|"light"|"medium"|"heavy"|"success"|"error"}` | HapticFeedback (selectionClick / light / medium / heavy; success = medium, error = heavy twice) | – (id 0 allowed) |
+| haptic | `{"kind":"tick"\|"light"\|"medium"\|"heavy"\|"success"\|"error"}` | HapticFeedback (selectionClick / light / medium / heavy; success = medium, error = heavy twice) | – (id 0 allowed) |
 | keepAwake | `{"on":true}` | wakelock while the app is in front | `{}` |
 | settings | `{"volumeKeys":true}` | the phone's volume keys turn the TV up/down (default true) | `{}` |
 
@@ -119,7 +119,7 @@ Firebase uid, the same on phone and TV); only that user can read or write it.
 | `/orbit/{uid}/tv/online` | TV | `{".sv":"timestamp"}` every 60 s while the TV is awake (every 15 s while watched) |
 | `/orbit/{uid}/tv/state` | TV | the same object as GET /api/state (without `ok`), every 2 s while watched, and right after each command |
 | `/orbit/{uid}/watch` | phone | `{".sv":"timestamp"}` every 10 s while Orbit is in front and using the cloud; the TV counts itself watched for 25 s after each change it sees |
-| `/orbit/{uid}/cmd/{pushId}` | phone | `{"path":"/api/key","body":{"key":"up"},"at":{".sv":"timestamp"}}` — any POST route of the door, plus `/api/state`, `/api/apps`, `/api/icon` (`body` `{"pkg":…}`) and `/api/pointer` with `{"action":"move"|"scroll","dx":…,"dy":…}` (max 10 a second over the cloud) |
+| `/orbit/{uid}/cmd/{pushId}` | phone | `{"path":"/api/key","body":{"key":"up"},"at":{".sv":"timestamp"}}` — any POST route of the door, plus `/api/state`, `/api/apps`, `/api/icon` (`body` `{"pkg":…}`) and `/api/pointer` with `{"action":"move"\|"scroll","dx":…,"dy":…}` (max 10 a second over the cloud) |
 | `/orbit/{uid}/res/{pushId}` | TV | `{"status":200,"body":<the door's JSON answer>}`; `/api/icon` answers `{"png":"<base64>"}`; the phone reads it once and deletes it |
 | `/orbit/{uid}/tv/unlink` | phone | `true` → the TV signs out and goes back to showing a link code; the TV deletes the key |
 
@@ -140,7 +140,7 @@ Bridge ops added for this (page → Flutter):
 
 | op | args | does | reply |
 |---|---|---|---|
-| account | – | – | `{"signedIn":bool,"email":str|null,"tvLinked":bool,"tvOnline":bool,"tvName":str|null}` |
+| account | – | – | `{"signedIn":bool,"email":str\|null,"tvLinked":bool,"tvOnline":bool,"tvName":str\|null}` |
 | signIn | – | Google sign-in (Credential Manager, serverClientId = webClientId) → FirebaseAuth | account |
 | signOut | – | FirebaseAuth + Google sign out | account |
 | linkTv | `{"code":"12345678"}` | writes the token, waits ≤ 25 s for `tv/online` | account (`tvLinked:true`) or ok:false "That code is not on the TV." / "The TV did not answer. Is it on?" |

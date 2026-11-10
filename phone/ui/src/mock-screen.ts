@@ -167,7 +167,7 @@ export class MockScreen {
     g.textBaseline = "top";
     g.fillStyle = "rgba(255,255,255,0.9)";
     g.font = "300 59px Outfit, Inter, sans-serif";
-    g.fillText(`${greeting()}, Jha Ji`, 640, 43);
+    g.fillText(`${greeting()}`, 640, 43);
     g.fillStyle = "rgba(255,255,255,0.55)";
     g.font = "400 20px Inter, sans-serif";
     g.fillText("Hello, I wish you a wonderful day", 640, 122);

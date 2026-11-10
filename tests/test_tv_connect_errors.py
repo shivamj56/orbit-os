@@ -185,7 +185,7 @@ class TvConnectErrorTest(unittest.TestCase):
         self.assertEqual(2, result.returncode, result.stdout + result.stderr)
         self.assertNotIn("Traceback", result.stderr)
         self.assertEqual("", result.stdout)
-        self.assertIn("See docs/TROUBLESHOOTING.md#connecting.", result.stderr)
+        self.assertIn("See https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md#connecting.", result.stderr)
 
     def assertKeptTraceback(self, result, error):
         self.assertEqual(1, result.returncode, result.stdout + result.stderr)

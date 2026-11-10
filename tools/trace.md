@@ -2,7 +2,7 @@
 
 Record Perfetto traces of the launcher on the TV, then report where its time goes. For headline numbers
 only (key latency, jank, cold start, PSS), use `tools/bench.py` instead: it needs no extra install. To draw the
-result for a pull request, use `tools/flamechart.py` ([guide](flamechart.md)).
+result for a pull request, use `tools/flamechart.py` ([guide](https://github.com/Gathin23/CleanYourTV/blob/main/tools/flamechart.md)).
 
 ## Setup
 
@@ -52,7 +52,7 @@ Nothing was recorded, so nothing is half-written: `tools/bench.py`, `tools/check
   activities. They do not clear the other app's data or force-stop it. Check that it is responsive
   after a long session; an already accumulated history is not removed by this flag.
 - **The package:** `--package` names the launcher, `com.gathin.tvhome` unless your build has another one
-  (a fork: [SHOWCASE.md](../SHOWCASE.md) lists several). It decides which process the recording follows and
+  (a fork: [SHOWCASE.md](https://github.com/Gathin23/CleanYourTV/blob/main/SHOWCASE.md) lists several). It decides which process the recording follows and
   which one the report reads, so a fork has to pass it to `trace.py`, `trace_report.py` and
   `flamechart.py` alike: with the wrong name the report prints `–` for every step instead of saying the
   package was not in the trace, and the chart stops at `no <package> process in the trace`.
@@ -94,11 +94,11 @@ and GPU waits where available; a draw's duration is not the full frame time.
   category. Starting only the component can create a regular task beside the Home task, so a later
   Home press creates another instance. Compare runs recorded with the same launch command.
 - **Check the remote afterwards.** A force-stop switches off the accessibility helpers. `trace.py` puts the
-  list back after the last run, but on some TCL sets a helper still won't bind (`docs/TROUBLESHOOTING.md`).
+  list back after the last run, but on some TCL sets a helper still won't bind (`https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md`).
 - **Look in the right place for GPU savings.** Less overdraw shows as GPU wait in `nav`, not as main-thread
   time.
 - **Expect no latency gain from off-main-thread work.** It removes work, but doesn't shorten the time to
   the first frame.
 - **Never commit the `.pftrace` files.** They hold the TV's process list.
 
-The whole before/after method for a pull request is in [`docs/workflows/perf-ab.md`](../docs/workflows/perf-ab.md).
+The whole before/after method for a pull request is in [`docs/workflows/perf-ab.md`](https://github.com/Gathin23/CleanYourTV/blob/main/docs/workflows/perf-ab.md).

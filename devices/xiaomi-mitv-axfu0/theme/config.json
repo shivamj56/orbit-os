@@ -1,0 +1,30 @@
+{
+  "background_color": "#000000",
+  "wallpaper": false,
+  "sky_intensity": 0,
+  "ambient_glow": false,
+  "app_glow": false,
+  "show_greeting": false,
+  "dock_title": false,
+  "dock_row": true,
+  "single_row": true,
+  "dock_band": true,
+  "glass_style": "glass",
+  "focus_overshoot": false,
+  "icon_only_buttons": true,
+  "icon_only_inputs": true,
+  "hidden_apps": [
+    "com.mitv.livetv",
+    "com.mitv.gallery",
+    "com.android.tv.settings"
+  ],
+  "dock_glass": true,
+  "dock_even_padding": true,
+  "dock_band_all": true,
+  "key_filter": true,
+  "settings_key_keycodes": [
+    176,
+    159
+  ],
+  "restore_key_services": true
+}

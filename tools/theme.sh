@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Push a theme (a folder with config.json, and optionally a wallpaper.jpg or a wallpapers/ collection) to the
 # launcher on the TV and restart Home so it picks it up. The launcher reads the files from its external files
-# directory and overlays config.json on its built-in config.xml; see themes/README.md for the keys.
+# directory and overlays config.json on its built-in config.xml; see https://github.com/Gathin23/CleanYourTV/blob/main/themes/README.md for the keys.
 #
-# Usage: TV_HOST=192.168.1.50 tools/theme.sh themes/aurora
+# Usage: TV_HOST=192.168.1.50 tools/theme.sh devices/xiaomi-mitv-axfu0/theme
 #        TV_HOST=192.168.1.50 tools/theme.sh --reset        # remove the overlay, back to config.xml
 #
 # One argument, and --reset takes none: a second word is refused rather than dropped (see below). Exit status:
@@ -17,10 +17,10 @@
 set -euo pipefail
 THEME_ARG="${1:-}"
 # A theme folder or --reset, and nothing else. The first word alone decided everything the script did, so
-# `theme.sh --reset themes/aurora` matched the reset branch on that word and threw the folder away: the theme
+# `theme.sh --reset devices/xiaomi-mitv-axfu0/theme` matched the reset branch on that word and threw the folder away: the theme
 # the reader named was removed from the TV instead of pushed, and the run answered "reset" with exit 0 (the
 # undo hint this script prints is what people copy, so appending the folder to it is an easy line to type).
-# The same line the other way round, `theme.sh themes/aurora --reset`, pushed the theme and ignored the
+# The same line the other way round, `theme.sh devices/xiaomi-mitv-axfu0/theme --reset`, pushed the theme and ignored the
 # --reset the reader asked for. Both are answered here, before TV_HOST is required and before anything is
 # sent: a command line this script cannot read should not reach a TV.
 if [ -z "$THEME_ARG" ]; then
@@ -65,7 +65,7 @@ cd "$(dirname "$0")"
 # the client is chosen, in this script's own words and with the status the header gives a run that stopped
 # before the theme was up. An empty TV_HOST is the same mistake as an unset one.
 if [ -z "${TV_HOST:-}" ]; then
-  echo "set TV_HOST to the TV IP address, e.g. TV_HOST=192.168.1.50 $0 themes/aurora." \
+  echo "set TV_HOST to the TV IP address, e.g. TV_HOST=192.168.1.50 $0 devices/xiaomi-mitv-axfu0/theme." \
     "Nothing was sent to the TV." >&2
   exit 2
 fi
@@ -143,9 +143,9 @@ else:
 case "$(theme_json_kind "$THEME/config.json")" in
   object) ;;
   "not an object") echo "$THEME/config.json is not a JSON object of theme keys, so the launcher would ignore" \
-    "it and the TV would go back to its built-in config (themes/README.md). Nothing was sent to the TV." >&2
+    "it and the TV would go back to its built-in config (https://github.com/Gathin23/CleanYourTV/blob/main/themes/README.md). Nothing was sent to the TV." >&2
     exit 2 ;;
-  *) echo "$THEME/config.json is not valid JSON, so there is no theme to push (themes/README.md says what the" \
+  *) echo "$THEME/config.json is not valid JSON, so there is no theme to push (https://github.com/Gathin23/CleanYourTV/blob/main/themes/README.md says what the" \
     "file holds). Nothing was sent to the TV." >&2; exit 2 ;;
 esac
 # Every collection name is checked before anything changes on the TV: a name refused halfway through the push

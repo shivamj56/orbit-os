@@ -109,7 +109,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
         {/* The greeting steps aside while the Island speaks, as it does on the TV. */}
         <motion.div animate={{ opacity: code ? 0 : 1, y: code ? "1.4cqw" : 0 }} transition={{ duration: code ? 0.38 : 0.52 }}>
           <div className="absolute inset-x-0 top-[6%] text-center font-display font-light text-white/90" style={{ fontSize: "4.6cqw" }}>
-            {greeting()}, Jha Ji
+            {greeting()}
           </div>
           <div className="absolute inset-x-0 top-[17%] text-center text-white/55" style={{ fontSize: "1.6cqw" }}>
             Hello, I wish you a wonderful day

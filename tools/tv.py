@@ -327,12 +327,12 @@ def connect_error(e):
     # and auth only) still loads this file.
     from adb_shell.exceptions import AdbTimeoutError, InvalidCommandError, TcpTimeoutException
     target = f"{HOST}:{PORT}"
-    # The way to port 5555 on a TV whose only network ADB is Wireless debugging (docs/TROUBLESHOOTING.md).
+    # The way to port 5555 on a TV whose only network ADB is Wireless debugging (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md).
     pair = ("pair the TV once with the stock adb (`adb pair`, then `adb connect` to the port its Wireless "
             "debugging screen shows) and run `adb tcpip 5555`")
     reboot = ("Port 5555 usually closes at the next reboot; `adb connect` and `adb tcpip 5555` open it "
               "again, with no new pairing.")
-    see = "See docs/TROUBLESHOOTING.md#connecting."
+    see = "See https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md#connecting."
     if isinstance(e, InvalidCommandError) and "STLS" in str(e):
         # Android 11+ answers the handshake on its Wireless debugging port with STLS, a request for TLS.
         # adb_shell 0.4.4 (tools/requirements.txt) has no TLS, so no TV_HOST or TV_PORT gets past it - but
@@ -405,12 +405,12 @@ def lost_connection(e, command, position=None):
     return (f'the connection to the TV dropped while running "{command}"{where}: '
             f"{type(e).__name__}: {e}\n"
             f"The TV may or may not have run it, {rest} (`tv.py \"pm list packages -d\"` names the "
-            f"packages a debloat batch disabled). See docs/TROUBLESHOOTING.md#connecting.")
+            f"packages a debloat batch disabled). See https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md#connecting.")
 
 
 # screencap writes the PNG on the TV and we pull the file afterwards: adb_shell's shell() decodes
 # what comes back as text, which corrupts an image, and `exec-out screencap -p` returns a broken
-# PNG on some MediaTek sets (docs/TROUBLESHOOTING.md). /data/local/tmp is writable from shell.
+# PNG on some MediaTek sets (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md). /data/local/tmp is writable from shell.
 SHOT_REMOTE = "/data/local/tmp/cleanyourtv-shot.png"
 PNG = b"\x89PNG\r\n\x1a\n"
 # The last 8 bytes of every PNG: the IEND chunk's type and CRC. `screencap -p` writes one, so a file
@@ -616,7 +616,7 @@ def screenshot(dev, local, keys=(), wait=0.0):
         # most sets, and PROMPT.md tells the agent to look at the screen rather than the ADB link.
         print(f"captured 0 bytes into {local}: Live TV and HDMI inputs come back empty on most TVs, as do "
               "some streaming apps (Netflix), so check what is on screen before the ADB connection "
-              "(see docs/TROUBLESHOOTING.md)", file=sys.stderr)
+              "(see https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md)", file=sys.stderr)
         return 1
     with open(local, "rb") as f:
         if f.read(len(PNG)) != PNG:

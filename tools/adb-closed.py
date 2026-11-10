@@ -14,7 +14,7 @@ permission belongs to the app that runs this check, not to python or adb, so a t
 granted it is denied the subnet and this tool cannot tell an open port from a closed one. The message
 says so and gives the way to grant it (tools/tv.py names the same permission at connect time).
 
-A TV_PORT exported with TV_HOST=127.0.0.1, or set to relay.py's 15555, is a relay's (tools/relay.md), so
+A TV_PORT exported with TV_HOST=127.0.0.1, or set to relay.py's 15555, is a relay's (https://github.com/Gathin23/CleanYourTV/blob/main/tools/relay.md), so
 it is not used for a TV's own IP. 127.0.0.1 is this computer: a relay answers there for itself, not for
 the TV, so a refusal there is not the TV's.
 """
@@ -155,7 +155,7 @@ def main():
     except socket.timeout:
         # No answer is not a refusal, but it was exit 0 here. Port 5555 times out with ADB still on when
         # the TV is off, asleep or rebooting, at a new address, on another VLAN, behind a VPN's firewall or
-        # out of an assistant's sandbox (docs/TROUBLESHOOTING.md, tools/relay.md), so the closing step would
+        # out of an assistant's sandbox (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md, https://github.com/Gathin23/CleanYourTV/blob/main/tools/relay.md), so the closing step would
         # be told "closed" for a TV this never reached.
         sys.stderr.write(f"could not check {host}:{port}: it did not answer in {TIMEOUT_S:.0f} s, and that "
                          "proves nothing. The TV\nmay be off, asleep or still rebooting, at another address, "

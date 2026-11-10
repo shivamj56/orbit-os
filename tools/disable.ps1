@@ -220,7 +220,7 @@ if (-not $tvinputAllow -and $pkgs.Count -gt 0) {
             }
         }
         if ($hung.Count -gt 0) {
-            Write-Warning "Skipping $($hung -join ' '): the TV answers dumpsys with `"Service dumps disabled due to hung system process`", so the input-driver check cannot read them. Android's watchdog turns every dump off after system_server hangs, and only a restart turns them back on. Reboot the TV first (tools\tv.py --reboot), then run the list again. `$env:TVINPUT_ALLOW=1 is not the way past this: the check did not run, which is not the same as passing (docs/TROUBLESHOOTING.md)."
+            Write-Warning "Skipping $($hung -join ' '): the TV answers dumpsys with `"Service dumps disabled due to hung system process`", so the input-driver check cannot read them. Android's watchdog turns every dump off after system_server hangs, and only a restart turns them back on. Reboot the TV first (tools\tv.py --reboot), then run the list again. `$env:TVINPUT_ALLOW=1 is not the way past this: the check did not run, which is not the same as passing (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md)."
         }
         foreach ($p in ($tvhw | Where-Object { $_ -match '^NOCHK ' })) {
             $p = ($p -replace '^NOCHK ', '').Trim()

@@ -46,7 +46,7 @@ $py = '..\tools\venv\Scripts\python.exe'
 # can also be Android's chooser "android", the setup wizard, or another third-party launcher).
 # ColorOS TV's com.heytap.tv.launcher stays out of the list below: recognising it would disable
 # the stock home, and the default applicationId is refused as Home on that firmware.
-# docs/devices/oppo-k9-55-oppocnm632.md.
+# https://github.com/Gathin23/CleanYourTV/blob/main/docs/devices/oppo-k9-55-oppocnm632.md.
 $knownStock = @('com.google.android.tvlauncher', 'com.google.android.apps.tv.launcherx', 'com.google.android.leanbacklauncher', 'com.mitv.tvhome')
 if (-not $StockLauncher) {
     $homePkg = & $py -I ..\tools\tv.py 'cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME' | Select-Object -Last 1

@@ -1,3 +1,17 @@
+Orbit OS
+Copyright (c) 2026 Shivam Jha. All rights reserved.
+
+The code written for Orbit OS (among it Orbit Home's own screens and services, Orbit Live TV, the Orbit
+phone app in phone/, the device folders in devices/ and the documentation) is not yet released under an
+open-source licence. A licence will be chosen before the project is made public.
+
+------------------------------------------------------------------------------------------------------------
+
+Parts of this repository come from CleanYourTV (https://github.com/Gathin23/CleanYourTV): the TV tools in
+tools/ and their tests in tests/, and the launcher code that Orbit Home started from in launcher/app
+(including its translations). They are used under the MIT licence below, whose notice is kept here as it
+requires.
+
 MIT License
 
 Copyright (c) 2026 Gathin
@@ -20,8 +34,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----
+------------------------------------------------------------------------------------------------------------
 
-The Outfit typeface in launcher/app/src/main/res/font/outfit.ttf is copyright
-The Outfit Project Authors and licensed under the SIL Open Font License 1.1,
-see launcher/FONT-LICENSE-OFL.txt.
+Fonts and icons keep their own licences: Inter (launcher/third_party/Inter-OFL.txt), Outfit
+(launcher/FONT-LICENSE-OFL.txt) and Fluent Emoji (launcher/ICONS-LICENSE-FLUENT-EMOJI.txt).

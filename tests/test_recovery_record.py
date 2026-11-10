@@ -428,7 +428,7 @@ class RecoveryRecordTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn(f"could not read {missing}", result.stderr)
         self.assertIn("No such file or directory", result.stderr)
-        self.assertIn("examples/<your tv>/debloat.txt", result.stderr)
+        self.assertIn("devices/<your tv>/debloat.txt", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
         self.assertEqual(result.stdout, "")
         self.assertEqual(self.sent(), [], "a refused list sends nothing")

@@ -40,7 +40,7 @@ export const MOCK_APPS: (AppEntry & { tint: [string, string] })[] = [
 ];
 
 const TOKEN_KEY = "orbit-mock-token";
-const TV = { name: "Family room", address: "192.168.1.7", port: 8090, udp: 8091 };
+const TV = { name: "Family room", address: "192.168.1.20", port: 8090, udp: 8091 };
 
 export function emitMock(e: MockEvent) {
   window.dispatchEvent(new CustomEvent<MockEvent>("orbit-mock", { detail: e }));

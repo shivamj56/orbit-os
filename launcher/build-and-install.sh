@@ -18,7 +18,7 @@ if [ -n "$MIN_SDK" ] && [ -n "$TV_SDK" ] && [ "$TV_SDK" -lt "$MIN_SDK" ]; then
   echo "ERROR: this TV runs SDK $TV_SDK and the launcher is built with minSdk $MIN_SDK (app/build.gradle)," >&2
   echo "so pm install would answer INSTALL_FAILED_OLDER_SDK. Nothing was built, pushed or disabled." >&2
   echo "The debloat half of the repo still applies to that set, from its own home screen; the launcher" >&2
-  echo "half would need your own build with a lower minSdk (docs/TROUBLESHOOTING.md)." >&2
+  echo "half would need your own build with a lower minSdk (https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md)." >&2
   exit 1
 fi
 # SKIP_BUILD=1 installs the APK already built (tools/docker-build.sh builds it in Docker, with no JDK here).
@@ -67,7 +67,7 @@ fi
 # Pass STOCK_LAUNCHER=<package> to name it yourself, or STOCK_LAUNCHER=none to disable nothing.
 # ColorOS TV's com.heytap.tv.launcher stays out of the list below: recognising it would disable
 # the stock home, and the default applicationId is refused as Home on that firmware.
-# docs/devices/oppo-k9-55-oppocnm632.md.
+# https://github.com/Gathin23/CleanYourTV/blob/main/docs/devices/oppo-k9-55-oppocnm632.md.
 KNOWN_STOCK_LAUNCHERS="com.google.android.tvlauncher com.google.android.apps.tv.launcherx com.google.android.leanbacklauncher com.mitv.tvhome"
 if [ -z "${STOCK_LAUNCHER:-}" ]; then
   HOME_PKG=$("$PY" -I ../tools/tv.py 'cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME' \
@@ -120,7 +120,7 @@ case "$OUT" in
     # The pre-flight above missed it (a TV whose getprop did not answer, or an APK built elsewhere):
     # name the real cause instead of leaving the raw Failure line to be read as an ADB problem.
     echo "ERROR: pm install refused the APK as too new for this set (INSTALL_FAILED_OLDER_SDK): the TV runs an older SDK than the launcher's minSdk ${MIN_SDK:-in app/build.gradle}." >&2
-    echo "The stock launcher was left untouched. Read both numbers and see docs/TROUBLESHOOTING.md." >&2
+    echo "The stock launcher was left untouched. Read both numbers and see https://github.com/Gathin23/CleanYourTV/blob/main/docs/TROUBLESHOOTING.md." >&2
     exit 1 ;;
   *) echo "ERROR: pm install failed; the stock launcher was left untouched." >&2; exit 1 ;;
 esac
@@ -194,7 +194,7 @@ rollback_home() {
 # Order matters: the new launcher is started before the stock one is disabled, and the home
 # preference is set after. Android drops the preference whenever the set of HOME apps changes, and
 # on Google TV 14 the next candidate is the setup wizard's RecoveryActivity, which crash-loops
-# system_server (see examples/xiaomi-tv-a-pro-2026). So check where Home ended up, and put the
+# system_server (see https://github.com/Gathin23/CleanYourTV/blob/main/examples/xiaomi-tv-a-pro-2026). So check where Home ended up, and put the
 # stock launcher back if it is not ours.
 HOME_NOW=$(query_home)
 case "$HOME_NOW" in

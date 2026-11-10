@@ -62,7 +62,7 @@ $env:SKIP_BUILD = '1'; launcher\build-and-install.ps1 -TvHost <tv ip>
 ```
 
 Everything else the script does (the SDK check, the Home guard, the stock launcher) is unchanged. An add-on's APK
-is pushed and installed as [`addons/README.md`](../addons/README.md) shows, without its build step.
+is pushed and installed as [`addons/README.md`](https://github.com/Gathin23/CleanYourTV/blob/main/addons/README.md) shows, without its build step.
 
 ## The signing key
 
