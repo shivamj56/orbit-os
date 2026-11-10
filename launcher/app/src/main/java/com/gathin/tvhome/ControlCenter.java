@@ -433,7 +433,10 @@ final class ControlCenter extends View {
     private static final int[] SCENE_ICONS = {R.drawable.cc_film, R.drawable.cc_diya, R.drawable.cc_night};
 
     private void build() {
-        mod("orbit", PILL, 912, 48, 168, 48, 0);
+        mod("orbit", PILL, 848, 48, 168, 48, 0);
+        // The remote's Settings button opens this panel now, so the TV's own Settings are one press from here (10 Nov:
+        // the owner could not find his way to Developer options).
+        mod("settings", CIRCLE, 1032, 48, 48, 48, 0);
         mod("power", CIRCLE, 1096, 48, 48, 48, 0);
         // A plain way out, besides Back: the owner looked for one (10 Nov).
         mod("close", CIRCLE, 1160, 48, 48, 48, 0);
@@ -453,6 +456,8 @@ final class ControlCenter extends View {
         mod("notes", CARD, 648, 552, 560, 104, 30);
 
         target("orbit", "orbit", null, null, () -> openDetail("orbit"), null);
+        target("settings", "settings", null, null,
+                () -> closeThen(() -> service.ccOpen(SystemSettings.intent(service, Settings.ACTION_SETTINGS))), null);
         target("power", "power", null, null, () -> openDetail("power"), null);
         target("close", "close", null, null, this::close, null);
         target("wifi", "wifi", null, null, () -> openDetail("wifi"), null);
@@ -1094,6 +1099,9 @@ final class ControlCenter extends View {
                 drawText(c, orbitLine, m.x + 112f, m.tcy + 5f, sub, a);
                 break;
             }
+            case "settings":
+                drawIcon(c, R.drawable.cc_gear, m.tcx, m.tcy, 22f, 0xFFFFFFFF, a);
+                break;
             case "power":
                 drawIcon(c, R.drawable.cc_power, m.tcx, m.tcy, 22f, 0xFFFFFFFF, a);
                 break;
