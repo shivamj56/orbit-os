@@ -9,6 +9,8 @@ import android.service.dreams.DreamService;
 public class ClockDream extends DreamService {
 
     private ClockScene scene;
+    /** gallery_home: the owner's S instead of the drifting clock. */
+    private AmbientS ambient;
 
     @Override
     public void onAttachedToWindow() {
@@ -16,6 +18,11 @@ public class ClockDream extends DreamService {
         setInteractive(false);   // any key wakes the TV back to where it was
         setFullscreen(true);
         setScreenBright(false);
+        if (getResources().getBoolean(R.bool.gallery_home)) {
+            ambient = new AmbientS(this);
+            setContentView(ambient.view());
+            return;
+        }
         setContentView(R.layout.dream_clock);
         ClockFormat.apply(getWindow().getDecorView(), Config.load(this).clockFormat);
         scene = new ClockScene(getWindow().getDecorView());
@@ -25,17 +32,20 @@ public class ClockDream extends DreamService {
     @Override
     public void onDreamingStarted() {
         super.onDreamingStarted();
-        scene.start();
+        if (ambient != null) ambient.start();
+        else scene.start();
     }
 
     @Override
     public void onDreamingStopped() {
-        scene.stop();
+        if (ambient != null) ambient.stop();
+        else scene.stop();
         super.onDreamingStopped();
     }
 
     @Override
     public void onDetachedFromWindow() {
+        if (ambient != null) ambient.stop();
         if (scene != null) scene.stop();
         super.onDetachedFromWindow();
     }

@@ -14,3 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "tvhome"
 include ':app'
+// The Live TV app beside Home: its own package, so Home, the panel and the shelf treat it like any other app.
+include ':livetv'

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The TV's door is plain HTTP on the home Wi-Fi (http://<the TV's private address>:8090), so cleartext must be
+     allowed. Android cannot limit cleartext to address ranges (a domain-config takes names, not 192.168.0.0/16), so it
+     is allowed for the app; the app itself only ever sends HTTP to the TV it found on the Wi-Fi or was given, and the
+     scan of the phone's own /24 only during discovery. Nothing in Orbit uses HTTPS today; system CAs only, no user CAs. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

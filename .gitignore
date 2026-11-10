@@ -21,3 +21,13 @@ bench-results/
 *.aab
 launcher/hs_err_pid*.log
 launcher/replay_pid*.log
+# Live TV (launcher/livetv): its build output.
+launcher/livetv/build/
+# Orbit (phone/): installed packages and the generated one-file UI (phone/ui/dist, copied into the app by
+# phone/app/tool/sync_ui.sh), rebuilt from source every time.
+phone/ui/node_modules/
+phone/ui/dist/
+phone/app/assets/ui/
+# The Firebase project's API key and ids stay on this Mac, never in git (phone/SPEC.md "From anywhere").
+phone/firebase/config.json
+phone/app/android/app/google-services.json

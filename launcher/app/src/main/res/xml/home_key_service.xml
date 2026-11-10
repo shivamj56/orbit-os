@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Keys only: no accessibilityEventTypes (0), so the system never calls into the launcher for
-     accessibility events, which both services ignore. Key filtering depends only on
-     flagRequestFilterKeyEvents and canRequestFilterKeyEvents, not on the event types.
-     stock_home_redirect is the exception: with it set, HomeKeyService adds typeWindowStateChanged at runtime. -->
+<!-- No accessibilityEventTypes here (0): HomeKeyService asks for typeWindowStateChanged at runtime, only under the
+     gallery Home (the app opening, the way back, the recent apps) or with a redirect set. Key filtering depends only on
+     flagRequestFilterKeyEvents and canRequestFilterKeyEvents, not on the event types. canTakeScreenshot is for the way
+     back into the card, canRetrieveWindowContent for typing from the phone into the TV's focused text box and for the
+     phone's pointer finding what is under it, canPerformGestures for its tap where nothing there can be clicked. -->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagRequestFilterKeyEvents"
     android:canRequestFilterKeyEvents="true"
+    android:canTakeScreenshot="true"
+    android:canRetrieveWindowContent="true"
+    android:canPerformGestures="true"
     android:description="@string/home_key_description" />

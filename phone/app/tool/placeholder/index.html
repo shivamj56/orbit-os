@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="dark">
+<title>Orbit</title>
+<!--
+  Orbit's placeholder page: just enough of phone/SPEC.md's bridge to try the Flutter side (hello, status events,
+  discover, connect, askCode, pair, keys). tool/sync_ui.sh replaces it with phone/ui/dist/index.html.
+-->
+<style>
+  :root { --bg: #05060a; --fg: #e8eaf2; --dim: #8a90a6; --line: #1c1f2b; --accent: #8a9bff; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); overscroll-behavior: none; }
+  body {
+    font: 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: calc(var(--orbit-inset-top, env(safe-area-inset-top, 0px)) + 16px) 16px
+             calc(var(--orbit-inset-bottom, env(safe-area-inset-bottom, 0px)) + 16px);
+    box-sizing: border-box; min-height: 100vh; -webkit-tap-highlight-color: transparent; user-select: none;
+  }
+  h1 { font-size: 20px; font-weight: 600; margin: 0 0 2px; }
+  .note { color: var(--dim); font-size: 13px; margin: 0 0 14px; }
+  .card { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 0 0 12px; }
+  .state { font-weight: 600; color: var(--accent); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  button { background: #151826; color: var(--fg); border: 1px solid #2a2f45; border-radius: 12px; padding: 10px 14px; font: inherit; }
+  button:active { background: #202542; }
+  input { background: #0c0e16; color: var(--fg); border: 1px solid #2a2f45; border-radius: 12px; padding: 10px 12px; font: inherit; min-width: 0; }
+  #code { width: 7.5em; letter-spacing: .25em; }
+  #address { flex: 1; }
+  #error { color: #ff8a8a; font-size: 13px; }
+  #log { font: 12px/1.35 ui-monospace, Menlo, monospace; color: var(--dim); white-space: pre-wrap; word-break: break-all; max-height: 38vh; overflow: auto; margin: 0; }
+</style>
+</head>
+<body>
+<h1>Orbit</h1>
+<p class="note">Placeholder page, to try the app's bridge until the real interface is built.</p>
+
+<div class="card">
+  <div><span class="state" id="state">starting</span> <span id="tv"></span></div>
+  <div id="error"></div>
+  <div class="row" id="found"></div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <button data-op="discover">Discover</button>
+    <button data-op="askCode">Ask code</button>
+    <button data-op="state">State</button>
+    <button data-op="forget">Forget</button>
+  </div>
+  <div class="row">
+    <input id="code" inputmode="numeric" maxlength="6" placeholder="code" autocomplete="off">
+    <button id="pair">Pair</button>
+  </div>
+  <div class="row">
+    <input id="address" inputmode="decimal" placeholder="192.168.1.7" autocomplete="off">
+    <button id="manual">Connect</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <button data-key="up">Up</button>
+    <button data-key="ok">OK</button>
+    <button data-key="back">Back</button>
+    <button data-key="home">Home</button>
+  </div>
+</div>
+
+<div class="card"><pre id="log"></pre></div>
+
+<script>
+(function () {
+  'use strict';
+  var pending = {};
+  var nextId = 1;
+  var $ = function (id) { return document.getElementById(id); };
+
+  function log(line) {
+    var el = $('log');
+    el.textContent = (new Date().toTimeString().slice(0, 8)) + ' ' + line + '\n' + el.textContent.slice(0, 8000);
+  }
+
+  function render(s) {
+    if (!s) return;
+    $('state').textContent = s.state;
+    $('tv').textContent = s.tv ? s.tv.name + ' · ' + s.tv.address + ':' + s.tv.port : '';
+    $('error').textContent = s.error || '';
+    var list = $('found');
+    list.textContent = '';
+    (s.found || []).forEach(function (tv) {
+      var b = document.createElement('button');
+      b.textContent = tv.name + ' · ' + tv.address;
+      b.onclick = function () { call('connect', { address: tv.address, port: tv.port }); };
+      list.appendChild(b);
+    });
+  }
+
+  // Defined before anything is sent (SPEC: the page defines window.orbitReceive, then says hello).
+  window.orbitReceive = function (msg) {
+    if (typeof msg === 'string') msg = JSON.parse(msg);
+    if (msg.event) {
+      log('event ' + msg.event + ' ' + JSON.stringify(msg.data).slice(0, 400));
+      if (msg.event === 'status') render(msg.data);
+      return;
+    }
+    var waiting = pending[msg.id];
+    if (!waiting) return;
+    delete pending[msg.id];
+    log('reply ' + msg.id + (msg.ok ? ' ok ' + JSON.stringify(msg.data).slice(0, 400) : ' ' + msg.status + ' ' + msg.error));
+    if (msg.ok) waiting.resolve(msg.data); else waiting.reject(msg);
+  };
+
+  function call(op, args) {
+    if (!window.OrbitNative) {
+      log('not inside the Orbit app: ' + op);
+      return Promise.reject({ error: 'Not inside the Orbit app.' });
+    }
+    var id = nextId++;
+    return new Promise(function (resolve, reject) {
+      pending[id] = { resolve: resolve, reject: reject };
+      log('call ' + id + ' ' + op + ' ' + JSON.stringify(args || {}));
+      OrbitNative.postMessage(JSON.stringify({ id: id, op: op, args: args || {} }));
+    }).then(function (data) {
+      if (data && data.state) render(data);
+      return data;
+    }, function (e) { return e; });
+  }
+
+  function fire(op, args) {
+    if (window.OrbitNative) OrbitNative.postMessage(JSON.stringify({ id: 0, op: op, args: args || {} }));
+  }
+
+  document.querySelectorAll('[data-op]').forEach(function (b) {
+    b.onclick = function () { fire('haptic', { kind: 'tick' }); call(b.getAttribute('data-op')); };
+  });
+  document.querySelectorAll('[data-key]').forEach(function (b) {
+    b.onclick = function () { fire('haptic', { kind: 'light' }); call('key', { key: b.getAttribute('data-key') }); };
+  });
+  $('pair').onclick = function () { call('pair', { code: $('code').value }); };
+  $('manual').onclick = function () { call('manualAddress', { address: $('address').value }); };
+
+  call('hello');
+  call('settings', { volumeKeys: true });
+  call('keepAwake', { on: true });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Control Center icon, made by work/cc-demo/make_icons.py from the demo's stroked icon. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:pathData="M12,2.6h0a4,4 0 0,1 4,4v10.8a4,4 0 0,1 -4,4h-0a4,4 0 0,1 -4,-4v-10.8a4,4 0 0,1 4,-4z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path android:pathData="M10.3,8.2a1.7,1.7 0 1,0 3.4,0a1.7,1.7 0 1,0 -3.4,0z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path android:pathData="M11.1,13.2a0.9,0.9 0 1,0 1.8,0a0.9,0.9 0 1,0 -1.8,0z"
+        android:fillColor="#FFFFFFFF" />
+    <path android:pathData="M11.1,16.2a0.9,0.9 0 1,0 1.8,0a0.9,0.9 0 1,0 -1.8,0z"
+        android:fillColor="#FFFFFFFF" />
+</vector>

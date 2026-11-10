@@ -158,6 +158,11 @@ final class RecentVideos {
 
     // ---- the list --------------------------------------------------------------------------------
 
+    /** The list as it stands, newest first, read on the caller's thread (not the main one): for Movie Night. */
+    static List<Item> readNow(Context app) {
+        return read(app);
+    }
+
     private static List<Item> read(Context app) {
         Map<String, Item> byKey = new HashMap<>();
         for (WatchHistory.Entry e : WatchHistory.snapshot(app)) {

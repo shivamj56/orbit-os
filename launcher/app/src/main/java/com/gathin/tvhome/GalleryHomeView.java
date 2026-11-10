@@ -22,11 +22,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
+import android.os.SystemClock;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.Choreographer;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.RequiresApi;
@@ -123,6 +125,23 @@ final class GalleryHomeView extends View {
     private float velocity;
     private int target;
     private float reveal;
+    /** The first opening after the boot film: Home comes out of the line the film ended on, over a little more time. */
+    private boolean opening;
+    private boolean warming;
+    /** 1 normally, lower during Movie Night. */
+    private float nightDim = 1f;
+    /** 0 normally, 1 while the TV Island speaks over the greeting. */
+    private float islandK;
+    private android.animation.ValueAnimator islandFade;
+    private String greetingName = "";
+    /** Today's festival, if Home dresses up for it (HomeDays); null on an ordinary day. */
+    private HomeDays.Day festiveDay;
+    private float lineFlare;
+    private static final float OPENING_SECONDS = 1.35f;
+    /** How much bigger an app's card is at the end of its way forward. */
+    private static final float OPENING_ZOOM = 0.72f;
+    private final RectF openingDst = new RectF();
+    private final Paint openingPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private float energy;
     /** The "felt" part of a press: a short jolt of light and size that dies away in a fraction of a second. */
     private float kick;
@@ -237,6 +256,11 @@ final class GalleryHomeView extends View {
         @Override
         public void doFrame(long now) {
             if (!animating) return;
+            if (covered) {
+                animating = false;
+                lastFrameNs = 0L;
+                return;
+            }
             // The vsync's own time, not the clock when this code happened to run: that is what keeps the steps even.
             float dt = lastFrameNs == 0L ? 1f / 60f : Math.min(0.05f, (now - lastFrameNs) / 1e9f);
             lastFrameNs = now;
@@ -253,6 +277,7 @@ final class GalleryHomeView extends View {
 
     GalleryHomeView(Context context, Host host) {
         super(context);
+        alive = this;
         this.host = host;
         sound = new GallerySound(context);
         setFocusable(true);
@@ -370,7 +395,8 @@ final class GalleryHomeView extends View {
 
     void setCue(ScrollCue cue) {
         this.cue = cue;
-        cue.setVisibility(GONE);
+        // Never GONE: coming back from that lays out the whole of Home, in the middle of the opening after the film.
+        cue.setVisibility(INVISIBLE);
     }
 
     private void setRecents(List<RecentVideos.Item> items) {
@@ -391,7 +417,7 @@ final class GalleryHomeView extends View {
         ribbonOldLine = "";
         readRibbonText();
         if (cue != null) {
-            cue.setVisibility(items.isEmpty() ? GONE : VISIBLE);
+            cue.setVisibility(items.isEmpty() ? INVISIBLE : VISIBLE);
             cue.setRunning(resumed && !items.isEmpty());
         }
         invalidate();
@@ -427,9 +453,15 @@ final class GalleryHomeView extends View {
         CharSequence date = DateFormat.format("EEEE, d MMMM", now);
         CharSequence time = DateFormat.getTimeFormat(ctx).format(now.getTime());
         dateLine = date + "   ·   " + time;
+        String weather = Weather.text();
+        if (!weather.isEmpty()) dateLine += "   ·   " + weather;
         int hour = now.get(Calendar.HOUR_OF_DAY);
-        final String title, line;
-        if (hour >= 5 && hour < 12) {
+        festiveDay = HomeDays.on(java.time.LocalDate.now());
+        String title, line;
+        if (festiveDay != null) {
+            title = festiveDay.named ? named(festiveDay.title) : festiveDay.title;
+            line = festiveDay.line;
+        } else if (hour >= 5 && hour < 12) {
             title = "Good Morning";
             line = "Hello, I wish you a wonderful day";
         } else if (hour >= 12 && hour < 17) {
@@ -442,12 +474,14 @@ final class GalleryHomeView extends View {
             title = "Good Night";
             line = "Hello, I wish you a peaceful night";
         }
+        if (festiveDay == null) title = named(title);
         String key = title + "|" + line;
         if (getWidth() > 0 && !key.equals(headlineKey)) {
             headlineKey = key;
+            final String title2 = title, line2 = line;
             final float size = 52f * getWidth() / 1280f;
             new Thread(() -> {
-                Bitmap made = GalleryArt.headline(ctx, title, line, size);
+                Bitmap made = GalleryArt.headline(ctx, title2, line2, size);
                 main.post(() -> {
                     headline = made;
                     invalidate();
@@ -457,6 +491,103 @@ final class GalleryHomeView extends View {
     }
 
     // ---- life ------------------------------------------------------------------------------------
+
+    /** greeting_name: said after the greeting, "Good Evening, Shiv". */
+    void setGreetingName(String name) {
+        greetingName = name == null ? "" : name.trim();
+        headlineKey = "";
+        refreshTexts();
+    }
+
+    private String named(String title) {
+        return greetingName.isEmpty() ? title : title + ", " + greetingName;
+    }
+
+    void openAfterFilm() {
+        opening = true;
+        onResumed();
+    }
+
+    boolean isOpening() {
+        return opening;
+    }
+
+    /** The Home the helper's windows draw against: the one alive, if any. */
+    private static GalleryHomeView alive;
+
+    static GalleryHomeView alive() {
+        return alive;
+    }
+
+    /** Where the middle card stands at rest, in screen pixels: the place an app goes back into. */
+    void focusedCardRect(RectF out) {
+        float halfW = HALF_W * FOCAL * (1f + LIFT) * u, halfH = HALF_H * FOCAL * (1f + LIFT) * u;
+        out.set(cx - halfW, cy - halfH, cx + halfW, cy + halfH);
+    }
+
+    /** The card of this app, or null if it has none on Home. */
+    GalleryArt.Card cardOf(String pkg) {
+        for (GalleryArt.Card c : cards) if (c.entry.pkg.equals(pkg)) return c;
+        return null;
+    }
+
+    /** When centreOn last put an app's card in the middle: the Home intent that follows must not take it away. */
+    private long centredAtMs;
+    /** Where the pointer's touch went down (onTouchEvent). */
+    private float touchX, touchY;
+
+    /** Puts this app's card in the middle at once, without a glide: Home is about to come back on it. */
+    void centreOn(String pkg) {
+        if (cards.isEmpty()) return;
+        int n = cards.size(), now = Math.floorMod(target, n);
+        for (int i = 0; i < n; i++) {
+            if (cards.get(i).entry.pkg.equals(pkg)) {
+                target += i - now;
+                x = target;
+                velocity = 0f;
+                name = cards.get(i).entry.label;
+                previousName = "";
+                nameFade = 1f;
+                setZone(ZONE_CARDS);
+                centredAtMs = SystemClock.uptimeMillis();
+                invalidate();
+                return;
+            }
+        }
+    }
+
+    /** The TV Island is speaking at the top: the greeting sinks a little and fades out to make room, and comes back
+     *  after. Dimmed but still there, it read as a double exposure behind the Island's words. */
+    void setIslandOver(boolean over) {
+        if (islandFade != null) islandFade.cancel();
+        islandFade = android.animation.ValueAnimator.ofFloat(islandK, over ? 1f : 0f).setDuration(over ? 380L : 520L);
+        islandFade.addUpdateListener(a -> {
+            islandK = (float) a.getAnimatedValue();
+            invalidate();
+        });
+        islandFade.start();
+    }
+
+    /** Movie Night: the room's light low, no dust in it, the words dimmer. */
+    void setMovieNight(boolean on) {
+        nightDim = on ? 0.4f : 1f;
+        invalidate();
+    }
+
+    boolean isResumedNow() {
+        return resumed;
+    }
+
+    /** Everything the first real frame needs has been made. */
+    boolean readyToOpen() {
+        return !cards.isEmpty() && roomShader != null && bloomShader != null && headline != null;
+    }
+
+    /** One whole Home drawn behind the film's opaque cover, so that nothing is made for the first time when it comes into view. */
+    void warmUp() {
+        warming = true;
+        invalidate();
+    }
 
     void onResumed() {
         resumed = true;
@@ -469,6 +600,10 @@ final class GalleryHomeView extends View {
         if (zone == ZONE_RECENTS) zone = ZONE_CARDS;
         page = 0f;
         pageVelocity = 0f;
+        Weather.refresh(getContext(), () -> {
+            refreshTexts();
+            invalidate();
+        });
         RecentVideos.load(getContext(), recentsListener);
         WatchHistory.setOnChange(() -> {
             if (resumed) RecentVideos.load(getContext(), recentsListener);
@@ -499,6 +634,12 @@ final class GalleryHomeView extends View {
     /** The remote's Home with Home already in front: back to the first app, the short way round. */
     void onHomePressedOnHome() {
         setZone(ZONE_CARDS);
+        // The helper has just put the app's card in the middle for the app to go back into: the app was in front,
+        // even if Android had not stopped Home behind it yet (it waits for the app to settle, up to 10 s).
+        if (SystemClock.uptimeMillis() - centredAtMs < 2000L) {
+            centredAtMs = 0L;
+            return;
+        }
         if (cards.isEmpty()) return;
         int n = cards.size();
         int offset = Math.floorMod(target, n);
@@ -506,13 +647,36 @@ final class GalleryHomeView extends View {
     }
 
     void shutdown() {
+        if (alive == this) alive = null;
         buildGeneration++;
         onPaused();
         sound.release();
     }
 
+    /** The row as it stands, in Home's own order, for the strip over a playing video (VideoShelf). */
+    List<AppAdapter.Entry> rowEntries() {
+        List<AppAdapter.Entry> out = new ArrayList<>();
+        for (GalleryArt.Card c : cards) {
+            AppAdapter.Entry e = c.entry;
+            if (e.kind == AppAdapter.Entry.APP && e.pkg != null) out.add(e);
+        }
+        return out;
+    }
+
+    /** The Control Center covers Home: none of it is seen, so the room stops moving and leaves the GPU to the panel. */
+    private boolean covered;
+
+    void setCovered(boolean on) {
+        if (covered == on) return;
+        covered = on;
+        // Not drawn at all while covered: the cue's bounce alone redrew the whole room every frame (Mali-G31, 10 Nov).
+        View content = getRootView().findViewById(android.R.id.content);
+        if (content != null) content.setVisibility(on ? INVISIBLE : VISIBLE);
+        if (!on) wake();
+    }
+
     private void wake() {
-        if (animating || !resumed) {
+        if (animating || !resumed || covered) {
             invalidate();
             return;
         }
@@ -559,7 +723,8 @@ final class GalleryHomeView extends View {
         else kick = 0f;
 
         if (reveal < 1f) {
-            reveal = Math.min(1f, reveal + dt / 0.42f);
+            reveal = Math.min(1f, reveal + dt / (opening ? OPENING_SECONDS : 0.42f));
+            if (reveal >= 1f) opening = false;
             busy = true;
         }
         if (nameFade < 1f) {
@@ -776,6 +941,8 @@ final class GalleryHomeView extends View {
                     if (zone == ZONE_CARDS) setZone(ZONE_TOP + TOP_SETTINGS);
                     else if (zone == ZONE_SEARCH || zone == ZONE_MIC) setZone(ZONE_CARDS);
                     else if (zone == ZONE_RECENTS) setZone(ZONE_SEARCH);
+                    // Up once more at the top pulls the Control Center down out of the Island.
+                    else if (zone >= ZONE_TOP) HomeKeyService.openControlCenter();
                 }
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -815,6 +982,70 @@ final class GalleryHomeView extends View {
         }
     }
 
+    /**
+     * A tap, which on a TV is the Orbit phone app's pointer (its Cursor mode): a button at the top, the search pill or its
+     * mic is that button; the middle card opens as OK opens it; another card turns the row to it. Only on the first page,
+     * at rest; anything else is taken and ignored, so a tap never reaches what is drawn under it by mistake.
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            touchX = e.getX();
+            touchY = e.getY();
+            return true;
+        }
+        if (e.getActionMasked() != MotionEvent.ACTION_UP) return true;
+        // A swipe is the pointer's scroll, which Home has nothing for: not a tap where it ended.
+        if (Math.hypot(e.getX() - touchX, e.getY() - touchY) <= 24f * u) tapAt(e.getX(), e.getY());
+        return true;
+    }
+
+    /**
+     * The phone's pointer clicked here (PointerCursor calls this directly: on a TV without a touch screen Android drops
+     * the accessibility service's taps). Taken and ignored where nothing is.
+     */
+    void tapAt(float tx, float ty) {
+        if (page > 0.05f || opening) return;
+        requestFocus();
+        for (int i = 0; i < TOP_X.length; i++) {
+            if (Math.hypot(tx - TOP_X[i] * u, ty - TOP_Y * u) <= TOP_R * 1.35f * u) {
+                setZone(ZONE_TOP + i);
+                activate();
+                return;
+            }
+        }
+        float pillHalfW = PILL_W * u / 2f, pillHalfH = PILL_H * u / 2f;
+        if (Math.abs(ty - PILL_Y * u) <= pillHalfH && Math.abs(tx - cx) <= pillHalfW) {
+            setZone(tx >= cx + pillHalfW - 2f * pillHalfH ? ZONE_MIC : ZONE_SEARCH);
+            activate();
+            return;
+        }
+        if (cards.isEmpty() || Math.abs(ty - cy) > HALF_H * FOCAL * (1f + LIFT) * 1.15f * u) return;
+        int middle = Math.round(x);
+        for (int o = 0; o <= 4; o++) {
+            for (int side = o == 0 ? 1 : -1; side <= 1; side += 2) {
+                int slot = middle + side * o;
+                if (!slotHolds(slot, tx)) continue;
+                setZone(ZONE_CARDS);
+                if (slot == target) activate();
+                else move(slot - target);
+                return;
+            }
+        }
+    }
+
+    /** Whether this slot's card covers the screen column tx, at rest: drawSlot's outline without the motion in it. */
+    private boolean slotHolds(int slot, float tx) {
+        float d = slot - x, theta = d * STEP;
+        if (Math.abs(theta) > 1.32f) return false;
+        float w = HALF_W * (1f + LIFT * (float) Math.exp(-d * d * 3.2f));
+        float sin = (float) Math.sin(theta), cos = (float) Math.cos(theta);
+        float zLeft = cos + w * sin, zRight = cos - w * sin;
+        if (zLeft < 0.06f || zRight < 0.06f) return false;
+        float f = FOCAL * u;
+        return tx >= cx + f * (sin - w * cos) / zLeft && tx <= cx + f * (sin + w * cos) / zRight;
+    }
+
     private void activate() {
         feel(GallerySound.SELECT, 1f);
         if (zone == ZONE_RECENTS) {
@@ -822,8 +1053,13 @@ final class GalleryHomeView extends View {
             float halfW = RIBBON_HALF_W * RIBBON_FOCAL * (1f + RIBBON_LIFT) * u;
             float halfH = RIBBON_HALF_H * RIBBON_FOCAL * (1f + RIBBON_LIFT) * u;
             float middle = RIBBON_Y * u;
-            host.onGalleryRecent(recents.get(ribbonTarget), ActivityOptions.makeScaleUpAnimation(this, Math.round(cx - halfW),
-                    Math.round(middle - halfH), Math.round(halfW * 2), Math.round(halfH * 2)));
+            RecentVideos.Item item = recents.get(ribbonTarget);
+            AppOpening opening = HomeKeyService.opening();
+            Runnable open = () -> host.onGalleryRecent(item, ActivityOptions.makeCustomAnimation(getContext(), 0, 0));
+            if (opening == null || item.art == null || !opening.begin(this, item.art, item.pkg, open)) {
+                host.onGalleryRecent(item, ActivityOptions.makeScaleUpAnimation(this, Math.round(cx - halfW),
+                        Math.round(middle - halfH), Math.round(halfW * 2), Math.round(halfH * 2)));
+            }
         } else if (zone == ZONE_SEARCH) {
             host.onGallerySearch(false);
         } else if (zone == ZONE_MIC) {
@@ -831,11 +1067,16 @@ final class GalleryHomeView extends View {
         } else if (zone >= ZONE_TOP) {
             host.onGalleryTopButton(zone - ZONE_TOP);
         } else if (!cards.isEmpty()) {
-            // The app grows out of its card.
-            float halfW = HALF_W * FOCAL * (1f + LIFT) * u, halfH = HALF_H * FOCAL * (1f + LIFT) * u;
-            Bundle options = ActivityOptions.makeScaleUpAnimation(this, Math.round(cx - halfW), Math.round(cy - halfH),
-                    Math.round(halfW * 2), Math.round(halfH * 2)).toBundle();
-            host.onGalleryLaunch(currentCard().entry, options);
+            // The app grows out of its card: our own way forward where the helper is there to keep it on top, else Android's.
+            GalleryArt.Card card = currentCard();
+            AppOpening opening = HomeKeyService.opening();
+            Runnable open = () -> host.onGalleryLaunch(card.entry, ActivityOptions.makeCustomAnimation(getContext(), 0, 0).toBundle());
+            if (opening == null || !opening.begin(this, card, card.entry.pkg, open)) {
+                float halfW = HALF_W * FOCAL * (1f + LIFT) * u, halfH = HALF_H * FOCAL * (1f + LIFT) * u;
+                Bundle options = ActivityOptions.makeScaleUpAnimation(this, Math.round(cx - halfW), Math.round(cy - halfH),
+                        Math.round(halfW * 2), Math.round(halfH * 2)).toBundle();
+                host.onGalleryLaunch(card.entry, options);
+            }
         }
     }
 
@@ -944,6 +1185,16 @@ final class GalleryHomeView extends View {
         t = t * t * (3f - 2f * t);
         GalleryArt.Card a = cards.get(Math.floorMod(whole, n)), b = cards.get(Math.floorMod(whole + 1, n));
         setAccent(a.accent, b.accent, a.accent2, b.accent2, t);
+        if (festiveDay != null) {
+            // Half the app's colour, half the day's: the row still says which app, the room says which day.
+            accentR = mix(accentR, Color.red(festiveDay.glow) / 255f, 0.5f);
+            accentG = mix(accentG, Color.green(festiveDay.glow) / 255f, 0.5f);
+            accentB = mix(accentB, Color.blue(festiveDay.glow) / 255f, 0.5f);
+            accent2R = mix(accent2R, Color.red(festiveDay.glow2) / 255f, 0.6f);
+            accent2G = mix(accent2G, Color.green(festiveDay.glow2) / 255f, 0.6f);
+            accent2B = mix(accent2B, Color.blue(festiveDay.glow2) / 255f, 0.6f);
+            accentInt = Color.rgb(Math.round(accentR * 255f), Math.round(accentG * 255f), Math.round(accentB * 255f));
+        }
     }
 
     /** Below Home the light takes the colours of the videos instead, the same way, and it turns over as the page does. */
@@ -983,26 +1234,63 @@ final class GalleryHomeView extends View {
 
     @Override
     protected void onDraw(Canvas c) {
+        if (warming) {
+            // Hidden under the film: part-way through the opening, twice, and then at rest. A half-faded draw is a different
+            // shader from a full one, and each of them would otherwise be made in the middle of the opening itself.
+            warming = false;
+            opening = true;
+            reveal = 0.3f;
+            drawHome(c);
+            reveal = 0.6f;
+            drawHome(c);
+            opening = false;
+            reveal = 1f;
+            drawHome(c);
+            reveal = 0f;
+            // Back to nothing at all: every frame of the film replays whatever is recorded here.
+            postInvalidateOnAnimation();
+            return;
+        }
+        drawHome(c);
+    }
+
+    private void drawHome(Canvas c) {
         float ease = 1f - (1f - reveal) * (1f - reveal) * (1f - reveal);
         int alpha = Math.round(255f * ease);
         updateAccent();
         leanAccentToRibbon();
 
-        drawRoom(c, ease);
-        drawDust(c, ease);
+        // After the film: the line alone on black, as the film left it. It flares, the row opens outward from it to both
+        // sides, the monochrome half and the colour half, and everything else comes up last.
+        float opened = 1f, cardsEase = ease, restEase = ease;
+        lineFlare = 0f;
+        if (opening) {
+            float x0 = Math.min(1f, Math.max(0f, (reveal - 0.1f) / 0.46f));
+            opened = 1f - (1f - x0) * (1f - x0) * (1f - x0);
+            cardsEase = smooth(0.08f, 0.34f, reveal);
+            restEase = smooth(0.44f, 0.92f, reveal);
+            float flare = (reveal - 0.24f) / 0.17f;
+            lineFlare = (float) Math.exp(-flare * flare);
+        }
+        drawRoom(c, cardsEase * nightDim);
+        drawDust(c, nightDim < 1f ? 0f : restEase);
 
         float turned = page * page * (3f - 2f * page);
         float homeEase = ease * Math.max(0f, 1f - turned * 1.5f);
-        if (homeEase > 0.003f) {
-            int homeAlpha = Math.round(255f * homeEase);
+        if (homeEase > 0.003f || opening) {
+            float restHome = opening ? restEase : homeEase;
+            int homeAlpha = Math.round(255f * restHome);
             int save = c.save();
             // Home rises out of the way more slowly than the page comes up: it is further back.
             c.translate(0f, -turned * 300f * u);
-            drawHeadline(c, homeEase, homeAlpha);
+            drawHeadline(c, restHome, Math.round(homeAlpha * (0.5f + 0.5f * nightDim)));
             if (!cards.isEmpty()) {
                 // Slightly closed at first, then the row opens to its full curve.
-                float spread = 0.86f + 0.14f * ease;
-                cardPaint.setAlpha(homeAlpha);
+                float spread = opening ? 0.72f + 0.28f * opened : 0.86f + 0.14f * ease;
+                cardPaint.setAlpha(opening ? Math.round(255f * cardsEase) : homeAlpha);
+                int wide = opening && opened < 1f ? c.save() : -1;
+                float reachOut = opened * getWidth() / 2f;
+                if (wide >= 0) c.clipRect(cx - reachOut, 0f, cx + reachOut, getHeight());
                 int middle = Math.round(x);
                 drawSlot(c, middle, spread);
                 int reach = turned > 0.2f ? 2 : 4;
@@ -1010,10 +1298,17 @@ final class GalleryHomeView extends View {
                     drawSlot(c, middle + o, spread);
                     drawSlot(c, middle - o, spread);
                 }
+                if (wide >= 0) {
+                    c.restoreToCount(wide);
+                    // two edges of light running out ahead of the row
+                    linePaint.setAlpha(Math.round(190f * (1f - opened) * cardsEase));
+                    c.drawRect(cx - reachOut - 1.1f * u, scanTop, cx - reachOut + 1.1f * u, scanBottom, linePaint);
+                    c.drawRect(cx + reachOut - 1.1f * u, scanTop, cx + reachOut + 1.1f * u, scanBottom, linePaint);
+                }
             }
             drawScanLine(c, homeEase);
-            drawName(c, homeEase);
-            drawSearch(c, homeEase, homeAlpha);
+            drawName(c, restHome);
+            drawSearch(c, restHome, homeAlpha);
             drawTopButtons(c, homeAlpha);
             c.restoreToCount(save);
         }
@@ -1111,7 +1406,7 @@ final class GalleryHomeView extends View {
     }
 
     private void drawRoom(Canvas c, float ease) {
-        if (roomShader == null) return;
+        if (roomShader == null || ease <= 0f) return;
         float level = ease * (0.60f + 0.07f * energy + 0.09f * kick);
         roomShader.setFloatUniform("left", accent2R, accent2G, accent2B);
         roomShader.setFloatUniform("right", accentR, accentG, accentB);
@@ -1124,6 +1419,7 @@ final class GalleryHomeView extends View {
     }
 
     private void drawDust(Canvas c, float ease) {
+        if (ease <= 0f) return;
         // The furthest layer: the same scroll moves it least, which is what makes the row read as depth.
         float width = 960f * u, height = 400f * u, left = cx - width / 2f, top = cy - height / 2f;
         for (int i = 0; i < DUST; i += 2) {
@@ -1133,7 +1429,7 @@ final class GalleryHomeView extends View {
             dustFarPts[i + 1] = top + dustBase[i * 2 + 3] * height;
         }
         dustNear.setColor(accentInt);
-        dustFar.setColor(accentInt);
+        dustFar.setColor(festiveDay != null ? festiveDay.glow2 : accentInt);
         dustNear.setAlpha(Math.round(170f * ease));
         dustFar.setAlpha(Math.round(96f * ease));
         c.drawPoints(dustFarPts, dustFar);
@@ -1148,7 +1444,8 @@ final class GalleryHomeView extends View {
         // The words sit far behind the cards, so they drift a little the other way while the row moves. At rest they
         // sit on whole pixels, which keeps the type sharp.
         float drift = Math.max(-16f, Math.min(16f, -velocity * 4.2f)) * u;
-        float rise = (1f - ease) * 12f * u;
+        float rise = (1f - ease) * 12f * u + islandK * 18f * u;
+        alpha = Math.round(alpha * (1f - islandK));
         if (headline != null) {
             headlinePaint.setAlpha(alpha);
             c.drawBitmap(headline, Math.round(cx - headline.getWidth() / 2f) + drift, Math.round(22f * u) + rise, headlinePaint);
@@ -1203,20 +1500,70 @@ final class GalleryHomeView extends View {
         c.restoreToCount(save);
     }
 
+    /**
+     * An app opening, drawn in AppOpening's window over Home. It starts as the very card in the row. Home goes dark behind it,
+     * the colour wipes across it through the same glass as the row's line, and it comes forward and stays there with its light
+     * behind it, a gloss passing over it, until the app is ready. open 0 to 1 is the way forward, waited the seconds since then.
+     */
+    void drawOpening(Canvas c, GalleryArt.Card card, float open, float waited) {
+        c.drawColor(Color.argb(Math.round(255f * smooth(0f, 0.62f, open)), 0, 0, 0));
+        // The app's own colour alone, and a breath of it once the card has arrived.
+        setAccent(card.accent, card.accent, card.accent, card.accent, 0f);
+        drawRoom(c, smooth(0.1f, 0.5f, open) * (0.62f - 0.22f * smooth(0.5f, 1f, open)));
+        float zoom = 1f + OPENING_ZOOM * open + 0.008f * Math.min(waited, 5f);
+        float w = HALF_W * (1f + LIFT) * zoom * FOCAL * u, h = HALF_H * (1f + LIFT) * zoom * FOCAL * u;
+        float middle = cy + (360f * u - cy) * open;
+        RuntimeShader s = card.shader;
+        s.setFloatUniform("motion", GalleryArt.CARD_W * (0.5f - 1.25f * open), 0f, x * 1.7f, 0f);
+        float sweep = (waited / 1.5f) % 1f;
+        s.setFloatUniform("look", 214f + 620f * sweep * sweep, 0f);
+        s.setFloatUniform("light", accentR, accentG, accentB);
+        cardPaint.setShader(s);
+        cardPaint.setAlpha(255);
+        int save = c.save();
+        c.translate(cx - w, middle - h);
+        c.scale(2f * w / GalleryArt.CARD_W, 2f * h / GalleryArt.CARD_H);
+        c.drawRect(0f, 0f, GalleryArt.CARD_W, GalleryArt.CARD_H, cardPaint);
+        c.restoreToCount(save);
+    }
+
+    /** The same for a video from the recents page: its picture comes forward until it fills the screen. */
+    void drawOpeningPicture(Canvas c, Bitmap picture, float open, float waited) {
+        c.drawColor(Color.argb(Math.round(255f * smooth(0f, 0.62f, open)), 0, 0, 0));
+        float startW = RIBBON_HALF_W * RIBBON_FOCAL * (1f + RIBBON_LIFT) * u, startH = RIBBON_HALF_H * RIBBON_FOCAL * (1f + RIBBON_LIFT) * u;
+        float grow = 1f + 0.004f * Math.min(waited, 5f);
+        float w = (startW + (cx - startW) * open) * grow, h = (startH + (360f * u - startH) * open) * grow;
+        float middle = RIBBON_Y * u + (360f * u - RIBBON_Y * u) * open;
+        openingDst.set(cx - w, middle - h, cx + w, middle + h);
+        c.drawBitmap(picture, null, openingDst, openingPaint);
+    }
+
     private void drawScanLine(Canvas c, float ease) {
         float strength = Math.min(1f, ease * (0.44f + 0.38f * cardsFocus + 0.14f * energy + 0.30f * kick));
+        // Straight after the film the line is as bright as the film left it, and only then settles.
+        if (opening) strength = Math.max(strength, 1f - smooth(0.46f, 0.96f, reveal));
+        float flare = lineFlare;
         if (bloomShader != null) {
-            bloomShader.setFloatUniform("tint", accentR, accentG, accentB, strength);
+            bloomShader.setFloatUniform("tint", accentR, accentG, accentB, Math.min(1f, strength * (1f + flare)));
             bloomPaint.setShader(bloomShader);
             int save = c.save();
+            c.scale(1f + 2.4f * flare, 1f + 0.5f * flare, cx, (scanTop + scanBottom) / 2f);
             c.translate(bloomDst.left, bloomDst.top);
             c.scale(bloomDst.width() / BLOOM_W, bloomDst.height() / BLOOM_H);
             c.drawRect(0f, 0f, BLOOM_W, BLOOM_H, bloomPaint);
             c.restoreToCount(save);
         }
         linePaint.setAlpha(Math.round(255f * strength));
-        float half = 1.1f * u;
+        float half = 1.1f * u * (1f + 1.5f * flare);
+        int save = c.save();
+        c.scale(1f, 1f + 0.34f * flare, cx, (scanTop + scanBottom) / 2f);
         c.drawRect(cx - half, scanTop, cx + half, scanBottom, linePaint);
+        c.restoreToCount(save);
+    }
+
+    private static float smooth(float from, float to, float v) {
+        float t = Math.max(0f, Math.min(1f, (v - from) / (to - from)));
+        return t * t * (3f - 2f * t);
     }
 
     private void drawName(Canvas c, float ease) {

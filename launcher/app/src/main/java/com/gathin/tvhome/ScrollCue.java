@@ -13,6 +13,7 @@ import android.graphics.Shader;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.view.Choreographer;
 import android.view.View;
 
@@ -31,6 +32,8 @@ final class ScrollCue extends View {
     private static final float WIDE = 44f, TALL = 19f, STROKE = 3.7f;
     private static final long PERIOD_NS = 1_900_000_000L;
     private static final long NEXT_FRAME_MS = 22L;
+    /** This never stops drawing, and for the first minute and a half after a restart the TV has no CPU to spare. */
+    private static final long NOT_BEFORE_BOOT_PLUS_MS = 90_000L;
 
     private static final String SKSL = ""
             + "uniform shader core;\n"
@@ -111,7 +114,7 @@ final class ScrollCue extends View {
         running = run;
         Choreographer choreographer = Choreographer.getInstance();
         choreographer.removeFrameCallback(frame);
-        if (run) choreographer.postFrameCallback(frame);
+        if (run) choreographer.postFrameCallbackDelayed(frame, Math.max(0L, NOT_BEFORE_BOOT_PLUS_MS - SystemClock.elapsedRealtime()));
     }
 
     void setColours(int first, int second) {

@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Live TV: free Hindi channels from their own broadcasters, beside Home as an app of its own. Its own package, so Home's
+// tile, the Control Center's Now Playing, the shelf over a playing video, recents and per-app volume all see it as an
+// app, and ExoPlayer stays out of Home's own APK and memory.
+android {
+    namespace 'com.gathin.livetv'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.gathin.livetv'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Sideloaded over ADB like Home, signed with the same debug key.
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ['kotlin/**', 'META-INF/*.version', 'META-INF/*.kotlin_module', 'DebugProbesKt.bin']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    // 1.4.x is the last line that builds with compileSdk 34, which the rest of this project uses.
+    implementation 'androidx.media3:media3-exoplayer:1.4.1'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.4.1'
+    // @OptIn for Media3's "unstable" API (the load control, the decoder fallback): checked by lint, kept by nothing.
+    implementation 'androidx.annotation:annotation-experimental:1.4.1'
+    // Test only (never in the APK): the daily list's rule that a channel never moves to another server, src/test.
+    testImplementation 'junit:junit:4.13.2'
+}

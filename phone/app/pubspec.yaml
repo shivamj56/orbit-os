@@ -1,0 +1,41 @@
+name: orbit
+description: "Orbit: the phone remote for the Family room TV. A full-screen WebView (phone/ui) over a Flutter bridge."
+publish_to: 'none'
+
+# versionName+versionCode on Android.
+version: 1.2.0+3
+
+environment:
+  sdk: ^3.13.7
+
+dependencies:
+  firebase_auth: ^7.0.1
+  firebase_core: ^5.1.0
+  firebase_database: ^13.0.1
+  flutter:
+    sdk: flutter
+  # Token and the chosen TV, under a key in the Android Keystore.
+  flutter_secure_storage: ^11.2.0
+  # The TV's door: plain HTTP/1.1 on the home Wi-Fi.
+  google_sign_in: ^7.2.0
+  http: ^1.6.0
+  # Finding the TV's `_orbit._tcp` advert (Android NsdManager; the plugin holds the multicast lock itself).
+  nsd: ^5.0.1
+  # keepAwake.
+  wakelock_plus: ^1.8.2
+  webview_flutter: ^4.14.1
+  # Android-only WebView settings: overscroll, text zoom, media without a gesture, insets.
+  webview_flutter_android: ^4.14.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  # The whole interface is the page in the WebView: no Material, no icon font.
+  uses-material-design: false
+
+  assets:
+    # phone/ui/dist/index.html, copied by tool/sync_ui.sh (a placeholder until the real UI is built).
+    - assets/ui/

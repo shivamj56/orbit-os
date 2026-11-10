@@ -558,8 +558,22 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (ctx.getPackageManager().resolveActivity(byAction, 0) != null) i = byAction;
         }
         try {
-            if (options != null) ctx.startActivity(i, options);
-            else ctx.startActivity(i);
+            if (options != null) {
+                // The gallery's way in. This call can take a good part of a second on this TV, and the app's opening is
+                // being drawn on this thread meanwhile.
+                final Intent opening = i;
+                final Context app = ctx.getApplicationContext();
+                new Thread(() -> {
+                    try {
+                        app.startActivity(opening, options);
+                    } catch (RuntimeException refused) {
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() ->
+                                Toast.makeText(app, app.getString(R.string.cant_open, e.label), Toast.LENGTH_SHORT).show());
+                    }
+                }, "open-app").start();
+            } else {
+                ctx.startActivity(i);
+            }
             if (cinematic) LastOpened.record(ctx, e.pkg);
             if (advancedEffects && !reducedMotion && ctx instanceof Activity) {
                 ((Activity) ctx).overridePendingTransition(R.anim.app_open_enter, R.anim.app_open_exit);

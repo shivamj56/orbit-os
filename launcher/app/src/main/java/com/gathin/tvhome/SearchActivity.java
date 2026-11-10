@@ -44,6 +44,8 @@ import java.util.Locale;
 public class SearchActivity extends Activity {
 
     static final String EXTRA_VOICE = "voice";
+    /** Words typed on the phone, and whether to go on to the results with them (its "Search after sending"). */
+    static final String EXTRA_QUERY = "query", EXTRA_RESULTS = "results";
     private static final int VOICE_REQUEST = 41;
     private static final String KATNISS = "com.google.android.katniss";
     private static final String GOOGLE_TTS = "com.google.android.tts";
@@ -61,6 +63,14 @@ public class SearchActivity extends Activity {
             {"com.graymatrix.did", "Open app", ""},
     };
 
+    /** The address of an app's results for the words, for the apps above that show results from one; else null. */
+    static String resultsLink(String pkg, String words) {
+        for (String[] target : TARGETS) {
+            if (target[0].equals(pkg) && target[1].startsWith("Results in")) return target[2] + Uri.encode(words);
+        }
+        return null;
+    }
+
     private static final class App {
         String pkg, name;
         Drawable banner;
@@ -70,6 +80,7 @@ public class SearchActivity extends Activity {
     private final Handler main = new Handler(Looper.getMainLooper());
     private final List<App> apps = new ArrayList<>();
     private EditText field;
+    private boolean toResults;
     private LinearLayout row;
     private TextView heading;
     private GallerySound sound;
@@ -167,11 +178,22 @@ public class SearchActivity extends Activity {
                 apps.clear();
                 apps.addAll(found);
                 showResults();
+                if (toResults) {
+                    toResults = false;
+                    goToResults();
+                }
             });
         }, "search-apps").start();
 
         field.requestFocus();
-        if (savedInstanceState == null && getIntent().getBooleanExtra(EXTRA_VOICE, false)) listen();
+        String asked = savedInstanceState == null ? getIntent().getStringExtra(EXTRA_QUERY) : null;
+        if (!TextUtils.isEmpty(asked)) {
+            // From the phone: the words in the box, and the results once the apps are read, if the phone asked for them.
+            field.setText(asked);
+            field.setSelection(field.length());
+            toResults = getIntent().getBooleanExtra(EXTRA_RESULTS, false);
+            if (!toResults) showKeyboard();
+        } else if (savedInstanceState == null && getIntent().getBooleanExtra(EXTRA_VOICE, false)) listen();
         else showKeyboard();
         showResults();
     }

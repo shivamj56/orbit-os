@@ -12,8 +12,9 @@ import android.service.notification.NotificationListenerService;
  * Starts this launcher's process after the firmware has killed it.
  *
  * A notification listener keeps its approval across a force stop, and the system binds it again
- * once the process is gone. That rebind is what brings Home back on TCL and Xiaomi. No notification
- * is read. Enable with {@code cmd notification allow_listener com.gathin.tvhome/.GuardRevival}.
+ * once the process is gone. That rebind is what brings Home back on TCL and Xiaomi. Under the gallery Home the
+ * notifications of the apps on Home are also shown in the TV Island (IslandEvents); they stay on the TV.
+ * Enable with {@code cmd notification allow_listener com.gathin.tvhome/.GuardRevival}.
  */
 public class GuardRevival extends NotificationListenerService {
     private BroadcastReceiver unlocked;
@@ -42,6 +43,11 @@ public class GuardRevival extends NotificationListenerService {
         // A force stop also takes the key helper off the list, and with the remote's volume keys going through it
         // (VolumeSlider), that should not have to wait until someone next opens Home.
         ServiceRepair.restore(this);
+    }
+
+    @Override
+    public void onNotificationPosted(android.service.notification.StatusBarNotification sbn) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) IslandEvents.notification(this, sbn);
     }
 
     private void stopWaiting() {

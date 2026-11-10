@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Orbit's mark: a planet with a tilted ring and a small satellite on the ring's near side. 108 x 108 adaptive-icon
+     canvas; everything sits inside the 66 dp safe circle. The ring's far half is drawn before the planet, its near
+     half after, so the ring goes behind and in front. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:rotation="-24">
+        <!-- far half of the ring -->
+        <path
+            android:pathData="M27,54 A27,10.5 0 0,1 81,54"
+            android:strokeWidth="3.2"
+            android:strokeColor="@color/orbit_ring_back"
+            android:strokeLineCap="round" />
+        <!-- the planet -->
+        <path android:pathData="M43,54 A11,11 0 1,0 65,54 A11,11 0 1,0 43,54 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:endColor="#FFA3AEFF"
+                    android:endX="62"
+                    android:endY="63"
+                    android:startColor="#FFF5F7FF"
+                    android:startX="46"
+                    android:startY="45"
+                    android:type="linear" />
+            </aapt:attr>
+        </path>
+        <!-- near half of the ring -->
+        <path
+            android:pathData="M81,54 A27,10.5 0 0,1 27,54"
+            android:strokeWidth="3.2"
+            android:strokeColor="@color/orbit_ring"
+            android:strokeLineCap="round" />
+        <!-- the satellite, outlined so it reads against the ring -->
+        <path
+            android:fillColor="@color/orbit_satellite"
+            android:pathData="M72.7,60 A3.4,3.4 0 1,0 79.5,60 A3.4,3.4 0 1,0 72.7,60 Z"
+            android:strokeWidth="1.6"
+            android:strokeColor="@color/orbit_background" />
+    </group>
+</vector>

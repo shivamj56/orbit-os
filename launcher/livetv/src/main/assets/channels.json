@@ -1,0 +1,508 @@
+{
+ "version": 1,
+ "channels": [
+  {
+   "id": "aajtakhd",
+   "num": 1,
+   "name": "Aaj Tak HD",
+   "group": "News",
+   "tvg": "AajTak.in@HD",
+   "streams": [
+    {
+     "u": "https://feeds.intoday.in/aajtak/api/aajtakhd/master.m3u8"
+    }
+   ],
+   "hosts": [
+    "feeds.intoday.in"
+   ]
+  },
+  {
+   "id": "indiatv",
+   "num": 2,
+   "name": "India TV",
+   "group": "News",
+   "tvg": "IndiaTV.in@SD",
+   "streams": [
+    {
+     "u": "https://pl-indiatvnews.akamaized.net/out/v1/db79179b608641ceaa5a4d0dd0dca8da/index.m3u8"
+    }
+   ],
+   "hosts": [
+    "pl-indiatvnews.akamaized.net"
+   ]
+  },
+  {
+   "id": "news18india",
+   "num": 3,
+   "name": "News18 India",
+   "group": "News",
+   "tvg": "News18India.in@SD",
+   "streams": [
+    {
+     "u": "https://n18syndication.akamaized.net/bpk-tv/News18_India_NW18_MOB/output01/master.m3u8"
+    }
+   ],
+   "hosts": [
+    "n18syndication.akamaized.net"
+   ]
+  },
+  {
+   "id": "zeenews",
+   "num": 4,
+   "name": "Zee News",
+   "group": "News",
+   "tvg": "ZeeNews.in@SD",
+   "streams": [
+    {
+     "u": "https://dknttpxmr0dwf.cloudfront.net/index_57.m3u8"
+    }
+   ],
+   "hosts": [
+    "dknttpxmr0dwf.cloudfront.net"
+   ]
+  },
+  {
+   "id": "abpnews",
+   "num": 5,
+   "name": "ABP News",
+   "group": "News",
+   "tvg": "ABPNews.in@SD",
+   "streams": [
+    {
+     "u": "https://d1rc86nwwc9fag.cloudfront.net/vglive-sk-472500/abpnews/master.m3u8"
+    }
+   ],
+   "hosts": [
+    "d1rc86nwwc9fag.cloudfront.net"
+   ]
+  },
+  {
+   "id": "tv9bharatvarsh",
+   "num": 6,
+   "name": "TV9 Bharatvarsh",
+   "group": "News",
+   "tvg": "TV9Bharatvarsh.in@SD",
+   "streams": [
+    {
+     "u": "https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9hinjzgtpe/liveabr/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "dyjmyiv3bp2ez.cloudfront.net"
+   ]
+  },
+  {
+   "id": "timesnownavbharat",
+   "num": 7,
+   "name": "Times Now Navbharat",
+   "group": "News",
+   "tvg": "TimesNowNavbharat.in@SD",
+   "streams": [
+    {
+     "u": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/a5ee7c4e7a2a4b15a22a3bcf523b9776/index.m3u8"
+    }
+   ],
+   "hosts": [
+    "d3qs3d2rkhfqrt.cloudfront.net"
+   ]
+  },
+  {
+   "id": "newsnation",
+   "num": 8,
+   "name": "News Nation",
+   "group": "News",
+   "tvg": "NewsNation.in@SD",
+   "streams": [
+    {
+     "u": "https://cc-52950m0v2qv0p.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-52950m0v2qv0p/nntv/national/index.m3u8"
+    }
+   ],
+   "hosts": [
+    "cc-52950m0v2qv0p.akamaized.net"
+   ]
+  },
+  {
+   "id": "zeebharat",
+   "num": 9,
+   "name": "Zee Bharat",
+   "group": "News",
+   "tvg": "ZeeBharat.in@SD",
+   "streams": [
+    {
+     "u": "https://vg-zeefta.akamaized.net/ptnr-yupptv/title-zeehindustan/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/96bbab12-582e-4540-af70-510ab6824581/main.m3u8"
+    }
+   ],
+   "hosts": [
+    "vg-zeefta.akamaized.net"
+   ]
+  },
+  {
+   "id": "indiatvspeednews",
+   "num": 10,
+   "name": "India TV Speed News",
+   "group": "News",
+   "tvg": "IndiaTVSpeedNews.in@HD",
+   "streams": [
+    {
+     "u": "https://cc-lyf4c0hwzg5dd.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-lyf4c0hwzg5dd/v1/vglive-sk-479089/main.m3u8"
+    }
+   ],
+   "hosts": [
+    "cc-lyf4c0hwzg5dd.akamaized.net"
+   ]
+  },
+  {
+   "id": "sansadtv",
+   "num": 11,
+   "name": "Sansad TV",
+   "group": "News",
+   "tvg": "SansadTV1.in@HD",
+   "streams": [
+    {
+     "u": "https://d2lk5u59tns74c.cloudfront.net/out/v1/fff8f20221d5456e8922e689d71dedc3/index.m3u8"
+    },
+    {
+     "u": "https://playhls.media.nic.in/hls/live/lstv/lstv.m3u8",
+     "ref": "https://webcast.gov.in/"
+    }
+   ],
+   "hosts": [
+    "d2lk5u59tns74c.cloudfront.net",
+    "playhls.media.nic.in"
+   ]
+  },
+  {
+   "id": "dangal",
+   "num": 12,
+   "name": "Dangal",
+   "group": "Serials",
+   "tvg": "DangalTV.in@SD",
+   "streams": [
+    {
+     "u": "https://live-dangal.akamaized.net/liveabr/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "live-dangal.akamaized.net"
+   ]
+  },
+  {
+   "id": "dangal2",
+   "num": 13,
+   "name": "Dangal 2",
+   "group": "Serials",
+   "tvg": "Dangal2.in@SD",
+   "streams": [
+    {
+     "u": "https://live-dangal2.akamaized.net/liveabr/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "live-dangal2.akamaized.net"
+   ]
+  },
+  {
+   "id": "shemarootv",
+   "num": 14,
+   "name": "Shemaroo TV",
+   "group": "Serials",
+   "tvg": "ShemarooTV.in@SD",
+   "streams": [
+    {
+     "u": "https://airtelapp.shemaroo.com/shemarootv/smil:shemarootvadp.smil/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "airtelapp.shemaroo.com"
+   ]
+  },
+  {
+   "id": "shemarooumang",
+   "num": 15,
+   "name": "Shemaroo Umang",
+   "group": "Serials",
+   "tvg": "ShemarooUmang.in@SD",
+   "streams": [
+    {
+     "u": "https://airtelapp.shemaroo.com/shemarooumang/smil:shemarooumangadp.smil/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "airtelapp.shemaroo.com"
+   ]
+  },
+  {
+   "id": "zeedilse",
+   "num": 16,
+   "name": "Zee Dil Se",
+   "group": "Serials",
+   "tvg": "ZeeDilSe.in@HD",
+   "streams": [
+    {
+     "u": "https://amg00862-amg00862c6-amgplt0173.playout.now3.amagi.tv/playlist/amg00862-amg00862c6-amgplt0173/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "amg00862-amg00862c6-amgplt0173.playout.now3.amagi.tv"
+   ]
+  },
+  {
+   "id": "sonykal",
+   "num": 17,
+   "name": "Sony KAL",
+   "group": "Serials",
+   "tvg": "SonyKALHindi.us@SD",
+   "streams": [
+    {
+     "u": "https://wurlsonypicturestv.global.transmit.live/hls/68deeb1c0238cda82df543dd/v1/spt_sonykal_1/lg_us/latest/main/hls/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "wurlsonypicturestv.global.transmit.live"
+   ]
+  },
+  {
+   "id": "zeecomedynation",
+   "num": 18,
+   "name": "Zee Comedy Nation",
+   "group": "Serials",
+   "tvg": "ZeeComedyNation.in@HD",
+   "streams": [
+    {
+     "u": "https://amg00862-amg00862c5-amgplt0173.playout.now3.amagi.tv/playlist/amg00862-amg00862c5-amgplt0173/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "amg00862-amg00862c5-amgplt0173.playout.now3.amagi.tv"
+   ]
+  },
+  {
+   "id": "aastha",
+   "num": 19,
+   "name": "Aastha",
+   "group": "Bhakti",
+   "tvg": "Aastha.in@HD",
+   "streams": [
+    {
+     "u": "https://aasthaott.akamaized.net/110923/smil:aasthatv.smil/index.m3u8"
+    }
+   ],
+   "hosts": [
+    "aasthaott.akamaized.net"
+   ]
+  },
+  {
+   "id": "sanskar",
+   "num": 20,
+   "name": "Sanskar",
+   "group": "Bhakti",
+   "tvg": "SanskarTV.in@SD",
+   "streams": [
+    {
+     "u": "https://d26idhjf0y1p2g.cloudfront.net/out/v1/cd66dd25b9774cb29943bab54bbf3e2f/index.m3u8"
+    }
+   ],
+   "hosts": [
+    "d26idhjf0y1p2g.cloudfront.net"
+   ]
+  },
+  {
+   "id": "satsang",
+   "num": 21,
+   "name": "Satsang",
+   "group": "Bhakti",
+   "tvg": "SatsangTV.in@SD",
+   "streams": [
+    {
+     "u": "https://d2vfwvjxwtwq1t.cloudfront.net/out/v1/6b24239d5517495b986e7705490c6e65/index.m3u8"
+    }
+   ],
+   "hosts": [
+    "d2vfwvjxwtwq1t.cloudfront.net"
+   ]
+  },
+  {
+   "id": "shubhtv",
+   "num": 22,
+   "name": "Shubh TV",
+   "group": "Bhakti",
+   "tvg": "ShubhTV.in@SD",
+   "streams": [
+    {
+     "u": "https://d2g1vdc6ozl2o8.cloudfront.net/out/v1/0a0dc7d7911b4fddbb4dfc963fdd4b9e/index.m3u8"
+    }
+   ],
+   "hosts": [
+    "d2g1vdc6ozl2o8.cloudfront.net"
+   ]
+  },
+  {
+   "id": "totalbhakti",
+   "num": 23,
+   "name": "Total Bhakti",
+   "group": "Bhakti",
+   "tvg": "TotalBhakti.in@SD",
+   "streams": [
+    {
+     "u": "https://d34z4embz0hjf6.cloudfront.net/out/v1/d55b3323a9f142638f897378f0b526fe/index.m3u8"
+    }
+   ],
+   "hosts": [
+    "d34z4embz0hjf6.cloudfront.net"
+   ]
+  },
+  {
+   "id": "greengold",
+   "num": 24,
+   "name": "Green Gold",
+   "group": "Kids",
+   "tvg": "GreenGoldTV.in@India",
+   "streams": [
+    {
+     "u": "https://cc-szrmqvu8zkg16.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-szrmqvu8zkg16/greengold/stream/grngld/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "cc-szrmqvu8zkg16.akamaized.net"
+   ]
+  },
+  {
+   "id": "epickids",
+   "num": 25,
+   "name": "Epic Kids",
+   "group": "Kids",
+   "tvg": "EpicKids.in@Digital",
+   "streams": [
+    {
+     "u": "https://cc-t8lqe1o99pszu.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-t8lqe1o99pszu/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "cc-t8lqe1o99pszu.akamaized.net"
+   ]
+  },
+  {
+   "id": "b4ukadak",
+   "num": 26,
+   "name": "B4U Kadak",
+   "group": "Movies",
+   "tvg": "B4UKadak.in@SD",
+   "streams": [
+    {
+     "u": "https://amg00877-b4unew-amg00877c4-xiaomi-in-5473.playouts.now.amagi.tv/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "amg00877-b4unew-amg00877c4-xiaomi-in-5473.playouts.now.amagi.tv"
+   ]
+  },
+  {
+   "id": "zeecineclassic",
+   "num": 27,
+   "name": "Zee Cine Classic",
+   "group": "Movies",
+   "tvg": "ZeeCineClassic.in@SD",
+   "streams": [
+    {
+     "u": "https://amg00862-amg00862c8-amgplt0173.playout.now3.amagi.tv/playlist/amg00862-amg00862c8-amgplt0173/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "amg00862-amg00862c8-amgplt0173.playout.now3.amagi.tv"
+   ]
+  },
+  {
+   "id": "zeesouthflix",
+   "num": 28,
+   "name": "Zee South Flix",
+   "group": "Movies",
+   "tvg": "ZeeSouthFlix.in@HD",
+   "streams": [
+    {
+     "u": "https://amg00862-amg00862c9-amgplt0173.playout.now3.amagi.tv/playlist/amg00862-amg00862c9-amgplt0173/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "amg00862-amg00862c9-amgplt0173.playout.now3.amagi.tv"
+   ]
+  },
+  {
+   "id": "filmigaane",
+   "num": 29,
+   "name": "Filmi Gaane",
+   "group": "Movies",
+   "tvg": "ShemarooFilmiGaane.in@HD",
+   "streams": [
+    {
+     "u": "https://prod-runn.cdn.runn.tv/shemaroo/stream/smrfgn/playlist.m3u8"
+    }
+   ],
+   "hosts": [
+    "prod-runn.cdn.runn.tv"
+   ]
+  },
+  {
+   "id": "epic",
+   "num": 30,
+   "name": "Epic",
+   "group": "Movies",
+   "tvg": "EpicTV.in@Digital",
+   "streams": [
+    {
+     "u": "https://cc-czbq30x55knit.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-czbq30x55knit/DIYC/PMSL/IN10/Epic_TV_IN_B/Epic_TV_IN_B.m3u8"
+    }
+   ],
+   "hosts": [
+    "cc-czbq30x55knit.akamaized.net"
+   ]
+  },
+  {
+   "id": "starplus",
+   "num": 31,
+   "name": "Star Plus",
+   "group": "Paid",
+   "app": "in.startv.hotstar",
+   "appName": "JioHotstar"
+  },
+  {
+   "id": "colors",
+   "num": 32,
+   "name": "Colors",
+   "group": "Paid",
+   "app": "in.startv.hotstar",
+   "appName": "JioHotstar"
+  },
+  {
+   "id": "zeetv",
+   "num": 33,
+   "name": "Zee TV",
+   "group": "Paid",
+   "app": "com.graymatrix.did",
+   "appName": "ZEE5"
+  },
+  {
+   "id": "andtv",
+   "num": 34,
+   "name": "&TV",
+   "group": "Paid",
+   "app": "com.graymatrix.did",
+   "appName": "ZEE5"
+  },
+  {
+   "id": "sonysab",
+   "num": 35,
+   "name": "Sony SAB",
+   "group": "Paid",
+   "app": "com.sonyliv",
+   "appName": "Sony LIV"
+  },
+  {
+   "id": "sonytv",
+   "num": 36,
+   "name": "Sony TV",
+   "group": "Paid",
+   "app": "com.sonyliv",
+   "appName": "Sony LIV"
+  }
+ ]
+}

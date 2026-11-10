@@ -145,6 +145,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private FrameLayout root;
     /** gallery_home: the curved gallery in place of the grid; null on the ordinary Home. */
     private GalleryHomeView gallery;
+    /** boot_intro: the film over Home after a restart; null once there is nothing of it left. */
+    private BootIntro bootIntro;
     private WallpaperPlayer wallpaperPlayer;
     private GlassView glass;
     private View ambient;
@@ -448,6 +450,26 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
     };
 
+    private final Runnable wifiLabelLater = this::updateWifiLabel;
+    /** wake_intro: when the screen last came on, and which of those times has had its short film. */
+    private long screenOnAt, wakeFilmFor;
+    private final BroadcastReceiver screenOn = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            screenOnAt = SystemClock.elapsedRealtime();
+            if (resumed) wakeFilm();
+        }
+    };
+    private final Runnable inputsLater = this::updateInputsButton;
+
+    /** The film or Home's opening out of it is in front: try again when it is over, and take nothing from it now. */
+    private boolean laterIfFilm(Runnable again) {
+        if (gallery == null || !(gallery.isOpening() || (bootIntro != null && bootIntro.covering()))) return false;
+        handler.removeCallbacks(again);
+        handler.postDelayed(again, 1500L);
+        return true;
+    }
+
     private java.util.Map<Integer, String> homeAppKeys = java.util.Collections.emptyMap();
     /** clock_format, for the race panel's session times (the TextClocks take it in onCreate). */
     private String clockFormat = "system";
@@ -456,6 +478,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // First of all: the film's decoder takes longer to come up than the whole of Home.
+        if (getResources().getBoolean(R.bool.gallery_home) && getResources().getBoolean(R.bool.boot_intro)
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            bootIntro = BootIntro.ifDue(this, this::onIntroLeaving);
+        }
         setContentView(R.layout.activity_main);
         density = getResources().getDisplayMetrics().density;
         // config.xml, overlaid by config.json from a pushed theme (see Config and tools/theme.sh).
@@ -1005,9 +1032,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
             @Override
             public void onGalleryRecent(RecentVideos.Item item, android.app.ActivityOptions options) {
-                RecentVideos.open(MainActivity.this, item, options);
+                // Off the main thread for the same reason as AppAdapter.launch.
+                final Context app = getApplicationContext();
+                new Thread(() -> RecentVideos.open(app, item, options), "open-video").start();
             }
         });
+        gallery.setGreetingName(greetingName);
         root.addView(gallery, 0, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         float design = getResources().getDisplayMetrics().widthPixels / 1280f;
@@ -1018,6 +1048,30 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         ScrollCue cue = new ScrollCue(this);
         root.addView(cue, 1, under);
         gallery.setCue(cue);
+        if (bootIntro != null) bootIntro.show(gallery);
+        if (getResources().getBoolean(R.bool.wake_intro)) {
+            registerReceiver(screenOn, new IntentFilter(Intent.ACTION_SCREEN_ON), Context.RECEIVER_NOT_EXPORTED);
+        }
+    }
+
+    /**
+     * wake_intro: the TV has woken up from standby with Home in front. A boot has its own film; this is only for a wake,
+     * once per wake, and only while the screen has just come on.
+     */
+    private void wakeFilm() {
+        long now = SystemClock.elapsedRealtime();
+        if (gallery == null || screenOnAt == 0L || wakeFilmFor == screenOnAt || now - screenOnAt > 4000L
+                || now < 3L * 60L * 1000L || (bootIntro != null && bootIntro.covering())) return;
+        wakeFilmFor = screenOnAt;
+        if (bootIntro != null) bootIntro.stop();
+        bootIntro = BootIntro.forWake(this, this::onIntroLeaving, gallery);
+    }
+
+    /** The film is leaving: at its natural end Home opens out of the line it ended on. */
+    private void onIntroLeaving(boolean ranToTheEnd) {
+        if (!resumed || gallery == null) return;
+        if (ranToTheEnd) gallery.openAfterFilm();
+        else gallery.onResumed();
     }
 
     /**
@@ -1040,6 +1094,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * open it again. Nothing to do when the TV has no inputs to list (the pill is hidden then).
      * top_menu hides the pill, so the list hangs under the gear there, as in showInputs().
      */
+    /** The Control Center's Inputs list names one input: opened the same way as from the Inputs menu. */
+    static final String EXTRA_PANEL_INPUT = "com.gathin.tvhome.extra.PANEL_INPUT";
+
+    private boolean openInputFromPanel(Intent intent) {
+        String id = intent != null ? intent.getStringExtra(EXTRA_PANEL_INPUT) : null;
+        if (id == null) return false;
+        setIntent(new Intent(Intent.ACTION_MAIN));
+        openInput(id);
+        return true;
+    }
+
     private boolean openInputsIfAsked(Intent intent) {
         if (intent == null || !ACTION_VIEW_INPUTS.equals(intent.getAction())) return false;
         setIntent(new Intent(Intent.ACTION_MAIN));
@@ -1103,7 +1168,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (openLauncherSettingsIfAsked(intent)) return;
         if (openLibraryIfAsked(intent)) return;
         if (openInputsIfAsked(intent)) return;
+        if (openInputFromPanel(intent)) return;
         if (intent == null || !intent.hasCategory(Intent.CATEGORY_HOME)) return;
+        if (bootIntro != null) bootIntro.skip();
         if (gameDay != null && !stopped) gameDay.read();
         // From an app the gallery stays on the app that was open; pressed on Home itself, it goes back to the first.
         if (gallery != null && !stopped) gallery.onHomePressedOnHome();
@@ -1151,7 +1218,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             return;
         }
         restartIdleClock();
-        if (gallery != null) gallery.onResumed();
+        if (gallery != null) {
+            AppOpening opening = HomeKeyService.opening();
+            if (opening != null) opening.onHomeBack();
+            MovieNight.onHomeResumed();
+            HomeKeyService.homeResumed();
+            wakeFilm();
+        }
+        if (gallery != null && (bootIntro == null || !bootIntro.covering())) gallery.onResumed();
         promptsPaused = false;
         if (grid.getAdapter() == null) grid.setAdapter(adapter);   // dropped by onTrimMemory
         switch (tileRefresh.onResume(packagesChangedSinceRebuild())) {
@@ -1357,6 +1431,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onPause();
         resumed = false;
         if (gallery != null) gallery.onPaused();
+        if (bootIntro != null) bootIntro.onHomePaused();
         // No UP reaches a paused Home, so a vendor-key hold it saw go down would still open its app later.
         // Only Home's own share is dropped: a key service that saw the same DOWN keeps its hold.
         RemoteKeys.release(this);
@@ -1386,6 +1461,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onStop() {
         super.onStop();
         started = false;
+        if (bootIntro != null) {
+            bootIntro.stop();
+            bootIntro = null;
+        }
         unregisterReceiver(timeReceiver);
         clockRefresh.stop();
         handler.removeCallbacks(clockCheck);
@@ -1433,6 +1512,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onDestroy();
         RemoteKeys.release(this);
         cancelHoldOk();
+        handler.removeCallbacks(wifiLabelLater);
+        handler.removeCallbacks(inputsLater);
+        if (gallery != null && getResources().getBoolean(R.bool.wake_intro)) unregisterReceiver(screenOn);
+        if (bootIntro != null) bootIntro.stop();
         if (gallery != null) gallery.shutdown();
         if (gameDay != null) gameDay.shutdown();
         unregisterReceiver(packageReceiver);
@@ -1479,6 +1562,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      */
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (bootIntro != null && bootIntro.covering()) {
+            // On the way up, so that no stray UP is left over for Home.
+            if (event.getAction() == KeyEvent.ACTION_UP) bootIntro.skip();
+            return true;
+        }
         // Vendor keys (TCL Netflix button, 4062) never reach the key services, only the focused window, so their
         // "hold:" entries run here too or nowhere. Only while resumed: onPause releases Home's holds, and a DOWN
         // taken after that would arm one nothing releases.
@@ -2980,6 +3068,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     /** Shows the Wi-Fi network name on the button when we can read it, otherwise the connection type. */
     @SuppressWarnings("deprecation")
     private void updateWifiLabel() {
+        // Its binder calls take over 100 ms while the TV is still starting, and at boot Wi-Fi tends to come up during the
+        // film or Home's opening out of it. Nothing shows this label then, so it is read once they are over.
+        if (laterIfFilm(wifiLabelLater)) return;
         String text = getString(R.string.wifi);
         boolean vpn = false, online = false, validated = false;
         int icon = R.drawable.ic_wifi;
@@ -3260,6 +3351,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     /** Hides the Inputs pill when it would have nothing to list: streaming boxes have no HDMI-in, AV or tuner. */
     private void updateInputsButton() {
+        // At boot the inputs register while the film plays; this asks for them by binder and can lay out the whole of Home.
+        if (laterIfFilm(inputsLater)) return;
         if (!showInputsPill) {
             btnInputs.setVisibility(View.GONE);
             return;

@@ -1,0 +1,99 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
+
+import 'backend.dart';
+
+/// [CloudAuth] and [CloudDb] on Firebase (the app's values come from android/app/google-services.json through the
+/// google-services Gradle plugin).
+class FirebaseBackend implements CloudAuth, CloudDb {
+  FirebaseBackend._(this._app);
+
+  final FirebaseApp _app;
+
+  late final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: _app);
+  late final FirebaseDatabase _db = FirebaseDatabase.instanceFor(app: _app, databaseURL: CloudConfig.databaseUrl);
+
+  /// Firebase, or null when it did not start (then only the home Wi-Fi path works).
+  static Future<FirebaseBackend?> start() async {
+    try {
+      final app = await Firebase.initializeApp().timeout(const Duration(seconds: 15));
+      return FirebaseBackend._(app);
+    } on Object catch (e) {
+      debugPrint('orbit: Firebase did not start, the cloud path is off: $e');
+      return null;
+    }
+  }
+
+  // ---- Authentication ----
+
+  static CloudUser? _user(User? user) => user == null ? null : CloudUser(uid: user.uid, email: user.email);
+
+  @override
+  CloudUser? get currentUser => _user(_auth.currentUser);
+
+  @override
+  Stream<CloudUser?> userChanges() => _auth.authStateChanges().map(_user);
+
+  @override
+  Future<CloudUser> signInWithGoogleIdToken(String idToken) async {
+    try {
+      final result = await _auth.signInWithCredential(GoogleAuthProvider.credential(idToken: idToken));
+      final user = _user(result.user);
+      if (user == null) throw const SignInFailed('Firebase did not sign you in. Try again.');
+      return user;
+    } on FirebaseAuthException catch (e) {
+      throw switch (e.code) {
+        'network-request-failed' => const SignInFailed(
+          'No internet on the phone. Try again when it is back.',
+          offline: true,
+        ),
+        'user-disabled' => const SignInFailed('This Google account is turned off in Orbit\'s Firebase.'),
+        'invalid-credential' => const SignInFailed('Google\'s sign-in was not accepted. Try again.'),
+        _ => SignInFailed('Firebase could not sign you in (${e.code}).'),
+      };
+    }
+  }
+
+  @override
+  Future<void> signOut() => _auth.signOut();
+
+  // ---- Realtime Database ----
+
+  @override
+  Stream<Object?> values(String path) => _db.ref(path).onValue.map((event) => event.snapshot.value);
+
+  @override
+  Future<Object?> get(String path) async => (await _guard(() => _db.ref(path).get())).value;
+
+  @override
+  Future<void> set(String path, Object? value) => _guard(() => _db.ref(path).set(value));
+
+  @override
+  Future<void> update(String path, Map<String, Object?> values) => _guard(() => _db.ref(path).update(values));
+
+  @override
+  Future<void> remove(String path) => _guard(() => _db.ref(path).remove());
+
+  @override
+  String pushId(String path) => _db.ref(path).push().key!;
+
+  @override
+  Stream<bool> connected() => _db.ref('.info/connected').onValue.map((event) => event.snapshot.value == true);
+
+  @override
+  Stream<int> serverTimeOffset() =>
+      _db.ref('.info/serverTimeOffset').onValue.map((event) => (event.snapshot.value as num?)?.toInt() ?? 0);
+
+  static Future<T> _guard<T>(Future<T> Function() write) async {
+    try {
+      return await write();
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') throw CloudDenied(e.message);
+      rethrow;
+    }
+  }
+}
