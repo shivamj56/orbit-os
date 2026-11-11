@@ -19,7 +19,9 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 STOCK = "com.google.android.tvlauncher"
-CUSTOM = "com.gathin.tvhome"
+# Orbit Home: its id, and its Home activity, whose class keeps the Java package com.gathin.tvhome.
+CUSTOM = "dev.shiv.orbit.home"
+CUSTOM_HOME = f"{CUSTOM}/com.gathin.tvhome.MainActivity"
 
 # Stands in for tools/tv.py: answers the queries check.py makes, and applies what --fix sends.
 FAKE_TV = r'''
@@ -150,8 +152,8 @@ class DriftCheckTest(unittest.TestCase):
         state = {
             "installed": ["com.example.music", "com.example.store", STOCK, CUSTOM],
             "disabled": ["com.example.music", "com.example.store", STOCK],
-            "home": f"{CUSTOM}/.MainActivity",
-            "home_activities": [f"{CUSTOM}/.MainActivity", f"{STOCK}/.MainActivity"],
+            "home": CUSTOM_HOME,
+            "home_activities": [CUSTOM_HOME, f"{STOCK}/.MainActivity"],
             "pinned": [],
             "commands": [],
             "unreachable": False,
@@ -226,8 +228,8 @@ class DriftCheckTest(unittest.TestCase):
         self.tv(home=f"{STOCK}/.MainActivity")
         result = self.run_check("--fix", str(self.list_path))
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn(f"Home: set to {CUSTOM}/.MainActivity", result.stdout)
-        self.assertEqual(self.sent(), [f"cmd package set-home-activity --user 0 {CUSTOM}/.MainActivity"])
+        self.assertIn(f"Home: set to {CUSTOM_HOME}", result.stdout)
+        self.assertEqual(self.sent(), [f"cmd package set-home-activity --user 0 {CUSTOM_HOME}"])
 
     def test_fix_without_a_launcher_to_switch_to_says_so(self):
         # Nothing but launchers the list disables answers HOME: switching Home would leave the TV
@@ -244,7 +246,7 @@ class DriftCheckTest(unittest.TestCase):
     def test_fix_takes_the_launcher_it_is_given(self):
         self.tv(home=f"{STOCK}/.MainActivity", installed=COMMON_LAUNCHERS,
                 disabled=["com.example.music", "com.example.store"],
-                home_activities=[f"{STOCK}/.MainActivity", f"{CUSTOM}/.MainActivity",
+                home_activities=[f"{STOCK}/.MainActivity", CUSTOM_HOME,
                                  f"{FORK}/.MainActivity"])
         result = self.run_check("--fix", str(self.list_path), FORK)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -273,7 +275,7 @@ class DriftCheckTest(unittest.TestCase):
         self.tv(disabled=["com.example.music", "com.example.store"], home=f"{STOCK}/.MainActivity")
         result = self.run_check("--fix", str(self.list_path))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn(f"Home: set to {CUSTOM}/.MainActivity", result.stdout)
+        self.assertIn(f"Home: set to {CUSTOM_HOME}", result.stdout)
         again = self.run_check(str(self.list_path))
         self.assertEqual(again.returncode, 0, again.stdout + again.stderr)
 
@@ -289,8 +291,8 @@ class DriftCheckTest(unittest.TestCase):
 
     def test_home_on_another_launcher_than_the_one_given_is_drift(self):
         self.tv(installed=COMMON_LAUNCHERS, disabled=["com.example.music", "com.example.store", STOCK],
-                home=f"{CUSTOM}/.MainActivity",
-                home_activities=[f"{CUSTOM}/.MainActivity", f"{FORK}/.MainActivity"])
+                home=CUSTOM_HOME,
+                home_activities=[CUSTOM_HOME, f"{FORK}/.MainActivity"])
         result = self.run_check(str(self.list_path), FORK)
         self.assertEqual(result.returncode, 1)
         self.assertIn(f"not {FORK}", result.stdout)
@@ -400,10 +402,10 @@ class DriftCheckTest(unittest.TestCase):
         self.write_list(["com.example.music", STOCK])
         self.tv(disabled=["com.example.music", "com.example.store"],
                 home=f"{STOCK}/.MainActivity",
-                home_activities=[f"{STOCK}/.MainActivity", FALLBACK, f"{CUSTOM}/.MainActivity"])
+                home_activities=[f"{STOCK}/.MainActivity", FALLBACK, CUSTOM_HOME])
         result = self.run_check("--fix", str(self.list_path))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn(f"Home: set to {CUSTOM}/.MainActivity", result.stdout)
+        self.assertIn(f"Home: set to {CUSTOM_HOME}", result.stdout)
         self.assertNotIn(FALLBACK, " ".join(self.sent()))
 
     def test_fix_does_not_take_home_to_a_factory_test_app(self):

@@ -31,7 +31,7 @@
     <!-- Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped. -->
     <string-array name="dock_apps">
         <!-- Live TV (launcher/livetv): the free Hindi channels, first for the family. -->
-        <item>com.gathin.livetv</item>
+        <item>dev.shiv.orbit.live</item>
         <item>com.netflix.ninja</item>
         <item>com.google.android.youtube.tv</item>
         <item>com.amazon.amazonvideo.livingroom</item>

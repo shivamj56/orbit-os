@@ -35,9 +35,9 @@ import java.util.Map;
  * What has been playing on this TV, kept here because most apps publish little of it: YouTube has no Continue watching
  * rows at all. Android tells a notification listener what every app's media session is playing, with its title and
  * picture, and {@link GuardRevival} is that listener once allowed
- * ({@code cmd notification allow_listener com.gathin.tvhome/.GuardRevival}). Without that, the list stays empty and
- * nothing else changes. An app that plays without saying what still counts: it gets an entry of its own, with its name
- * for a title, because going back to it still continues what was playing.
+ * ({@code cmd notification allow_listener dev.shiv.orbit.home/com.gathin.tvhome.GuardRevival}). Without that, the list
+ * stays empty and nothing else changes. An app that plays without saying what still counts: it gets an entry of its
+ * own, with its name for a title, because going back to it still continues what was playing.
  *
  * <p>It lives in the key helper, which runs all the time, and everything stays on the TV, in this app's own files.
  */

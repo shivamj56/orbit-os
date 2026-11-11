@@ -1,7 +1,7 @@
 #!/system/bin/sh
 # Puts back what orbit-setup.sh changed, from its record, /data/local/tmp/orbit/undo.txt (phone/SPEC.md, "Orbit
 # Setup"). The phone sends its own copy of the record first when the TV has lost it. The TV's own home screen comes
-# back first, so the TV is never left without one; Orbit's own apps go last.
+# back first, so the TV is never left without one; Orbit's own apps go last, and never the one that is still Home.
 #
 #   sh /data/local/tmp/orbit/orbit-undo.sh
 #
@@ -10,11 +10,16 @@
 #                      a11y <list> / a11y_on <0|1> the accessibility settings before setup
 #                      setting <secure|global> <key> <value>   a setting before setup (empty: it was not set)
 #                      uninstall <package>        installed by setup: only Orbit's own apps are ever removed
+#                      replaced <old> <new>       an earlier build of an Orbit app that setup removed once the new
+#                                                 one was in its place: information only, never put back
 
 D=${ORBIT_DIR:-/data/local/tmp/orbit}
 UNDO=$D/undo.txt
-PKG=com.gathin.tvhome
-LIVE=com.gathin.livetv
+PKG=dev.shiv.orbit.home
+LIVE=dev.shiv.orbit.live
+# Orbit's two apps under the ids they had before 11 Nov, from a record an earlier setup wrote.
+OLD_PKG=com.gathin.tvhome
+OLD_LIVE=com.gathin.livetv
 LATE_RE='^(com\.google\.android\.apps\.tv\.launcherx(\.overlay)?|com\.google\.android\.tungsten\.setupwraith|com\.google\.android\.apps\.tv\.dreamx)$'
 
 say() { echo "@orbit $*"; }
@@ -35,7 +40,7 @@ if [ -n "$c" ]; then
   am start -a android.intent.action.MAIN -c android.intent.category.HOME </dev/null >/dev/null 2>&1
 fi
 case "$(home_now)" in
-  $PKG/*) step home fail "Orbit Home is still the home screen" ;;
+  $PKG/*|$OLD_PKG/*) step home fail "Orbit Home is still the home screen" ;;
   *) step home ok ;;
 esac
 say progress 30
@@ -65,7 +70,10 @@ say progress 75
 step apps start
 for p in $(field uninstall); do
   case "$p" in
-    $PKG|$LIVE) pm uninstall "$p" </dev/null >/dev/null 2>&1 && echo "removed $p" ;;
+    $PKG|$LIVE|$OLD_PKG|$OLD_LIVE)
+      # The TV would be left with no home screen at all.
+      case "$(home_now)" in "$p"/*) echo "kept $p: it is still the home screen"; continue ;; esac
+      pm uninstall "$p" </dev/null >/dev/null 2>&1 && echo "removed $p" ;;
     *) echo "kept $p: only Orbit's own apps are removed" ;;
   esac
 done

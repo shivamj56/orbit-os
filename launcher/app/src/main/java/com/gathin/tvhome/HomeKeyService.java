@@ -61,7 +61,7 @@ import org.json.JSONObject;
  * instead of Android's ALL_APPS action, which nothing answers once the stock launcher is disabled (Philips TPM191E).
  *
  * Enable over adb:
- *   settings put secure enabled_accessibility_services com.gathin.tvhome/.HomeKeyService
+ *   settings put secure enabled_accessibility_services dev.shiv.orbit.home/com.gathin.tvhome.HomeKeyService
  *   settings put secure accessibility_enabled 1
  */
 public class HomeKeyService extends AccessibilityService {

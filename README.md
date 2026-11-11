@@ -91,8 +91,8 @@ More in [docs/architecture.md](docs/architecture.md).
 
 | Folder | What is inside |
 |---|---|
-| [`launcher/app`](launcher/app) | **Orbit Home**: the TV home screen and its helper service (Java, Android 14) |
-| [`launcher/livetv`](launcher/livetv) | **Orbit Live TV**: channels, guide and player (Media3 ExoPlayer, HLS) |
+| [`launcher/app`](launcher/app) | **Orbit Home** (`dev.shiv.orbit.home`): the TV home screen and its helper service (Java, Android 14) |
+| [`launcher/livetv`](launcher/livetv) | **Orbit Live TV** (`dev.shiv.orbit.live`): channels, guide and player (Media3 ExoPlayer, HLS) |
 | [`phone/ui`](phone/ui) | **Orbit**'s interface: React 19, Tailwind 4, Framer Motion, a WebGL globe |
 | [`phone/app`](phone/app) | **Orbit**'s app shell (Flutter), the Wi-Fi and cloud links, Help mode |
 | [`phone/firebase`](phone/firebase) | Database rules for the cloud link |

@@ -10,7 +10,9 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId 'com.gathin.livetv'
+        // Its own id; the Java package (namespace above) keeps its first name, so its activity is
+        // dev.shiv.orbit.live/com.gathin.livetv.LiveTvActivity.
+        applicationId 'dev.shiv.orbit.live'
         minSdk 26
         targetSdk 34
         versionCode 1

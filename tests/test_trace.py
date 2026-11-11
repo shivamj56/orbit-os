@@ -28,7 +28,7 @@ spec = importlib.util.spec_from_file_location("cyt_trace", ROOT / "tools" / "tra
 trace = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(trace)
 
-LAUNCHER = "com.gathin.tvhome/.MainActivity"
+LAUNCHER = "dev.shiv.orbit.home/com.gathin.tvhome.MainActivity"
 OTHER = "com.android.tv.settings/.MainSettings"
 
 # Encoded by protoc 3.13.0 from the original text config, using the official
@@ -82,13 +82,13 @@ class ScenarioTest(unittest.TestCase):
     def test_cold_stops_the_launcher_before_recording_and_starts_it_inside(self):
         setup, steps = trace.scenario("cold", LAUNCHER, OTHER)
         self.assertIn(f"am start --activity-reorder-to-front -n {OTHER}", setup)
-        self.assertIn("am force-stop com.gathin.tvhome", setup)
+        self.assertIn("am force-stop dev.shiv.orbit.home", setup)
         self.assertEqual(steps[0], "am start -W -a android.intent.action.MAIN "
                          f"-c android.intent.category.HOME -n {LAUNCHER}")
 
     def test_coldsys_leaves_the_restart_to_android(self):
         setup, steps = trace.scenario("coldsys", LAUNCHER, None)
-        self.assertEqual(steps[0], "am force-stop com.gathin.tvhome")
+        self.assertEqual(steps[0], "am force-stop dev.shiv.orbit.home")
         self.assertFalse(any("am start" in s for s in setup + steps))
 
     def test_nav_is_24_moves(self):
@@ -126,7 +126,7 @@ class ArgumentTest(unittest.TestCase):
 
     def test_defaults(self):
         args = trace.parse(["nav"])
-        self.assertEqual((args.runs, args.out, args.package), (5, "traces", "com.gathin.tvhome"))
+        self.assertEqual((args.runs, args.out, args.package), (5, "traces", "dev.shiv.orbit.home"))
 
     def test_a_file_where_the_traces_go_is_refused_before_connecting(self):
         # os.makedirs() threw FileExistsError from main() after the TV had answered the Home query, so a
@@ -321,12 +321,12 @@ class OtherAppTest(unittest.TestCase):
     def test_settings_first(self):
         shell = self.shell({"android.settings.SETTINGS": "priority=0\ncom.android.tv.settings/.MainSettings\n",
                             "LEANBACK_LAUNCHER": "org.videolan.vlc/.StartActivity\n"})
-        self.assertEqual(trace.other_app(shell, "com.gathin.tvhome"), "com.android.tv.settings/.MainSettings")
+        self.assertEqual(trace.other_app(shell, "dev.shiv.orbit.home"), "com.android.tv.settings/.MainSettings")
 
     def test_never_the_chooser_or_the_launcher(self):
         shell = self.shell({"android.settings.SETTINGS": "android/com.android.internal.app.ResolverActivity\n",
-                            "LEANBACK_LAUNCHER": "com.gathin.tvhome/.MainActivity\norg.videolan.vlc/.StartActivity\n"})
-        self.assertEqual(trace.other_app(shell, "com.gathin.tvhome"), "org.videolan.vlc/.StartActivity")
+                            "LEANBACK_LAUNCHER": "dev.shiv.orbit.home/com.gathin.tvhome.MainActivity\norg.videolan.vlc/.StartActivity\n"})
+        self.assertEqual(trace.other_app(shell, "dev.shiv.orbit.home"), "org.videolan.vlc/.StartActivity")
 
 
 if __name__ == "__main__":

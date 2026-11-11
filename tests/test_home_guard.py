@@ -20,7 +20,9 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 STOCK = "com.google.android.tvlauncher"
-CUSTOM = "com.gathin.tvhome"
+# Orbit Home: its id, and its Home activity, whose class keeps the Java package com.gathin.tvhome.
+CUSTOM = "dev.shiv.orbit.home"
+CUSTOM_HOME = f"{CUSTOM}/com.gathin.tvhome.MainActivity"
 PWSH = shutil.which("pwsh")
 
 # Stands in for tools/tv.py: answers the queries the disable script makes and records what a batch
@@ -195,7 +197,7 @@ class HomeGuardTest(unittest.TestCase):
         for entry in self.entries():
             with self.subTest(entry=entry):
                 self.tv(installed=["com.example.before", "com.example.after", STOCK, CUSTOM],
-                        home=f"{CUSTOM}/.MainActivity", claims=[CUSTOM, STOCK])
+                        home=CUSTOM_HOME, claims=[CUSTOM, STOCK])
                 result, sent = self.disable(entry)
                 self.assertEqual(result.returncode, 0, self.output(result))
                 self.assertIn(f"pm disable-user --user 0 {STOCK}", sent)
@@ -305,7 +307,7 @@ class HomeGuardTest(unittest.TestCase):
         for entry in self.entries():
             with self.subTest(entry=entry):
                 self.tv(installed=["com.example.before", "com.example.after", STOCK, CUSTOM],
-                        home=f"{CUSTOM}/.MainActivity", claims=[CUSTOM, STOCK])
+                        home=CUSTOM_HOME, claims=[CUSTOM, STOCK])
                 result, sent = self.disable(entry)
                 self.assertEqual(result.returncode, 0, self.output(result))
                 self.assertIn(f"pm disable-user --user 0 {STOCK}", sent)

@@ -83,8 +83,10 @@ final class ControlCenter extends View {
     private static final float ISL_CY = 26f, BAR_W = 1136f;
     private static final int BLUR_W = 320, BLUR_H = 180;
     private static final String YOUTUBE = "com.google.android.youtube.tv";
-    /** The Live TV app beside Home (launcher/livetv). */
-    private static final String LIVE_TV = "com.gathin.livetv";
+    /** The Live TV app beside Home (launcher/livetv), and its player. The class keeps the Java package the app was
+     *  first written in, so it is never built from the app's id. */
+    private static final String LIVE_TV = "dev.shiv.orbit.live";
+    private static final String LIVE_TV_ACTIVITY = "com.gathin.livetv.LiveTvActivity";
     private static final String CAST_APP = "com.xiaomi.mitv.smartshare";
 
     // ---------------------------------------------------------------- springs: every motion is one of these
@@ -1784,7 +1786,7 @@ final class ControlCenter extends View {
                     for (String[] l : live) {
                         Item it = new Item(ACTION, R.drawable.cc_tv, l[0] + " live", l[2]);
                         it.act = () -> {
-                            Intent go = new Intent().setClassName(LIVE_TV, LIVE_TV + ".LiveTvActivity").putExtra("channel", l[1])
+                            Intent go = new Intent().setClassName(LIVE_TV, LIVE_TV_ACTIVITY).putExtra("channel", l[1])
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             closeThen(() -> service.ccOpen(go));
                         };

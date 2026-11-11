@@ -30,7 +30,7 @@ public class RemoteKeysTest {
     @Test public void inFrontMatchesTheTargetsPackageOnly() {
         assertTrue(RemoteKeys.inFront("com.vt.tv.tvcenter", "com.vt.tv.tvcenter"));
         assertTrue(RemoteKeys.inFront("io.github.maxhayim.brightness/.QuickActivity", "io.github.maxhayim.brightness"));
-        assertFalse(RemoteKeys.inFront("com.vt.tv.tvcenter", "com.gathin.tvhome"));
+        assertFalse(RemoteKeys.inFront("com.vt.tv.tvcenter", "dev.shiv.orbit.home"));
         assertFalse(RemoteKeys.inFront("com.vt.tv.tvcenter", ""));
         assertFalse(RemoteKeys.inFront(null, "com.vt.tv.tvcenter"));
         assertFalse(RemoteKeys.inFront("input:com.vt.source.external/.HdmiInputService/HW2", "com.vt.source.external"));

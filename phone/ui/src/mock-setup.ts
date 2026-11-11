@@ -8,10 +8,12 @@ import debloat from "../../../devices/xiaomi-mitv-axfu0/debloat.txt?raw";
 import type { Message, SetupProps, SetupRecord, Status } from "./bridge";
 import type { MockEvent } from "./mock";
 
-const ORBIT_HOME = "com.gathin.tvhome";
-const ORBIT_LIVE = "com.gathin.livetv";
+const ORBIT_HOME = "dev.shiv.orbit.home";
+const ORBIT_LIVE = "dev.shiv.orbit.live";
+/** Orbit Home's classes keep the Java package com.gathin.tvhome, so its components are written in full. */
+const ORBIT_HOME_ACTIVITY = `${ORBIT_HOME}/com.gathin.tvhome.MainActivity`;
 const STOCK_HOME = "com.google.android.apps.tv.launcherx/.MainActivity";
-const HELPER = `${ORBIT_HOME}/.HomeKeyService`;
+const HELPER = `${ORBIT_HOME}/com.gathin.tvhome.HomeKeyService`;
 const DIR = "/data/local/tmp/orbit";
 const LATE = /^(com\.google\.android\.apps\.tv\.launcherx(\.overlay)?|com\.google\.android\.tungsten\.setupwraith|com\.google\.android\.apps\.tv\.dreamx)$/;
 const CORE = /^(android|com\.android\.systemui|com\.android\.settings|com\.android\.tv\.settings|com\.android\.providers\.(?!calendar$).*)$/;
@@ -72,7 +74,7 @@ function setUp(): PretendTv {
     ...fresh(),
     installed: [...KEPT, ...SWITCHED_OFF, ORBIT_HOME, ORBIT_LIVE],
     disabled: [...SWITCHED_OFF],
-    home: `${ORBIT_HOME}/.MainActivity`,
+    home: ORBIT_HOME_ACTIVITY,
     undo: [`home ${STOCK_HOME}`, ...SWITCHED_OFF.map((p) => `enable ${p}`), `uninstall ${ORBIT_HOME}`, "a11y ", "a11y_on 0", "setting secure screensaver_components ", `uninstall ${ORBIT_LIVE}`],
     a11y: HELPER,
     allowed: true,
@@ -243,7 +245,7 @@ export function createSetupMock(hooks: Hooks): SetupMock {
     if (home) {
       say("@orbit step home start", 300);
       if (failAt === "home") {
-        say("pm install com.gathin.tvhome: Failure [INSTALL_FAILED_INSUFFICIENT_STORAGE]", 1800);
+        say(`pm install ${ORBIT_HOME}: Failure [INSTALL_FAILED_INSUFFICIENT_STORAGE]`, 1800);
         say("@orbit step home fail Orbit Home did not install");
         stop("Orbit Home did not install; the TV keeps its own home screen");
         return { lines, code: () => code };
@@ -256,7 +258,7 @@ export function createSetupMock(hooks: Hooks): SetupMock {
       say("@orbit progress 50");
       say("Status: ok", 900);
       list.filter((p) => LATE.test(p)).forEach((p) => switchOff(p, 140));
-      act(() => (tv.home = `${ORBIT_HOME}/.MainActivity`), 300);
+      act(() => (tv.home = ORBIT_HOME_ACTIVITY), 300);
       say("@orbit step home ok", 200);
       say("@orbit progress 60");
 

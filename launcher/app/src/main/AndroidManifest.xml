@@ -210,7 +210,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- Screensaver: pick it in Settings, or `settings put secure screensaver_components
-             com.gathin.tvhome/.ClockDream` over adb. -->
+             dev.shiv.orbit.home/com.gathin.tvhome.ClockDream` over adb. -->
         <service
             android:name=".ClockDream"
             android:label="@string/dream_name"
@@ -223,7 +223,8 @@
         </service>
 
         <!-- tools/theme.sh writes the theme through this where the shell can't reach Android/data;
-             see ThemeProvider. WRITE_SECURE_SETTINGS: the adb shell has it, ordinary apps don't. -->
+             see ThemeProvider. WRITE_SECURE_SETTINGS: the adb shell has it, ordinary apps don't.
+             The authority follows the app's id: content://dev.shiv.orbit.home.theme. -->
         <provider
             android:name=".ThemeProvider"
             android:authorities="${applicationId}.theme"
@@ -234,7 +235,7 @@
          app_keys (config.xml or a theme) bring back other remote buttons; see InputKeyService. -->
         <!-- Bound again by the system after a force stop, which restarts Home on firmware that kills
              third-party apps (TCL tc8000_ay30a2). It reads no notification.
-             cmd notification allow_listener com.gathin.tvhome/.GuardRevival -->
+             cmd notification allow_listener dev.shiv.orbit.home/com.gathin.tvhome.GuardRevival -->
         <service
             android:name=".GuardRevival"
             android:directBootAware="true"

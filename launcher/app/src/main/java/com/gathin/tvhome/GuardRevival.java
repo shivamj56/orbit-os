@@ -14,7 +14,7 @@ import android.service.notification.NotificationListenerService;
  * A notification listener keeps its approval across a force stop, and the system binds it again
  * once the process is gone. That rebind is what brings Home back on TCL and Xiaomi. Under the gallery Home the
  * notifications of the apps on Home are also shown in the TV Island (IslandEvents); they stay on the TV.
- * Enable with {@code cmd notification allow_listener com.gathin.tvhome/.GuardRevival}.
+ * Enable with {@code cmd notification allow_listener dev.shiv.orbit.home/com.gathin.tvhome.GuardRevival}.
  */
 public class GuardRevival extends NotificationListenerService {
     private BroadcastReceiver unlocked;

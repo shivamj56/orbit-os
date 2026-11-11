@@ -32,6 +32,12 @@ The home screen. It started as CleanYourTV's launcher and keeps parts of it (wal
 app library, its settings screens and the guards that keep it Home); the gallery, the panel, the Island, the
 phone link and the rest below were written for Orbit OS.
 
+Its application id is `dev.shiv.orbit.home`, and Live TV's is `dev.shiv.orbit.live`. The Java packages keep their
+first names, `com.gathin.tvhome` and `com.gathin.livetv`, so a component on the TV is written in full, as in
+`dev.shiv.orbit.home/com.gathin.tvhome.HomeKeyService`: the short form `dev.shiv.orbit.home/.HomeKeyService` names a
+class that does not exist. Until 11 Nov the ids were the Java packages; Orbit Setup moves a TV from those
+([phone/SPEC.md](../phone/SPEC.md), "From the earlier ids").
+
 | Part | Files | What it does |
 |---|---|---|
 | Gallery | `GalleryHomeView`, `GalleryArt`, `GallerySound`, `ScrollCue` | One view: a cylinder of app cards, glass drawn with an AGSL shader, a critically damped spring for motion, the recents page below |

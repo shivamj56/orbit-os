@@ -7,10 +7,12 @@ android {
     compileSdk 34
 
     defaultConfig {
+        // Orbit Home's own id. The Java package (namespace above) keeps CleanYourTV's name, so a component on the
+        // TV is written in full: dev.shiv.orbit.home/com.gathin.tvhome.HomeKeyService, never /.HomeKeyService.
         // Opt-in identity for firmware with a package-name HOME allowlist.
         // Xiaomi: docs/devices/xiaomi-mitv-aetp0-dofus.md (com.ts.launcher).
         // ColorOS TV: docs/devices/oppo-k9-55-oppocnm632.md (com.oneplus.tv.launcher2).
-        applicationId providers.gradleProperty('launcherApplicationId').getOrElse('com.gathin.tvhome')
+        applicationId providers.gradleProperty('launcherApplicationId').getOrElse('dev.shiv.orbit.home')
         minSdk 26
         targetSdk 34
         versionCode 12

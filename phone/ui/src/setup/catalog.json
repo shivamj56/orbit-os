@@ -105,7 +105,11 @@
     "com.google.android.gms",
     "com.android.vending",
     "com.google.android.gsf",
-    "com.google.android.tvrecommendations"
+    "com.google.android.tvrecommendations",
+    "dev.shiv.orbit.home",
+    "dev.shiv.orbit.live",
+    "com.gathin.tvhome",
+    "com.gathin.livetv"
   ],
   "models": {
     "MiTV-AXFU0": {

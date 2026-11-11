@@ -126,7 +126,8 @@ final class PhonePortal {
     private static final int PAIRING_TRIES = 5;
     private static final int TOKENS_KEPT = 8;
     private static final String PREFS = "portal", KEY_TOKENS = "tokens";
-    private static final String OWN_PACKAGE = "com.gathin.tvhome";
+    /** Orbit Home under its own id, and under the id its builds had before 11 Nov: never in the phone's list of apps. */
+    private static final String OWN_PACKAGE = "dev.shiv.orbit.home", EARLIER_PACKAGE = "com.gathin.tvhome";
     private static final String YOUTUBE_TV = "com.google.android.youtube.tv";
     /** App pictures for the page's grid: a banner's own size at xhdpi, and how many are kept between requests. */
     private static final int ART_W = 320, ART_H = 180, ART_KEPT = 30;
@@ -1197,7 +1198,8 @@ final class PhonePortal {
         Map<String, String> byPackage = new HashMap<>();
         for (ResolveInfo info : found) {
             String pkg = info.activityInfo.packageName;
-            if (pkg.equals(service.getPackageName()) || pkg.equals(OWN_PACKAGE) || byPackage.containsKey(pkg)) continue;
+            if (pkg.equals(service.getPackageName()) || pkg.equals(OWN_PACKAGE) || pkg.equals(EARLIER_PACKAGE)
+                    || byPackage.containsKey(pkg)) continue;
             CharSequence name = info.loadLabel(pm);
             byPackage.put(pkg, name != null && name.toString().trim().length() > 0 ? name.toString().trim() : pkg);
         }

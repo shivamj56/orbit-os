@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class OpenOnStartTest {
-    private static final String SELF = "com.gathin.tvhome";
+    private static final String SELF = "dev.shiv.orbit.home";
     private static final String YOUTUBE = "com.google.android.youtube.tv";
 
     @Test public void firstHomeOfANewBootOpensTheApp() {

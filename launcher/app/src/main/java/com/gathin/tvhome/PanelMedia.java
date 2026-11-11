@@ -195,7 +195,7 @@ final class PanelMedia {
         c.setConnectTimeout(4000);
         c.setReadTimeout(6000);
         // lrclib asks callers to say who they are.
-        c.setRequestProperty("User-Agent", "FamilyRoomTV (com.gathin.tvhome)");
+        c.setRequestProperty("User-Agent", "FamilyRoomTV (dev.shiv.orbit.home)");
         try {
             if (c.getResponseCode() != 200) throw new IOException("HTTP " + c.getResponseCode());
             try (InputStream in = c.getInputStream(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {

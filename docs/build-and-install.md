@@ -24,6 +24,11 @@ The apps land in `launcher/app/build/outputs/apk/release/` and `launcher/livetv/
 > only over an app signed with the same key, so build every update with the same `ANDROID_USER_HOME` and keep a
 > copy of its key. Without it, an update means uninstalling Orbit Home and setting the TV up again.
 
+Orbit Home is `dev.shiv.orbit.home` and Orbit Live TV `dev.shiv.orbit.live`. Builds before 11 Nov used
+`com.gathin.tvhome` and `com.gathin.livetv`; Android treats those as other apps, so the steps below put the new ones
+beside them. Orbit Setup's `install` moves such a TV over and removes the earlier apps
+([phone/SPEC.md](../phone/SPEC.md), "From the earlier ids").
+
 ## Build the phone app
 
 ```bash
