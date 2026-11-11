@@ -1,0 +1,188 @@
+[
+ {
+  "num": 1,
+  "name": "Aaj Tak HD",
+  "group": "News"
+ },
+ {
+  "num": 2,
+  "name": "India TV",
+  "group": "News"
+ },
+ {
+  "num": 3,
+  "name": "News18 India",
+  "group": "News"
+ },
+ {
+  "num": 4,
+  "name": "Zee News",
+  "group": "News"
+ },
+ {
+  "num": 5,
+  "name": "ABP News",
+  "group": "News"
+ },
+ {
+  "num": 6,
+  "name": "TV9 Bharatvarsh",
+  "group": "News"
+ },
+ {
+  "num": 7,
+  "name": "Times Now Navbharat",
+  "group": "News"
+ },
+ {
+  "num": 8,
+  "name": "News Nation",
+  "group": "News"
+ },
+ {
+  "num": 9,
+  "name": "Zee Bharat",
+  "group": "News"
+ },
+ {
+  "num": 10,
+  "name": "India TV Speed News",
+  "group": "News"
+ },
+ {
+  "num": 11,
+  "name": "Sansad TV",
+  "group": "News"
+ },
+ {
+  "num": 12,
+  "name": "Dangal",
+  "group": "Serials"
+ },
+ {
+  "num": 13,
+  "name": "Dangal 2",
+  "group": "Serials"
+ },
+ {
+  "num": 14,
+  "name": "Shemaroo TV",
+  "group": "Serials"
+ },
+ {
+  "num": 15,
+  "name": "Shemaroo Umang",
+  "group": "Serials"
+ },
+ {
+  "num": 16,
+  "name": "Zee Dil Se",
+  "group": "Serials"
+ },
+ {
+  "num": 17,
+  "name": "Sony KAL",
+  "group": "Serials"
+ },
+ {
+  "num": 18,
+  "name": "Zee Comedy Nation",
+  "group": "Serials"
+ },
+ {
+  "num": 19,
+  "name": "Aastha",
+  "group": "Bhakti"
+ },
+ {
+  "num": 20,
+  "name": "Sanskar",
+  "group": "Bhakti"
+ },
+ {
+  "num": 21,
+  "name": "Satsang",
+  "group": "Bhakti"
+ },
+ {
+  "num": 22,
+  "name": "Shubh TV",
+  "group": "Bhakti"
+ },
+ {
+  "num": 23,
+  "name": "Total Bhakti",
+  "group": "Bhakti"
+ },
+ {
+  "num": 24,
+  "name": "Green Gold",
+  "group": "Kids"
+ },
+ {
+  "num": 25,
+  "name": "Epic Kids",
+  "group": "Kids"
+ },
+ {
+  "num": 26,
+  "name": "B4U Kadak",
+  "group": "Movies"
+ },
+ {
+  "num": 27,
+  "name": "Zee Cine Classic",
+  "group": "Movies"
+ },
+ {
+  "num": 28,
+  "name": "Zee South Flix",
+  "group": "Movies"
+ },
+ {
+  "num": 29,
+  "name": "Filmi Gaane",
+  "group": "Movies"
+ },
+ {
+  "num": 30,
+  "name": "Epic",
+  "group": "Movies"
+ },
+ {
+  "num": 31,
+  "name": "Star Plus",
+  "group": "Pay",
+  "app": "JioHotstar"
+ },
+ {
+  "num": 32,
+  "name": "Colors",
+  "group": "Pay",
+  "app": "JioHotstar"
+ },
+ {
+  "num": 33,
+  "name": "Zee TV",
+  "group": "Pay",
+  "app": "ZEE5"
+ },
+ {
+  "num": 34,
+  "name": "&TV",
+  "group": "Pay",
+  "app": "ZEE5"
+ },
+ {
+  "num": 35,
+  "name": "Sony SAB",
+  "group": "Pay",
+  "app": "Sony LIV"
+ },
+ {
+  "num": 36,
+  "name": "Sony TV",
+  "group": "Pay",
+  "app": "Sony LIV"
+ }
+]

@@ -1,0 +1,291 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* Three faces, latin only, variable weight; inlined into the one-file build. Outfit is the TV's own greeting face. */
+@font-face {
+  font-family: "Outfit";
+  src: url("../node_modules/@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-display: "Outfit", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Night over a living room: one ground, one iridescent trio (sky, ice, orchid), mint for "done". */
+  --color-night: #05070d;
+  --color-deep: #0b1020;
+  --color-raise: #111830;
+  --color-ink: #f2f5ff;
+  --color-soft: #a9b3cf;
+  --color-dim: #8a94b2;
+  --color-faint: #5d6684;
+  --color-sky: #74d1ff;
+  --color-ice: #adc6ff;
+  --color-orchid: #e9b3ff;
+  --color-mint: #7ee2b8;
+  --color-live: #ff5468;
+  --color-line: rgb(173 198 255 / 0.13);
+  --color-on-sky: #03111c;
+
+  /* Named curves, never inline magic numbers. */
+  --ease-premium: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Inline, so each orbiting item reads its own --duration, --angle and --radius (Magic UI Orbiting Circles). */
+@theme inline {
+  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
+  @keyframes orbit {
+    0% {
+      transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
+    }
+    100% {
+      transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px))
+        rotate(calc((var(--angle) * -1deg) - 360deg));
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --gutter-l: max(16px, env(safe-area-inset-left));
+    --gutter-r: max(16px, env(safe-area-inset-right));
+    --iris: linear-gradient(90deg, #74d1ff, #adc6ff 50%, #e9b3ff);
+  }
+  @media (min-width: 768px) {
+    :root {
+      --gutter-l: max(32px, env(safe-area-inset-left));
+      --gutter-r: max(32px, env(safe-area-inset-right));
+    }
+  }
+  html {
+    background: #05070d;
+    color: #f2f5ff;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #05070d;
+    color: #f2f5ff;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-tap-highlight-color: transparent;
+  }
+  ::selection {
+    background: rgb(116 209 255 / 0.32);
+    color: #ffffff;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  img,
+  video,
+  canvas {
+    display: block;
+  }
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button {
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+  }
+  :focus-visible {
+    outline: 2px solid #74d1ff;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-left: var(--gutter-l);
+    padding-right: var(--gutter-r);
+  }
+  .gutters {
+    padding-left: var(--gutter-l);
+    padding-right: var(--gutter-r);
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #adc6ff;
+  }
+  .iris-text {
+    background: var(--iris);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Glass: a pane of the room's own dark, lit from above. */
+  .glass {
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.065), rgb(255 255 255 / 0.02));
+    border: 1px solid rgb(173 198 255 / 0.13);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.07),
+      0 24px 60px -30px rgb(0 0 0 / 0.9);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+  }
+  .panel {
+    background: linear-gradient(180deg, rgb(17 24 48 / 0.72), rgb(11 16 32 / 0.6));
+    border: 1px solid rgb(173 198 255 / 0.12);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      0 40px 80px -40px rgb(0 0 0 / 0.95);
+  }
+  .hairline {
+    background: linear-gradient(90deg, transparent, rgb(173 198 255 / 0.28), transparent);
+    height: 1px;
+  }
+  .keycap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.6rem;
+    height: 1.6rem;
+    padding: 0 0.45rem;
+    border-radius: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: #f2f5ff;
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03));
+    border: 1px solid rgb(173 198 255 / 0.22);
+    box-shadow: 0 2px 0 rgb(0 0 0 / 0.5);
+  }
+}
+
+/* The room's grain, so the dark never bands. */
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@property --spin {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes spin-angle {
+  to {
+    --spin: 360deg;
+  }
+}
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes sweep {
+  from {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* The pretend TV's light behind the focused card fades from one app's colour to the next. */
+@property --glow {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e5096b;
+}
+.tv-static {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='1' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.2'/></filter><rect width='100%' height='100%' filter='url(%23s)'/></svg>");
+  background-size: 220px 220px;
+  mix-blend-mode: screen;
+  animation: static-shift 0.12s steps(3) infinite;
+}
+@keyframes static-shift {
+  0% {
+    background-position: 0 0;
+  }
+  33% {
+    background-position: -60px 40px;
+  }
+  66% {
+    background-position: 50px -70px;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+@keyframes live-drift {
+  from {
+    transform: translate3d(-5%, -3%, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(5%, 4%, 0) scale(1.14);
+  }
+}
