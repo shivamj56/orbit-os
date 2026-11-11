@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
+import { useSetup } from "./setup/flow";
 import { startWorld, useWorld } from "./store";
 import { Connect } from "./ui/Connect";
 import { Help } from "./ui/Help";
 import { Remote } from "./ui/Remote";
+import { Setup } from "./ui/setup/Setup";
 
 /** The room behind everything: the TV's halo ribbon along the top edge, and two low lights. */
 function Backdrop() {
@@ -20,7 +22,9 @@ function Backdrop() {
 export function App() {
   useEffect(() => startWorld(), []);
   const { status, page } = useWorld();
-  const view = status.state !== "connected" ? "connect" : page === "help" ? "help" : "remote";
+  // Orbit Setup comes over everything while it is open: the TV it sets up connects half way, and setup still goes on.
+  const setup = useSetup().open;
+  const view = setup ? "setup" : status.state !== "connected" ? "connect" : page === "help" ? "help" : "remote";
   return (
     <div className="grain relative h-full overflow-hidden bg-ink">
       <Backdrop />
@@ -33,7 +37,15 @@ export function App() {
           exit={{ opacity: 0, scale: 1.02, filter: "blur(8px)" }}
           transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
         >
-          {view === "connect" ? <Connect status={status} /> : view === "help" ? <Help status={status} /> : <Remote status={status} />}
+          {view === "setup" ? (
+            <Setup />
+          ) : view === "connect" ? (
+            <Connect status={status} />
+          ) : view === "help" ? (
+            <Help status={status} />
+          ) : (
+            <Remote status={status} />
+          )}
         </motion.div>
       </AnimatePresence>
     </div>

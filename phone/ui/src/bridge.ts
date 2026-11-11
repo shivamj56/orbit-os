@@ -67,7 +67,8 @@ export type Key =
 export type Haptic = "tick" | "light" | "medium" | "heavy" | "success" | "error";
 
 export class BridgeError extends Error {
-  constructor(message: string, readonly status?: number) {
+  /** A word for the page to choose its own text by (setupConnect: "refused", "timeout", "unreachable", "tls"). */
+  constructor(message: string, readonly status?: number, readonly reason?: string) {
     super(message);
   }
 }
@@ -78,6 +79,7 @@ export interface Message {
   data?: unknown;
   error?: string;
   status?: number;
+  reason?: string;
   event?: string;
 }
 
@@ -134,7 +136,10 @@ class Bridge {
       this.pending.delete(m.id);
       window.clearTimeout(waiting.timer);
       if (m.ok) waiting.resolve(m.data ?? {});
-      else waiting.reject(new BridgeError(m.error || "Something went wrong.", m.status));
+      else {
+        const reason = m.reason ?? (m.data as { reason?: string } | undefined)?.reason;
+        waiting.reject(new BridgeError(m.error || "Something went wrong.", m.status, typeof reason === "string" ? reason : undefined));
+      }
       return;
     }
     if (m.event) this.listeners.get(m.event)?.forEach((l) => l(m.data));
@@ -172,6 +177,59 @@ export const tv = {
   help: (on: boolean) => bridge.call<{ ok: boolean; on: boolean }>("help", { on }),
   /** A click at a spot of the TV's screen, in its pixels (1280 x 720). */
   tapAt: (x: number, y: number) => bridge.call("tapAt", { x, y }),
+};
+
+/** A TV found by Orbit Setup's scan (phone/SPEC.md, "Orbit Setup"): `orbit` when it already answers as Orbit OS. */
+export interface SetupTvFound {
+  name: string;
+  address: string;
+  model: string | null;
+  orbit: boolean;
+}
+
+/** The TV's own description, read once the debugging connection is open. */
+export interface SetupProps {
+  model: string;
+  manufacturer: string;
+  brand: string;
+  device: string;
+  sdk: number;
+  release: string;
+}
+
+/** What this phone keeps about a TV it set up: enough to undo it all. */
+export interface SetupRecord {
+  address: string;
+  name: string;
+  model: string | null;
+  at: number;
+  token: string;
+  /** The script's undo record, line by line, as it said it. */
+  undo: string[];
+  /** The packages it switched off. */
+  disabled: string[];
+  /** The TV's own launcher before setup. */
+  stock?: string | null;
+  /** When Undo put the TV back with this record. */
+  undone?: number;
+}
+
+/** Orbit Setup: the TV's debugging connection (ADB over the Wi-Fi), opened and used by Flutter. */
+export const setupTv = {
+  scan: (seconds = 4) => bridge.call<{ tvs: SetupTvFound[] }>("setupScan", { seconds }, seconds * 1000 + 8000),
+  probe: (address: string) => bridge.call<{ open: boolean }>("setupProbe", { address, port: 5555 }, 6000),
+  // The TV may wait up to 90 s for a person to press Allow.
+  connect: (address: string) => bridge.call<SetupProps>("setupConnect", { address, port: 5555 }, 100_000),
+  shell: (cmd: string, timeoutMs = 20_000) => bridge.call<{ out: string }>("setupShell", { cmd, timeoutMs }, timeoutMs + 6000),
+  pushAsset: (asset: string, to: string) => bridge.call<{ bytes: number }>("setupPush", { asset, to }, 180_000),
+  pushText: (text: string, to: string) => bridge.call<{ bytes: number }>("setupPush", { text, to }, 30_000),
+  // Installing two apps and switching thirty off takes a minute or two; the lines come as setupLine events meanwhile.
+  run: (cmd: string) => bridge.call<{ exit: number }>("setupRun", { cmd }, 15 * 60_000),
+  close: () => bridge.call("setupClose"),
+  saveRecord: (key: string, record: SetupRecord) => bridge.call<{ record: SetupRecord | null }>("setupRecord", { key, record }),
+  loadRecord: (key: string) => bridge.call<{ record: SetupRecord | null }>("setupRecord", { key }),
+  // Orbit Home may still be starting: Flutter tries its door for 30 s.
+  adopt: (args: { address: string; port: number; token: string; name: string }) => bridge.call<Status>("setupAdopt", args, 45_000),
 };
 
 export const cloud = {

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { bridge, cloud, haptic, tv, type Account, type AppEntry, type Status, type TvState } from "../bridge";
+import { openSetup } from "../setup/flow";
 import { patchTv, setAccount, updateSettings, useWorld } from "../store";
 import * as I from "./icons";
 import { Press, Sheet, spring } from "./kit";
@@ -378,6 +379,34 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
           />
         </div>
       </div>
+
+      <section className="mt-4" aria-label="This TV">
+        <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">This TV</p>
+        <div className="divide-y divide-white/6">
+          <Row
+            title="Undo Orbit OS on this TV"
+            note="Switches back on what Orbit switched off, and brings back the TV's own home screen."
+            onPress={() => {
+              haptic("light");
+              onClose();
+              openSetup("undo", status.tv);
+            }}
+          >
+            <I.Chevron dir="right" size={18} className="shrink-0 text-faint" />
+          </Row>
+          <Row
+            title="Set up Orbit OS on a TV"
+            note="Put Orbit OS on another TV from this phone."
+            onPress={() => {
+              haptic("light");
+              onClose();
+              openSetup("install");
+            }}
+          >
+            <I.Chevron dir="right" size={18} className="shrink-0 text-faint" />
+          </Row>
+        </div>
+      </section>
 
       <AnywhereCard onDone={onClose} />
 

@@ -208,3 +208,87 @@ export const Eye = (p: P) => (
     <circle cx="12" cy="12" r="2.7" />
   </Svg>
 );
+
+// ---- Orbit Setup ----
+
+/** The setup's own back and forward arrows: taller than the remote's chevrons, as the canvas draws them. */
+export const Caret = ({ dir = "left", ...p }: P & { dir?: "left" | "right" }) => (
+  <Svg {...p}>
+    <path d={dir === "left" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"} />
+  </Svg>
+);
+export const Cast = (p: P) => (
+  <Svg {...p}>
+    <path d="M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6" />
+    <path d="M2 12a9 9 0 0 1 9 9" />
+    <path d="M2 16a5 5 0 0 1 5 5" />
+    <path d="M2.5 20.5h.01" />
+  </Svg>
+);
+export const Usb = (p: P) => (
+  <Svg {...p}>
+    <rect x="9" y="2.5" width="6" height="5" />
+    <rect x="6.5" y="7.5" width="11" height="14" rx="2.5" />
+    <path d="M10.5 12h3" />
+  </Svg>
+);
+export const Mic = (p: P) => (
+  <Svg {...p}>
+    <rect x="9" y="3" width="6" height="11" rx="3" />
+    <path d="M5.5 11a6.5 6.5 0 0 0 13 0" />
+    <path d="M12 17.5v3.5" />
+  </Svg>
+);
+/** A TV with its aerial: channels, and Orbit Live TV. */
+export const Channels = (p: P) => (
+  <Svg {...p}>
+    <rect x="3" y="7.5" width="18" height="13" rx="2" />
+    <path d="M8 3l4 4.5L16 3" />
+  </Svg>
+);
+export const Shield = (p: P) => (
+  <Svg {...p}>
+    <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
+    <path d="M9 12l2 2 4-4" />
+  </Svg>
+);
+export const Remote = (p: P) => (
+  <Svg {...p}>
+    <rect x="7" y="2.5" width="10" height="19" rx="5" />
+    <circle cx="12" cy="8" r="2" />
+    <path d="M10 13h4" />
+    <path d="M10 16h4" />
+  </Svg>
+);
+export const Undo = (p: P) => (
+  <Svg {...p}>
+    <path d="M3 12a9 9 0 1 0 3-6.7" />
+    <path d="M3 3v5h5" />
+  </Svg>
+);
+export const Phone = (p: P) => (
+  <Svg {...p}>
+    <rect x="6.5" y="2.5" width="11" height="19" rx="2.5" />
+    <path d="M10.5 18.5h3" />
+  </Svg>
+);
+export const Person = (p: P) => (
+  <Svg {...p}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 20.5c1.6-3.6 4.5-5.5 8-5.5s6.4 1.9 8 5.5" />
+  </Svg>
+);
+/** Orbit Home: a planet in its ring. */
+export const Planet = (p: P) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="5" />
+    <ellipse cx="12" cy="12" rx="10.5" ry="3.6" transform="rotate(-18 12 12)" />
+  </Svg>
+);
+export const Alert = (p: P) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 7.6v5.2" />
+    <path d="M12 16.4h.01" />
+  </Svg>
+);

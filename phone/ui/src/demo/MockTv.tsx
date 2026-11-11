@@ -26,6 +26,9 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
   const [menu, setMenu] = useState(0);
   // Help mode: the note the TV shows while someone can see its screen.
   const [watched, setWatched] = useState(false);
+  // Orbit Setup: Android's own question while the phone waits for Allow, and the name the greeting now says.
+  const [asking, setAsking] = useState(false);
+  const [greetName, setGreetName] = useState("");
   const timers = useRef<Record<string, number>>({});
 
   const later = (name: string, ms: number, f: () => void) => {
@@ -53,6 +56,12 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
           break;
         case "help":
           setWatched(m.on);
+          break;
+        case "adb":
+          setAsking(m.on);
+          break;
+        case "greetname":
+          setGreetName(m.name);
           break;
         case "home":
           setApp(null);
@@ -110,6 +119,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
         <motion.div animate={{ opacity: code ? 0 : 1, y: code ? "1.4cqw" : 0 }} transition={{ duration: code ? 0.38 : 0.52 }}>
           <div className="absolute inset-x-0 top-[6%] text-center font-display font-light text-white/90" style={{ fontSize: "4.6cqw" }}>
             {greeting()}
+            {greetName ? `, ${greetName}` : ""}
           </div>
           <div className="absolute inset-x-0 top-[17%] text-center text-white/55" style={{ fontSize: "1.6cqw" }}>
             Hello, I wish you a wonderful day
@@ -241,6 +251,30 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
             <motion.div key={cursor.click} className="absolute inset-[18%] rounded-full border border-white" initial={{ scale: 1, opacity: cursor.click ? 1 : 0 }} animate={{ scale: 2.2, opacity: 0 }} transition={{ duration: 0.45 }} />
           </AnimatePresence>
         </motion.div>
+
+        <AnimatePresence>
+          {asking && (
+            <motion.div className="absolute inset-0 grid place-items-center bg-black/55" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                className="w-[40%] rounded-[1cqw] bg-[#2b2f3a] p-[1.6cqw] text-white shadow-2xl"
+                style={{ fontSize: "1.3cqw" }}
+                initial={{ scale: 0.92 }}
+                animate={{ scale: 1 }}
+                transition={spring}
+              >
+                <div className="font-semibold" style={{ fontSize: "1.7cqw" }}>Allow USB debugging?</div>
+                <div className="mt-[0.6cqw] text-white/70">The computer's RSA key fingerprint is shown here.</div>
+                <div className="mt-[0.8cqw] flex items-center gap-[0.6cqw] rounded-[0.5cqw] px-[0.6cqw] py-[0.4cqw] ring-2 ring-[#74d1ff]/70">
+                  <span className="h-[1.3cqw] w-[1.3cqw] rounded-[0.25cqw] bg-[#74d1ff]" /> Always allow from this computer
+                </div>
+                <div className="mt-[1cqw] flex justify-end gap-[0.8cqw]">
+                  <span className="px-[1cqw] py-[0.4cqw] text-white/70">Cancel</span>
+                  <span className="rounded-[0.5cqw] bg-white px-[1.2cqw] py-[0.4cqw] font-semibold text-black">Allow</span>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {asleep && (

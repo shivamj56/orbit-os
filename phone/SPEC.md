@@ -284,6 +284,6 @@ with that token, as after a normal pairing.
 ### What the page keeps
 
 The page's catalog (`phone/ui/src/setup/catalog.json`) says, for each known package, what it is in plain words, its
-group and whether it is safe to switch off, plus which question keeps it. Unknown packages are never touched. For a
-TV model the catalog knows (from `devices/`), its list is the starting point; for any other TV only packages the
-catalog marks safe are offered.
+group and whether it is safe to switch off, plus which question keeps it. Unknown packages are never touched: every package
+in the catalog is one that is safe to switch off, and only those are offered on any TV. A model the catalog knows (from
+`devices/`) adds its own rules, such as packages that must go together.

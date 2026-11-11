@@ -2,6 +2,7 @@
 // and tells the demo's TV picture what happened through window events ("orbit-mock").
 import type { Account, AppEntry, Message, Status, TvState } from "./bridge";
 import { MockScreen } from "./mock-screen";
+import { createSetupMock } from "./mock-setup";
 
 export type MockEvent =
   | { type: "focus"; index: number }
@@ -19,7 +20,10 @@ export type MockEvent =
   | { type: "overlay"; text: string }
   | { type: "menu"; index: number }
   | { type: "help"; on: boolean }
-  | { type: "sleep" };
+  | { type: "sleep" }
+  /** Orbit Setup: Android's "Allow USB debugging?" on the TV, and the greeting's new name. */
+  | { type: "adb"; on: boolean }
+  | { type: "greetname"; name: string };
 
 /** The pretend TV's Settings list (its rows move with up and down, as on the TV). */
 export const MOCK_SETTINGS = ["Network & Internet", "Accounts & Sign In", "Apps", "Display & Sound", "Remotes & Accessories", "System"];
@@ -72,6 +76,8 @@ function banner(label: string, tint: [string, string]): string {
 export function createMock(deliver: (m: Message) => void): (text: string) => void {
   let token: string | null = null;
   try {
+    // ?fresh is a TV that has never seen Orbit (mock-setup.ts): no phone is paired with it yet.
+    if (new URLSearchParams(location.search).has("fresh")) localStorage.removeItem(TOKEN_KEY);
     token = localStorage.getItem(TOKEN_KEY);
   } catch {
     token = null;
@@ -168,12 +174,35 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
   };
 
   const find = () => {
-    setStatus({ state: "searching", found: [], tv: null });
+    setStatus({ state: "searching", found: [], tv: null, error: null });
     later(1400, () => {
+      // A TV without Orbit OS has no door to find: the phone keeps looking (and offers Orbit Setup).
+      if (!setup.orbitOn()) return;
       if (token) connected();
       else setStatus({ state: "found", found: [TV] });
     });
   };
+
+  // Orbit Setup's ops: the TV's debugging connection, its apps and its scripts.
+  const setup = createSetupMock({
+    tv: TV,
+    deliver,
+    show: (e) => show(e),
+    adopt: (given) => {
+      token = given;
+      try {
+        localStorage.setItem(TOKEN_KEY, given);
+      } catch {
+        /* paired until reload */
+      }
+      connected();
+      return status;
+    },
+    gone: () => {
+      window.clearInterval(ticking);
+      if (status.state === "connected" && status.via !== "cloud") setStatus({ state: "offline", error: "The TV does not answer." });
+    },
+  });
 
   // An app comes to the front: only Netflix has something paused in it, as a person's TV would.
   const open = (i: number) => {
@@ -407,6 +436,7 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
       case "settings":
         return reply(id, {});
       default:
+        if (setup.handle(id, op, args)) return;
         return fail(id, `Unknown op ${op}`, 400);
     }
   };

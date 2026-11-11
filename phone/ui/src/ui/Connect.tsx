@@ -2,9 +2,10 @@ import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { bridge, BridgeError, cloud, haptic, type Status, type TvRef } from "../bridge";
 import { Globe } from "../globe/Globe";
+import { openSetup } from "../setup/flow";
 import { setAccount, useWorld } from "../store";
 import { Press, spring } from "./kit";
-import { Globe as GlobeIcon, Tv, Wifi } from "./icons";
+import { Chevron, Globe as GlobeIcon, Planet, Tv, Wifi } from "./icons";
 
 const fade = {
   initial: { opacity: 0, y: 14, filter: "blur(6px)" },
@@ -26,6 +27,16 @@ export function Connect({ status }: { status: Status }) {
   useEffect(() => {
     if (account.tvLinked) setLinking(false);
   }, [account.tvLinked]);
+  // No TV with Orbit on this Wi-Fi: after a few seconds of looking (a saved TV usually answers sooner), offer to put
+  // Orbit OS on one.
+  const [lookedLong, setLookedLong] = useState(false);
+  useEffect(() => {
+    setLookedLong(false);
+    if (state !== "searching") return;
+    const t = window.setTimeout(() => setLookedLong(true), 2500);
+    return () => window.clearTimeout(t);
+  }, [state]);
+  const offerSetup = !linking && !pairing && (state === "offline" || (state === "searching" && lookedLong));
 
   return (
     <div className="relative flex h-full flex-col overflow-y-auto px-6 pt-[max(28px,var(--inset-top))] pb-[max(22px,var(--inset-bottom))]">
@@ -90,11 +101,45 @@ export function Connect({ status }: { status: Status }) {
 
       {!linking && !pairing && (
         <div className="mt-auto pt-5">
+          <AnimatePresence initial={false}>{offerSetup && <SetupOffer />}</AnimatePresence>
           <Anywhere onLink={() => setLinking(true)} />
           <ManualAddress />
         </div>
       )}
     </div>
+  );
+}
+
+/** Orbit Setup's way in, for a home with no Orbit TV yet. */
+function SetupOffer() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.42, ease: [0.25, 1, 0.5, 1] }}
+      className="overflow-hidden"
+    >
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.98 }}
+        transition={spring}
+        onClick={() => {
+          haptic("medium");
+          openSetup("install");
+        }}
+        className="glass mb-3 flex w-full items-center gap-3.5 rounded-[24px] p-4 text-left"
+      >
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/6 text-cyan">
+          <Planet size={22} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15.5px]">Set up Orbit OS on a TV</span>
+          <span className="mt-0.5 block text-[13px] leading-snug text-faint">No Orbit TV here yet? This phone puts it on one, over the Wi-Fi.</span>
+        </span>
+        <Chevron dir="right" size={18} className="shrink-0 text-faint" />
+      </motion.button>
+    </motion.div>
   );
 }
 
@@ -336,7 +381,7 @@ function LinkTv({ onBack }: { onBack: () => void }) {
   );
 }
 
-function GoogleMark() {
+export function GoogleMark() {
   return (
     <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
       <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" />
