@@ -86,7 +86,7 @@ function Welcome() {
         style={{ background: "radial-gradient(closest-side, rgba(116,209,255,0.14), rgba(9,12,22,0))" }}
       />
       <Brand aside={<span className="text-[13px] tracking-[0.3px] text-dusk">Setup</span>} />
-      <Rise className="relative flex items-center justify-center" style={{ height: "clamp(180px, 34vh, 300px)" }}>
+      <Rise className="relative flex items-center justify-center [@media(max-height:780px)]:!h-[140px]" style={{ height: "clamp(180px, 34vh, 300px)" }}>
         <PlanetArt />
       </Rise>
       <Rise className="relative flex flex-col gap-3">
@@ -100,7 +100,9 @@ function Welcome() {
           <Need icon={<I.Wifi size={22} className="text-cyan" />}>The TV is on, and on the same Wi-Fi as this phone</Need>
           <Need icon={<I.Remote size={22} className="text-ice" />}>The TV's remote is in your hand</Need>
           <Need icon={<I.Undo size={22} className="text-lilac" />}>Everything it switches off comes back with one tap</Need>
+          <Need icon={<I.Shield size={22} className="text-mint" />}>No rooting, no firmware change: only Android's own settings</Need>
         </Card>
+        <p className="mt-2.5 px-1 text-[13px] leading-[1.4] text-dusk">TV going for repair? Use Undo everything first.</p>
       </Rise>
       <Rise className="relative mt-auto flex flex-col items-stretch gap-2 pt-6">
         <Primary onPress={start}>Start setup</Primary>

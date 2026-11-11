@@ -7,6 +7,7 @@ import { useReducedMotion } from "@/lib/hooks";
 const QA = [
   { q: "Do I need a computer?", a: "No. Orbit on your phone does everything over your home Wi-Fi. You only use the TV's remote to turn on developer mode and to press Allow once." },
   { q: "Can I go back to how my TV was?", a: "Yes. In Orbit, open Settings › This TV › Undo Orbit OS on this TV. Every app comes back on and the TV's own home screen returns." },
+  { q: "Will Orbit affect my TV's warranty?", a: "Orbit doesn't root your TV, unlock it or change its firmware. It uses Android's own developer settings, installs two ordinary apps and switches off, never deletes, the preinstalled apps you choose, and Undo puts everything back. The warranty terms are your TV maker's, so if the TV ever goes for repair, use Undo everything first and it is just as it came." },
   { q: "Will my apps and accounts keep working?", a: "Yes. Netflix, YouTube, Prime Video and every other app you use stay as they are, signed in. Orbit only changes the home screen and switches off what you choose." },
   { q: "Does Live TV cost anything?", a: "No. The 30 channels are free streams from the channels themselves. Pay channels such as Star Plus or Sony SAB open in their own apps, where you need their plan." },
   { q: "I have an iPhone. Can I use Orbit?", a: "Not yet. Orbit needs an Android phone for now. A version you can run on the TV itself is on the way." },
