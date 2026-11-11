@@ -30,11 +30,14 @@ function loadSettings(): Settings {
   }
 }
 
+const firstStatus = (): Status => ({ state: "searching", tv: null, found: [], via: "wifi", error: null });
+const noAccount = (): Account => ({ signedIn: false, email: null, tvLinked: false, tvOnline: false, tvName: null });
+
 let world: World = {
-  status: { state: "searching", tv: null, found: [], via: "wifi", error: null },
+  status: firstStatus(),
   tv: null,
   settings: loadSettings(),
-  account: { signedIn: false, email: null, tvLinked: false, tvOnline: false, tvName: null },
+  account: noAccount(),
   page: "remote",
 };
 
@@ -116,15 +119,29 @@ export function startWorld() {
   });
   bridge.on("tvstate", (tv: TvState) => set({ tv }));
   bridge.on("account", (account: Account) => set({ account }));
-  // An older app (Wi-Fi only) does not know the op: the account then stays signed out.
-  cloud.account().then(setAccount).catch(() => {});
   bridge.on("volumeKey", () => {
     /* the app already turned the TV; the next state shows it */
   });
+  greet();
+}
+
+/** Hello to whichever side plays the TV now: the account, the connection, and the phone's own settings. */
+function greet() {
+  // An older app (Wi-Fi only) does not know the op: the account then stays signed out.
+  cloud.account().then(setAccount).catch(() => {});
   bridge
     .call<Status>("hello")
     .then((status) => set({ status }))
     .catch(() => {});
   bridge.call("settings", { volumeKeys: world.settings.volumeKeys }).catch(() => {});
   bridge.call("keepAwake", { on: true }).catch(() => {});
+}
+
+/**
+ * The TV changed sides (demo mode on or off): what the screens knew about the last one goes, and the new one is asked,
+ * as at the start. Help and Orbit Setup are closed by the caller first, while their ops still reach the old side.
+ */
+export function restartWorld() {
+  set({ status: firstStatus(), tv: null, account: noAccount(), page: "remote" });
+  if (started) greet();
 }

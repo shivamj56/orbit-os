@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Orbit's mark for the splash: the system splash on Android 12+ (no icon background: 288 dp, of which the middle 192 dp
+     circle shows) and the launch window before it. The same mark, in the same place and size, is what Flutter paints
+     until the page is ready (lib/app/splash_mark.dart) and what the page's opening intro starts from
+     (phone/ui/src/intro/Intro.tsx, MARK), so they hand over without a seam. In dp from the middle: a dark glass planet
+     (r 29.33) with an ice rim; a ring 72 by 28, rolled 24 degrees, in sky, ice and lilac, its far half at 45% behind the
+     planet and its near half in front; a satellite on the near half. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="288"
+    android:viewportHeight="288">
+    <group
+        android:pivotX="144"
+        android:pivotY="144"
+        android:rotation="-24">
+        <!-- far half of the ring -->
+        <path
+            android:pathData="M72,144 A72,28 0 0,1 216,144"
+            android:strokeWidth="3.2"
+            android:strokeAlpha="0.45"
+            android:strokeLineCap="round">
+            <aapt:attr name="android:strokeColor">
+                <gradient
+                    android:startX="72"
+                    android:startY="144"
+                    android:endX="216"
+                    android:endY="144"
+                    android:type="linear">
+                    <item android:offset="0" android:color="#FF74D1FF" />
+                    <item android:offset="0.5" android:color="#FFADC6FF" />
+                    <item android:offset="1" android:color="#FFE9B3FF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+    </group>
+    <!-- the planet, lit from the upper left -->
+    <path android:pathData="M114.67,144 A29.33,29.33 0 1,0 173.33,144 A29.33,29.33 0 1,0 114.67,144 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="136.96"
+                android:centerY="133.44"
+                android:gradientRadius="46.93"
+                android:startColor="#FF1D2A56"
+                android:endColor="#FF0A0F22"
+                android:type="radial" />
+        </aapt:attr>
+    </path>
+    <!-- its ice rim -->
+    <path
+        android:pathData="M115.42,144 A28.58,28.58 0 1,0 172.58,144 A28.58,28.58 0 1,0 115.42,144 Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#8CADC6FF" />
+    <group
+        android:pivotX="144"
+        android:pivotY="144"
+        android:rotation="-24">
+        <!-- near half of the ring -->
+        <path
+            android:pathData="M216,144 A72,28 0 0,1 72,144"
+            android:strokeWidth="4.88"
+            android:strokeLineCap="round">
+            <aapt:attr name="android:strokeColor">
+                <gradient
+                    android:startX="72"
+                    android:startY="144"
+                    android:endX="216"
+                    android:endY="144"
+                    android:type="linear">
+                    <item android:offset="0" android:color="#FF74D1FF" />
+                    <item android:offset="0.5" android:color="#FFADC6FF" />
+                    <item android:offset="1" android:color="#FFE9B3FF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- the satellite: a white core in a cold glow -->
+        <path android:pathData="M194.05,160.02 A9,9 0 1,0 212.05,160.02 A9,9 0 1,0 194.05,160.02 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="203.05"
+                    android:centerY="160.02"
+                    android:gradientRadius="9"
+                    android:type="radial">
+                    <item android:offset="0" android:color="#FFFFFFFF" />
+                    <item android:offset="0.4" android:color="#CC74D1FF" />
+                    <item android:offset="1" android:color="#0074D1FF" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M200.05,160.02 A3,3 0 1,0 206.05,160.02 A3,3 0 1,0 200.05,160.02 Z" />
+    </group>
+</vector>

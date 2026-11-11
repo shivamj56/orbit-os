@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import '../cloud/account.dart';
 import '../cloud/backend.dart';
 import '../cloud/cloud_tv.dart';
+import '../cloud/drive.dart';
 import 'help_mode.dart';
 import 'models.dart';
 import 'tv_link.dart';
@@ -56,6 +57,7 @@ class TvRemote {
   String? _accountText;
   bool _connectedSent = false;
   bool _inFront = true;
+  bool _demo = false;
 
   /// Completes once Firebase has started or failed (the account ops wait for it).
   Future<void> get cloudReady => _cloudSettled.future;
@@ -73,7 +75,7 @@ class TvRemote {
       ..onTvState = (state) {
         if (onCloud) onTvState?.call(state);
       }
-      ..inFront = _inFront;
+      ..inFront = _inFront && !_demo;
     account.start();
     cloud.start();
     if (!_cloudSettled.isCompleted) _cloudSettled.complete();
@@ -216,10 +218,28 @@ class TvRemote {
   /// The app came to the front or left it: polls, the heartbeat and help mode follow (help ends in the background).
   void setForeground(bool inFront) {
     _inFront = inFront;
-    wifi.setForeground(inFront);
-    _cloud?.inFront = inFront;
+    _applyFront();
+  }
+
+  /// Demo mode (phone/SPEC.md, "Demo mode"): the page plays with its pretend TV, so the real one is left alone, as if
+  /// the app were in the background: no polls, no search of the Wi-Fi, no `watch` heartbeat, help off. The bridge
+  /// refuses every TV op meanwhile.
+  bool get demo => _demo;
+
+  void setDemo(bool on) {
+    if (_demo == on) return;
+    _demo = on;
+    _applyFront();
+    // A start of the app in demo mode left the saved TV unread; now it is read and checked.
+    if (!on) unawaited(wifi.start());
+  }
+
+  void _applyFront() {
+    final front = _inFront && !_demo;
+    wifi.setForeground(front);
+    _cloud?.inFront = front;
     _refresh();
-    help.inFront = inFront;
+    help.inFront = front;
   }
 
   // ---- the account ----
@@ -266,6 +286,48 @@ class TvRemote {
     await _cloud!.unlink();
     _refresh();
     return accountJson;
+  }
+
+  // ---- backups in Google Drive, and deleting the account ----
+
+  /// The Google account backups go to: the one signed in. Throws [DriveError] `noAccount`.
+  Future<String> backupEmail() async {
+    await cloudReady;
+    final account = _account;
+    final email = account?.email;
+    if (account == null || !account.signedIn || email == null) {
+      throw const DriveError(
+        'noAccount',
+        'Sign in with Google first. Orbit keeps the backups in that account\'s own Google Drive.',
+      );
+    }
+    return email;
+  }
+
+  /// `deleteAccount`: the TV backups in Drive when [backups] (before anything else, so a Drive that says no stops it all),
+  /// everything the cloud keeps under the account, then the Firebase user itself, and sign-out.
+  Future<Map<String, Object?>> deleteAccount({required bool backups, DriveBackups? drive}) async {
+    final account = await _cloudAccount();
+    final email = account.email;
+    if (!account.signedIn || email == null) throw const OpError(401, 'Sign in with Google first.');
+    int? removed;
+    if (backups) {
+      if (drive == null) throw const DriveError('auth', 'Google Drive is not available in this build of Orbit.');
+      removed = await drive.deleteAll(email);
+    }
+    final cloud = _cloud!;
+    await cloud.eraseAll();
+    try {
+      await account.deleteUser();
+    } on SignInFailed catch (e) {
+      cloud.resume();
+      throw OpError(e.cancelled ? 499 : (e.offline ? 0 : 401), e.words);
+    } on Object {
+      cloud.resume();
+      rethrow;
+    }
+    _refresh();
+    return {'removed': removed, 'account': accountJson};
   }
 
   Future<CloudAccount> _cloudAccount() async {

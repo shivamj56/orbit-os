@@ -6,6 +6,7 @@ import '../bridge/orbit_bridge.dart';
 import '../cloud/account.dart';
 import '../cloud/backend.dart';
 import '../cloud/cloud_tv.dart';
+import '../cloud/drive.dart';
 import '../cloud/firebase_backend.dart';
 import '../cloud/google_identity.dart';
 import '../native/native_host.dart';
@@ -17,15 +18,20 @@ import '../tv/subnet_scan.dart';
 import '../tv/tv_client.dart';
 import '../tv/tv_link.dart';
 import '../tv/tv_store.dart';
+import 'demo_store.dart';
 import 'orbit_screen.dart';
 import 'theme.dart';
 
 /// Orbit: the link to the TV, the bridge to the page, and the one screen. No Material: the page is the interface.
 class OrbitApp extends StatefulWidget {
-  const OrbitApp({super.key, required this.firebase});
+  const OrbitApp({super.key, required this.firebase, required this.demoStore, this.demo = false});
 
   /// Firebase starting (null when it could not): the cloud path joins when it is up; the Wi-Fi path never waits.
   final Future<FirebaseBackend?> firebase;
+
+  /// Demo mode, as the person left it (read before the app starts), and where it is kept.
+  final DemoStore demoStore;
+  final bool demo;
 
   @override
   State<OrbitApp> createState() => _OrbitAppState();
@@ -36,6 +42,10 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
   late final TvLink _link;
   late final TvRemote _remote;
   late final OrbitBridge _bridge;
+
+  /// Google's sign-in and, on the same account, the Drive access for backups (google_sign_in is set up once).
+  final PluginGoogleIdentity _google = PluginGoogleIdentity(serverClientId: CloudConfig.webClientId);
+  late final DriveBackups _drive = DriveBackups(authorizer: _google);
 
   @override
   void initState() {
@@ -52,14 +62,18 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
       native: _native,
       icons: IconCache(directory: _native.cacheDirectory),
       setup: PlatformSetupHost(),
+      drive: _drive,
+      demoStore: widget.demoStore,
     );
+    // A start in demo mode leaves the real TV alone from the first moment: its saved TV is not even read yet.
+    if (widget.demo) _remote.setDemo(true);
     unawaited(_startCloud());
     WidgetsBinding.instance.addObserver(this);
     final now = WidgetsBinding.instance.lifecycleState;
     if (now != null && now != AppLifecycleState.resumed && now != AppLifecycleState.inactive) {
       _bridge.lifecycle(resumed: false);
     }
-    unawaited(_link.start());
+    if (!widget.demo) unawaited(_link.start());
   }
 
   Future<void> _startCloud() async {
@@ -69,10 +83,7 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
       _remote.cloudUnavailable();
       return;
     }
-    final account = CloudAccount(
-      auth: backend,
-      google: PluginGoogleIdentity(serverClientId: CloudConfig.webClientId),
-    );
+    final account = CloudAccount(auth: backend, google: _google);
     _remote.attachCloud(account, CloudTv(db: backend, account: account));
   }
 
@@ -92,6 +103,7 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _drive.close();
     _remote.dispose();
     super.dispose();
   }

@@ -60,6 +60,35 @@ class CloudAccount {
     }
   }
 
+  /// Deletes this Firebase user (phone/SPEC.md, "Deleting the account"). When Firebase wants a recent sign-in, Google
+  /// vouches again (quietly if it can, else its sheet), for the same account only. Then Google forgets Orbit (its
+  /// permissions too) and this phone is signed out. Throws [SignInFailed].
+  Future<void> deleteUser() async {
+    if (!signedIn) return;
+    try {
+      await _auth.deleteUser();
+    } on RecentLoginRequired {
+      final google = await _google.refresh() ?? await _google.signIn();
+      if (!_sameAccount(google)) {
+        throw SignInFailed('Choose ${_user?.email ?? 'the account Orbit is signed in with'} to delete it.');
+      }
+      await _auth.reauthenticateWithGoogleIdToken(google.token);
+      try {
+        await _auth.deleteUser();
+      } on RecentLoginRequired {
+        throw const SignInFailed('Google did not confirm it is you. Try again.');
+      }
+    }
+    _idToken = null;
+    await _google.revoke();
+    try {
+      await _auth.signOut();
+    } on Object catch (e) {
+      debugPrint('orbit: sign-out after delete: $e');
+    }
+    _take(null);
+  }
+
   /// A Google ID token for this account with at least [tokenMargin] left: the kept one, else a new one from Google
   /// without asking, else from Google's sheet. Throws [SignInFailed].
   ///

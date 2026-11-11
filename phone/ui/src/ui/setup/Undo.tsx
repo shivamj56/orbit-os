@@ -1,6 +1,7 @@
 // Undo Orbit OS on a TV: what will come back, the run of orbit-undo.sh, and how it went. Developer mode and Allow are
 // the setup's own screens (Setup.tsx), shown again when the debugging connection is not open.
-import { back, closeSetup, confirmUndo, finishUndo, setCloseDev, tvName, undoAgain, useSetup } from "../../setup/flow";
+import { back, closeSetup, confirmUndo, finishUndo, knownUndo, setCloseDev, tvName, undoAgain, useSetup } from "../../setup/flow";
+import { when } from "./Backup";
 import { undoRows, whatStopped } from "../../setup/lines";
 import { disabledByRecord } from "../../setup/plan";
 import * as I from "../icons";
@@ -41,12 +42,14 @@ export function UndoConfirm() {
       </Screen>
     );
   }
-  const lines = f.record && !f.record.undone ? f.record.undo : [];
+  // This phone's record, and a backup's from Google Drive when Undo started from one.
+  const lines = knownUndo(f);
   const apps = disabledByRecord(lines).length;
   const home = lines.some((l) => l.startsWith("home "));
-  const removes = lines.some((l) => /^uninstall com\.gathin\./.test(l));
+  const removes = lines.some((l) => /^uninstall (com\.gathin\.|dev\.shiv\.orbit\.)/.test(l));
   const settings = lines.some((l) => /^(a11y|a11y_on|setting) /.test(l));
   const open = f.conn.state === "connected";
+  const from = f.fromBackup;
   return (
     <Screen label="Undo Orbit OS" top={28}>
       <UndoBrand />
@@ -58,11 +61,13 @@ export function UndoConfirm() {
       <Rise className="mt-[18px] flex flex-col gap-2.5">
         <Title>Undo Orbit OS on {shown}</Title>
         <Lead>
-          {!f.recordLoaded
+          {!f.recordLoaded && !from
             ? "Looking for what Orbit changed on this TV."
-            : lines.length
-              ? "Orbit puts back what it changed on this TV:"
-              : "This phone has no record of setting this TV up. Orbit uses the record the TV keeps of what changed."}
+            : from
+              ? `Orbit puts back what it changed on this TV, from the backup of ${when(from.at)} in your Google Drive:`
+              : lines.length
+                ? "Orbit puts back what it changed on this TV:"
+                : "This phone has no record of setting this TV up. Orbit uses the record the TV keeps of what changed."}
         </Lead>
       </Rise>
       {!f.recordLoaded ? (

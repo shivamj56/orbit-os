@@ -173,6 +173,25 @@ const UNDO_ROWS: RowSpec[] = [
   { key: "apps", ids: ["apps"], main: "apps" },
 ];
 
+/** Which home screen `orbit-setup.sh switch` makes Home: the TV's own ("stock"), or Orbit Home ("orbit"). */
+export type HomeChoice = "stock" | "orbit";
+
+function switchWords(to: HomeChoice): Record<string, StepWords> {
+  return {
+    switch:
+      to === "stock"
+        ? { doing: "Bringing back the TV's own home screen", done: "The TV's own home screen is Home", fail: "The TV's own home screen did not come back" }
+        : { doing: "Making Orbit Home the home screen", done: "Orbit Home is Home again", fail: "Orbit Home did not become Home" },
+  };
+}
+
+const SWITCH_ROWS: RowSpec[] = [{ key: "switch", ids: ["switch"], main: "switch" }];
+
+/** The switch screen's list, from what `orbit-setup.sh switch stock|orbit` has said so far. */
+export function switchRows(run: Run, to: HomeChoice): Row[] {
+  return rowsFrom(SWITCH_ROWS, switchWords(to), run);
+}
+
 /** "some_step" said by a script this page does not know yet: shown as the script names it. */
 function wordsFor(id: string, run: Run): StepWords {
   const said = run.steps[id]?.text || id.replace(/[_-]+/g, " ");
@@ -220,10 +239,20 @@ export function undoRows(run: Run): Row[] {
 }
 
 /** The plain words for the step that stopped a run (or the run's own last word). */
-export function whatStopped(run: Run, kind: "install" | "undo", disableCount = 0): { text: string; detail?: string } {
-  const rows = kind === "install" ? installRows(run, disableCount) : undoRows(run);
+export function whatStopped(
+  run: Run,
+  kind: "install" | "undo" | "switch",
+  disableCount = 0,
+  to: HomeChoice = "stock",
+): { text: string; detail?: string } {
+  const rows = kind === "install" ? installRows(run, disableCount) : kind === "undo" ? undoRows(run) : switchRows(run, to);
   const row = rows.find((r) => r.state === "fail");
   if (row) return { text: row.text, detail: row.detail ?? (run.done?.text && run.done.text !== row.text ? run.done.text : undefined) };
   if (run.done?.text) return { text: run.done.text };
-  return { text: kind === "install" ? "The setup stopped before it finished" : "Undo stopped before it finished" };
+  // A script from before `switch` answers with its usage line and stops.
+  if (kind === "switch" && run.log.some((l) => /\busage:/.test(l))) return { text: "This copy of Orbit Setup cannot switch the home screen" };
+  return { text: kind === "install" ? "The setup stopped before it finished" : kind === "undo" ? "Undo stopped before it finished" : "The switch stopped before it finished" };
 }
+
+/** A run that went well: its "done ok", and no step that failed. */
+export const runWentWell = (run: Run): boolean => run.done?.ok === true && !run.order.some((id) => run.steps[id].state === "fail");

@@ -2,6 +2,8 @@
 <resources>
     <!-- Behind everything until the page paints (lib/app/theme.dart OrbitColors.background). -->
     <color name="orbit_background">#FF05060A</color>
+    <!-- The splash and the opening intro's night (phone/ui/src/intro/shader.ts), a shade bluer than the page. -->
+    <color name="orbit_night">#FF05070D</color>
     <color name="orbit_ring">#FF8A9BFF</color>
     <color name="orbit_ring_back">#8C6F7CFF</color>
     <color name="orbit_satellite">#FF6EE7F9</color>

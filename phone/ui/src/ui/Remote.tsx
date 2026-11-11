@@ -3,11 +3,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { haptic, tv, type Key, type Status, type TvState } from "../bridge";
 import { Globe, type Dir } from "../globe/Globe";
 import { openHelp, patchTv, updateSettings, useWorld } from "../store";
+import { openSettings } from "./panel";
+import { ORBIT_HOMES } from "../setup/plan";
 import * as I from "./icons";
 import { Press, Toast, spring } from "./kit";
-import { AppsSheet, PlayerSheet, SettingsSheet, SleepSheet, TypeSheet, useIcon } from "./Sheets";
+import { AppsSheet, PlayerSheet, SleepSheet, TypeSheet, useIcon } from "./Sheets";
 
-type SheetName = "apps" | "type" | "player" | "settings" | "sleep" | null;
+type SheetName = "apps" | "type" | "player" | "sleep" | null;
 
 /** The remote: the TV's name and what is on, the globe in the middle, the three keys, and the dock. */
 export function Remote({ status }: { status: Status }) {
@@ -56,7 +58,7 @@ export function Remote({ status }: { status: Status }) {
               Help
             </span>
           </Press>
-          <Press label="Settings" onPress={() => setSheet("settings")} className="glass h-11 w-11 shrink-0 rounded-full text-muted">
+          <Press label="Settings" onPress={openSettings} className="glass h-11 w-11 shrink-0 rounded-full text-muted">
             <I.Gear size={20} />
           </Press>
         </div>
@@ -124,7 +126,6 @@ export function Remote({ status }: { status: Status }) {
       <AppsSheet open={sheet === "apps"} onClose={() => setSheet(null)} onLaunched={(label) => say(`Opening ${label}`)} onFail={fail} />
       <TypeSheet open={sheet === "type"} onClose={() => setSheet(null)} onDone={say} onFail={fail} />
       <PlayerSheet open={sheet === "player"} onClose={() => setSheet(null)} state={state} onFail={fail} />
-      <SettingsSheet open={sheet === "settings"} onClose={() => setSheet(null)} status={status} />
       <SleepSheet
         open={sheet === "sleep"}
         onClose={() => setSheet(null)}
@@ -138,7 +139,7 @@ export function Remote({ status }: { status: Status }) {
 }
 
 function NowPlaying({ state, onOpen, onFail }: { state: TvState | null; onOpen: () => void; onFail: (e: unknown) => void }) {
-  const pkg = state?.pkg && state.pkg !== "com.gathin.tvhome" ? state.pkg : null;
+  const pkg = state?.pkg && !ORBIT_HOMES.has(state.pkg) ? state.pkg : null;
   const art = useIcon(pkg);
   const hasMedia = !!state?.title;
   const head = hasMedia ? state!.title : state?.app || "Home";

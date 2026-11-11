@@ -18,6 +18,7 @@ class CloudTimings {
     this.pointerGap = const Duration(milliseconds: 100),
     this.lateAnswer = const Duration(seconds: 30),
     this.staleScreen = const Duration(seconds: 30),
+    this.unlinkWait = const Duration(seconds: 6),
   });
 
   /// A command's answer (`res`), from the moment it is written. The SPEC's "gives up after 8 s", a second early, so these
@@ -41,6 +42,9 @@ class CloudTimings {
 
   /// A `screen` picture older than this (by the database's clock) is left over from an earlier help, not shown.
   final Duration staleScreen;
+
+  /// Deleting the account: how long the TV is given to unlink itself before its data goes from under it.
+  final Duration unlinkWait;
 }
 
 /// The account's TV in the Realtime Database (phone/SPEC.md, "From anywhere: Firebase"): whether one is linked and
@@ -73,6 +77,7 @@ class CloudTv {
   bool _active = false;
   bool _inFront = true;
   bool _screenOn = false;
+  bool _erasing = false;
   bool _started = false;
   final List<StreamSubscription<Object?>> _presence = [];
   StreamSubscription<bool>? _connectedSub;
@@ -135,6 +140,7 @@ class CloudTv {
   /// Watches [uid]'s TV (nothing when signed out).
   void follow(String? uid) {
     if (uid == _uid) return;
+    _erasing = false;
     _stopPresence();
     _stopActive();
     _uid = uid;
@@ -245,6 +251,45 @@ class CloudTv {
     _onlineAt = null;
     _state = null;
     _changed();
+  }
+
+  /// Deleting the account (phone/SPEC.md, "Deleting the account"): a TV that is online is asked to unlink (it deletes
+  /// its `tv` and forgets the account, back to showing a link code) and given a moment, then everything under
+  /// `orbit/{uid}` goes: the TV's name, state and presence, `watch`, commands and answers, and help's `screen`.
+  Future<void> eraseAll() async {
+    final uid = _uid;
+    if (uid == null || !_account.signedIn) throw const OpError(401, 'Sign in with Google first.');
+    final wasLinked = linked && online;
+    _erasing = true;
+    _syncActive();
+    try {
+      if (wasLinked) {
+        await _db.update('orbit/$uid/tv', {'unlink': true}).timeout(const Duration(seconds: 5));
+        try {
+          await _db.values('orbit/$uid/tv/name').firstWhere((v) => v == null).timeout(timings.unlinkWait);
+        } on TimeoutException {
+          // The TV did not answer in time: its data goes anyway, and it can no longer sign in as the account.
+        }
+      }
+      await _db.remove('orbit/$uid').timeout(const Duration(seconds: 8));
+    } on TimeoutException {
+      resume();
+      throw const OpError(0, 'No internet on the phone. Try again when it is back.');
+    } on CloudDenied {
+      resume();
+      throw const OpError(403, 'The cloud did not take that. Sign in again, then try again.');
+    }
+    _name = null;
+    _onlineAt = null;
+    _state = null;
+    _changed();
+  }
+
+  /// The account was not deleted after all: this phone may use the cloud path again.
+  void resume() {
+    if (!_erasing) return;
+    _erasing = false;
+    _syncActive();
   }
 
   // ---- commands ----
@@ -402,7 +447,8 @@ class CloudTv {
 
   void _syncActive() {
     final uid = _uid;
-    final watching = _inFront && uid != null;
+    // While the account's data is being deleted nothing of this phone's may write it again (the heartbeat).
+    final watching = _inFront && uid != null && !_erasing;
     if (watching && (_active || _screenOn)) {
       if (_heartbeat == null) {
         _beat();
@@ -444,7 +490,7 @@ class CloudTv {
 
   void _beat() {
     final uid = _uid;
-    if (uid == null) return;
+    if (uid == null || _erasing) return;
     unawaited(_quietly(_db.set('orbit/$uid/watch', kServerTimestamp)));
   }
 

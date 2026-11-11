@@ -1,5 +1,8 @@
 package dev.shiv.orbit
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.view.KeyEvent
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -13,9 +16,10 @@ import io.flutter.plugin.common.MethodChannel
  *   shows, and each press (auto-repeat included) goes to Dart as `volumeKey`;
  * - Back with nowhere to go back to moves the task behind (like Home) instead of finishing it, so Orbit opens again
  *   at once, still connected;
- * - the cache directory for app pictures.
+ * - the cache directory for app pictures;
+ * - Orbit's public pages (privacy policy, account deletion) in the phone's browser: the WebView never leaves the page.
  *
- * Channel `dev.shiv.orbit/native`: Dart -> here `setVolumeKeys(bool)`, `moveTaskToBack`, `cacheDir`;
+ * Channel `dev.shiv.orbit/native`: Dart -> here `setVolumeKeys(bool)`, `moveTaskToBack`, `cacheDir`, `openUrl(String)`;
  * here -> Dart `volumeKey({"dir": "up"|"down", "repeat": n})`.
  */
 class MainActivity : FlutterActivity() {
@@ -40,6 +44,20 @@ class MainActivity : FlutterActivity() {
                     result.success(null)
                 }
                 "cacheDir" -> result.success(cacheDir.absolutePath)
+                // Dart only sends https links to Orbit's own pages (OrbitBridge.isPublicLink).
+                "openUrl" -> {
+                    val url = call.arguments as? String
+                    if (url == null || !url.startsWith("https://")) {
+                        result.success(false)
+                    } else {
+                        try {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE))
+                            result.success(true)
+                        } catch (e: ActivityNotFoundException) {
+                            result.success(false)
+                        }
+                    }
+                }
                 else -> result.notImplemented()
             }
         }

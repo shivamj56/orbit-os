@@ -3,6 +3,9 @@
 // them. It follows the same events as the demo's TV picture (demo/MockTv.tsx), and knows what a click there hits.
 import type { MockEvent } from "./mock";
 
+/** The Control Center's tiles (mock.ts MOCK_CONTROL; kept here so this file needs nothing else of mock.ts). */
+const CONTROL = ["Settings", "Wi-Fi", "Bluetooth", "Picture", "Sound", "Sleep timer"];
+
 export interface ScreenApp {
   label: string;
   tint: [string, string];
@@ -41,6 +44,8 @@ export class MockScreen {
   private cursor: { x: number; y: number; until: number } | null = null;
   private clickAt = 0;
   private asleepUntil = 0;
+  /** The Control Center's chosen tile, -1 while it is closed. */
+  private control = -1;
   private readonly canvas = document.createElement("canvas");
   private readonly g: CanvasRenderingContext2D;
 
@@ -87,6 +92,9 @@ export class MockScreen {
       case "menu":
         this.menu = e.index;
         break;
+      case "control":
+        this.control = e.index;
+        break;
       case "help":
         this.note = e.on;
         break;
@@ -100,7 +108,8 @@ export class MockScreen {
 
   /** What a click at (x, y) in TV pixels hits now. */
   hit(x: number, y: number, focus: number): ScreenHit {
-    if (Date.now() < this.asleepUntil) return null;
+    // Over the Control Center a tap does nothing yet; the remote's arrows and OK work it.
+    if (Date.now() < this.asleepUntil || this.control >= 0) return null;
     if (this.app === null) {
       // The middle card is drawn last, on top: it is asked first.
       const order = [0, -1, 1, -2, 2, -3, 3, -4, 4];
@@ -141,6 +150,7 @@ export class MockScreen {
     else if (this.app === "Settings") this.drawSettings();
     else this.drawApp(this.app, videoPlaying);
 
+    if (this.control >= 0) this.drawControl(this.control);
     if (this.overlay && now < this.overlay.until) this.drawOverlay(this.overlay.text);
     if (this.volume && now < this.volume.until) this.drawVolume(this.volume.v, this.volume.muted);
     if (this.cursor && now < this.cursor.until) this.drawPointer(this.cursor.x, this.cursor.y, now - this.clickAt);
@@ -261,6 +271,38 @@ export class MockScreen {
       g.fillStyle = on ? "#05060a" : "rgba(255,255,255,0.82)";
       g.font = `${on ? 500 : 400} 27px Inter, sans-serif`;
       g.fillText(item, LIST_X + 80, y + ROW_H / 2);
+    });
+  }
+
+  /** Orbit OS's Control Center: a glass panel on the right, two rows of three tiles, the gear first. */
+  private drawControl(chosen: number) {
+    const g = this.g;
+    const x = 760;
+    const y = 120;
+    const w = 470;
+    const h = 420;
+    g.fillStyle = "rgba(12,14,22,0.9)";
+    roundRect(g, x, y, w, h, 34);
+    g.fill();
+    g.textAlign = "left";
+    g.textBaseline = "top";
+    g.fillStyle = "rgba(255,255,255,0.92)";
+    g.font = "400 30px Outfit, Inter, sans-serif";
+    g.fillText("Control Center", x + 34, y + 30);
+    const tw = 124;
+    const th = 130;
+    CONTROL.forEach((label, i) => {
+      const tx = x + 34 + (i % 3) * (tw + 16);
+      const ty = y + 100 + Math.floor(i / 3) * (th + 18);
+      const on = i === chosen;
+      g.fillStyle = on ? "rgba(242,244,248,0.95)" : "rgba(255,255,255,0.08)";
+      roundRect(g, tx, ty, tw, th, 24);
+      g.fill();
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      g.fillStyle = on ? "#05060a" : "rgba(255,255,255,0.85)";
+      g.font = `${on ? 600 : 400} 21px Inter, sans-serif`;
+      g.fillText(label, tx + tw / 2, ty + th / 2);
     });
   }
 

@@ -282,6 +282,47 @@ void main() {
       await connection.close();
     });
 
+    test('a switch run reaches the page line by line, however the TV cuts its output, with the exit code', () async {
+      const cmd = 'sh /data/local/tmp/orbit/orbit-setup.sh switch stock';
+      final connection = await connected(
+        (p) => FakeAdbDevice(p, shell: {
+          // switch_stock's lines, cut mid-line and with the shell's \r\n, as a real TV's output arrives.
+          '$cmd; echo @orbit-exit \$?': [
+            '@orbit step switch st',
+            'art\r\non com.google.android.apps.tv.launcherx\r\n@orbit step sw',
+            'itch ok\r\n@orbit done ok\r\n',
+            '@orbit-exit 0\r\n',
+          ],
+        }),
+      );
+      final lines = <String>[];
+      final exit = await connection.run(cmd, lines.add);
+      expect(lines, ['@orbit step switch start', 'on com.google.android.apps.tv.launcherx', '@orbit step switch ok', '@orbit done ok']);
+      expect(exit, 0);
+      await connection.close();
+    });
+
+    test('a switch that stops says its fail lines, and its exit code comes even without a last newline', () async {
+      const cmd = 'sh /data/local/tmp/orbit/orbit-setup.sh switch orbit';
+      final connection = await connected(
+        (p) => FakeAdbDevice(p, shell: {
+          '$cmd; echo @orbit-exit \$?': [
+            '@orbit step switch start\n@orbit step switch fail Orbit Home is not on this TV\n',
+            '@orbit done fail Orbit Home is not on this TV\n@orbit-exit 1',
+          ],
+        }),
+      );
+      final lines = <String>[];
+      final exit = await connection.run(cmd, lines.add);
+      expect(lines, [
+        '@orbit step switch start',
+        '@orbit step switch fail Orbit Home is not on this TV',
+        '@orbit done fail Orbit Home is not on this TV',
+      ]);
+      expect(exit, 1);
+      await connection.close();
+    });
+
     test('push sends the bytes with mode 0644 and reports how many', () async {
       late FakeAdbDevice device;
       final connection = await connected((p) => device = FakeAdbDevice(p));

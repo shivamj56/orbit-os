@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { FRAG, VERT } from "./shader";
+import { introPhase, registerGlobe } from "../intro/store";
 import { axisAngle, inverseMat3, multiply, normalize, type Quat } from "./quat";
 
 export type Dir = "up" | "down" | "left" | "right";
@@ -95,8 +96,12 @@ export function Globe({ mode, asleep = false, speed = 1, onStep, onTap, onLong, 
     const box = wrap.current!;
     const gl = cv.getContext("webgl2", { antialias: false, premultipliedAlpha: true, alpha: true });
     const s = sim.current;
-    gsap.to(s.uniforms, { reveal: 1, duration: 1.8, ease: "expo.out", delay: 0.15 });
-    if (!gl) return;
+    // The first appearance, the grid drawn out from the equator: at once, or when the opening intro's planet lands here.
+    const unregister = registerGlobe({
+      el: box,
+      reveal: () => gsap.to(s.uniforms, { reveal: 1, duration: 1.8, ease: "expo.out", delay: introPhase() === "done" ? 0.15 : 0 }),
+    });
+    if (!gl) return unregister;
 
     const compile = (type: number, src: string) => {
       const sh = gl.createShader(type)!;
@@ -342,6 +347,7 @@ export function Globe({ mode, asleep = false, speed = 1, onStep, onTap, onLong, 
     raf = requestAnimationFrame(frame);
 
     return () => {
+      unregister();
       cancelAnimationFrame(raf);
       ro.disconnect();
       window.clearTimeout(longTimer);

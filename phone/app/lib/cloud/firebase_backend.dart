@@ -61,6 +61,36 @@ class FirebaseBackend implements CloudAuth, CloudDb {
   @override
   Future<void> signOut() => _auth.signOut();
 
+  @override
+  Future<void> deleteUser() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+    try {
+      await user.delete();
+    } on FirebaseAuthException catch (e) {
+      throw switch (e.code) {
+        'requires-recent-login' => const RecentLoginRequired(),
+        'network-request-failed' => const SignInFailed('No internet on the phone. Try again when it is back.', offline: true),
+        _ => SignInFailed('Firebase did not delete the account (${e.code}). Try again.'),
+      };
+    }
+  }
+
+  @override
+  Future<void> reauthenticateWithGoogleIdToken(String idToken) async {
+    final user = _auth.currentUser;
+    if (user == null) throw const SignInFailed('Sign in with Google first.');
+    try {
+      await user.reauthenticateWithCredential(GoogleAuthProvider.credential(idToken: idToken));
+    } on FirebaseAuthException catch (e) {
+      throw switch (e.code) {
+        'network-request-failed' => const SignInFailed('No internet on the phone. Try again when it is back.', offline: true),
+        'user-mismatch' => const SignInFailed('That is another Google account. Choose the one Orbit is signed in with.'),
+        _ => SignInFailed('Google\'s sign-in was not accepted (${e.code}). Try again.'),
+      };
+    }
+  }
+
   // ---- Realtime Database ----
 
   @override

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The window while Orbit starts: its background colour, nothing else (no white flash). -->
+<!-- The window while Orbit starts (before Android 12's own splash existed): the night and Orbit's mark in the middle,
+     exactly where Flutter paints it next and the page's intro starts from (drawable/splash_mark.xml). -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/orbit_background" />
+    <item android:drawable="@color/orbit_night" />
+    <item
+        android:drawable="@drawable/splash_mark"
+        android:gravity="center" />
 </layer-list>

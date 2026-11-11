@@ -4,7 +4,9 @@ import { useSetup } from "./setup/flow";
 import { startWorld, useWorld } from "./store";
 import { Connect } from "./ui/Connect";
 import { Help } from "./ui/Help";
+import { closeSettings, useSettingsOpen } from "./ui/panel";
 import { Remote } from "./ui/Remote";
+import { SettingsSheet } from "./ui/Sheets";
 import { Setup } from "./ui/setup/Setup";
 
 /** The room behind everything: the TV's halo ribbon along the top edge, and two low lights. */
@@ -24,6 +26,7 @@ export function App() {
   const { status, page } = useWorld();
   // Orbit Setup comes over everything while it is open: the TV it sets up connects half way, and setup still goes on.
   const setup = useSetup().open;
+  const settings = useSettingsOpen();
   const view = setup ? "setup" : status.state !== "connected" ? "connect" : page === "help" ? "help" : "remote";
   return (
     <div className="grain relative h-full overflow-hidden bg-ink">
@@ -48,6 +51,7 @@ export function App() {
           )}
         </motion.div>
       </AnimatePresence>
+      <SettingsSheet open={settings && !setup} onClose={closeSettings} status={status} />
     </div>
   );
 }

@@ -64,6 +64,14 @@ class FakeNative implements NativeHost {
 
   @override
   Future<Directory?> cacheDirectory() async => cache;
+
+  final List<String> opened = [];
+
+  @override
+  Future<bool> openUrl(String url) async {
+    opened.add(url);
+    return true;
+  }
 }
 
 /// A link whose discovery scans only 127.0.0.1 at [tv]'s port, with [nsd] for mDNS.

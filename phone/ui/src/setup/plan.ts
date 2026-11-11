@@ -3,8 +3,11 @@
 // (coreRe, unless coreOk) or on neverOff.
 import type { Answer, Catalog, CatalogQuestion } from "./catalog";
 
-/** Orbit Home, the home screen the setup installs: never the TV's "stock" launcher. */
-export const ORBIT_HOME = "com.gathin.tvhome";
+/** Orbit Home, the home screen the setup installs: never the TV's "stock" launcher (phone/SPEC.md, "The apps' ids"). */
+export const ORBIT_HOME = "dev.shiv.orbit.home";
+
+/** Orbit Home under its id and under the one it had before 11 Nov: a TV may still run the earlier one. */
+export const ORBIT_HOMES: ReadonlySet<string> = new Set([ORBIT_HOME, "com.gathin.tvhome"]);
 
 /** The packages in `pm list packages` output ("package:com.example.app" lines; anything else is ignored). */
 export function parsePackages(out: string): string[] {
@@ -23,7 +26,7 @@ export function parsePackages(out: string): string[] {
 export function stockLauncher(out: string): string | null {
   const lines = out.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   const m = /^([A-Za-z][\w.]*)\/\S+$/.exec(lines[lines.length - 1] ?? "");
-  if (!m || m[1] === ORBIT_HOME || m[1] === "android") return null;
+  if (!m || ORBIT_HOMES.has(m[1]) || m[1] === "android") return null;
   return m[1];
 }
 

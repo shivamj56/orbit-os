@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { App } from "../App";
+import { Intro } from "../intro/Intro";
 import { MockTv } from "./MockTv";
 
 function useWide() {
@@ -40,7 +41,8 @@ function Phone({ children }: { children: React.ReactNode }) {
 
 export function DemoShell() {
   const wide = useWide();
-  const [tvShown, setTvShown] = useState(true);
+  // ?tv=0 starts with the pretend TV put away (a phone-sized look at the app alone).
+  const [tvShown, setTvShown] = useState(() => new URLSearchParams(location.search).get("tv") !== "0");
   if (!wide) {
     return (
       <div className="flex h-full flex-col bg-ink">
@@ -58,6 +60,7 @@ export function DemoShell() {
         )}
         <div className="relative min-h-0 flex-1">
           <App />
+          <Intro />
         </div>
       </div>
     );
@@ -66,6 +69,7 @@ export function DemoShell() {
     <div className="flex h-full items-center justify-center gap-16 overflow-hidden bg-[#030407] px-10">
       <Phone>
         <App />
+        <Intro />
       </Phone>
       <div className="w-full max-w-[660px]">
         <p className="mb-5 font-display text-[15px] font-light tracking-[0.02em] text-white/45">

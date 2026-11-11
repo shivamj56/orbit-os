@@ -86,12 +86,15 @@ class FakeSetupHost implements SetupHost {
     return {'bytes': text.length};
   }
 
+  /// What [run] says, line by line, and its exit code.
+  List<String> runLines = const ['@orbit step check start', '@orbit done ok'];
+  int runExit = 0;
+
   @override
   Future<Map<String, Object?>> run(String cmd) async {
     calls.add('run $cmd');
-    fireLine('@orbit step check start');
-    fireLine('@orbit done ok');
-    return {'exit': 0};
+    runLines.forEach(fireLine);
+    return {'exit': runExit};
   }
 
   @override
@@ -185,6 +188,49 @@ void main() {
       });
       await bridge.handle('{"id":11,"op":"setupRecord","args":{"key":"10.0.0.1"}}');
       expect(replies().last['data'], {'record': null});
+    });
+  });
+
+  group('switching the home screen', () {
+    test('the script goes first, then the run\'s lines reach the page in order, then its exit', () async {
+      final bridge = bridgeWith(linkFor(null));
+      await bridge.handle('{"id":1,"op":"hello"}');
+      setup.runLines = const [
+        '@orbit step switch start',
+        'on com.google.android.apps.tv.launcherx',
+        '@orbit step switch ok',
+        '@orbit done ok',
+      ];
+      await bridge.handle(
+        '{"id":2,"op":"setupPush","args":{"asset":"orbit-setup.sh","to":"/data/local/tmp/orbit/orbit-setup.sh"}}',
+      );
+      await bridge.handle('{"id":3,"op":"setupRun","args":{"cmd":"sh /data/local/tmp/orbit/orbit-setup.sh switch stock"}}');
+      expect(setup.calls.where((c) => c.startsWith('pushAsset') || c.startsWith('run')), [
+        'pushAsset orbit-setup.sh -> /data/local/tmp/orbit/orbit-setup.sh',
+        'run sh /data/local/tmp/orbit/orbit-setup.sh switch stock',
+      ]);
+      expect(events('setupLine').map((e) => (e['data'] as Map)['line']), setup.runLines);
+      final lineAt = sent.indexWhere((m) => m['event'] == 'setupLine');
+      final replyAt = sent.indexWhere((m) => m['id'] == 3);
+      expect(lineAt, lessThan(replyAt), reason: 'every line before the answer');
+      expect(replies().last, {'id': 3, 'ok': true, 'data': {'exit': 0}});
+    });
+
+    test('a switch that failed answers with its exit code; the page reads why from the lines', () async {
+      final bridge = bridgeWith(linkFor(null));
+      await bridge.handle('{"id":1,"op":"hello"}');
+      setup
+        ..runLines = const [
+          '@orbit step switch start',
+          '@orbit step switch fail There is no record of the TV\'s own home screen',
+          '@orbit done fail There is no record of the TV\'s own home screen, so Orbit Home stays Home',
+        ]
+        ..runExit = 1;
+      await bridge.handle('{"id":2,"op":"setupRun","args":{"cmd":"sh /data/local/tmp/orbit/orbit-setup.sh switch stock"}}');
+      expect(events('setupLine').last['data'], {
+        'line': '@orbit done fail There is no record of the TV\'s own home screen, so Orbit Home stays Home',
+      });
+      expect(replies().last, {'id': 2, 'ok': true, 'data': {'exit': 1}});
     });
   });
 

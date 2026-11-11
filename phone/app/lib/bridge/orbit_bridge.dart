@@ -3,6 +3,8 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 
+import '../app/demo_store.dart';
+import '../cloud/drive.dart';
 import '../native/native_host.dart';
 import '../setup/setup_host.dart';
 import '../tv/icon_cache.dart';
@@ -22,8 +24,14 @@ typedef ScriptRunner = Future<void> Function(String script);
 /// "status"}`; id 0 gets none. Events are held until the page's `hello` (and again from the moment a new page starts
 /// loading), then flushed after hello's reply.
 class OrbitBridge {
-  OrbitBridge({required this.remote, required this.native, required this.icons, SetupHost? setup})
-    : setup = setup ?? const _NoSetup() {
+  OrbitBridge({
+    required this.remote,
+    required this.native,
+    required this.icons,
+    SetupHost? setup,
+    this.drive,
+    this.demoStore,
+  }) : setup = setup ?? const _NoSetup() {
     _events = EventQueue(_send);
     remote.onStatus = (status) => _events.push('status', status.toJson());
     remote.onTvState = (state) => _events.push('tvstate', state);
@@ -43,6 +51,27 @@ class OrbitBridge {
 
   /// Orbit Setup: finding TVs, the TV's debugging connection, moving files (phone/SPEC.md, "Orbit Setup").
   final SetupHost setup;
+
+  /// Backups in the person's own Google Drive (phone/SPEC.md, "Backups in Google Drive"); null in a build without.
+  final DriveBackups? drive;
+
+  /// Where demo mode is kept between starts of the app (phone/SPEC.md, "Demo mode").
+  final DemoStore? demoStore;
+
+  /// The page shows the opening intro's first frame (`intro` op): the screen's own copy of the mark can go.
+  void Function()? onIntro;
+
+  /// Ops the phone answers itself even in demo mode; every other op is about the real TV, and is refused meanwhile.
+  static const Set<String> phoneOps = {'demo', 'intro', 'haptic', 'keepAwake', 'openUrl'};
+
+  /// Where `openUrl` may go: Orbit's public pages (privacy policy, account deletion, issues), nowhere else.
+  static bool isPublicLink(String url) {
+    final uri = Uri.tryParse(url.trim());
+    if (uri == null || uri.scheme != 'https' || uri.hasPort || uri.userInfo.isNotEmpty) return false;
+    final path = uri.path;
+    return (uri.host == 'shivamj56.github.io' && path.startsWith('/orbit-os-site/')) ||
+        (uri.host == 'github.com' && (path == '/shivamj56/orbit-os-site' || path.startsWith('/shivamj56/orbit-os-site/')));
+  }
   late final EventQueue _events;
   ScriptRunner? _run;
   bool _keepAwake = false;
@@ -76,6 +105,9 @@ class OrbitBridge {
     } on SetupError catch (e) {
       // phone/SPEC.md's setup failures carry a `reason`, not a `status`.
       reply = {'id': request.id, 'ok': false, 'reason': e.reason, 'error': e.message};
+    } on DriveError catch (e) {
+      // Drive's too: the page chooses its way out (sign in, try again) by it.
+      reply = {'id': request.id, 'ok': false, 'reason': e.reason, 'error': e.message, 'status': _driveStatus(e.reason)};
     } on OpError catch (e) {
       reply = {'id': request.id, 'ok': false, 'error': e.message, 'status': e.status};
     } on Object catch (e, stack) {
@@ -111,6 +143,10 @@ class OrbitBridge {
 
   Future<Object?> _dispatch(String op, Args a) async {
     final link = remote.wifi;
+    // Demo mode: the page talks to its pretend TV, and nothing of the page's reaches a real one.
+    if (remote.demo && !phoneOps.contains(op)) {
+      throw const OpError(409, 'Orbit is showing its demo. Leave the demo to use your TV.');
+    }
     switch (op) {
       case 'hello':
         return (await remote.hello()).toJson();
@@ -211,6 +247,43 @@ class OrbitBridge {
         return remote.linkTv(_linkCode(a));
       case 'unlinkTv':
         return remote.unlinkTv();
+      case 'deleteAccount':
+        return remote.deleteAccount(backups: a.flag('backups', fallback: true), drive: drive);
+      case 'backupSave':
+        final email = await remote.backupEmail();
+        final upload = BackupUpload.fromPage(
+          text: a.text('text', max: BackupUpload.maxBytes),
+          tv: a.text('tv', max: 256, allowEmpty: true),
+          address: a.text('address', max: 256, allowEmpty: true),
+          model: a.has('model') ? a.text('model', max: 256, allowEmpty: true) : null,
+          at: a.has('at') ? a.number('at').round() : DateTime.now().millisecondsSinceEpoch,
+        );
+        return _drive().save(email, upload);
+      case 'backupList':
+        final email = await remote.backupEmail();
+        return {'backups': await _drive().list(email), 'email': email};
+      case 'backupLoad':
+        final email = await remote.backupEmail();
+        return {'text': await _drive().load(email, a.text('id', max: 256).trim())};
+      case 'backupDelete':
+        final email = await remote.backupEmail();
+        await _drive().delete(email, a.text('id', max: 256).trim());
+        return const <String, Object?>{};
+      case 'demo':
+        if (a.has('on')) {
+          final on = a.flag('on');
+          remote.setDemo(on);
+          unawaited(demoStore?.save(on));
+          _applyVolumeKeys();
+        }
+        return {'on': remote.demo};
+      case 'intro':
+        onIntro?.call();
+        return null;
+      case 'openUrl':
+        final url = a.text('url', max: 512).trim();
+        if (!isPublicLink(url)) throw const OpError(400, 'Orbit only opens its own pages.');
+        return {'opened': await native.openUrl(url)};
       case 'setupScan':
         return setup.scan(_seconds(a));
       case 'setupProbe':
@@ -238,6 +311,20 @@ class OrbitBridge {
         throw OpError(400, op.isEmpty ? 'The message has no op.' : 'Orbit has no "$op".');
     }
   }
+
+  DriveBackups _drive() =>
+      drive ?? (throw const DriveError('auth', 'Google Drive backups are not available in this build of Orbit.'));
+
+  /// A Drive failure's HTTP-like status, for pages that read `status` only.
+  static int _driveStatus(String reason) => switch (reason) {
+    'noAccount' => 401,
+    'refused' || 'notAllowed' => 403,
+    'notFound' => 404,
+    'full' => 507,
+    'offline' => 0,
+    'bad' => 400,
+    _ => 502,
+  };
 
   /// The TV's link code: eight digits ("1234 5678" and "1234-5678" are fine).
   static String _linkCode(Args a) {
@@ -351,6 +438,8 @@ class OrbitBridge {
   }
 
   void _onVolumeKey(String dir) {
+    // In demo mode the keys are not taken (see _applyVolumeKeys); one that slips through never reaches the real TV.
+    if (remote.demo) return;
     _events.push('volumeKey', {'dir': dir});
     // Held down, a key repeats faster than the TV answers: past three waiting steps the rest are let go.
     if (_volume.pending >= 3) return;
@@ -362,7 +451,8 @@ class OrbitBridge {
     remote.pollSoon();
   }
 
-  void _applyVolumeKeys() => unawaited(native.setVolumeKeys(remote.wifi.volumeKeys && remote.isConnected));
+  void _applyVolumeKeys() =>
+      unawaited(native.setVolumeKeys(!remote.demo && remote.wifi.volumeKeys && remote.isConnected));
 
   void _send(Map<String, Object?> message) {
     final run = _run;

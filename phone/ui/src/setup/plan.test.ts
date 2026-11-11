@@ -86,6 +86,8 @@ describe("reading the TV", () => {
 
   it("names no stock launcher when Orbit Home is already Home, or Android has none", () => {
     expect(stockLauncher("priority=0\ncom.gathin.tvhome/.MainActivity")).toBeNull();
+    // Orbit Home under its id from 11 Nov, with its classes' package written in full.
+    expect(stockLauncher("priority=0\ndev.shiv.orbit.home/com.gathin.tvhome.MainActivity")).toBeNull();
     expect(stockLauncher("No activity found")).toBeNull();
     expect(stockLauncher("")).toBeNull();
   });

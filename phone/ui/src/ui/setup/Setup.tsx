@@ -13,6 +13,7 @@ import {
   rescan,
   retryConnect,
   start,
+  stepCount,
   tvName,
   useSetup,
   type Flow,
@@ -21,8 +22,11 @@ import {
 } from "../../setup/flow";
 import { catalog } from "../../setup/catalog";
 import * as I from "../icons";
+import { AccountScreen } from "./Account";
+import { BackupScreen, BackupsScreen } from "./Backup";
 import { Failed, Installing, Ready, You } from "./Install";
 import { PlanScreen, Questions } from "./Choices";
+import { SwitchConfirm, Switched, Switching } from "./Switch";
 import { UndoConfirm, Undone, Undoing } from "./Undo";
 import { Brand, Card, DoneMark, Lead, NumberedStep, Primary, Rise, Screen, SectionLabel, Spinner, StepBar, TextButton, Title, Trouble, ease } from "./parts";
 
@@ -40,6 +44,12 @@ const SCREENS: Record<SetupStep, ComponentType> = {
   undo: UndoConfirm,
   undoing: Undoing,
   undone: Undone,
+  switch: SwitchConfirm,
+  switching: Switching,
+  switched: Switched,
+  backup: BackupScreen,
+  backups: BackupsScreen,
+  account: AccountScreen,
 };
 
 const slide = {
@@ -178,11 +188,20 @@ function modelLine(tv: SetupTv, all: SetupTv[]): string {
 function Find() {
   const f = useSetup();
   const tvs = f.scan.tvs;
+  const bar = stepCount(f, "find");
+  // Undo from a backup: the TV the backup was made on is marked, and the button says what happens.
+  const from = f.fromBackup;
+  const title = from ? `Which TV is ${from.tv}?` : "Find your TV";
   return (
-    <Screen label="Find your TV">
-      <StepBar step={1} onBack={back} />
+    <Screen label={title}>
+      <StepBar step={bar.step} total={bar.total} onBack={back} />
       <Rise className="mt-[22px] flex flex-col gap-2">
-        <Title>Find your TV</Title>
+        <Title>{title}</Title>
+        {from && (
+          <Lead>
+            Choose the TV to put back. When the backup was made it was at <span className="tabular text-haze">{from.address}</span>.
+          </Lead>
+        )}
         <div className="flex min-h-6 items-center gap-2 text-[15px] text-mist" aria-live="polite">
           {f.scan.busy ? (
             <>
@@ -261,15 +280,21 @@ function Find() {
                 <span className="flex min-w-0 flex-1 flex-col gap-[3px]">
                   <span className="truncate text-[17px] font-semibold">{tv.name === "TV" ? "Your TV" : tv.name}</span>
                   <span className="tabular truncate text-[13px] text-mist">{modelLine(tv, tvs)}</span>
-                  {tv.orbit && (
-                    <span className="flex items-center gap-1.5 text-[12.5px] text-dusk">
-                      <I.Planet size={13} className="shrink-0" /> Orbit OS is on it
+                  {from && tv.address === from.address ? (
+                    <span className="flex items-center gap-1.5 text-[12.5px] text-cyan">
+                      <I.CloudDown size={13} className="shrink-0" /> Where the backup was made
                     </span>
+                  ) : (
+                    tv.orbit && (
+                      <span className="flex items-center gap-1.5 text-[12.5px] text-dusk">
+                        <I.Planet size={13} className="shrink-0" /> Orbit OS is on it
+                      </span>
+                    )
                   )}
                 </span>
                 <motion.button
                   type="button"
-                  aria-label={`Set up ${tv.name === "TV" ? "this TV" : tv.name}`}
+                  aria-label={`${from ? "Put back" : "Set up"} ${tv.name === "TV" ? "this TV" : tv.name}`}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => chooseTv(tv)}
                   className="h-11 shrink-0 rounded-[14px] bg-cyan px-[18px] text-[15px] font-semibold text-deep"
@@ -356,16 +381,16 @@ function NotListed() {
 // ---- 3. developer mode ----
 
 /** Once more after a setup: Developer options are already there, only USB debugging needs turning on. */
-const isAgain = (f: Flow) => f.mode === "undo" || !!f.tv?.orbit;
+const isAgain = (f: Flow) => f.mode !== "install" || !!f.tv?.orbit;
 
 function DevMode() {
   const f = useSetup();
   const again = isAgain(f);
-  const undo = f.mode === "undo";
+  const bar = stepCount(f, "devmode");
   const name = tvName(f);
   return (
     <Screen label={again ? "Turn on USB debugging" : "Turn on developer mode"}>
-      <StepBar step={undo ? 1 : 2} total={undo ? 2 : 7} onBack={back} />
+      <StepBar step={bar.step} total={bar.total} onBack={back} />
       <Rise className="mt-[22px] flex flex-col gap-2">
         <Title>{again ? "Turn on USB debugging" : "Turn on developer mode"}</Title>
         <Lead>
@@ -536,18 +561,32 @@ function ArtRow({ label, value }: { label: string; value: React.ReactNode }) {
 
 // ---- 4. allow ----
 
+/** What the open connection is for, once Allow was pressed. */
+const ALLOWED: Record<Flow["mode"], string> = {
+  install: "Orbit can set it up now",
+  undo: "Orbit can put it back now",
+  switch: "Orbit can switch the home screen now",
+  backup: "Orbit can read the TV for the backup now",
+  backups: "Orbit can put it back now",
+  account: "Orbit is connected to the TV",
+};
+
 function Allow() {
   const f = useSetup();
   const c = f.conn;
-  const undo = f.mode === "undo";
+  const bar = stepCount(f, "allow");
   const name = tvName(f);
   const model = modelName(f);
   return (
     <Screen label="Press Allow on the TV">
-      <StepBar step={undo ? 2 : 3} total={undo ? 2 : 7} onBack={back} />
+      <StepBar step={bar.step} total={bar.total} onBack={back} />
       <Rise className="mt-[22px] flex flex-col gap-2">
         <Title>Press Allow on the TV</Title>
-        <Lead>The TV is asking whether this phone may set it up. It is Android's own question, and it is asked only once.</Lead>
+        <Lead>
+          {f.mode === "install"
+            ? "The TV is asking whether this phone may set it up. It is Android's own question, and it is asked only once."
+            : "If the TV asks whether this phone may connect, allow it. It is Android's own question; a TV that was told to always allow this phone does not ask."}
+        </Lead>
       </Rise>
       <Rise className="mt-5">
         <AllowArt done={c.state === "connected"} />
@@ -568,7 +607,7 @@ function Allow() {
                 <DoneMark size={30} />
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <span className="truncate text-[15px] font-semibold">Connected to {name === "your TV" ? model ?? "the TV" : name}</span>
-                  <span className="text-[13px] text-mist">{undo ? "Orbit can put it back now" : "Orbit can set it up now"}</span>
+                  <span className="text-[13px] text-mist">{ALLOWED[f.mode]}</span>
                 </div>
               </div>
               {f.read.state === "failed" && !f.continuing && <Trouble title={f.read.error ?? "Orbit could not read the TV."} />}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- values-v29/styles.xml, plus Android 12's own splash screen on Orbit's background (the icon on #05060A). -->
+    <!-- values-v29/styles.xml, plus Android 12's own splash screen: the night of the opening intro and Orbit's mark
+         (drawable/splash_mark.xml, no icon background), which Flutter then the page carry on from without a seam. -->
     <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">@drawable/launch_background</item>
         <item name="android:colorBackground">@color/orbit_background</item>
@@ -12,7 +13,8 @@
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:enforceStatusBarContrast">false</item>
         <item name="android:enforceNavigationBarContrast">false</item>
-        <item name="android:windowSplashScreenBackground">@color/orbit_background</item>
+        <item name="android:windowSplashScreenBackground">@color/orbit_night</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_mark</item>
     </style>
 
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">

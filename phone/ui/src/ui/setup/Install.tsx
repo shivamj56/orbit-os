@@ -21,9 +21,11 @@ import {
 } from "../../setup/flow";
 import { installRows, whatStopped, type Row } from "../../setup/lines";
 import { disabledByRecord } from "../../setup/plan";
+import { LINKS, openLink } from "../../links";
 import { useWorld } from "../../store";
 import { GoogleMark } from "../Connect";
 import * as I from "../icons";
+import { BackupCard } from "./Backup";
 import { Brand, Card, DoneMark, Lead, Primary, Quiet, Rise, Screen, SectionLabel, Spinner, StepBar, Switch, TextButton, Title, ease } from "./parts";
 
 /** The clock, once every `ms` while `on`: for "about a minute left". */
@@ -306,6 +308,9 @@ export function You() {
         ) : (
           !account.signedIn && <p className="text-[13px] leading-snug text-dusk">Google gives Orbit your email, so there is nothing to type. You can also do it later in Settings.</p>
         )}
+        <TextButton className="-ml-3 flex items-center gap-1.5 self-start text-[13.5px]" onPress={() => openLink(LINKS.privacy)}>
+          Privacy policy <I.External size={14} />
+        </TextButton>
       </Rise>
       <Rise className="mt-auto flex flex-col gap-2 pt-6">
         <Primary onPress={finishName} busy={f.nameBusy}>
@@ -366,6 +371,9 @@ export function Ready() {
           <Switch on={f.closeDev} onChange={setCloseDev} label="Close developer mode" />
         </Card>
       </Rise>
+      <Rise className="mt-3">
+        <BackupCard />
+      </Rise>
       <Rise className="mt-3.5 flex flex-col gap-2.5 px-1 pt-1">
         <div className="flex items-start gap-3">
           <I.Gear size={20} className="mt-px shrink-0 text-ice" />
@@ -389,12 +397,13 @@ export function Ready() {
 }
 
 const TILES: { label: string; tint: [string, string] }[] = [
+  // Neutral names: this preview is in store screenshots and the demo, so no other company's apps are on it.
   { label: "Live TV", tint: ["#b86bff", "#2a0b52"] },
-  { label: "YouTube", tint: ["#ff3d3d", "#7a0b14"] },
-  { label: "Netflix", tint: ["#e50914", "#2a0306"] },
-  { label: "Prime Video", tint: ["#1aa3ff", "#062a52"] },
-  { label: "JioHotstar", tint: ["#3e5bff", "#120a3d"] },
-  { label: "Play Store", tint: ["#34a853", "#0b2f19"] },
+  { label: "Movies", tint: ["#ff5a4e", "#5a0f12"] },
+  { label: "Music", tint: ["#1ed7a0", "#063426"] },
+  { label: "News", tint: ["#1aa3ff", "#062a52"] },
+  { label: "Photos", tint: ["#f2c14e", "#3d2a06"] },
+  { label: "Apps", tint: ["#34a853", "#0b2f19"] },
 ];
 
 /** Orbit Home as the TV now shows it: the greeting over the curved row, Live TV first. */

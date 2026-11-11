@@ -9,6 +9,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import '../bridge/orbit_bridge.dart';
 import '../native/native_host.dart';
+import 'splash_mark.dart';
 import 'theme.dart';
 
 /// The page in the Flutter assets (phone/ui/dist/index.html, copied by tool/sync_ui.sh).
@@ -20,6 +21,10 @@ const String kUiAsset = 'assets/ui/index.html';
 /// and `-left`, in CSS px (bottom is 0 while the keyboard is up). While the keyboard is up the WebView is shortened
 /// to end at the keyboard, so `100%`/`100vh` layouts stay above it. Back goes back in the page's history when it has
 /// any (history.pushState), and otherwise sends the app behind, like Home.
+///
+/// From the first frame of a cold start until the page's opening intro shows its first frame (the `intro` op), the
+/// Orbit mark is painted above the page exactly as the system splash left it, so splash, Flutter and page hand over
+/// without a seam (phone/SPEC.md, "The opening intro").
 class OrbitScreen extends StatefulWidget {
   const OrbitScreen({super.key, required this.bridge, required this.native});
 
@@ -35,6 +40,11 @@ class _OrbitScreenState extends State<OrbitScreen> {
   EdgeInsets _insets = EdgeInsets.zero;
   String? _insetsSent;
 
+  /// The mark above the page: shown, fading, or gone.
+  bool _mark = true;
+  bool _markFading = false;
+  Timer? _markTimer;
+
   static const String _pagePrefix = 'file:///android_asset/flutter_assets/assets/ui/';
 
   @override
@@ -46,7 +56,24 @@ class _OrbitScreenState extends State<OrbitScreen> {
     _controller = WebViewController.fromPlatformCreationParams(params);
     widget.bridge.attach(_controller.runJavaScript);
     widget.bridge.beforeHelloReply = () => _sendInsets(force: true);
+    widget.bridge.onIntro = _dropMark;
+    // A page that never says so (an older one, or one that failed) does not keep the mark up for long.
+    _markTimer = Timer(const Duration(seconds: 5), _dropMark);
     unawaited(_open());
+  }
+
+  /// The page shows the same mark now: the copy above it fades off while the page holds that frame.
+  void _dropMark() {
+    _markTimer?.cancel();
+    if (!mounted || !_mark || _markFading) return;
+    setState(() => _markFading = true);
+  }
+
+  @override
+  void dispose() {
+    _markTimer?.cancel();
+    widget.bridge.onIntro = null;
+    super.dispose();
   }
 
   Future<void> _open() async {
@@ -142,12 +169,29 @@ class _OrbitScreenState extends State<OrbitScreen> {
         onPopInvokedWithResult: (didPop, result) => unawaited(_onBack(didPop, result)),
         child: ColoredBox(
           color: OrbitColors.background,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: keyboard),
-            child: WebViewWidget(
-              controller: _controller,
-              gestureRecognizers: {Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new)},
-            ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: keyboard),
+                child: WebViewWidget(
+                  controller: _controller,
+                  gestureRecognizers: {Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new)},
+                ),
+              ),
+              if (_mark)
+                IgnorePointer(
+                  child: AnimatedOpacity(
+                    opacity: _markFading ? 0 : 1,
+                    duration: const Duration(milliseconds: 160),
+                    curve: Curves.easeOut,
+                    onEnd: () {
+                      if (_markFading && mounted) setState(() => _mark = false);
+                    },
+                    child: const CustomPaint(painter: SplashMarkPainter()),
+                  ),
+                ),
+            ],
           ),
         ),
       ),

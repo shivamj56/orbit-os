@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { bridge, cloud, haptic, tv, type Account, type AppEntry, type Status, type TvState } from "../bridge";
-import { openSetup } from "../setup/flow";
+import { setDemoMode, useDemo } from "../demo";
+import { LINKS, openLink } from "../links";
+import { APP_VERSION, openSetup, type FlowMode } from "../setup/flow";
+import type { HomeChoice } from "../setup/lines";
 import { patchTv, setAccount, updateSettings, useWorld } from "../store";
+import { ORBIT_HOMES } from "../setup/plan";
 import * as I from "./icons";
 import { Press, Sheet, spring } from "./kit";
 
@@ -153,7 +157,7 @@ export function TypeSheet({
   return (
     <Sheet open={open} onClose={onClose} title={link ? "Open a link" : "Type on the TV"}>
       <p className="mb-3 text-[13.5px] text-muted">
-        {link ? "The TV opens it, YouTube links in the YouTube app." : "Into the search box that is open on the TV."}
+        {link ? "The TV opens it, in the app it belongs to or in a browser." : "Into the search box that is open on the TV."}
       </p>
       <textarea
         ref={box}
@@ -214,7 +218,7 @@ export function PlayerSheet({ open, onClose, state, onFail }: { open: boolean; o
     const t = window.setInterval(() => setNow(Date.now()), 500);
     return () => window.clearInterval(t);
   }, [open, state?.playing]);
-  const art = useIcon(state?.pkg && state.pkg !== "com.gathin.tvhome" ? state.pkg : null);
+  const art = useIcon(state?.pkg && !ORBIT_HOMES.has(state.pkg) ? state.pkg : null);
   const position = state ? Math.min(state.duration || Infinity, seen.position + (state.playing ? now - seen.at : 0)) : 0;
   const share = state?.duration ? position / state.duration : 0;
   const media = (a: "play_pause" | "next" | "previous" | "forward" | "rewind") => {
@@ -320,10 +324,11 @@ function Toggle({ on }: { on: boolean }) {
   );
 }
 
-function Row({ title, note, children, onPress }: { title: string; note?: string; children?: React.ReactNode; onPress?: () => void }) {
+function Row({ title, note, children, onPress, icon }: { title: string; note?: string; children?: React.ReactNode; onPress?: () => void; icon?: React.ReactNode }) {
   const Body = (
     <span className="flex w-full items-center justify-between gap-4 py-3.5 text-left">
-      <span className="min-w-0">
+      {icon && <span className="grid h-9 w-9 shrink-0 place-items-center self-start rounded-[12px] bg-white/5 text-cyan">{icon}</span>}
+      <span className="min-w-0 flex-1">
         <span className="block text-[15.5px]">{title}</span>
         {note && <span className="mt-0.5 block text-[12.5px] leading-snug text-faint">{note}</span>}
       </span>
@@ -341,6 +346,14 @@ function Row({ title, note, children, onPress }: { title: string; note?: string;
 
 export function SettingsSheet({ open, onClose, status }: { open: boolean; onClose: () => void; status: Status }) {
   const { settings } = useWorld();
+  const demo = useDemo();
+  const tv = status.tv;
+  // A screen of Orbit Setup's over everything: the sheet goes first (setup takes the phone's Back from it).
+  const go = (mode: FlowMode, to?: HomeChoice) => () => {
+    haptic("light");
+    onClose();
+    openSetup(mode, tv, to);
+  };
   return (
     <Sheet open={open} onClose={onClose} title="Settings">
       <div className="glass flex items-center gap-3.5 rounded-[22px] p-4">
@@ -348,9 +361,13 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
           <I.Tv size={24} />
         </span>
         <div className="min-w-0">
-          <p className="truncate text-[16px] font-medium">{status.tv?.name || "TV"}</p>
-          <p className="tabular text-[12.5px] text-faint">
-            {status.via === "cloud" ? "Through Google, from anywhere" : `${status.tv?.address ?? ""}  ·  home Wi-Fi`}
+          <p className="truncate text-[16px] font-medium">{tv?.name || (demo ? "The pretend TV" : "No TV yet")}</p>
+          <p className="tabular truncate text-[12.5px] text-faint">
+            {!tv
+              ? "Orbit is looking on this Wi-Fi"
+              : status.via === "cloud"
+                ? "Through Google, from anywhere"
+                : `${tv.address}  ·  ${status.state === "connected" ? "home Wi-Fi" : "not answering now"}`}
           </p>
         </div>
       </div>
@@ -380,53 +397,95 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
         </div>
       </div>
 
-      <section className="mt-4" aria-label="This TV">
-        <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">This TV</p>
+      {tv && (
+        <section className="mt-4" aria-label="This TV">
+          <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">This TV</p>
+          <div className="divide-y divide-white/6">
+            <Row icon={<I.CloudUp size={20} />} title="Back up this TV's own setup" note="How the TV was before Orbit OS, as a small file in your own Google Drive." onPress={go("backup")}>
+              <Chevron />
+            </Row>
+            <Row icon={<I.Home size={20} />} title="Use the TV's own home screen" note="Only Home changes. Orbit Home stays on the TV for when you want it back." onPress={go("switch", "stock")}>
+              <Chevron />
+            </Row>
+            <Row icon={<I.Planet size={20} />} title="Use Orbit Home again" note="Orbit Home becomes the home screen once more." onPress={go("switch", "orbit")}>
+              <Chevron />
+            </Row>
+            <Row
+              icon={<I.Undo size={20} />}
+              title="Undo Orbit OS on this TV"
+              note="Removes Orbit entirely: what it switched off comes back on, the TV's own home screen and settings come back, and Orbit's apps come off."
+              onPress={go("undo")}
+            >
+              <Chevron />
+            </Row>
+          </div>
+        </section>
+      )}
+
+      <section className="mt-4" aria-label="Orbit OS">
+        <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">{tv ? "More" : "Orbit OS"}</p>
         <div className="divide-y divide-white/6">
-          <Row
-            title="Undo Orbit OS on this TV"
-            note="Switches back on what Orbit switched off, and brings back the TV's own home screen."
-            onPress={() => {
-              haptic("light");
-              onClose();
-              openSetup("undo", status.tv);
-            }}
-          >
-            <I.Chevron dir="right" size={18} className="shrink-0 text-faint" />
+          <Row icon={<I.CloudDown size={20} />} title="Backups in Google Drive" note="Each TV's backups, and putting a TV back from one." onPress={go("backups")}>
+            <Chevron />
           </Row>
-          <Row
-            title="Set up Orbit OS on a TV"
-            note="Put Orbit OS on another TV from this phone."
-            onPress={() => {
-              haptic("light");
-              onClose();
-              openSetup("install");
-            }}
-          >
-            <I.Chevron dir="right" size={18} className="shrink-0 text-faint" />
+          <Row icon={<I.Tv size={20} />} title="Set up Orbit OS on a TV" note="Put Orbit OS on a TV from this phone." onPress={go("install")}>
+            <Chevron />
           </Row>
+          {bridge.native && (
+            <Row
+              icon={<I.Try size={20} />}
+              title={demo ? "Leave the demo" : "Try Orbit without a TV"}
+              note={demo ? "Back to your own TV." : "Everything Orbit does, with a pretend TV inside the app. Your own TV is left alone."}
+              onPress={() => {
+                haptic("medium");
+                onClose();
+                setDemoMode(!demo);
+              }}
+            >
+              <Chevron />
+            </Row>
+          )}
         </div>
       </section>
 
-      <AnywhereCard onDone={onClose} />
+      <AnywhereCard onDone={onClose} onDelete={go("account")} />
 
-      <button
-        type="button"
-        className="mt-5 h-12 w-full rounded-full border border-rose/30 text-[15px] text-rose"
-        onClick={() => {
-          haptic("heavy");
-          bridge.call("forget").catch(() => {});
-          onClose();
-        }}
-      >
-        Forget this TV
-      </button>
+      <section className="mt-4" aria-label="About">
+        <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">About</p>
+        <div className="divide-y divide-white/6">
+          <Row title="Privacy policy" note="What Orbit keeps, where, and how to delete it." onPress={() => openLink(LINKS.privacy)}>
+            <I.External size={18} className="shrink-0 text-faint" />
+          </Row>
+          <Row title="Report a problem" note="On the Orbit OS site's issue page." onPress={() => openLink(LINKS.issues)}>
+            <I.External size={18} className="shrink-0 text-faint" />
+          </Row>
+          <div className="py-3.5 text-[12.5px] text-faint">
+            Orbit {APP_VERSION} · made by Shivam Anil Jha
+          </div>
+        </div>
+      </section>
+
+      {tv && (
+        <button
+          type="button"
+          className="mt-5 h-12 w-full rounded-full border border-rose/30 text-[15px] text-rose"
+          onClick={() => {
+            haptic("heavy");
+            bridge.call("forget").catch(() => {});
+            onClose();
+          }}
+        >
+          Forget this TV
+        </button>
+      )}
     </Sheet>
   );
 }
 
+const Chevron = () => <I.Chevron dir="right" size={18} className="shrink-0 text-faint" />;
+
 /** The Google account Orbit uses away from the Wi-Fi, and the TV linked to it. */
-function AnywhereCard({ onDone }: { onDone: () => void }) {
+function AnywhereCard({ onDone, onDelete }: { onDone: () => void; onDelete: () => void }) {
   const { account } = useWorld();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -475,6 +534,11 @@ function AnywhereCard({ onDone }: { onDone: () => void }) {
         )}
       </div>
       {error && <p className="mt-2 text-[13px] text-rose" role="alert">{error}</p>}
+      {account.signedIn && (
+        <button type="button" onClick={onDelete} disabled={!!busy} className="mt-3 -mb-1 min-h-11 text-[13.5px] font-medium text-rose/90 disabled:opacity-45">
+          Delete my Orbit account
+        </button>
+      )}
     </div>
   );
 }

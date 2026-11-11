@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'backend.dart';
+import 'drive.dart';
 
 /// A Google ID token (a JWT, audience = the web client) and the account it is for.
 class GoogleIdToken {
@@ -28,15 +29,22 @@ abstract interface class GoogleIdentity {
   Future<GoogleIdToken?> refresh();
 
   Future<void> signOut();
+
+  /// Signs out and takes back every permission this app was given (Drive too): when the account is deleted.
+  Future<void> revoke();
 }
 
 /// [GoogleIdentity] with google_sign_in 7 (Credential Manager), serverClientId = the web client, so the ID token's
-/// audience is what Firebase (on the phone and on the TV) accepts.
-class PluginGoogleIdentity implements GoogleIdentity {
+/// audience is what Firebase (on the phone and on the TV) accepts. It is also the [DriveAuthorizer] for backups: the
+/// 7.x authorization API, for drive.appdata, on the same account.
+class PluginGoogleIdentity implements GoogleIdentity, DriveAuthorizer {
   PluginGoogleIdentity({required this.serverClientId});
 
   final String serverClientId;
   Future<void>? _initializing;
+
+  /// The account Google last vouched for in this run (authorization is asked for on it).
+  GoogleSignInAccount? _account;
 
   Future<void> _ready() {
     final pending = _initializing ??= GoogleSignIn.instance.initialize(serverClientId: serverClientId);
@@ -52,6 +60,7 @@ class PluginGoogleIdentity implements GoogleIdentity {
     try {
       await _ready();
       final account = await GoogleSignIn.instance.authenticate();
+      _account = account;
       final token = account.authentication.idToken;
       if (token == null) throw const SignInFailed('Google did not vouch for this account. Try again.');
       return GoogleIdToken(token, email: account.email);
@@ -65,6 +74,7 @@ class PluginGoogleIdentity implements GoogleIdentity {
     try {
       await _ready();
       final account = await GoogleSignIn.instance.attemptLightweightAuthentication();
+      if (account != null) _account = account;
       final token = account?.authentication.idToken;
       return token == null ? null : GoogleIdToken(token, email: account!.email);
     } on Object catch (e) {
@@ -75,6 +85,7 @@ class PluginGoogleIdentity implements GoogleIdentity {
 
   @override
   Future<void> signOut() async {
+    _account = null;
     try {
       await _ready();
       await GoogleSignIn.instance.signOut();
@@ -82,6 +93,94 @@ class PluginGoogleIdentity implements GoogleIdentity {
       debugPrint('orbit: Google sign-out: $e');
     }
   }
+
+  @override
+  Future<void> revoke() async {
+    _account = null;
+    try {
+      await _ready();
+      await GoogleSignIn.instance.disconnect();
+    } on Object catch (e) {
+      debugPrint('orbit: Google disconnect: $e');
+      await signOut();
+    }
+  }
+
+  // ---- Drive (backups) ----
+
+  @override
+  Future<String?> accessToken(String email, {bool prompt = true}) async {
+    try {
+      await _ready();
+      final account = await _accountFor(email, prompt: prompt);
+      if (account == null) return null;
+      final client = account.authorizationClient;
+      final have = await client.authorizationForScopes(const [kDriveAppDataScope]);
+      if (have != null) return have.accessToken;
+      if (!prompt) return null;
+      // Google's own sheet: "Orbit wants to see, create and delete its own configuration data in your Google Drive".
+      return (await client.authorizeScopes(const [kDriveAppDataScope])).accessToken;
+    } on GoogleSignInException catch (e) {
+      throw describeDrive(e);
+    } on DriveError {
+      rethrow;
+    } on Object catch (e) {
+      debugPrint('orbit: drive authorization: $e');
+      throw const DriveError('auth', 'Google could not give Orbit access to your Drive. Try again.');
+    }
+  }
+
+  /// The signed-in account, as google_sign_in knows it: the one kept from this run, else Google's quiet sign-in, else
+  /// Google's account sheet. Another account chosen there is refused (the backups go to the signed-in one's Drive).
+  Future<GoogleSignInAccount?> _accountFor(String email, {required bool prompt}) async {
+    bool same(GoogleSignInAccount? a) => a != null && a.email.toLowerCase() == email.toLowerCase();
+    if (same(_account)) return _account!;
+    final quiet = GoogleSignIn.instance.attemptLightweightAuthentication();
+    final found = quiet == null ? null : await quiet;
+    if (same(found)) return _account = found!;
+    if (!prompt) return null;
+    final chosen = await GoogleSignIn.instance.authenticate(scopeHint: const [kDriveAppDataScope]);
+    if (same(chosen)) return _account = chosen;
+    throw DriveError(
+      'noAccount',
+      'Choose $email in Google\'s sheet: the backups go to the Drive of the account Orbit is signed in with.',
+    );
+  }
+
+  @override
+  Future<void> forget(String token) async {
+    try {
+      await GoogleSignIn.instance.authorizationClient.clearAuthorizationToken(accessToken: token);
+    } on Object catch (e) {
+      debugPrint('orbit: drive token not cleared: $e');
+    }
+  }
+
+  /// Google's refusal of Drive, in words for the person. Android reports a closed consent sheet as an API exception with
+  /// status 16 (CANCELED), and no network as status 7.
+  static DriveError describeDrive(GoogleSignInException e) {
+    final said = (e.description ?? '').toLowerCase();
+    switch (e.code) {
+      case GoogleSignInExceptionCode.canceled || GoogleSignInExceptionCode.interrupted:
+        return _refused;
+      case GoogleSignInExceptionCode.uiUnavailable:
+        return const DriveError('noAccount', 'This phone could not show Google\'s sheet. Is a Google account added in its Settings?');
+      case GoogleSignInExceptionCode.clientConfigurationError || GoogleSignInExceptionCode.providerConfigurationError:
+        return DriveError('auth', 'Google Drive is not set up for this app yet (${e.description ?? e.code.name}).');
+      default:
+        if (said.contains('network') || RegExp(r'(^|\D)7:').hasMatch(said)) {
+          return const DriveError('offline', 'No internet on this phone. Try again when it is back.');
+        }
+        if (RegExp(r'(^|\D)16:').hasMatch(said) || said.contains('cancel')) return _refused;
+        return DriveError('auth', 'Google could not give Orbit access to your Drive${e.description == null ? '' : ': ${e.description}'}.');
+    }
+  }
+
+  static const DriveError _refused = DriveError(
+    'refused',
+    'Google Drive was not allowed, so nothing was saved there. Orbit only asks for its own hidden folder in your Drive, '
+        'which no other app can see.',
+  );
 
   /// Google's refusal in words for the person.
   static SignInFailed describe(GoogleSignInException e) => switch (e.code) {

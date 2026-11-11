@@ -292,3 +292,50 @@ export const Alert = (p: P) => (
     <path d="M12 16.4h.01" />
   </Svg>
 );
+/** A cloud with an arrow up into it: a backup in Google Drive. */
+export const CloudUp = (p: P) => (
+  <Svg {...p}>
+    <path d="M7.2 18.5h10.3a4 4 0 0 0 .6-7.95 6 6 0 0 0-11.5-1.3A4.7 4.7 0 0 0 7.2 18.5z" />
+    <path d="M12 16.2v-5.4" />
+    <path d="M9.7 13l2.3-2.3 2.3 2.3" />
+  </Svg>
+);
+/** A cloud with an arrow down out of it: putting a TV back from a backup. */
+export const CloudDown = (p: P) => (
+  <Svg {...p}>
+    <path d="M7.2 18.5h10.3a4 4 0 0 0 .6-7.95 6 6 0 0 0-11.5-1.3A4.7 4.7 0 0 0 7.2 18.5z" />
+    <path d="M12 10.6V16" />
+    <path d="M9.7 13.8 12 16.1l2.3-2.3" />
+  </Svg>
+);
+export const Trash = (p: P) => (
+  <Svg {...p}>
+    <path d="M4.5 7h15" />
+    <path d="M9.5 7V4.8h5V7" />
+    <path d="M6.5 7l.9 12.2a1.6 1.6 0 0 0 1.6 1.5h6a1.6 1.6 0 0 0 1.6-1.5L17.5 7" />
+  </Svg>
+);
+/** Two arrows passing: one home screen for the other. */
+export const Swap = (p: P) => (
+  <Svg {...p}>
+    <path d="M4 8.5h13.5" />
+    <path d="M14 5l3.5 3.5L14 12" />
+    <path d="M20 15.5H6.5" />
+    <path d="M10 12l-3.5 3.5L10 19" />
+  </Svg>
+);
+/** A play mark in a ring: try Orbit with the pretend TV. */
+export const Try = (p: P) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M10.2 8.9v6.2l5-3.1z" />
+  </Svg>
+);
+/** An arrow out of a box: this opens in the phone's browser. */
+export const External = (p: P) => (
+  <Svg {...p}>
+    <path d="M13.5 4.5h6v6" />
+    <path d="M19.5 4.5 11 13" />
+    <path d="M17 13.5v4.2a1.8 1.8 0 0 1-1.8 1.8H6.3a1.8 1.8 0 0 1-1.8-1.8V8.8A1.8 1.8 0 0 1 6.3 7h4.2" />
+  </Svg>
+);

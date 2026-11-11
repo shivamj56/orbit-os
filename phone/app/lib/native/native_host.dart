@@ -27,6 +27,9 @@ abstract interface class NativeHost {
 
   /// The app's cache directory (icons), or null.
   Future<Directory?> cacheDirectory();
+
+  /// Opens [url] in the phone's browser (Orbit's public pages); false when nothing could open it.
+  Future<bool> openUrl(String url);
 }
 
 /// [NativeHost] on Android: MainActivity.kt answers `dev.shiv.orbit/native`.
@@ -116,6 +119,16 @@ class PlatformNativeHost implements NativeHost {
     } on Object catch (e) {
       debugPrint('orbit: no cache directory: $e');
       return null;
+    }
+  }
+
+  @override
+  Future<bool> openUrl(String url) async {
+    try {
+      return await _channel.invokeMethod<bool>('openUrl', url) ?? false;
+    } on Object catch (e) {
+      debugPrint('orbit: link not opened: $e');
+      return false;
     }
   }
 }

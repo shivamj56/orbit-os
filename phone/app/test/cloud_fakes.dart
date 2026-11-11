@@ -18,6 +18,7 @@ const CloudTimings fastCloud = CloudTimings(
   heartbeat: Duration(milliseconds: 60),
   pointerGap: Duration(milliseconds: 100),
   lateAnswer: Duration(milliseconds: 400),
+  unlinkWait: Duration(milliseconds: 300),
 );
 
 class _Watch {
@@ -241,6 +242,32 @@ class FakeCloudAuth implements CloudAuth {
     _user = null;
     _changes.add(null);
   }
+
+  /// Firebase wants a fresh sign-in before the next delete (it asks once).
+  bool wantsRecentLogin = false;
+  int deletes = 0;
+  int reauths = 0;
+
+  @override
+  Future<void> deleteUser() async {
+    await Future<void>.delayed(Duration.zero);
+    if (_user == null) return;
+    if (wantsRecentLogin) throw const RecentLoginRequired();
+    deletes++;
+    _user = null;
+    _changes.add(null);
+  }
+
+  @override
+  Future<void> reauthenticateWithGoogleIdToken(String idToken) async {
+    await Future<void>.delayed(Duration.zero);
+    final email = jwtEmail(idToken);
+    if (_user == null || email == null || uidFor(email) != _user!.uid) {
+      throw const SignInFailed('That is another Google account. Choose the one Orbit is signed in with.');
+    }
+    reauths++;
+    wantsRecentLogin = false;
+  }
 }
 
 int _tokenSerial = 0;
@@ -290,6 +317,11 @@ class FakeGoogle implements GoogleIdentity {
 
   @override
   Future<void> signOut() async {}
+
+  int revokes = 0;
+
+  @override
+  Future<void> revoke() async => revokes++;
 }
 
 /// The TV's side of the database: shows link codes, signs in with the token it is given (as the same account), keeps

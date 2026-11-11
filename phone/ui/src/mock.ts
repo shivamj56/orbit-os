@@ -1,6 +1,6 @@
 // A pretend TV for a plain browser (the demo page): it answers every op in phone/SPEC.md the way the real door does,
 // and tells the demo's TV picture what happened through window events ("orbit-mock").
-import type { Account, AppEntry, Message, Status, TvState } from "./bridge";
+import type { Account, AppEntry, DriveBackup, Message, Status, TvState } from "./bridge";
 import { MockScreen } from "./mock-screen";
 import { createSetupMock } from "./mock-setup";
 
@@ -19,31 +19,67 @@ export type MockEvent =
   | { type: "typed"; text: string }
   | { type: "overlay"; text: string }
   | { type: "menu"; index: number }
+  /** Orbit OS's Control Center, on the remote's Settings key: open with a tile chosen, or closed (index -1). */
+  | { type: "control"; index: number }
   | { type: "help"; on: boolean }
   | { type: "sleep" }
   /** Orbit Setup: Android's "Allow USB debugging?" on the TV, and the greeting's new name. */
   | { type: "adb"; on: boolean }
   | { type: "greetname"; name: string };
 
+/** The Control Center's tiles, two rows of three; the gear (the TV's full Settings) is the first, as on the TV. */
+export const MOCK_CONTROL = ["Settings", "Wi-Fi", "Bluetooth", "Picture", "Sound", "Sleep timer"];
+const CONTROL_SAYS: Record<string, string> = {
+  "Wi-Fi": "Wi-Fi: Home network, connected",
+  Bluetooth: "Bluetooth: on",
+  Picture: "Picture: Vivid",
+  Sound: "Sound: Standard",
+  "Sleep timer": "Sleep timer: in 30 minutes",
+};
+
 /** The pretend TV's Settings list (its rows move with up and down, as on the TV). */
 export const MOCK_SETTINGS = ["Network & Internet", "Accounts & Sign In", "Apps", "Display & Sound", "Remotes & Accessories", "System"];
 
 export const MOCK_APPS: (AppEntry & { tint: [string, string] })[] = [
-  { pkg: "com.google.android.youtube.tv", label: "YouTube", tint: ["#ff3d3d", "#7a0b14"] },
-  { pkg: "com.netflix.ninja", label: "Netflix", tint: ["#e50914", "#2a0306"] },
-  { pkg: "com.amazon.amazonvideo.livingroom", label: "Prime Video", tint: ["#1aa3ff", "#062a52"] },
-  { pkg: "in.startv.hotstar", label: "JioHotstar", tint: ["#3e5bff", "#120a3d"] },
-  { pkg: "com.sonyliv", label: "SonyLIV", tint: ["#f2c14e", "#3d2a06"] },
-  { pkg: "com.graymatrix.did", label: "ZEE5", tint: ["#8b3dff", "#22074d"] },
-  { pkg: "com.spotify.tv.android", label: "Spotify", tint: ["#1ed760", "#06341a"] },
-  { pkg: "com.android.vending", label: "Play Store", tint: ["#34a853", "#0b2f19"] },
-  { pkg: "com.tv.browser", label: "Browser", tint: ["#9aa3b5", "#1b2030"] },
-  { pkg: "com.xiaomi.miracast", label: "Miracast", tint: ["#74d1ff", "#0b2638"] },
-  { pkg: "org.videolan.vlc", label: "VLC", tint: ["#ff8800", "#3d1d00"] },
-  { pkg: "org.xbmc.kodi", label: "Kodi", tint: ["#17b2e7", "#05283a"] },
+  // Neutral names only: the demo is what store reviewers and screenshots see, so no other company's apps are on it.
+  { pkg: "demo.orbit.livetv", label: "Live TV", tint: ["#b86bff", "#2a0b52"] },
+  { pkg: "demo.orbit.movies", label: "Movies", tint: ["#ff5a4e", "#5a0f12"] },
+  { pkg: "demo.orbit.music", label: "Music", tint: ["#1ed7a0", "#063426"] },
+  { pkg: "demo.orbit.news", label: "News", tint: ["#1aa3ff", "#062a52"] },
+  { pkg: "demo.orbit.photos", label: "Photos", tint: ["#f2c14e", "#3d2a06"] },
+  { pkg: "demo.orbit.kids", label: "Kids", tint: ["#ff8ad8", "#4a0b3a"] },
+  { pkg: "demo.orbit.sports", label: "Sports", tint: ["#3e5bff", "#120a3d"] },
+  { pkg: "demo.orbit.games", label: "Games", tint: ["#8b3dff", "#22074d"] },
+  { pkg: "demo.orbit.apps", label: "Apps", tint: ["#34a853", "#0b2f19"] },
+  { pkg: "demo.orbit.browser", label: "Browser", tint: ["#9aa3b5", "#1b2030"] },
+  { pkg: "demo.orbit.share", label: "Screen share", tint: ["#74d1ff", "#0b2638"] },
+  { pkg: "demo.orbit.podcasts", label: "Podcasts", tint: ["#ff8800", "#3d1d00"] },
 ];
 
 const TOKEN_KEY = "orbit-mock-token";
+/** The pretend Google Drive's hidden Orbit folder: the backups made in the demo. */
+const DRIVE_KEY = "orbit-mock-drive";
+
+type DriveFile = DriveBackup & { text: string };
+
+function driveFiles(): DriveFile[] {
+  try {
+    const list = JSON.parse(localStorage.getItem(DRIVE_KEY) || "[]");
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
+function keepDrive(files: DriveFile[]) {
+  try {
+    localStorage.setItem(DRIVE_KEY, JSON.stringify(files));
+  } catch {
+    /* kept for this run only */
+  }
+}
+
+const listed = ({ text: _text, ...b }: DriveFile): DriveBackup => b;
 const TV = { name: "Family room", address: "192.168.1.20", port: 8090, udp: 8091 };
 
 export function emitMock(e: MockEvent) {
@@ -93,12 +129,12 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
     tv: TV.name,
     app: "Home",
     pkg: "com.gathin.tvhome",
-    title: "Interstellar",
-    artist: "Netflix",
+    title: "Evening Raga",
+    artist: "Orbit Live TV",
     playing: false,
-    position: 2_731_000,
-    duration: 10_140_000,
-    player: "Netflix",
+    position: 1_260_000,
+    duration: 3_600_000,
+    player: "Orbit Live TV",
     volume: 24,
     max: 100,
     muted: false,
@@ -147,6 +183,8 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
   const event = (name: string, data: unknown) => later(0, () => deliver({ event: name, data }));
   const reply = (id: number, data: unknown) => id && later(40 + Math.random() * 50, () => deliver({ id, ok: true, data }));
   const fail = (id: number, error: string, status?: number) => id && later(60, () => deliver({ id, ok: false, error, status }));
+  const refuse = (id: number, error: string, reason: string) => id && later(80, () => deliver({ id, ok: false, error, reason }));
+  const noAccount = (id: number) => refuse(id, "Sign in with Google first. Orbit keeps the backups in that account's own Google Drive.", "noAccount");
   const setStatus = (s: Partial<Status>) => {
     status = { ...status, ...s };
     event("status", status);
@@ -184,9 +222,41 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
   };
 
   // Orbit Setup's ops: the TV's debugging connection, its apps and its scripts.
+  // `orbit-setup.sh switch stock|orbit`, for a pretend TV that does not know it yet (an older mock-setup.ts answers
+  // "not found"): the switch is played here instead, with the lines the real script says.
+  let switching: { id: number; to: string; swallow: boolean } | null = null;
+  const playSwitch = (id: number, to: string) => {
+    const lines =
+      to === "stock"
+        ? ["@orbit step switch start", "on com.google.android.apps.tv.launcherx", "@orbit step switch ok", "@orbit done ok"]
+        : ["@orbit step switch start", "off com.google.android.apps.tv.launcherx", "@orbit step switch ok", "@orbit done ok"];
+    lines.forEach((line, i) => later(380 + i * 420, () => deliver({ event: "setupLine", data: { line } })));
+    later(380 + lines.length * 420, () => {
+      deliver({ event: "setupLine", data: { line: "@orbit-exit 0" } });
+      deliver({ id, ok: true, data: { exit: 0 } });
+    });
+  };
+  const fromSetup = (m: Message) => {
+    const job = switching;
+    if (job) {
+      const line = m.event === "setupLine" ? String((m.data as { line?: unknown } | undefined)?.line ?? "") : "";
+      if (!job.swallow && /orbit-setup\.sh switch \w+: not found$/.test(line)) {
+        job.swallow = true;
+        playSwitch(job.id, job.to);
+        return;
+      }
+      if (job.swallow && (line.startsWith("@orbit-exit") || m.id === job.id)) {
+        if (m.id === job.id) switching = null;
+        return;
+      }
+      if (m.id === job.id) switching = null;
+    }
+    deliver(m);
+  };
+
   const setup = createSetupMock({
     tv: TV,
-    deliver,
+    deliver: fromSetup,
     show: (e) => show(e),
     adopt: (given) => {
       token = given;
@@ -204,17 +274,41 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
     },
   });
 
-  // An app comes to the front: only Netflix has something paused in it, as a person's TV would.
+  // An app comes to the front: only Live TV has something on, paused, as a person's TV would.
   const open = (i: number) => {
     const app = MOCK_APPS[i];
+    const live = app.label === "Live TV";
     state.app = app.label;
     state.pkg = app.pkg;
-    state.player = app.label;
-    state.title = app.label === "Netflix" ? "Interstellar" : "";
-    state.artist = app.label === "Netflix" ? "Netflix" : "";
+    state.player = live ? "Orbit Live TV" : app.label;
+    state.title = live ? "Evening Raga" : "";
+    state.artist = live ? "Orbit Live TV" : "";
     state.playing = false;
     show({ type: "open", label: app.label });
     pushState();
+  };
+
+  // The Control Center over whatever is on: the arrows move between its tiles, OK uses one, Back closes it.
+  let control = -1;
+  const controlTo = (i: number) => show({ type: "control", index: (control = i) });
+  const controlKeys: Record<string, () => void> = {
+    left: () => controlTo(control % 3 === 0 ? control : control - 1),
+    right: () => controlTo(control % 3 === 2 ? control : control + 1),
+    up: () => controlTo(control >= 3 ? control - 3 : control),
+    down: () => controlTo(control < 3 ? control + 3 : control),
+    ok: () => {
+      const tile = MOCK_CONTROL[control];
+      if (tile === "Settings") {
+        controlTo(-1);
+        openSettings();
+      } else show({ type: "overlay", text: CONTROL_SAYS[tile] ?? tile });
+    },
+    back: () => controlTo(-1),
+    home: () => {
+      controlTo(-1);
+      keys.home();
+    },
+    settings: () => controlTo(-1),
   };
 
   // Settings in front: up and down move its rows, OK opens one.
@@ -233,6 +327,15 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
     else menuTo(hit.row);
   };
 
+  const openSettings = () => {
+    state.app = "Settings";
+    state.pkg = "com.android.tv.settings";
+    state.title = "";
+    state.playing = false;
+    show({ type: "open", label: "Settings" });
+    pushState();
+  };
+
   const keys: Record<string, () => void> = {
     left: () => !inSettings() && show({ type: "focus", index: (focus = Math.max(0, focus - 1)) }),
     right: () => !inSettings() && show({ type: "focus", index: (focus = Math.min(MOCK_APPS.length - 1, focus + 1)) }),
@@ -246,14 +349,8 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
       show({ type: "home" });
     },
     recents: () => show({ type: "recents" }),
-    settings: () => {
-      state.app = "Settings";
-      state.pkg = "com.android.tv.settings";
-      state.title = "";
-      state.playing = false;
-      show({ type: "open", label: "Settings" });
-      pushState();
-    },
+    // Orbit OS: the remote's Settings key opens the Control Center; its gear opens the TV's full Settings.
+    settings: () => controlTo(0),
     mute: () => {
       state.muted = !state.muted;
       show({ type: "volume", volume: state.volume, muted: state.muted });
@@ -334,7 +431,8 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
         return reply(id, { src: icons.get(app.pkg) });
       }
       case "key":
-        keys[args.key]?.();
+        if (control >= 0 && controlKeys[args.key]) controlKeys[args.key]();
+        else keys[args.key]?.();
         return reply(id, {});
       case "volumeStep":
         keys[args.dir === "up" ? "volup" : "voldown"]();
@@ -354,8 +452,8 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
         show({ type: "typed", text: String(args.text ?? "") });
         return reply(id, { ok: true, entered: !!args.submit });
       case "open":
-        show({ type: "open", label: "YouTube" });
-        return reply(id, { ok: true, opened: "YouTube" });
+        show({ type: "open", label: "Browser" });
+        return reply(id, { ok: true, opened: "Browser" });
       case "launch": {
         const i = MOCK_APPS.findIndex((a) => a.pkg === args.pkg);
         if (i >= 0) {
@@ -435,7 +533,55 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
       case "keepAwake":
       case "settings":
         return reply(id, {});
+      // ---- the pretend Google Drive (phone/SPEC.md, "Backups in Google Drive") ----
+      case "backupSave": {
+        if (!account.signedIn) return noAccount(id);
+        const text = String(args.text ?? "");
+        later(700, () => {
+          const file: DriveFile = {
+            id: `demo-${Date.now().toString(36)}`,
+            tv: String(args.tv ?? "TV"),
+            address: String(args.address ?? ""),
+            model: typeof args.model === "string" ? args.model : null,
+            at: Number(args.at) || Date.now(),
+            size: new TextEncoder().encode(text).length,
+            text,
+          };
+          keepDrive([file, ...driveFiles()]);
+          deliver({ id, ok: true, data: listed(file) });
+        });
+        return;
+      }
+      case "backupList":
+        if (!account.signedIn) return noAccount(id);
+        later(500, () => deliver({ id, ok: true, data: { backups: driveFiles().map(listed), email: account.email } }));
+        return;
+      case "backupLoad": {
+        if (!account.signedIn) return noAccount(id);
+        const file = driveFiles().find((f) => f.id === args.id);
+        if (!file) return refuse(id, "That backup is no longer in your Google Drive.", "notFound");
+        return reply(id, { text: file.text });
+      }
+      case "backupDelete":
+        if (!account.signedIn) return noAccount(id);
+        keepDrive(driveFiles().filter((f) => f.id !== args.id));
+        return reply(id, {});
+      case "deleteAccount": {
+        if (!account.signedIn) return fail(id, "Sign in with Google first.", 401);
+        later(1400, () => {
+          const removed = args.backups ? driveFiles().length : null;
+          if (args.backups) keepDrive([]);
+          account = { signedIn: false, email: null, tvLinked: false, tvOnline: false, tvName: null };
+          event("account", account);
+          deliver({ id, ok: true, data: { removed, account } });
+        });
+        return;
+      }
       default:
+        if (op === "setupRun") {
+          const m = /orbit-setup\.sh switch (stock|orbit)\s*$/.exec(String(args.cmd ?? ""));
+          if (m) switching = { id, to: m[1], swallow: false };
+        }
         if (setup.handle(id, op, args)) return;
         return fail(id, `Unknown op ${op}`, 400);
     }

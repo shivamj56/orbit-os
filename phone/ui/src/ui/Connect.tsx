@@ -1,11 +1,13 @@
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { bridge, BridgeError, cloud, haptic, type Status, type TvRef } from "../bridge";
+import { setDemoMode, useDemo } from "../demo";
 import { Globe } from "../globe/Globe";
 import { openSetup } from "../setup/flow";
 import { setAccount, useWorld } from "../store";
 import { Press, spring } from "./kit";
-import { Chevron, Globe as GlobeIcon, Planet, Tv, Wifi } from "./icons";
+import { Chevron, Gear, Globe as GlobeIcon, Planet, Try, Tv, Wifi } from "./icons";
+import { openSettings } from "./panel";
 
 const fade = {
   initial: { opacity: 0, y: 14, filter: "blur(6px)" },
@@ -20,6 +22,7 @@ const fade = {
  */
 export function Connect({ status }: { status: Status }) {
   const { account } = useWorld();
+  const demo = useDemo();
   const [linking, setLinking] = useState(false);
   const state = status.state;
   const asleep = state === "searching" || state === "offline";
@@ -44,8 +47,13 @@ export function Connect({ status }: { status: Status }) {
         <span className="font-display text-[19px] font-light tracking-[0.02em]">
           <span className="ribbon-text font-normal">Orbit</span>
         </span>
-        <span className="flex items-center gap-1.5 text-[12px] text-faint">
-          {linking ? <GlobeIcon size={14} /> : <Wifi size={14} />} {linking ? "From anywhere" : "Home Wi-Fi"}
+        <span className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 text-[12px] text-faint">
+            {linking ? <GlobeIcon size={14} /> : <Wifi size={14} />} {linking ? "From anywhere" : "Home Wi-Fi"}
+          </span>
+          <Press label="Settings" onPress={openSettings} className="glass h-10 w-10 shrink-0 rounded-full text-muted">
+            <Gear size={18} />
+          </Press>
         </span>
       </header>
 
@@ -103,10 +111,27 @@ export function Connect({ status }: { status: Status }) {
         <div className="mt-auto pt-5">
           <AnimatePresence initial={false}>{offerSetup && <SetupOffer />}</AnimatePresence>
           <Anywhere onLink={() => setLinking(true)} />
+          {bridge.native && !demo && <TryDemo />}
           <ManualAddress />
         </div>
       )}
     </div>
+  );
+}
+
+/** Demo mode's way in: everything Orbit does, with the pretend TV inside the app (store reviewers have no Google TV). */
+function TryDemo() {
+  return (
+    <Press
+      label="Try Orbit without a TV"
+      onPress={() => setDemoMode(true)}
+      feel="medium"
+      className="mt-3 h-12 w-full rounded-full border border-cyan/25 bg-cyan/[0.06] text-[14.5px] text-[#cdebff]"
+    >
+      <span className="flex items-center gap-2.5">
+        <Try size={19} className="text-cyan" /> Try Orbit without a TV
+      </span>
+    </Press>
   );
 }
 

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { MOCK_APPS, MOCK_SETTINGS, type MockEvent } from "../mock";
+import { MOCK_APPS, MOCK_CONTROL, MOCK_SETTINGS, type MockEvent } from "../mock";
 
 const spring = { type: "spring", stiffness: 380, damping: 32 } as const;
 
@@ -24,6 +24,8 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
   const [overlay, setOverlay] = useState<string | null>(null);
   const [asleep, setAsleep] = useState(false);
   const [menu, setMenu] = useState(0);
+  // Orbit OS's Control Center: the chosen tile, -1 while closed.
+  const [control, setControl] = useState(-1);
   // Help mode: the note the TV shows while someone can see its screen.
   const [watched, setWatched] = useState(false);
   // Orbit Setup: Android's own question while the phone waits for Allow, and the name the greeting now says.
@@ -49,6 +51,9 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
           break;
         case "menu":
           setMenu(m.index);
+          break;
+        case "control":
+          setControl(m.index);
           break;
         case "overlay":
           setOverlay(m.text);
@@ -178,9 +183,39 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
                     ))}
                   </ul>
                 </div>
+              ) : app === "Live TV" ? (
+                <LiveTvPicture />
               ) : (
                 <div className="font-display font-light text-white" style={{ fontSize: "6cqw" }}>{app}</div>
               )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Orbit OS's Control Center, on the remote's Settings key. */}
+        <AnimatePresence>
+          {control >= 0 && (
+            <motion.div
+              className="absolute top-[16.7%] right-[3.9%] w-[36.7%] rounded-[2.6cqw] bg-[#0c0e16]/90 p-[2.6cqw] text-white shadow-2xl ring-1 ring-white/10 backdrop-blur"
+              initial={{ opacity: 0, x: "8%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "8%" }}
+              transition={spring}
+            >
+              <div className="font-display font-normal" style={{ fontSize: "2.3cqw" }}>
+                Control Center
+              </div>
+              <div className="mt-[2cqw] grid grid-cols-3 gap-[1.25cqw]">
+                {MOCK_CONTROL.map((label, i) => (
+                  <div
+                    key={label}
+                    className={`grid aspect-[0.95] place-items-center rounded-[1.9cqw] text-center transition-colors duration-200 ${i === control ? "bg-[#f2f4f8] font-semibold text-ink" : "bg-white/8 text-white/85"}`}
+                    style={{ fontSize: "1.55cqw" }}
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -283,6 +318,37 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+/** Orbit Live TV on the pretend TV: a channel on air, its name and the programme, and the next ones under it. */
+function LiveTvPicture() {
+  const guide = [
+    { at: "20:00", title: "Evening Raga", on: true },
+    { at: "21:00", title: "City News" },
+    { at: "21:30", title: "Monsoon Kitchen" },
+  ];
+  return (
+    <div className="absolute inset-0" style={{ background: "radial-gradient(70% 90% at 30% 40%, #5b2a8a 0%, #1c0b33 55%, #07040d 100%)" }}>
+      <div className="absolute top-[7%] left-[5%] flex items-center gap-[1cqw]" style={{ fontSize: "1.5cqw" }}>
+        <span className="rounded-[0.5cqw] bg-[#ff4757] px-[0.8cqw] py-[0.2cqw] font-semibold tracking-[0.1em] text-white">LIVE</span>
+        <span className="text-white/75">101 · Orbit Live TV</span>
+      </div>
+      <div className="absolute top-[38%] left-[5%] font-display font-light text-white" style={{ fontSize: "5.4cqw" }}>
+        Evening Raga
+      </div>
+      <div className="absolute top-[52%] left-[5%] text-white/60" style={{ fontSize: "1.7cqw" }}>
+        Music · until 21:00
+      </div>
+      <div className="absolute inset-x-[5%] bottom-[8%] flex gap-[1.2cqw]" style={{ fontSize: "1.4cqw" }}>
+        {guide.map((g) => (
+          <div key={g.at} className={`flex-1 rounded-[0.8cqw] px-[1.2cqw] py-[0.9cqw] ${g.on ? "bg-white/18 text-white" : "bg-white/7 text-white/60"}`}>
+            <div className="tabular text-white/55">{g.at}</div>
+            <div className="mt-[0.2cqw] truncate">{g.title}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

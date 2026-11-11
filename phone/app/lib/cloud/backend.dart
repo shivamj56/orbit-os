@@ -65,6 +65,18 @@ abstract interface class CloudAuth {
   Future<CloudUser> signInWithGoogleIdToken(String idToken);
 
   Future<void> signOut();
+
+  /// Deletes the signed-in user from Firebase Authentication. Throws [RecentLoginRequired] when Firebase wants the
+  /// person to have signed in a moment ago, and [SignInFailed] otherwise.
+  Future<void> deleteUser();
+
+  /// Proves again, with a fresh Google ID token, that the signed-in user is the person (Firebase's "recent login").
+  Future<void> reauthenticateWithGoogleIdToken(String idToken);
+}
+
+/// Firebase wants a fresh sign-in before it deletes the account (`requires-recent-login`).
+class RecentLoginRequired implements Exception {
+  const RecentLoginRequired();
 }
 
 /// The Realtime Database, as Orbit uses it. Paths have no leading slash (`orbit/{uid}/tv/name`).
