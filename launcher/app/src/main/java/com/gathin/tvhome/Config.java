@@ -11,11 +11,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -429,6 +431,26 @@ final class Config {
         return ctx.getExternalFilesDir(null);
     }
 
+    /** The first line of one of Orbit Setup's hand-over files (setup/<name>), at most max characters; "" if none. */
+    static String setupText(Context ctx, String name, int max) {
+        try {
+            File dir = dir(ctx);
+            if (dir == null) return "";
+            File file = new File(new File(dir, ThemeFiles.SETUP), name);
+            if (!file.isFile() || file.length() > 4096) return "";
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file),
+                    StandardCharsets.UTF_8))) {
+                String line = in.readLine();
+                if (line == null) return "";
+                line = line.replace("﻿", "").trim();
+                return line.length() > max ? line.substring(0, max).trim() : line;
+            }
+        } catch (IOException | RuntimeException unreadable) {
+            // Storage that is not mounted yet, or a file the shell left half written: no name, as before setup.
+            return "";
+        }
+    }
+
     static Config load(Context ctx) {
         Resources res = ctx.getResources();
         List<String> dock = new ArrayList<>(Arrays.asList(res.getStringArray(R.array.dock_apps)));
@@ -457,6 +479,9 @@ final class Config {
         boolean lunar = res.getBoolean(R.bool.lunar_date);
         int lunarOffset = -1;
         String greetingName = res.getString(R.string.greeting_name).trim();
+        // The name Orbit Setup asked for (setup/name.txt); a theme's greeting_name still wins over it.
+        String setupName = setupText(ctx, "name.txt", 40);
+        if (!setupName.isEmpty()) greetingName = setupName;
         boolean moduleCards = res.getBoolean(R.bool.module_cards);
         boolean reducedMotion = res.getBoolean(R.bool.reduced_motion);
         boolean bootToLiveTv = res.getBoolean(R.bool.boot_to_live_tv);

@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "about": "What Orbit Setup knows about the apps on a TV. Only packages listed here are ever offered; anything else on a TV is left alone. Packages that match coreRe (unless coreOk) are never switched off, whatever a list says.",
+  "coreRe": "^(android|android\\.ext\\.(services|shared)|com\\.android\\.sdksandbox|com\\.android\\.location\\.fused|com\\.android\\.systemui|com\\.android\\.shell|com\\.android\\.phone|com\\.android\\.settings|com\\.android\\.tv\\.settings|com\\.(google\\.)?android\\.(permissioncontroller|packageinstaller|ext\\.services|ext\\.shared|modulemetadata)|com\\.google\\.android\\.overlay\\.modules.*|com\\.android\\.providers\\..*|com\\.cltv\\.mal|com\\.mediatek\\.(tis|tv\\.service|tv\\.agent))$",
+  "coreOk": "^com\\.android\\.providers\\.(calendar|contacts|userdictionary|blockednumber)$",
+  "groups": {
+    "tracking": { "label": "Ads and tracking", "about": "Usage reports, surveys and promoted rows. Nothing you watch needs them.", "default": "off" },
+    "unused": { "label": "Apps nobody here uses", "about": "Built-in apps that only take memory if you never open them.", "default": "off" },
+    "startup": { "label": "Woken at every start", "about": "Background helpers that wake with the TV and do nothing useful on it.", "default": "off" },
+    "stockHome": { "label": "The stock home screen", "about": "Replaced by Orbit Home. Switched back on by Undo.", "default": "off", "requiredWithHome": true },
+    "cast": { "label": "Casting", "about": "Chromecast built-in, for casting from a phone.", "default": "keep" },
+    "usb": { "label": "USB playback", "about": "The TV's own gallery and video player, for films and photos on a USB drive.", "default": "keep" },
+    "channels": { "label": "The maker's channels", "about": "The TV maker's own free channels app.", "default": "keep" },
+    "voice": { "label": "Voice search", "about": "Google's assistant, which answers the remote's microphone button.", "default": "keep" }
+  },
+  "questions": [
+    {
+      "id": "cast",
+      "group": "cast",
+      "title": "Do you cast videos from your phone to this TV?",
+      "help": "Casting needs Chromecast built-in. Switched off, it frees about 24 MB of memory.",
+      "keep": "Yes, keep casting",
+      "off": "No, switch it off"
+    },
+    {
+      "id": "usb",
+      "group": "usb",
+      "title": "Do you play films or photos from a USB drive?",
+      "help": "The TV's own gallery and video player do that. Nothing else needs them.",
+      "keep": "Yes, keep them",
+      "off": "No, switch them off"
+    },
+    {
+      "id": "voice",
+      "group": "voice",
+      "title": "Do you search by voice with the remote?",
+      "help": "Voice search keeps Google's assistant on. It answers the remote's microphone button.",
+      "keep": "Yes, keep voice",
+      "off": "No, switch it off"
+    },
+    {
+      "id": "channels",
+      "group": "channels",
+      "title": "Do you watch the TV maker's free channels?",
+      "help": "Orbit Live TV brings 30 free channels of its own.",
+      "keep": "Yes, keep them",
+      "off": "No, switch them off"
+    },
+    {
+      "id": "ads",
+      "group": "tracking",
+      "title": "Switch off ads, tracking and promoted rows?",
+      "help": "Nothing you watch stops working. Every item is listed before anything changes.",
+      "keep": "Let me look first",
+      "off": "Yes, switch them off",
+      "recommend": "off"
+    }
+  ],
+  "packages": {
+    "com.miui.tv.analytics": { "label": "Xiaomi analytics", "group": "tracking" },
+    "com.xiaomi.statistic": { "label": "Xiaomi usage statistics", "group": "tracking" },
+    "com.xiaomi.mitv.detection": { "label": "Xiaomi device reports", "group": "tracking" },
+    "com.xiaomi.tvqs.overseas.y24": { "label": "Xiaomi surveys", "group": "tracking" },
+    "com.xiaomo.tv.milegal": { "label": "Xiaomi legal pop-ups", "group": "tracking" },
+    "com.google.android.feedback": { "label": "Google feedback reports", "group": "tracking" },
+    "com.mitv.tvhome.atv": { "label": "PatchWall promoted rows", "group": "tracking" },
+    "com.mitv.tvhome.michannel": { "label": "Mi Channel promotions", "group": "tracking" },
+    "com.mitv.tvhome.oemtab": { "label": "Xiaomi promoted tab", "group": "tracking" },
+    "com.mitv.toolhouse": { "label": "Xiaomi tool house", "group": "tracking" },
+    "com.xm.webcontent": { "label": "Xiaomi web content", "group": "tracking" },
+    "android.autoinstalls.config.soc.amlogic": { "label": "Apps installed by the maker on its own", "group": "tracking" },
+
+    "com.xiaomi.mimusic2": { "label": "The TV's music player", "group": "unused" },
+    "com.xiaomi.mitv.scenemode": { "label": "Xiaomi scene modes", "group": "unused" },
+    "com.google.android.youtube.tvmusic": { "label": "YouTube Music", "group": "unused" },
+    "com.google.android.play.games": { "label": "Google Play Games", "group": "unused" },
+    "com.xiaomi.mi_connect_service": { "label": "Mi Connect (Xiaomi phone to TV)", "group": "unused" },
+
+    "com.google.android.partnersetup": { "label": "Partner setup", "group": "startup" },
+    "com.google.android.syncadapters.calendar": { "label": "Calendar sync", "group": "startup" },
+    "com.android.providers.calendar": { "label": "Calendar storage", "group": "startup" },
+    "com.android.dynsystem": { "label": "System image updater for developers", "group": "startup" },
+    "com.xiaomi.mitv.tvmanager": { "label": "Xiaomi TV manager", "group": "startup" },
+    "com.xiaomi.mitv.manualhelp": { "label": "Xiaomi manual and help", "group": "startup" },
+
+    "com.google.android.tungsten.setupwraith": { "label": "Google TV setup", "group": "stockHome" },
+    "com.google.android.apps.tv.launcherx": { "label": "Google TV home screen", "group": "stockHome" },
+    "com.google.android.apps.tv.launcherx.overlay": { "label": "Google TV home screen styling", "group": "stockHome" },
+    "com.google.android.apps.tv.dreamx": { "label": "Google TV screensaver", "group": "stockHome" },
+
+    "com.google.android.apps.mediashell": { "label": "Chromecast built-in", "group": "cast" },
+
+    "com.mitv.videoplayer": { "label": "The TV's video player", "group": "usb" },
+    "com.mitv.gallery": { "label": "The TV's photo gallery", "group": "usb" },
+    "com.xiaomi.mitv.mediaexplorer": { "label": "Xiaomi media explorer", "group": "usb" },
+
+    "com.mitv.tvhome.mitvplus": { "label": "Xiaomi TV+", "group": "channels" },
+
+    "com.google.android.katniss": { "label": "Google Assistant", "group": "voice" }
+  },
+  "neverOff": [
+    "com.mitv.overseaservice",
+    "com.mitv.livetv",
+    "com.google.android.tv.remote.service",
+    "com.google.android.gms",
+    "com.android.vending",
+    "com.google.android.gsf",
+    "com.google.android.tvrecommendations"
+  ],
+  "models": {
+    "MiTV-AXFU0": {
+      "name": "Xiaomi TV A Pro",
+      "device": "devices/xiaomi-mitv-axfu0",
+      "together": [["com.google.android.tungsten.setupwraith", "com.google.android.apps.tv.launcherx"]],
+      "notes": "Keep com.mitv.overseaservice: without it the remote loses its pairing after standby. HDMI goes through com.mitv.livetv."
+    }
+  }
+}

@@ -224,3 +224,66 @@ ASCII, one line, fields separated by single spaces:
 `seq` is an integer that goes up by one per datagram from each phone (start anywhere, wrap at 2^31). The TV drops a
 datagram whose seq is not newer than the last one it took. Fire and forget; at most 60 a second (the page already
 throttles to the screen's frames).
+
+## Orbit Setup (11 Nov): put Orbit OS on a TV from the phone, no computer
+
+The design is the canvas "Orbit Setup" (phone row: Welcome, Find, Developer mode, Allow, Questions, Plan, Installing,
+Your name and account, Ready). The page drives the flow and decides what to change; Flutter finds TVs, opens the TV's
+own debugging connection (ADB over Wi-Fi, port 5555) and moves files. Everything that changes the TV is ONE script,
+`setup/tv/orbit-setup.sh`, run by the TV's own shell, so the phone, a computer and later a TV app all do the same thing.
+
+### Ops (page -> Flutter)
+
+| op | args | what Flutter does | reply data |
+|---|---|---|---|
+| setupScan | `{"seconds":4}` | NSD browse `_androidtvremote2._tcp`, `_googlecast._tcp` and `_orbit._tcp` together for that long, merged by address. Name: TXT `fn`, else the service name; model: TXT `md` when given | `{"tvs":[{"name":"Family room","address":"192.168.1.7","model":"MiTV-AXFU0","orbit":true}]}` (`model` may be null; `orbit` = it answered `_orbit._tcp`) |
+| setupProbe | `{"address":"…","port":5555}` | TCP connect, 1.5 s timeout, closed at once | `{"open":true}` |
+| setupConnect | `{"address":"…","port":5555}` | open ADB (classic TCP protocol, RSA auth with the app's own 2048-bit key, made once and kept in app storage). When the TV must show "Allow USB debugging?", push event `setupAuth` `{"state":"waiting"}`; give up after 90 s. Then read `getprop` | `{"model":"MiTV-AXFU0","manufacturer":"Xiaomi","brand":"Xiaomi","device":"arctictale","sdk":34,"release":"14"}`; errors `ok:false` with `reason` `"unreachable"` / `"refused"` (the TV said Cancel) / `"timeout"` / `"tls"` (only Wireless debugging, not supported yet) |
+| setupShell | `{"cmd":"pm list packages","timeoutMs":20000}` | one shell command on the open connection | `{"out":"…"}` (stdout and stderr, at most 512 KB) |
+| setupPush | `{"asset":"orbit-home.apk","to":"/data/local/tmp/orbit/orbit-home.apk"}` or `{"text":"…","to":"…"}` | ADB sync push, mode 0644. `asset` is one of the bundled files below | `{"bytes":3506975}` |
+| setupRun | `{"cmd":"sh /data/local/tmp/orbit/orbit-setup.sh install"}` | shell with streaming output: every output line goes out as event `setupLine` `{"line":"…"}` as it arrives; the command is run as `<cmd>; echo @orbit-exit $?` | `{"exit":0}` |
+| setupClose | – | close the ADB connection | `{}` |
+| setupRecord | save `{"key":"<tv address>","record":{…}}`, load `{"key":"…"}` | app storage, one JSON record per TV | `{"record":{…}}` or `{"record":null}` |
+| setupAdopt | `{"address":"192.168.1.7","port":8090,"token":"<the 32 hex of token.txt>","name":"Family room"}` | after the script's `pair` step: save this TV and token exactly as a finished `pair` would (secure storage), state → connected (check with GET /api/state; retry for 30 s while Orbit Home starts) | status |
+
+Bundled files (Flutter assets under `assets/setup/`, copied by `phone/app/tool/sync_setup.sh` before a build):
+`orbit-home.apk` (launcher/app release), `orbit-live.apk` (launcher/livetv release), `orbit-setup.sh` and
+`orbit-undo.sh` (from `setup/tv/`). The phone app's own APK grows by about 5 MB.
+
+### The script (`setup/tv/orbit-setup.sh`)
+
+The page pushes into `/data/local/tmp/orbit/`: both APKs, the script, and
+
+- `plan.txt`: one `key=value` per line: `home=1` (install Orbit Home and make it Home), `live=1` (install Orbit Live
+  TV), `stock=<package of the TV's own launcher, read before anything changes>`
+- `disable.txt`: the packages to switch off, one per line
+- `name.txt`: the name for the greeting (UTF-8, may be empty)
+- `token.txt`: 32 hex characters made by the phone; the TV's door takes it as an already paired phone, so no code is
+  typed during setup. `phone.txt`: the phone's name for the TV's list of phones.
+
+Then `setupRun` `sh /data/local/tmp/orbit/orbit-setup.sh install`. Later, `… name` sends only a new `name.txt`, and
+`orbit-undo.sh` puts everything back from `undo.txt`. Lines starting `@orbit` are for the page, the rest is log:
+
+    @orbit step <id> start|ok|skip|fail [text]   ids in order: check record disable home helper grants live name pair
+    @orbit progress <0-100>
+    @orbit undo <line>                          the undo record, one line at a time (the page saves all of them)
+    @orbit done ok|fail [text]
+
+The script refuses the system's core packages, never uninstalls a factory app, and if anything fails from `home` on
+it gives Home back to the stock launcher before it stops. The undo record is also kept on the TV at
+`/data/local/tmp/orbit/undo.txt`.
+
+### Name and pairing on the TV
+
+The script hands `name.txt`, `token.txt` and `phone.txt` to Orbit Home through its theme provider (`content write`,
+so the files belong to Orbit Home), into `/sdcard/Android/data/com.gathin.tvhome/files/setup/`; a plain copy is the
+fallback on firmware without the provider. Orbit Home reads `setup/name.txt` for the greeting when its theme sets no `greeting_name`, and its door adds
+`setup/token.txt` to its paired phones once (then deletes the file). The page then talks to the door at port 8090
+with that token, as after a normal pairing.
+
+### What the page keeps
+
+The page's catalog (`phone/ui/src/setup/catalog.json`) says, for each known package, what it is in plain words, its
+group and whether it is safe to switch off, plus which question keeps it. Unknown packages are never touched. For a
+TV model the catalog knows (from `devices/`), its list is the starting point; for any other TV only packages the
+catalog marks safe are offered.

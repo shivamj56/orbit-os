@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 /** The files ThemeProvider may write or delete under Config.dir, by the URI's path segments. */
 final class ThemeFiles {
     static final String WALLPAPERS = "wallpapers";
+    /** Orbit Setup's hand-over folder: the name for the greeting and the token of the phone that ran the setup. */
+    static final String SETUP = "setup";
+    private static final Pattern SETUP_FILE = Pattern.compile("(name|token|phone)\\.txt");
     /** The names tools/theme.sh accepts for a collection image, and the types WallpaperRotation reads. */
     private static final Pattern IMAGE = Pattern.compile("[A-Za-z0-9_.-]+\\.(jpg|jpeg|png|webp)",
             Pattern.CASE_INSENSITIVE);
@@ -23,6 +26,9 @@ final class ThemeFiles {
         if (segments.size() == 2 && WALLPAPERS.equals(segments.get(0))
                 && (collectionImage(segments.get(1)) || WallpaperCaptions.FILE_NAME.equals(segments.get(1)))) {
             return WALLPAPERS + "/" + segments.get(1);
+        }
+        if (segments.size() == 2 && SETUP.equals(segments.get(0)) && SETUP_FILE.matcher(segments.get(1)).matches()) {
+            return SETUP + "/" + segments.get(1);
         }
         return null;
     }

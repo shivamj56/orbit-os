@@ -17,6 +17,15 @@ public class ThemeFilesTest {
         assertEquals("theme_revision", ThemeFiles.path(Collections.singletonList("theme_revision")));
     }
 
+    @Test public void orbitSetupHandOverFilesAreAllowed() {
+        assertEquals("setup/name.txt", ThemeFiles.path(Arrays.asList("setup", "name.txt")));
+        assertEquals("setup/token.txt", ThemeFiles.path(Arrays.asList("setup", "token.txt")));
+        assertEquals("setup/phone.txt", ThemeFiles.path(Arrays.asList("setup", "phone.txt")));
+        assertNull(ThemeFiles.path(Arrays.asList("setup", "other.txt")));
+        assertNull(ThemeFiles.path(Arrays.asList("setup", "..", "config.json")));
+        assertNull(ThemeFiles.path(Collections.singletonList("setup")));
+    }
+
     @Test public void collectionImagesAreAllowed() {
         assertEquals("wallpapers/dusk.jpg", ThemeFiles.path(Arrays.asList("wallpapers", "dusk.jpg")));
         assertEquals("wallpapers/Night_2.WEBP", ThemeFiles.path(Arrays.asList("wallpapers", "Night_2.WEBP")));

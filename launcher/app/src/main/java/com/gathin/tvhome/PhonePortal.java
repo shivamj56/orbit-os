@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
@@ -422,8 +423,24 @@ final class PhonePortal {
         }
     }
 
+    /**
+     * Orbit Setup's phone (phone/SPEC.md): the TV's shell leaves setup/token.txt during setup, and that phone counts as
+     * paired from then on, with no code typed. The file goes once it is taken. Cheap when there is none.
+     */
+    private void adoptSetupToken() {
+        File dir = Config.dir(service);
+        if (dir == null) return;
+        File file = new File(new File(dir, ThemeFiles.SETUP), "token.txt");
+        if (!file.isFile()) return;
+        String token = Config.setupText(service, "token.txt", 64).toLowerCase(Locale.ROOT);
+        if (token.matches("[0-9a-f]{32}")) remember(token);
+        if (!file.delete()) file.deleteOnExit();
+        new File(file.getParentFile(), "phone.txt").delete();
+    }
+
     private boolean isPaired(String token) {
         if (token == null || token.length() != 32) return false;
+        adoptSetupToken();
         byte[] hash = hashOf(token.toLowerCase(Locale.ROOT));
         if (hash == null) return false;
         boolean known = false;
