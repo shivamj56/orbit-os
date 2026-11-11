@@ -47,7 +47,7 @@ export const TvScreen = forwardRef<HTMLDivElement, Props & React.HTMLAttributes<
       >
         <div className="font-display text-[4.4cqw] leading-none font-light tracking-[-0.01em] text-white">{greetingFor(now)}</div>
         <div className="mt-[1.1cqw] text-[1.45cqw] text-white/85">Hello, I wish you a wonderful day</div>
-        <div className="mt-[1.3cqw] text-[1.1cqw] text-white/45">
+        <div className="mt-[1.3cqw] text-[1.1cqw] text-white/60">
           {dateText(now)}
           <span className="mx-[0.8cqw]">·</span>
           {timeText(now)}

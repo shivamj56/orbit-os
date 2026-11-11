@@ -26,6 +26,16 @@ const RING_ROLL = -0.16;
 const DUST = 1500;
 
 const TRIO = /* glsl */ `
+// Daylight's version of the trio: deep enough to read on pearl paper.
+vec3 trioDeep(float t) {
+  vec3 a = vec3(0.039, 0.463, 0.702);
+  vec3 b = vec3(0.290, 0.357, 0.839);
+  vec3 c = vec3(0.604, 0.247, 0.816);
+  t = fract(t) * 3.0;
+  if (t < 1.0) return mix(a, b, smoothstep(0.0, 1.0, t));
+  if (t < 2.0) return mix(b, c, smoothstep(0.0, 1.0, t - 1.0));
+  return mix(c, a, smoothstep(0.0, 1.0, t - 2.0));
+}
 vec3 trio(float t) {
   vec3 a = vec3(0.455, 0.820, 1.000);
   vec3 b = vec3(0.678, 0.776, 1.000);
@@ -60,6 +70,7 @@ uniform vec3 uEye;
 uniform float uTime;
 uniform float uAppear;
 uniform float uGlow;
+uniform float uLight;
 out vec4 o;
 ${TRIO}
 void main() {
@@ -71,7 +82,7 @@ void main() {
   float fres = pow(1.0 - max(dot(N, V), 0.0), 2.4);
   float ang = atan(vLocal.y, vLocal.x) / 6.2831853;
   vec3 base = vec3(0.022, 0.027, 0.046);
-  vec3 rim = trio(ang + uTime * 0.04) * fres * (0.55 + 0.5 * uGlow);
+  vec3 rim = mix(trio(ang + uTime * 0.04), trioDeep(ang + uTime * 0.04) * 1.6, uLight) * fres * (0.55 + 0.5 * uGlow);
   // The front bezel catches a thin line of the ring's light along its edge.
   float edge = smoothstep(0.012, 0.0, abs(max(abs(vLocal.x) - ${(TV_W / 2).toFixed(3)}, abs(vLocal.y) - ${(TV_H / 2).toFixed(3)})) - 0.004) * step(0.5, N.z);
   vec3 col = base * (0.55 + 0.9 * diff) + vec3(0.75, 0.85, 1.0) * spec * 0.25 + rim + trio(ang * 2.0 + uTime * 0.05) * edge * 0.18;
@@ -170,6 +181,7 @@ uniform float uDraw;
 uniform float uSat;
 uniform float uGain;
 uniform float uDpr;
+uniform float uLight;
 out vec4 o;
 ${TRIO}
 void main() {
@@ -182,10 +194,19 @@ void main() {
   float d = mod(vT - uSat + 3.14159265, 6.2831853) - 3.14159265;
   float trail = d < 0.0 ? exp(d * 1.35) : exp(-d * 26.0);
   float depthGain = mix(0.42, 1.0, smoothstep(-0.9, 0.5, vNear));
+  float head = exp(-pow((t - uDraw) * 90.0, 2.0)) * (1.0 - step(0.999, uDraw));
+  if (uLight > 0.5) {
+    vec3 ink = trioDeep(t * 2.0 - uTime * 0.035 + vNear * 0.06);
+    float a = (core * 0.92 + halo * 0.2 + far * 0.07) * depthGain * (1.0 + trail * 0.8 * step(0.999, uDraw)) * uGain * drawn;
+    a += head * (core + halo * 0.5);
+    a = clamp(a, 0.0, 1.0);
+    vec3 c = mix(ink, ink * 0.55, core * 0.4);
+    o = vec4(c * a, a);
+    return;
+  }
   vec3 hue = trio(t * 2.0 - uTime * 0.035 + vNear * 0.06);
   float i = (core * 1.1 + halo * 0.34 + far * 0.11) * depthGain * (1.0 + trail * 1.9 * step(0.999, uDraw)) * uGain;
   vec3 c = mix(hue, vec3(1.0), clamp(core * 0.5 + trail * 0.3, 0.0, 0.85)) * i * drawn;
-  float head = exp(-pow((t - uDraw) * 90.0, 2.0)) * (1.0 - step(0.999, uDraw));
   c += vec3(0.85, 0.95, 1.0) * head * (core * 2.0 + halo * 0.9);
   o = vec4(c, clamp(max(c.r, max(c.g, c.b)) * 0.55, 0.0, 1.0));
 }`;
@@ -200,6 +221,7 @@ uniform float uDpr;
 uniform float uRef;
 uniform float uShow;
 uniform float uCenterZ;
+uniform float uLight;
 out float vA;
 out vec3 vC;
 ${TRIO}
@@ -214,18 +236,24 @@ void main() {
   float tw = 0.55 + 0.45 * sin(uTime * (1.2 + 2.8 * fract(aP.w * 3.1)) + aP.w * 40.0);
   float nearSide = smoothstep(-1.0, 0.6, clamp((v.z - uCenterZ) / uRadius, -1.0, 1.0));
   vA = tw * (0.3 + 0.7 * fract(aP.w * 5.3)) * uShow * mix(0.45, 1.0, nearSide);
-  vC = mix(trio(th / 6.2831853 * 2.0 + aP.w * 0.25), vec3(1.0), 0.25);
+  vC = uLight > 0.5 ? trioDeep(th / 6.2831853 * 2.0 + aP.w * 0.25) : mix(trio(th / 6.2831853 * 2.0 + aP.w * 0.25), vec3(1.0), 0.25);
 }`;
 
 const DUST_F = /* glsl */ `#version 300 es
 precision highp float;
 in float vA;
 in vec3 vC;
+uniform float uLight;
 out vec4 o;
 void main() {
   float r = length(gl_PointCoord - 0.5);
   float a = smoothstep(0.5, 0.0, r);
   a *= a;
+  if (uLight > 0.5) {
+    float k = clamp(a * vA * 0.85, 0.0, 1.0);
+    o = vec4(vC * k, k);
+    return;
+  }
   o = vec4(vC * a * vA, a * vA * 0.5);
 }`;
 
@@ -246,6 +274,7 @@ const SAT_F = /* glsl */ `#version 300 es
 precision highp float;
 uniform float uShow;
 uniform float uPulse;
+uniform float uLight;
 out vec4 o;
 void main() {
   vec2 p = gl_PointCoord - 0.5;
@@ -253,8 +282,48 @@ void main() {
   float core = exp(-r2 * 1400.0);
   float glow = exp(-r2 * 70.0) * 0.38;
   float rays = exp(-abs(p.y) * 170.0) * exp(-abs(p.x) * 8.0) + exp(-abs(p.x) * 170.0) * exp(-abs(p.y) * 8.0);
+  if (uLight > 0.5) {
+    // A white pearl with a deep-sky halo and a crisp ink ring, so it reads on paper.
+    float halo = clamp((glow * 1.4 + rays * 0.3) * (1.0 + uPulse), 0.0, 0.85);
+    float ring = exp(-pow((sqrt(r2) - 0.035) * 220.0, 2.0));
+    vec3 col = mix(vec3(0.04, 0.42, 0.66), vec3(1.0), clamp(core * 1.6, 0.0, 1.0));
+    float a = clamp(halo + core * 1.6 + ring * 0.6, 0.0, 1.0);
+    o = vec4(col * a, a) * uShow;
+    return;
+  }
   vec3 c = vec3(1.0) * core * 1.4 + vec3(0.55, 0.84, 1.0) * (glow + rays * 0.42) * (1.0 + uPulse);
   o = vec4(c * uShow, clamp(max(c.r, c.b) * 0.6, 0.0, 1.0) * uShow);
+}`;
+
+// The floor under the TV: a pool of the ring's light at night, a soft cast shadow in daylight.
+const FLOOR_V = /* glsl */ `#version 300 es
+in vec2 aUv;
+uniform mat4 uProj, uView, uModel;
+out vec2 vUv;
+void main() {
+  vUv = aUv;
+  vec3 p = vec3((aUv.x - 0.5) * 7.0, -${(TV_H / 2 + 0.36).toFixed(3)}, (aUv.y - 0.5) * 3.2);
+  gl_Position = uProj * uView * uModel * vec4(p, 1.0);
+}`;
+
+const FLOOR_F = /* glsl */ `#version 300 es
+precision highp float;
+in vec2 vUv;
+uniform float uLight;
+uniform float uShow;
+uniform float uTime;
+out vec4 o;
+${TRIO}
+void main() {
+  vec2 q = (vUv - 0.5) * vec2(2.0, 2.0);
+  float d = length(q * vec2(0.62, 1.0));
+  if (uLight > 0.5) {
+    float a = exp(-d * d * 7.5) * 0.24 * uShow;
+    o = vec4(vec3(0.07, 0.09, 0.2) * a, a);
+    return;
+  }
+  vec3 c = trio(q.x * 0.25 + 0.15 + uTime * 0.02) * exp(-d * d * 5.5) * 0.16 * uShow;
+  o = vec4(c, 0.0);
 }`;
 
 type Uniforms = Record<string, WebGLUniformLocation | null>;
@@ -319,15 +388,23 @@ interface Props {
   anchor: RefObject<HTMLElement | null>;
   control?: RefObject<StageControl | null>;
   reduce: boolean;
+  theme: "light" | "dark";
   onFallback: () => void;
   onPanel?: (open: boolean) => void;
 }
 
-export function OrbitStage({ container, anchor, control, reduce, onFallback, onPanel }: Props) {
+export function OrbitStage({ container, anchor, control, reduce, theme, onFallback, onPanel }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ready, setReady] = useState(false);
   const panelRef = useRef(onPanel);
   panelRef.current = onPanel;
+  const themeRef = useRef(theme);
+  themeRef.current = theme;
+  const redraw = useRef<() => void>(() => {});
+  // A theme change repaints a still frame at once (the loop picks it up by itself when it runs).
+  useEffect(() => {
+    redraw.current();
+  }, [theme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -346,6 +423,7 @@ export function OrbitStage({ container, anchor, control, reduce, onFallback, onP
       const ring = program(g, RING_V, RING_F);
       const dust = program(g, DUST_V, DUST_F);
       const sat = program(g, SAT_V, SAT_F);
+      const floor = program(g, FLOOR_V, FLOOR_F);
 
       const bodyVao = g.createVertexArray()!;
       g.bindVertexArray(bodyVao);
@@ -409,8 +487,16 @@ export function OrbitStage({ container, anchor, control, reduce, onFallback, onP
       g.vertexAttribPointer(aP, 4, g.FLOAT, false, 0, 0);
 
       const satVao = g.createVertexArray()!;
+      const floorVao = g.createVertexArray()!;
+      g.bindVertexArray(floorVao);
+      const b5 = g.createBuffer();
+      g.bindBuffer(g.ARRAY_BUFFER, b5);
+      g.bufferData(g.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), g.STATIC_DRAW);
+      const aFuv = g.getAttribLocation(floor.p, "aUv");
+      g.enableVertexAttribArray(aFuv);
+      g.vertexAttribPointer(aFuv, 2, g.FLOAT, false, 0, 0);
       g.bindVertexArray(null);
-      return { body, screen, ring, dust, sat, bodyVao, screenVao, ringVao, dustVao, satVao, slabCount: slab.length / 6, ringCount: (SEG + 1) * 2, buffers: [b1, b2, b3, b4] };
+      return { body, screen, ring, dust, sat, floor, bodyVao, screenVao, ringVao, dustVao, satVao, floorVao, slabCount: slab.length / 6, ringCount: (SEG + 1) * 2, buffers: [b1, b2, b3, b4, b5] };
     }
 
     try {
@@ -476,11 +562,14 @@ export function OrbitStage({ container, anchor, control, reduce, onFallback, onP
       pulse *= Math.exp(-dt * 2.2);
       panel += (panelTarget - panel) * (1 - Math.exp(-dt * 6.5));
 
-      const draw01 = reduce ? 1 : easeInOut((t - 0.15) / 1.7);
-      const appear = reduce ? 1 : ease((t - 0.3) / 1.0);
-      const power = reduce ? 1 : ease((t - 1.0) / 1.3);
-      const dustShow = reduce ? 1 : ease((t - 1.1) / 1.4);
-      const satShow = reduce ? 1 : ease((t - 1.8) / 0.6);
+      // The intro, in order: the TV rises and powers on, the ring draws itself around it, then the dust and the
+      // satellite. The headline comes in as the ring starts (Hero.tsx times it to the same clock).
+      const appear = reduce ? 1 : ease((t - 0.05) / 0.85);
+      const power = reduce ? 1 : ease((t - 0.35) / 1.05);
+      const draw01 = reduce ? 1 : easeInOut((t - 1.0) / 1.55);
+      const dustShow = reduce ? 1 : ease((t - 1.7) / 1.3);
+      const satShow = reduce ? 1 : ease((t - 2.45) / 0.6);
+      const light = themeRef.current === "light" ? 1 : 0;
       if (!reduce) {
         sat += dt * (0.42 + 0.5 * pointer.over + 2.6 * pulse);
         spin += dt * (0.06 + 0.05 * pointer.over + 0.5 * pulse);
@@ -526,6 +615,7 @@ export function OrbitStage({ container, anchor, control, reduce, onFallback, onP
       gl.uniform1f(body.u.uTime, t);
       gl.uniform1f(body.u.uAppear, appear);
       gl.uniform1f(body.u.uGlow, pointer.over + pulse);
+      gl.uniform1f(body.u.uLight, light);
       gl.drawArrays(gl.TRIANGLES, 0, progs.slabCount);
 
       gl.useProgram(screen.p);
@@ -546,10 +636,20 @@ export function OrbitStage({ container, anchor, control, reduce, onFallback, onP
       gl.uniform1f(screen.u.uTime, t);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-      // Light: added, depth-tested against the TV, never writing depth.
+      // Light: added at night, laid over the paper by day; depth-tested against the TV, never writing depth.
       gl.depthMask(false);
-      gl.blendFunc(gl.ONE, gl.ONE);
+      if (light) gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      else gl.blendFunc(gl.ONE, gl.ONE);
       const ref = dist;
+      gl.useProgram(progs.floor.p);
+      gl.bindVertexArray(progs.floorVao);
+      gl.uniformMatrix4fv(progs.floor.u.uProj, false, P);
+      gl.uniformMatrix4fv(progs.floor.u.uView, false, V);
+      gl.uniformMatrix4fv(progs.floor.u.uModel, false, M);
+      gl.uniform1f(progs.floor.u.uLight, light);
+      gl.uniform1f(progs.floor.u.uShow, appear);
+      gl.uniform1f(progs.floor.u.uTime, t);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
       gl.useProgram(ring.p);
       gl.bindVertexArray(progs.ringVao);
       gl.uniformMatrix4fv(ring.u.uProj, false, P);
@@ -564,6 +664,7 @@ export function OrbitStage({ container, anchor, control, reduce, onFallback, onP
       gl.uniform1f(ring.u.uSat, ((sat % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2));
       gl.uniform1f(ring.u.uGain, 1.0 + 0.35 * pointer.over + 0.9 * pulse);
       gl.uniform1f(ring.u.uDpr, dpr);
+      gl.uniform1f(ring.u.uLight, light);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, progs.ringCount);
 
       gl.useProgram(dust.p);
@@ -577,6 +678,7 @@ export function OrbitStage({ container, anchor, control, reduce, onFallback, onP
       gl.uniform1f(dust.u.uRef, ref);
       gl.uniform1f(dust.u.uShow, dustShow * (1 + 0.6 * pulse));
       gl.uniform1f(dust.u.uCenterZ, centerZ);
+      gl.uniform1f(dust.u.uLight, light);
       gl.drawArrays(gl.POINTS, 0, DUST);
 
       gl.useProgram(satP.p);
@@ -590,10 +692,14 @@ export function OrbitStage({ container, anchor, control, reduce, onFallback, onP
       gl.uniform1f(satP.u.uSize, 92);
       gl.uniform1f(satP.u.uShow, satShow);
       gl.uniform1f(satP.u.uPulse, pulse);
+      gl.uniform1f(satP.u.uLight, light);
       gl.drawArrays(gl.POINTS, 0, 1);
       gl.bindVertexArray(null);
     };
 
+    redraw.current = () => {
+      if (!raf) draw(performance.now());
+    };
     const frame = (now: number) => {
       raf = 0;
       if (!visible || document.hidden) return;

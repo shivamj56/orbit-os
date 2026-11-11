@@ -5,7 +5,7 @@ export function QrCard({ className = "" }: { className?: string }) {
   return (
     <div className={`glass flex items-center gap-4 rounded-2xl p-3 pr-5 text-left ${className}`}>
       <div
-        className="size-[5.25rem] shrink-0 rounded-xl bg-[#F2F5FF] p-1.5 text-[#05070D] [&>svg]:size-full"
+        className="size-[5.25rem] shrink-0 rounded-xl bg-white p-1.5 text-[#05070D] ring-1 ring-line [&>svg]:size-full"
         role="img"
         aria-label="QR code that opens the Orbit download page on your phone"
         dangerouslySetInnerHTML={{ __html: qrSvg }}

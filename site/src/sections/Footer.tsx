@@ -4,7 +4,7 @@ import { goTo } from "@/lib/scroll";
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] bg-[#020306] pt-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+    <footer className="theme-night border-t border-line bg-[#020306] pt-10 pb-[max(6rem,env(safe-area-inset-bottom))] text-ink md:pb-[max(2.5rem,env(safe-area-inset-bottom))]">
       <div className="wrap flex flex-wrap items-center justify-between gap-x-10 gap-y-6">
         <div className="flex items-center gap-3 text-ink">
           <OrbitMark size={26} />

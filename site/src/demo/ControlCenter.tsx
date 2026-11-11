@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
-import type { ReactNode } from "react";
+import { motion, useSpring, useTransform, usePresence } from "motion/react";
+import { useEffect, useId, type ReactNode } from "react";
 import * as I from "@/components/kit/icons";
 import { dateText, timeText, useClock } from "@/lib/hooks";
 import { CHANNELS, GROUP_TONES } from "./apps";
@@ -61,16 +61,44 @@ export function ControlCenter({ state, reduce, onPick }: { state: DemoState; red
   const f = (id: string) => cc.focus === id;
   const watched = state.watched !== null ? CHANNELS[state.watched] : null;
 
+  // The panel pours down like a liquid: its lower edge leads in the middle, overshoots and settles, wobbling once.
+  const clip = `cc-liquid-${useId().replace(/:/g, "")}`;
+  const [present, safeToRemove] = usePresence();
+  const fill = useSpring(reduce ? 1 : 0, { stiffness: 190, damping: 27, mass: 0.9 });
+  const bulge = useSpring(0, { stiffness: 140, damping: 8, mass: 0.7 });
+  const shape = useTransform([fill, bulge], ([f, b]: number[]) => {
+    const y = Math.max(0, f) * 1.02;
+    return `M0,0 H1 V${y.toFixed(4)} C0.74,${(y + b).toFixed(4)} 0.26,${(y + b).toFixed(4)} 0,${y.toFixed(4)} Z`;
+  });
+  useEffect(() => {
+    if (reduce) {
+      if (!present) safeToRemove?.();
+      return;
+    }
+    if (present) {
+      fill.set(1);
+      bulge.set(0.22);
+      const t = window.setTimeout(() => bulge.set(0), 170);
+      return () => window.clearTimeout(t);
+    }
+    fill.set(0);
+    bulge.set(-0.12);
+    const t = window.setTimeout(() => safeToRemove?.(), 420);
+    return () => window.clearTimeout(t);
+  }, [present, reduce, fill, bulge, safeToRemove]);
+
   return (
-    <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3 }}>
+    <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: present ? 1 : 0 }} transition={{ duration: reduce ? 0 : 0.35 }}>
+      <svg width="0" height="0" className="absolute" aria-hidden="true">
+        <defs>
+          <clipPath id={clip} clipPathUnits="objectBoundingBox">
+            <motion.path d={shape} />
+          </clipPath>
+        </defs>
+      </svg>
       <div className="absolute inset-0 bg-[#05070d]/55 backdrop-blur-[1.4cqw]" />
-      <motion.div
-        className="absolute inset-0 px-[4.5cqw] pt-[3.2cqw] pb-[2.4cqw]"
-        initial={{ y: "-104%" }}
-        animate={{ y: "0%" }}
-        exit={{ y: "-104%" }}
-        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 30, mass: 0.9 }}
-      >
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,26,46,0.72),rgba(8,10,18,0.55))]" style={{ clipPath: `url(#${clip})` }} />
+      <div className="absolute inset-0 px-[4.5cqw] pt-[3.2cqw] pb-[2.4cqw]" style={{ clipPath: `url(#${clip})` }}>
         {/* header */}
         <div className="flex items-start justify-between">
           <div className="flex items-end gap-[1.8cqw]">
@@ -159,7 +187,7 @@ export function ControlCenter({ state, reduce, onPick }: { state: DemoState; red
           </div>
         </div>
 
-        <div className="mt-[1.4cqw] flex justify-center gap-[2.4cqw] text-[1cqw] text-white/45">
+        <div className="mt-[1.4cqw] flex justify-center gap-[2.4cqw] text-[1cqw] text-white/55">
           <span>
             <K>OK</K> Select
           </span>
@@ -170,7 +198,7 @@ export function ControlCenter({ state, reduce, onPick }: { state: DemoState; red
             <K>Back</K> Close
           </span>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

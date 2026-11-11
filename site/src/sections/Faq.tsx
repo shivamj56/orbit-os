@@ -11,6 +11,8 @@ const QA = [
   { q: "Does Live TV cost anything?", a: "No. The 30 channels are free streams from the channels themselves. Pay channels such as Star Plus or Sony SAB open in their own apps, where you need their plan." },
   { q: "I have an iPhone. Can I use Orbit?", a: "Not yet. Orbit needs an Android phone for now. A version you can run on the TV itself is on the way." },
   { q: "Is it really free?", a: "Yes. No ads, no subscription and no tracking." },
+  { q: "Which TVs does it work on?", a: "It is tested and in daily use on a Xiaomi TV A Pro with Google TV 14. On other Google TV and Android TV sets, Orbit offers only the changes it knows are safe on any TV, and one tap puts everything back." },
+  { q: "What exactly does it switch off?", a: "Only what you agree to after reading the list. On the tested TV that was 32 apps, in groups like ads and tracking, apps nobody uses and the stock home screen. They are switched off, never deleted, and the parts Android needs are never touched." },
 ];
 
 export function Faq() {
@@ -26,7 +28,7 @@ export function Faq() {
             Questions
           </span>
         </div>
-        <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+        <div className="divide-y divide-line border-y border-line">
           {QA.map((item, i) => {
             const isOpen = open === i;
             return (
@@ -41,7 +43,7 @@ export function Faq() {
                     className="group flex w-full items-center justify-between gap-6 py-5 text-left font-sans text-[1.0625rem] font-medium text-ink"
                   >
                     {item.q}
-                    <span className={`grid size-8 shrink-0 place-items-center rounded-full border transition-all duration-300 ${isOpen ? "rotate-45 border-sky/50 bg-sky/10 text-sky" : "border-white/12 text-soft group-hover:border-white/25 group-hover:text-ink"}`}>
+                    <span className={`grid size-8 shrink-0 place-items-center rounded-full border transition-all duration-300 ${isOpen ? "rotate-45 border-accent/50 bg-accent/10 text-accent" : "border-line text-soft group-hover:border-veil/20 group-hover:text-ink"}`}>
                       <I.Plus size={16} />
                     </span>
                   </button>

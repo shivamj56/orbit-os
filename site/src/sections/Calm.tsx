@@ -1,4 +1,4 @@
-import { animate, motion, useInView, useMotionValue, useMotionValueEvent, useTransform } from "motion/react";
+import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import homeUrl from "@/assets/img/home.webp";
 import { SectionHead } from "@/components/kit/SectionHead";
@@ -25,8 +25,8 @@ export function Calm() {
             { icon: <I.Tv size={18} />, t: "Only your apps, on one curved row", d: "Lit in each app's own colour, with recents below." },
             { icon: <I.Search size={18} />, t: "One search for apps, films and shows", d: "Type or speak; results open inside YouTube and Prime Video." },
           ].map((f) => (
-            <li key={f.t} className="flex gap-3.5 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
-              <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-sky/10 text-sky">{f.icon}</span>
+            <li key={f.t} className="flex gap-3.5 rounded-2xl border border-line bg-veil/[0.02] p-4">
+              <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">{f.icon}</span>
               <span>
                 <span className="block text-[0.9375rem] font-medium text-ink">{f.t}</span>
                 <span className="mt-0.5 block text-[0.875rem] text-dim">{f.d}</span>
@@ -45,17 +45,19 @@ function Compare() {
   const pos = useMotionValue(50);
   const [value, setValue] = useState(50);
   const [touched, setTouched] = useState(false);
-  const seen = useInView(box, { once: true, amount: 0.55 });
   useMotionValueEvent(pos, "change", (v) => setValue(Math.round(v)));
   const clip = useTransform(pos, (v) => `inset(0 ${100 - v}% 0 0)`);
   const left = useTransform(pos, (v) => `${v}%`);
 
-  // A first sweep shows it can move: calm, clutter, then the middle.
+  // Until you take the line yourself, scrolling moves it: clutter while it comes up, calm by the time it is centred.
+  const { scrollYProgress } = useScroll({ target: box, offset: ["start end", "center 40%"] });
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    if (touched || reduce) return;
+    pos.set(88 - Math.min(1, Math.max(0, p)) * 66);
+  });
   useEffect(() => {
-    if (!seen || touched || reduce) return;
-    const controls = animate(pos, [50, 80, 18, 50], { duration: 3.2, ease: [0.65, 0, 0.35, 1], times: [0, 0.35, 0.72, 1] });
-    return () => controls.stop();
-  }, [seen, touched, reduce, pos]);
+    if (reduce) pos.set(50);
+  }, [reduce, pos]);
 
   const setFrom = (clientX: number) => {
     const r = box.current!.getBoundingClientRect();
@@ -66,7 +68,7 @@ function Compare() {
     <div className="mt-[clamp(2.5rem,5vw,4rem)]">
       <div
         ref={box}
-        className="relative aspect-video w-full cursor-ew-resize touch-pan-y overflow-hidden rounded-[clamp(12px,1.6vw,22px)] bg-black shadow-[0_50px_120px_-40px_rgba(0,0,0,0.95),0_0_0_1px_rgba(173,198,255,0.14)] select-none"
+        className="relative aspect-video w-full cursor-ew-resize touch-pan-y overflow-hidden rounded-[clamp(12px,1.6vw,22px)] bg-black shadow-[0_50px_120px_-40px_rgb(var(--shadow-rgb)/var(--shadow-a)),0_0_0_1px_var(--device-edge)] select-none"
         style={{ containerType: "inline-size" }}
         onPointerDown={(e) => {
           setTouched(true);
@@ -88,7 +90,7 @@ function Compare() {
         <span className="pointer-events-none absolute top-[3%] left-[2.5%] rounded-full bg-black/60 px-[1.4cqw] py-[0.6cqw] font-mono text-[max(10px,1.1cqw)] tracking-[0.08em] text-white/85 uppercase backdrop-blur">
           Before · a sketch
         </span>
-        <span className="pointer-events-none absolute top-[3%] right-[2.5%] rounded-full bg-black/60 px-[1.4cqw] py-[0.6cqw] font-mono text-[max(10px,1.1cqw)] tracking-[0.08em] text-mint uppercase backdrop-blur">
+        <span className="pointer-events-none absolute top-[3%] right-[2.5%] rounded-full bg-black/60 px-[1.4cqw] py-[0.6cqw] font-mono text-[max(10px,1.1cqw)] tracking-[0.08em] text-[#7EE2B8] uppercase backdrop-blur">
           After · Orbit Home
         </span>
 
@@ -112,7 +114,7 @@ function Compare() {
               e.preventDefault();
               setTouched(true);
             }}
-            className="pointer-events-auto absolute top-1/2 left-0 grid size-[clamp(2.6rem,4.5cqw,3.6rem)] -translate-1/2 cursor-grab place-items-center rounded-full border border-white/40 bg-[#0b1020]/70 text-white shadow-[0_10px_30px_rgba(0,0,0,0.6),0_0_0_6px_rgba(173,198,255,0.12)] backdrop-blur-md active:cursor-grabbing"
+            className="pointer-events-auto absolute top-1/2 left-0 grid size-[clamp(2.6rem,4.5cqw,3.6rem)] -translate-1/2 cursor-grab place-items-center rounded-full border border-white/40 bg-[#0b1020]/75 text-white shadow-[0_10px_30px_rgba(0,0,0,0.5),0_0_0_6px_rgba(173,198,255,0.14)] backdrop-blur-md transition-transform duration-200 hover:scale-110 active:scale-95 active:cursor-grabbing"
           >
             <span className="flex items-center gap-0.5">
               <I.Chevron size={16} className="rotate-90" />
@@ -149,7 +151,7 @@ export function Clutter() {
           <span className="size-[2.2cqw] rounded-full bg-white/20" />
         </span>
       </div>
-      <div className="relative mx-[3cqw] mt-[1.6cqw] h-[36%] overflow-hidden rounded-[0.8cqw] bg-[linear-gradient(115deg,#ff4f1f,#c3126b_45%,#3a0ca3)]">
+      <div className="relative mx-[3cqw] mt-[1.6cqw] h-[36%] overflow-hidden rounded-[0.8cqw] bg-[linear-gradient(115deg,#c2350b,#a00e57_45%,#3a0ca3)]">
         <div className="absolute -top-[30%] right-[8%] size-[24cqw] rounded-full bg-[#ffd400]/40 blur-[1cqw]" />
         <div className="absolute right-[14%] bottom-[-20%] size-[16cqw] rotate-12 rounded-[2cqw] bg-white/20" />
         <span className="absolute top-[8%] left-[3%] rounded-[0.3cqw] bg-black/50 px-[0.6cqw] py-[0.15cqw] text-[0.9cqw] font-semibold">SPONSORED</span>
@@ -158,7 +160,7 @@ export function Clutter() {
           <div className="mt-[0.6cqw] text-[1.2cqw] text-white/85">Streaming now. Subscribe to watch.</div>
           <div className="mt-[1cqw] flex gap-[0.8cqw]">
             <span className="rounded-[0.4cqw] bg-white px-[1.4cqw] py-[0.5cqw] text-[1.1cqw] font-bold text-black">Install app</span>
-            <span className="rounded-[0.4cqw] bg-white/25 px-[1.4cqw] py-[0.5cqw] text-[1.1cqw] font-semibold">Learn more</span>
+            <span className="rounded-[0.4cqw] bg-black/35 px-[1.4cqw] py-[0.5cqw] text-[1.1cqw] font-semibold">Learn more</span>
           </div>
         </div>
         <span className="absolute right-[2%] bottom-[6%] rounded-[0.3cqw] bg-[#ffd400] px-[0.5cqw] text-[0.85cqw] font-bold text-black">AD</span>
@@ -184,7 +186,7 @@ export function Clutter() {
           </div>
         ))}
       </div>
-      <div className="absolute right-[3cqw] bottom-[3cqw] w-[24cqw] rounded-[0.8cqw] border border-white/15 bg-[#262626] p-[1.2cqw] shadow-[0_1cqw_3cqw_rgba(0,0,0,0.6)]">
+      <div className="absolute right-[3cqw] bottom-[3cqw] w-[24cqw] rounded-[0.8cqw] border border-line bg-[#262626] p-[1.2cqw] shadow-[0_1cqw_3cqw_rgb(var(--shadow-rgb)/calc(var(--shadow-a)*0.7))]">
         <div className="flex items-center justify-between text-[1.1cqw] font-semibold">
           Try Premium free <span className="text-white/50">✕</span>
         </div>

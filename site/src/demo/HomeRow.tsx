@@ -11,7 +11,8 @@ const STEP = 0.255; // radians between cards
 const R = 58; // cylinder radius, cqw
 
 export function HomeRow({ apps, focus, onPick, reduce }: { apps: AppDef[]; focus: number; onPick: (i: number) => void; reduce: boolean }) {
-  const pos = useSpring(focus, reduce ? { stiffness: 2000, damping: 100 } : { stiffness: 210, damping: 27, mass: 0.9 });
+  // Critically damped, as on the TV: damping = 2·sqrt(stiffness·mass), so the row arrives without bouncing.
+  const pos = useSpring(focus, reduce ? { stiffness: 2000, damping: 100 } : { stiffness: 210, damping: 2 * Math.sqrt(210 * 0.9), mass: 0.9 });
   useEffect(() => {
     pos.set(focus);
   }, [focus, pos]);
@@ -46,7 +47,7 @@ function Card({ app, index, pos, focused, onPick }: { app: AppDef; index: number
 
   const surface: React.CSSProperties =
     app.surface === "light"
-      ? { background: "linear-gradient(165deg, rgba(242,244,250,0.95), rgba(188,195,212,0.86))", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.55)" }
+      ? { background: "linear-gradient(165deg, rgba(247,248,252,0.97), rgba(212,217,230,0.93))", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.55)" }
       : app.surface === "dark"
         ? { background: "linear-gradient(165deg, rgba(84,92,112,0.92), rgba(32,36,50,0.94))", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.16)" }
         : app.surface === "orbit"
@@ -83,12 +84,11 @@ function Card({ app, index, pos, focused, onPick }: { app: AppDef; index: number
         >
           {app.surface === "orbit" ? (
             <span className="flex flex-col items-center gap-[0.6cqw]">
-              <span className="flex items-center gap-[0.5cqw] rounded-full bg-black/25 px-[0.7cqw] py-[0.25cqw] text-[0.85cqw] font-semibold tracking-[0.12em]">
+              <span className="flex items-center gap-[0.5cqw] rounded-full bg-[#0b1020]/80 px-[0.7cqw] py-[0.25cqw] text-[0.85cqw] font-semibold tracking-[0.12em] text-white">
                 <span className="size-[0.6cqw] rounded-full bg-[#ff5468]" />
                 LIVE
               </span>
-              <span className="font-display text-[2cqw] font-medium">Live TV</span>
-              <span className="text-[0.85cqw] font-medium opacity-80">30 free channels</span>
+              <span className="font-display text-[2cqw] font-semibold">Live TV</span>
             </span>
           ) : (
             app.mark
@@ -99,7 +99,7 @@ function Card({ app, index, pos, focused, onPick }: { app: AppDef; index: number
           <motion.span
             key={`streak-${index}`}
             className="absolute top-0 bottom-0 w-[0.22cqw]"
-            style={{ background: "linear-gradient(180deg, transparent, #fff 20%, #fff 80%, transparent)", boxShadow: `0 0 1.4cqw 0.3cqw ${app.glow}` }}
+            style={{ background: "linear-gradient(180deg, transparent, #fff 14%, #fff 32%, transparent 41%, transparent 59%, #fff 68%, #fff 86%, transparent)", filter: `drop-shadow(0 0 0.7cqw ${app.glow})` }}
             initial={{ left: "-4%", opacity: 0 }}
             animate={{ left: "50%", opacity: 0.95 }}
             transition={{ duration: 0.55, ease: [0.19, 1, 0.22, 1] }}

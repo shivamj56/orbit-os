@@ -18,17 +18,17 @@ export interface AppDef {
 }
 
 export const APPS: AppDef[] = [
-  { id: "live", label: "Live TV", mark: "Live TV", surface: "orbit", ink: "#ffffff", glow: "#7ea6ff" },
-  { id: "youtube", label: "YouTube", mark: "YouTube", surface: "light", ink: "#ff2a2a", glow: "#ff3d3d", weight: 700 },
-  { id: "netflix", label: "Netflix", mark: "Netflix", surface: "light", ink: "#d10a14", glow: "#e5096b", weight: 700 },
-  { id: "prime", label: "Prime Video", mark: "Prime Video", surface: "fill", fill: "linear-gradient(160deg,#2aa7ff,#0b63d1)", ink: "#ffffff", glow: "#1a8cff", weight: 700 },
+  { id: "live", label: "Live TV", mark: "Live TV", surface: "orbit", ink: "#0b1020", glow: "#7ea6ff" },
+  { id: "youtube", label: "YouTube", mark: "YouTube", surface: "light", ink: "#980d15", glow: "#ff3d3d", weight: 700 },
+  { id: "netflix", label: "Netflix", mark: "Netflix", surface: "light", ink: "#a30b12", glow: "#e5096b", weight: 700 },
+  { id: "prime", label: "Prime Video", mark: "Prime Video", surface: "fill", fill: "linear-gradient(160deg,#1167b4,#0b4fae)", ink: "#ffffff", glow: "#1a8cff", weight: 700 },
   { id: "hotstar", label: "JioHotstar", mark: "JioHotstar", surface: "fill", fill: "linear-gradient(160deg,#3150ff,#170b52)", ink: "#ffffff", glow: "#4b5bff", weight: 700 },
-  { id: "spotify", label: "Spotify", mark: "Spotify", surface: "dark", ink: "#1ed760", glow: "#1ed760", weight: 700 },
+  { id: "spotify", label: "Spotify", mark: "Spotify", surface: "dark", ink: "#5ef08f", glow: "#1ed760", weight: 700 },
   { id: "zee5", label: "ZEE5", mark: "ZEE5", surface: "fill", fill: "linear-gradient(160deg,#9b4dff,#2a0a5c)", ink: "#ffffff", glow: "#9b4dff", weight: 800 },
   { id: "sonyliv", label: "SonyLIV", mark: "SonyLIV", surface: "dark", ink: "#f2c14e", glow: "#f2a94e", weight: 700 },
   { id: "play", label: "Play Store", mark: "Play Store", surface: "light", ink: "#3c4043", glow: "#34a853", weight: 600 },
   { id: "miracast", label: "Miracast", mark: "Miracast", surface: "dark", ink: "#c9d2e3", glow: "#74d1ff", weight: 600 },
-  { id: "vlc", label: "VLC", mark: "VLC", surface: "light", ink: "#ff7a00", glow: "#ff8800", weight: 800 },
+  { id: "vlc", label: "VLC", mark: "VLC", surface: "light", ink: "#a84800", glow: "#ff8800", weight: 800 },
 ];
 
 export const START_FOCUS = 2;

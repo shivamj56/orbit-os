@@ -1,6 +1,6 @@
 // React Bits: SplitFlapText (https://reactbits.dev), by David Haz. Licence: MIT + Commons Clause.
 // Installed with the shadcn CLI from https://reactbits.dev/r/SplitFlapText-TS-TW and styled for Orbit OS by its props.
-// Changes to the source: unchanged.
+// Changes to the source: class names were joined without a space, so its own styles never applied (the tiles had no look).
 
 import { CSSProperties, HTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -442,7 +442,7 @@ const SplitFlapText = ({
     className
   ]
     .filter(Boolean)
-    .join('');
+    .join(' ');
   const componentStyle: CSSProperties & Record<string, string | number | undefined> = {
     '--split-flap-tile-color': tileColor,
     '--split-flap-text-color': textColor,

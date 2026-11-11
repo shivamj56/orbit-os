@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
+import { useRef } from "react";
 import SplitFlapText from "@/components/reactbits/SplitFlapText";
 import * as I from "@/components/kit/icons";
 import { CHANNELS, GROUP_TONES, type Channel } from "./apps";
@@ -10,6 +11,16 @@ import type { DemoState } from "./useDemo";
  */
 export function LiveTv({ state, reduce }: { state: DemoState; reduce: boolean }) {
   const ch = CHANNELS[state.channel];
+  // Which way the last zap went, so the picture leaves the way the channel number moved.
+  const prev = useRef(state.channel);
+  const dir = useRef(1);
+  if (prev.current !== state.channel) {
+    const n = CHANNELS.length;
+    const fwd = (state.channel - prev.current + n) % n;
+    dir.current = fwd <= n / 2 ? 1 : -1;
+    prev.current = state.channel;
+  }
+  const d = dir.current;
   const tones = GROUP_TONES[ch.group];
   const pay = ch.group === "Pay";
   const groupList = CHANNELS.filter((c) => c.group === ch.group);
@@ -22,15 +33,21 @@ export function LiveTv({ state, reduce }: { state: DemoState; reduce: boolean })
       exit={{ clipPath: "inset(31% 43.8% 36% 43.8% round 1.2cqw)", opacity: 0 }}
       transition={{ duration: reduce ? 0 : 0.5, ease: [0.25, 1, 0.5, 1] }}
     >
-      {/* the picture */}
-      <AnimatePresence initial={false}>
+      {/* the picture: a zap folds the old channel into a line of light and opens the new one out of it */}
+      <AnimatePresence initial={false} custom={d}>
         <motion.div
           key={ch.num}
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.35 }}
+          className="absolute inset-0 origin-center"
+          custom={d}
+          variants={{
+            enter: () => (reduce ? { opacity: 0 } : { scaleY: 0.006, scaleX: 1.04, filter: "brightness(2.6) saturate(0.4)", opacity: 1 }),
+            on: { scaleY: 1, scaleX: 1, filter: "brightness(1) saturate(1)", opacity: 1 },
+            leave: () => (reduce ? { opacity: 0 } : { scaleY: 0.006, scaleX: 1.06, filter: "brightness(2.8) saturate(0.3)", opacity: 0.9 }),
+          }}
+          initial="enter"
+          animate="on"
+          exit="leave"
+          transition={{ duration: reduce ? 0 : 0.2, ease: [0.65, 0, 0.35, 1] }}
           style={{
             background: `radial-gradient(60% 75% at 22% 30%, ${tones[0]}66, transparent 70%), radial-gradient(55% 70% at 80% 72%, ${tones[1]}55, transparent 70%), ${tones[2]}`,
           }}
@@ -39,7 +56,14 @@ export function LiveTv({ state, reduce }: { state: DemoState; reduce: boolean })
           <div className="absolute inset-0 grid place-items-center">
             <div className="text-center">
               <div className="font-display text-[1.3cqw] tracking-[0.3em] text-white/60 uppercase">{pay ? "Pay channel" : ch.group}</div>
-              <div className="mt-[1.2cqw] font-display text-[6.2cqw] leading-none font-light tracking-[-0.02em] text-white">{ch.name}</div>
+              <motion.div
+                className="mt-[1.2cqw] font-display text-[6.2cqw] leading-none font-light tracking-[-0.02em] text-white"
+                initial={reduce ? false : { y: `${d * 1.6}cqw`, opacity: 0, filter: "blur(6px)" }}
+                animate={{ y: "0cqw", opacity: 1, filter: "blur(0px)" }}
+                transition={{ duration: 0.45, delay: reduce ? 0 : 0.16, ease: [0.19, 1, 0.22, 1] }}
+              >
+                {ch.name}
+              </motion.div>
               {pay ? (
                 <div className="mt-[2cqw] inline-flex items-center gap-[0.8cqw] rounded-full border border-white/20 bg-black/35 px-[1.6cqw] py-[0.7cqw] text-[1.3cqw] text-white">
                   Opens in {ch.app}, with your plan <I.ArrowUpRight size={14} className="size-[1.3cqw]" />

@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ClickSpark, { type ClickSparkHandle } from "@/components/reactbits/ClickSpark";
-import { BorderBeam } from "@/components/magicui/border-beam";
 import { DownloadButton } from "@/components/kit/buttons";
 import { SectionHead } from "@/components/kit/SectionHead";
 import * as I from "@/components/kit/icons";
 import { useInView, useReducedMotion } from "@/lib/hooks";
+import { useThemeValue } from "@/lib/themeContext";
 import { APPS, CHANNELS } from "@/demo/apps";
 import { ccNeighbor } from "@/demo/ControlCenter";
 import { PhoneRemote } from "@/demo/PhoneRemote";
@@ -37,6 +37,7 @@ export function TryIt() {
   const tv = useRef<HTMLDivElement>(null);
   const spark = useRef<ClickSparkHandle>(null);
   const reduce = useReducedMotion();
+  const theme = useThemeValue();
   const inView = useInView(section, 0.35);
   const { state, press, setChannel, setFocus, setCcFocus } = useDemo();
   const [engaged, setEngaged] = useState(false);
@@ -130,7 +131,7 @@ export function TryIt() {
       className="relative scroll-mt-4 py-[clamp(5rem,11vw,9rem)] outline-none"
       onPointerDown={() => setEngaged(true)}
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[70%] bg-[radial-gradient(50%_60%_at_50%_0%,rgba(116,209,255,0.07),transparent_70%)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[70%] bg-[radial-gradient(50%_60%_at_50%_0%,var(--halo-1),transparent_70%)]" />
       <div className="wrap">
         <SectionHead
           eyebrow="Try it now"
@@ -149,8 +150,9 @@ export function TryIt() {
         <div className="mt-[clamp(2.5rem,5vw,4rem)] grid grid-cols-1 items-center gap-x-10 gap-y-6 lg:grid-cols-[minmax(0,1fr)_18.25rem]">
           <div className="relative">
             {/* the TV: a thin bezel, its own light on the wall behind, a reflection below */}
-            <div aria-hidden="true" className="pointer-events-none absolute -inset-x-[6%] -inset-y-[10%] -z-10 opacity-80 transition-[background] duration-700" style={{ background: `radial-gradient(55% 55% at 50% 52%, ${APPS[state.focus].glow}22, transparent 70%)` }} />
-            <div className="relative rounded-[clamp(10px,1.4vw,18px)] bg-[linear-gradient(160deg,#20263a,#090c16_40%,#151a2b)] p-[clamp(4px,0.55vw,8px)] shadow-[0_50px_120px_-40px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.14),0_0_0_1px_rgba(173,198,255,0.12)]">
+            {/* the TV's own light on the wall behind it, in the focused app's colour */}
+            <div aria-hidden="true" className="pointer-events-none absolute -inset-x-[6%] -inset-y-[10%] -z-10 opacity-90 transition-[background] duration-700" style={{ background: `radial-gradient(55% 55% at 50% 52%, ${APPS[state.focus].glow}${theme === "light" ? "2a" : "22"}, transparent 70%)` }} />
+            <div className="relative rounded-[clamp(10px,1.4vw,18px)] bg-[linear-gradient(160deg,#2a3048,#090c16_40%,#151a2b)] p-[clamp(4px,0.55vw,8px)] shadow-[0_50px_120px_-40px_rgb(var(--shadow-rgb)/var(--shadow-a)),inset_0_1px_0_rgba(255,255,255,0.14),0_0_0_1px_var(--device-edge)]">
               <TvScreen
                 ref={tv}
                 data-tv=""
@@ -172,10 +174,9 @@ export function TryIt() {
                   else setCcFocus(id);
                 }}
               />
-              {!reduce && <BorderBeam size={140} duration={9} colorFrom="#74D1FF" colorTo="#E9B3FF" borderWidth={1.5} />}
             </div>
-            <div className="mx-auto mt-0 h-3 w-[16%] rounded-b-xl bg-[linear-gradient(180deg,#1a2034,#0b0f1c)]" aria-hidden="true" />
-            <div aria-hidden="true" className="mx-auto -mt-1 h-6 w-[70%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(173,198,255,0.16),transparent)] blur-md" />
+            <div className="mx-auto mt-0 h-3 w-[16%] rounded-b-xl bg-[linear-gradient(180deg,#2a3048,#0b0f1c)]" aria-hidden="true" />
+            <div aria-hidden="true" className="mx-auto -mt-1 h-6 w-[70%] rounded-[50%] bg-[radial-gradient(closest-side,rgb(var(--shadow-rgb)/calc(var(--shadow-a)*0.5)),transparent)] blur-md" />
 
             <p className="mt-3 hidden flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[0.8125rem] text-dim md:flex">
               <span className="flex items-center gap-1.5">
@@ -199,12 +200,12 @@ export function TryIt() {
             </p>
           </div>
 
-          <div className={wide ? "" : "glass rounded-[1.75rem] p-4"}>
+          <div className={wide ? "" : "theme-night rounded-[1.75rem] border border-[#ADC6FF]/15 bg-[radial-gradient(120%_70%_at_50%_0%,#121a33,#090c16_60%,#05070d)] p-4 shadow-[0_40px_80px_-40px_rgb(var(--shadow-rgb)/var(--shadow-a))]"}>
             <PhoneRemote onKey={(k) => send(k)} framed={wide} volume={state.volume} muted={state.muted} />
           </div>
         </div>
 
-        <ClickSpark ref={spark} sparkColor={["#7EE2B8", "#74D1FF", "#E9B3FF", "#FFFFFF"]} sparkCount={22} sparkRadius={120} sparkSize={16} duration={900} shape="star" glow={0.7} className="mt-10 block">
+        <ClickSpark ref={spark} sparkColor={theme === "light" ? ["#0a7350", "#0a76b3", "#9a3fd0"] : ["#7EE2B8", "#74D1FF", "#E9B3FF", "#FFFFFF"]} sparkCount={22} sparkRadius={120} sparkSize={16} duration={900} shape="star" glow={0.7} className="mt-10 block">
           <div className="panel relative overflow-hidden rounded-[1.75rem] p-5 sm:p-7">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <p className="eyebrow">Three things to try</p>
@@ -225,7 +226,7 @@ export function TryIt() {
                   transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-6 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-mint/25 bg-mint/[0.06] p-5">
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-ok/25 bg-ok/[0.07] p-5">
                     <div>
                       <p className="font-display text-[1.375rem] text-ink">That was Orbit OS.</p>
                       <p className="mt-1 text-[0.9375rem] text-soft">The same home, Live TV and Control Center, on your own TV in about five minutes.</p>
@@ -247,8 +248,8 @@ export function TryIt() {
 
 function Quest({ done, n, title, hint }: { done: boolean; n: number; title: string; hint: string }) {
   return (
-    <li className={`flex items-start gap-3.5 rounded-2xl border p-4 transition-colors duration-500 ${done ? "border-mint/30 bg-mint/[0.05]" : "border-white/[0.07] bg-white/[0.02]"}`}>
-      <span className={`relative grid size-8 shrink-0 place-items-center rounded-full border font-mono text-[0.75rem] transition-colors duration-500 ${done ? "border-mint bg-mint text-night" : "border-white/20 text-soft"}`}>
+    <li className={`flex items-start gap-3.5 rounded-2xl border p-4 transition-colors duration-500 ${done ? "border-ok/35 bg-ok/[0.06]" : "border-line bg-veil/[0.02]"}`}>
+      <span className={`relative grid size-8 shrink-0 place-items-center rounded-full border font-mono text-[0.75rem] transition-colors duration-500 ${done ? "border-mint bg-mint text-night" : "border-veil/20 text-soft"}`}>
         <AnimatePresence mode="wait" initial={false}>
           {done ? (
             <motion.span key="d" initial={{ scale: 0, rotate: -40 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 500, damping: 18 }}>

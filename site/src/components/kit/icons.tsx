@@ -319,3 +319,82 @@ export const Remote = (p: P) => (
     <path d="M10 14h.01M14 14h.01M10 17h.01M14 17h.01" />
   </S>
 );
+export const Sun = (p: P) => (
+  <S {...p}>
+    <circle cx="12" cy="12" r="4.2" />
+    <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6" />
+  </S>
+);
+export const Code = (p: P) => (
+  <S {...p}>
+    <path d="m8.5 7-5 5 5 5M15.5 7l5 5-5 5" />
+  </S>
+);
+export const Terminal = (p: P) => (
+  <S {...p}>
+    <rect x="2.5" y="4" width="19" height="16" rx="2.5" />
+    <path d="m6.5 9 3 3-3 3M12 15h5" />
+  </S>
+);
+export const Tablet = (p: P) => (
+  <S {...p}>
+    <rect x="4" y="2.5" width="16" height="19" rx="2.5" />
+    <path d="M10.5 18.5h3" />
+  </S>
+);
+export const Calendar = (p: P) => (
+  <S {...p}>
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+    <path d="M3.5 10h17M8 3v4M16 3v4" />
+  </S>
+);
+export const Music = (p: P) => (
+  <S {...p}>
+    <path d="M9 18V5.5l11-2V16" />
+    <circle cx="6.5" cy="18" r="2.5" />
+    <circle cx="17.5" cy="16" r="2.5" />
+  </S>
+);
+export const Users = (p: P) => (
+  <S {...p}>
+    <circle cx="9" cy="8.5" r="3.5" />
+    <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+    <path d="M16 5.2a3.5 3.5 0 0 1 0 6.6M18 14.2a6.5 6.5 0 0 1 3.5 5.8" />
+  </S>
+);
+export const Gauge = (p: P) => (
+  <S {...p}>
+    <path d="M4.2 17.5a9 9 0 1 1 15.6 0" />
+    <path d="m12 13.5 4-5" />
+    <circle cx="12" cy="13.5" r="1.3" fill="currentColor" />
+  </S>
+);
+export const Chip = (p: P) => (
+  <S {...p}>
+    <rect x="6" y="6" width="12" height="12" rx="2" />
+    <path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3" />
+  </S>
+);
+export const Route = (p: P) => (
+  <S {...p}>
+    <circle cx="6" cy="18" r="2.5" />
+    <circle cx="18" cy="6" r="2.5" />
+    <path d="M8.5 18h6a3.5 3.5 0 0 0 0-7h-5a3.5 3.5 0 0 1 0-7h6" />
+  </S>
+);
+export const Heart = (p: P) => (
+  <S {...p}>
+    <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z" />
+  </S>
+);
+export const Bolt = (p: P) => (
+  <S {...p}>
+    <path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12Z" />
+  </S>
+);
+export const FileText = (p: P) => (
+  <S {...p}>
+    <path d="M14 2.5H6.5A2 2 0 0 0 4.5 4.5v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8Z" />
+    <path d="M14 2.5V8h5.5M8.5 13h7M8.5 16.5h5" />
+  </S>
+);

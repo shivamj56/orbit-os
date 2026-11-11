@@ -1,6 +1,7 @@
 // Magic UI: number-ticker (https://magicui.design), by Dillion Verma. Licence: MIT.
 // Installed with the shadcn CLI from https://magicui.design/r/number-ticker.json (the same component 21st.dev lists).
-// Changes to the source: the text colour comes from the page (it was black, or white only in an OS dark mode).
+// Changes to the source: the text colour comes from the page (it was black, or white only in an OS dark mode), and the
+// spring settles in about a second instead of crawling the last digits.
 import { useEffect, useRef, type ComponentPropsWithoutRef } from "react"
 import { useInView, useMotionValue, useSpring } from "motion/react"
 
@@ -26,8 +27,8 @@ export function NumberTicker({
   const ref = useRef<HTMLSpanElement>(null)
   const motionValue = useMotionValue(direction === "down" ? value : startValue)
   const springValue = useSpring(motionValue, {
-    damping: 60,
-    stiffness: 100,
+    damping: 30,
+    stiffness: 150,
   })
   const isInView = useInView(ref, { once: true, margin: "0px" })
 

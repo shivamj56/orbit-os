@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { useRef, useState, type ReactNode } from "react";
 import { Globe, type Dir } from "@/components/globe/Globe";
+import { Android } from "@/components/magicui/android";
 import * as I from "@/components/kit/icons";
 import { useNear } from "@/lib/hooks";
 import type { Key } from "./useDemo";
@@ -19,7 +20,7 @@ export function PhoneRemote({ onKey, framed, volume, muted }: { onKey: (k: Key) 
   const near = useNear(pad, "300px");
 
   const body = (
-    <div className={`flex h-full flex-col ${framed ? "px-4 pt-10 pb-4" : "px-0 pt-0 pb-0"}`}>
+    <div className={`theme-night flex h-full flex-col ${framed ? "px-4 pt-10 pb-4" : "px-0 pt-0 pb-0"}`}>
       <header className="text-left">
         <div className="truncate font-display text-[1.25rem] leading-tight text-ink">Family room</div>
         <div className="mt-0.5 flex items-center gap-1.5 text-[0.75rem] text-soft">
@@ -118,12 +119,9 @@ export function PhoneRemote({ onKey, framed, volume, muted }: { onKey: (k: Key) 
 
   if (!framed) return body;
   return (
-    <div className="relative mx-auto w-[18.25rem] rounded-[3rem] bg-[linear-gradient(160deg,#2a3048,#0c1020_45%,#1b2136)] p-[0.6rem] shadow-[0_60px_120px_-40px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.18),0_0_0_1px_rgba(173,198,255,0.14)]">
-      <div className="relative h-[36.5rem] overflow-hidden rounded-[2.5rem] bg-[radial-gradient(120%_70%_at_50%_0%,#121a33,#090c16_60%,#05070d)]">
-        <div className="absolute top-3 left-1/2 z-10 h-[1.6rem] w-[6.2rem] -translate-x-1/2 rounded-full bg-black" />
-        {body}
-      </div>
-    </div>
+    <Android className="mx-auto w-[18.5rem] drop-shadow-[0_50px_60px_rgb(var(--shadow-rgb)/calc(var(--shadow-a)*0.7))]" screenClassName="bg-[radial-gradient(120%_70%_at_50%_0%,#121a33,#090c16_60%,#05070d)]">
+      {body}
+    </Android>
   );
 }
 

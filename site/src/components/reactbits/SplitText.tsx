@@ -1,6 +1,7 @@
 // React Bits: SplitText (https://reactbits.dev), by David Haz. Licence: MIT + Commons Clause.
 // Installed with the shadcn CLI from https://reactbits.dev/r/SplitText-TS-TW and styled for Orbit OS by its props.
-// Changes to the source: adds an optional `gradient` so a split line keeps one continuous iridescent fill across its letters.
+// Changes to the source: adds an optional `gradient` so a split line keeps one continuous iridescent fill across its letters,
+// and `startDelay` so a load-triggered entrance can wait for its place in a larger intro.
 
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { gsap } from 'gsap';
@@ -37,6 +38,8 @@ export interface SplitTextProps {
   onLetterAnimationComplete?: () => void;
   /** A CSS gradient painted once across the whole line, so every letter shows its own slice of it. */
   gradient?: string;
+  /** Seconds to wait before a load-triggered entrance starts (to sit inside a larger intro). */
+  startDelay?: number;
 }
 
 type Look = { from: gsap.TweenVars; to: gsap.TweenVars; ease: string | ((t: number) => number) };
@@ -112,7 +115,8 @@ const SplitText = ({
   color,
   accentColor,
   onLetterAnimationComplete,
-  gradient
+  gradient,
+  startDelay = 0
 }: SplitTextProps) => {
   const ref = useRef<HTMLParagraphElement>(null);
   const completedTextRef = useRef<string | null>(null);
@@ -407,6 +411,7 @@ const SplitText = ({
           }
           if (revealed) return undefined;
           intro = reveal(true, {
+            delay: trigger === 'load' ? startDelay : 0,
             scrollTrigger:
               trigger === 'load'
                 ? undefined
@@ -471,7 +476,8 @@ const SplitText = ({
         loop,
         loopDelay,
         fontsLoaded,
-        gradient
+        gradient,
+        startDelay
       ],
       scope: ref,
       revertOnUpdate: true

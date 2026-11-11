@@ -1,6 +1,6 @@
 // React Bits: Galaxy (https://reactbits.dev), by David Haz. Licence: MIT + Commons Clause.
 // Installed with the shadcn CLI from https://reactbits.dev/r/Galaxy-TS-TW and styled for Orbit OS by its props.
-// Changes to the source: the star palette is set by the hero (Orbit's sky, ice and orchid).
+// Changes to the source: the star palette is set by the hero (Orbit's sky, ice and orchid); class names were joined without a space.
 
 import { useEffect, useRef, type HTMLAttributes } from 'react';
 
@@ -652,7 +652,7 @@ const Galaxy = ({
   return (
     <div
       ref={containerRef}
-      className={['relative h-full w-full overflow-hidden', className].filter(Boolean).join('')}
+      className={['relative h-full w-full overflow-hidden', className].filter(Boolean).join(' ')}
       style={style}
       {...rest}
     >

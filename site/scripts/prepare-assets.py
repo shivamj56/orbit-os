@@ -40,10 +40,13 @@ for name in [
 ]:
     webp(SHOTS / f"{name}.png", OUT / f"setup/{name}.webp", width=600, quality=80)
 
-# The owner's boot film, untouched, and a poster frame (the S mark over "Developed by Shiv").
+# The owner's boot film and a poster frame (the S mark over "Developed by Shiv"). The film in src/assets has its first
+# 0.8 s cut (another company's logo), so it is only copied when it is not there yet; cut it again before committing.
 film = REPO / "launcher/app/src/main/res/raw/boot_intro.mp4"
 (OUT / "film").mkdir(parents=True, exist_ok=True)
-shutil.copyfile(film, OUT / "film/boot-intro.mp4")
+if not (OUT / "film/boot-intro.mp4").exists():
+    shutil.copyfile(film, OUT / "film/boot-intro.mp4")
+    print("copied the film: cut its first 0.8 s before committing")
 poster = OUT / "film/poster.jpg"
 subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "4.6", "-i", str(film), "-frames:v", "1", "-q:v", "4", str(poster)], check=True)
 webp(poster, OUT / "film/poster.webp", width=1280, quality=78)

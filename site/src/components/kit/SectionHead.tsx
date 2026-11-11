@@ -21,7 +21,7 @@ export function SectionHead({
   return (
     <header className={`${center ? "mx-auto text-center" : ""} max-w-[46rem] ${className}`}>
       <p className={`eyebrow flex items-center gap-2.5 ${center ? "justify-center" : ""}`}>
-        <span aria-hidden="true" className="h-px w-6 bg-[linear-gradient(90deg,transparent,#ADC6FF)]" />
+        <span aria-hidden="true" className="h-px w-6 bg-[linear-gradient(90deg,transparent,var(--accent-2))]" />
         {eyebrow}
       </p>
       <BlurText
