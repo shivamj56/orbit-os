@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 
 import '../native/native_host.dart';
+import '../setup/setup_host.dart';
 import '../tv/icon_cache.dart';
 import '../tv/models.dart';
 import '../tv/remote.dart';
@@ -21,7 +22,8 @@ typedef ScriptRunner = Future<void> Function(String script);
 /// "status"}`; id 0 gets none. Events are held until the page's `hello` (and again from the moment a new page starts
 /// loading), then flushed after hello's reply.
 class OrbitBridge {
-  OrbitBridge({required this.remote, required this.native, required this.icons}) {
+  OrbitBridge({required this.remote, required this.native, required this.icons, SetupHost? setup})
+    : setup = setup ?? const _NoSetup() {
     _events = EventQueue(_send);
     remote.onStatus = (status) => _events.push('status', status.toJson());
     remote.onTvState = (state) => _events.push('tvstate', state);
@@ -29,12 +31,18 @@ class OrbitBridge {
     remote.onAccount = (account) => _events.push('account', account);
     remote.help.onFrame = (frame) => _events.push('screen', frame);
     native.onVolumeKey = _onVolumeKey;
+    this.setup
+      ..onAuthWaiting = (() => _events.push('setupAuth', {'state': 'waiting'}))
+      ..onLine = ((line) => _events.push('setupLine', {'line': line}));
   }
 
   /// The TV over the home Wi-Fi or the cloud.
   final TvRemote remote;
   final NativeHost native;
   final IconCache icons;
+
+  /// Orbit Setup: finding TVs, the TV's debugging connection, moving files (phone/SPEC.md, "Orbit Setup").
+  final SetupHost setup;
   late final EventQueue _events;
   ScriptRunner? _run;
   bool _keepAwake = false;
@@ -65,6 +73,9 @@ class OrbitBridge {
     try {
       final data = await _dispatch(request.op, request.args);
       reply = {'id': request.id, 'ok': true, 'data': data ?? const <String, Object?>{}};
+    } on SetupError catch (e) {
+      // phone/SPEC.md's setup failures carry a `reason`, not a `status`.
+      reply = {'id': request.id, 'ok': false, 'reason': e.reason, 'error': e.message};
     } on OpError catch (e) {
       reply = {'id': request.id, 'ok': false, 'error': e.message, 'status': e.status};
     } on Object catch (e, stack) {
@@ -200,6 +211,29 @@ class OrbitBridge {
         return remote.linkTv(_linkCode(a));
       case 'unlinkTv':
         return remote.unlinkTv();
+      case 'setupScan':
+        return setup.scan(_seconds(a));
+      case 'setupProbe':
+        return setup.probe(checkedHost(a.text('address', max: 253)), _setupPort(a));
+      case 'setupConnect':
+        return setup.connect(checkedHost(a.text('address', max: 253)), _setupPort(a));
+      case 'setupShell':
+        return setup.shell(a.text('cmd', max: 8192), _timeout(a));
+      case 'setupPush':
+        return _setupPush(a);
+      case 'setupRun':
+        return setup.run(a.text('cmd', max: 8192));
+      case 'setupClose':
+        return setup.close();
+      case 'setupRecord':
+        return _setupRecord(a);
+      case 'setupAdopt':
+        return (await remote.adopt(
+          checkedHost(a.text('address', max: 253)),
+          a.port('port'),
+          _setupToken(a),
+          a.text('name', max: 128, allowEmpty: true),
+        )).toJson();
       default:
         throw OpError(400, op.isEmpty ? 'The message has no op.' : 'Orbit has no "$op".');
     }
@@ -238,6 +272,52 @@ class OrbitBridge {
     final dir = a.text('dir', max: 8).trim();
     if (dir != 'up' && dir != 'down') throw const OpError(400, 'The direction is "up" or "down".');
     return dir;
+  }
+
+  /// `setupScan` window: 1 to 20 seconds, 4 by default.
+  static Duration _seconds(Args a) {
+    final value = a.raw('seconds');
+    final seconds = value is num && value.isFinite ? value.round().clamp(1, 20) : 4;
+    return Duration(seconds: seconds);
+  }
+
+  /// The TV's debugging port, 5555 by default (unlike the door's 8090).
+  static int _setupPort(Args a) => a.has('port') ? a.port('port') : 5555;
+
+  /// `setupShell` timeout: 1 to 120 seconds, 20 by default.
+  static Duration _timeout(Args a) {
+    final value = a.raw('timeoutMs');
+    final ms = value is num && value.isFinite ? value.round().clamp(1000, 120000) : 20000;
+    return Duration(milliseconds: ms);
+  }
+
+  /// The 32 hex characters of `token.txt`, which the TV's door takes as an already paired phone.
+  static String _setupToken(Args a) {
+    final token = a.text('token', max: 64).trim();
+    if (!RegExp(r'^[0-9a-fA-F]{32}$').hasMatch(token)) throw const OpError(400, 'That is not a 32-character key.');
+    return token.toLowerCase();
+  }
+
+  /// A device path for `setupPush`: absolute, one line, nothing surprising.
+  static String _setupTo(Args a) {
+    final to = a.text('to', max: 512).trim();
+    if (!RegExp(r'^/[^\n\r\x00]+$').hasMatch(to)) throw const OpError(400, 'That is not a place on the TV.');
+    return to;
+  }
+
+  Future<Object?> _setupPush(Args a) {
+    final to = _setupTo(a);
+    if (a.has('asset')) return setup.pushAsset(a.text('asset', max: 64).trim(), to);
+    if (a.has('text')) return setup.pushText(a.text('text', max: 256 * 1024, allowEmpty: true), to);
+    throw const OpError(400, 'Nothing to push: give "asset" or "text".');
+  }
+
+  Future<Object?> _setupRecord(Args a) {
+    final key = a.text('key', max: 253).trim();
+    if (!a.has('record')) return setup.recordLoad(key);
+    final record = a.raw('record');
+    if (record is! Map) throw const OpError(400, 'The record must be an object.');
+    return setup.recordSave(key, {for (final e in record.entries) '${e.key}': e.value});
   }
 
   Future<Object?> _pointer(Args a) async {
@@ -308,6 +388,49 @@ class _Serial {
     });
     return result;
   }
+}
+
+/// The setup host when none is given (the page never sends a setup op in that build): every setup op says so.
+class _NoSetup implements SetupHost {
+  const _NoSetup();
+
+  @override
+  set onAuthWaiting(void Function()? handler) {}
+
+  @override
+  set onLine(void Function(String line)? handler) {}
+
+  Never _off() => throw const OpError(501, 'Orbit Setup is not available in this build.');
+
+  @override
+  Future<Map<String, Object?>> scan(Duration window) => _off();
+
+  @override
+  Future<Map<String, Object?>> probe(String address, int port) => _off();
+
+  @override
+  Future<Map<String, Object?>> connect(String address, int port) => _off();
+
+  @override
+  Future<Map<String, Object?>> shell(String cmd, Duration timeout) => _off();
+
+  @override
+  Future<Map<String, Object?>> pushAsset(String asset, String to) => _off();
+
+  @override
+  Future<Map<String, Object?>> pushText(String text, String to) => _off();
+
+  @override
+  Future<Map<String, Object?>> run(String cmd) => _off();
+
+  @override
+  Future<Map<String, Object?>> close() => _off();
+
+  @override
+  Future<Map<String, Object?>> recordLoad(String key) => _off();
+
+  @override
+  Future<Map<String, Object?>> recordSave(String key, Map<String, Object?> record) => _off();
 }
 
 /// At most [size] tasks at once; the rest wait their turn.

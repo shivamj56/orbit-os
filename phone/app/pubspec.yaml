@@ -3,7 +3,7 @@ description: "Orbit: the phone remote for the Family room TV. A full-screen WebV
 publish_to: 'none'
 
 # versionName+versionCode on Android.
-version: 1.2.0+3
+version: 1.3.0+4
 
 environment:
   sdk: ^3.13.7
@@ -21,6 +21,8 @@ dependencies:
   http: ^1.6.0
   # Finding the TV's `_orbit._tcp` advert (Android NsdManager; the plugin holds the multicast lock itself).
   nsd: ^5.0.1
+  # Orbit Setup keeps one record per TV in app support storage.
+  path_provider: ^2.1.5
   # keepAwake.
   wakelock_plus: ^1.8.2
   webview_flutter: ^4.14.1
@@ -39,3 +41,6 @@ flutter:
   assets:
     # phone/ui/dist/index.html, copied by tool/sync_ui.sh (a placeholder until the real UI is built).
     - assets/ui/
+    # The TV-side install bundle (both launcher APKs and the two scripts), copied by tool/sync_setup.sh before a
+    # build. Git-ignored (the APKs must not be committed); the directory is populated by that tool.
+    - assets/setup/

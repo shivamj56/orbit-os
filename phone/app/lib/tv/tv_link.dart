@@ -24,6 +24,7 @@ class LinkTimings {
     ],
     this.afterAction = const Duration(milliseconds: 200),
     this.quietSearch = const Duration(seconds: 60),
+    this.adoptWindow = const Duration(seconds: 30),
   });
 
   /// GET /api/state while connected and on screen.
@@ -43,6 +44,9 @@ class LinkTimings {
 
   /// The search by itself while the TV is reached through the cloud (mDNS only).
   final Duration quietSearch;
+
+  /// How long `setupAdopt` keeps checking GET /api/state while Orbit Home starts (phone/SPEC.md, `setupAdopt`).
+  final Duration adoptWindow;
 }
 
 /// The phone's link to one TV: finding it, pairing, the token, the state machine of phone/SPEC.md's status
@@ -279,6 +283,57 @@ class TvLink {
     _pollTimer?.cancel();
     _pollTimer = null;
     await _poll().timeout(const Duration(milliseconds: 1500), onTimeout: () {});
+    return status;
+  }
+
+  /// `setupAdopt`: save this TV and token as a finished `pair` would, go `connected`, then confirm with GET
+  /// /api/state, retrying for [LinkTimings.adoptWindow] while Orbit Home starts (phone/SPEC.md, `setupAdopt`).
+  ///
+  /// A door that answers ok → connected; a door that says 401 (the token was not taken) → the token is dropped and
+  /// needsPairing; a TV that never answers in the window → offline (the TV and token stay saved, so the normal retry
+  /// reconnects once Home is up).
+  Future<LinkStatus> adopt(String address, int port, String token, String name) async {
+    await ready;
+    _epoch++;
+    final epoch = _epoch;
+    _stopLinkTimers();
+    _endCode();
+    final tv = SavedTv(name: name.trim().isEmpty ? 'TV' : name.trim(), address: address, port: port);
+    _tv = tv;
+    _token = token;
+    _tvState = null;
+    _save(() async {
+      await _store.saveTv(tv);
+      await _store.saveToken(token);
+    });
+    _set(LinkState.connected);
+    final deadline = DateTime.now().add(timings.adoptWindow);
+    while (epoch == _epoch) {
+      try {
+        final answer = await _client.getJson(address, port, '/api/state', token: token);
+        if (epoch != _epoch) break;
+        if (answer is Map && answer['ok'] == true) {
+          _applyTvState(answer);
+          _set(LinkState.connected);
+          return status;
+        }
+      } on TvHttpException catch (e) {
+        if (epoch != _epoch) break;
+        if (e.status == 401 && e.fromDoor) {
+          _clearToken();
+          _toUnpaired(error: _forgottenText);
+          return status;
+        }
+        // Any other door answer (it is there, starting up): keep trying.
+      } on TvUnreachableException {
+        // Not up yet: keep trying.
+      }
+      if (DateTime.now().isAfter(deadline)) {
+        if (epoch == _epoch) _toOffline();
+        return status;
+      }
+      await Future<void>.delayed(timings.retry);
+    }
     return status;
   }
 

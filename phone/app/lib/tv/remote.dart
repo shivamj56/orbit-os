@@ -158,6 +158,13 @@ class TvRemote {
     return status;
   }
 
+  /// `setupAdopt`: take the TV and token the setup script just paired, over the Wi-Fi door.
+  Future<LinkStatus> adopt(String address, int port, String token, String name) async {
+    await wifi.adopt(address, port, token, name);
+    _refresh();
+    return status;
+  }
+
   /// GET /api/state, or the `/api/state` command; the state also goes out as a `tvstate` event.
   Future<Object?> fetchState() async {
     if (_useCloud()) {

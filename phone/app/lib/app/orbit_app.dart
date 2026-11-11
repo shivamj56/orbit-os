@@ -9,6 +9,7 @@ import '../cloud/cloud_tv.dart';
 import '../cloud/firebase_backend.dart';
 import '../cloud/google_identity.dart';
 import '../native/native_host.dart';
+import '../setup/setup_host.dart';
 import '../tv/discovery.dart';
 import '../tv/icon_cache.dart';
 import '../tv/remote.dart';
@@ -50,6 +51,7 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
       remote: _remote,
       native: _native,
       icons: IconCache(directory: _native.cacheDirectory),
+      setup: PlatformSetupHost(),
     );
     unawaited(_startCloud());
     WidgetsBinding.instance.addObserver(this);

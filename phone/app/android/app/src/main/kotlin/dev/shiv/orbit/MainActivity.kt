@@ -20,6 +20,7 @@ import io.flutter.plugin.common.MethodChannel
  */
 class MainActivity : FlutterActivity() {
     private var channel: MethodChannel? = null
+    private var adbKey: AdbKey? = null
     private var volumeKeys = false
 
     /** The volume keys whose press was taken: their release is taken too, whatever happened in between. */
@@ -43,11 +44,16 @@ class MainActivity : FlutterActivity() {
             }
         }
         channel = native
+
+        // Orbit Setup's RSA key and signing (phone/SPEC.md, `setupConnect`), on its own channel.
+        adbKey = AdbKey(applicationContext).also { it.register(flutterEngine.dartExecutor.binaryMessenger) }
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         channel?.setMethodCallHandler(null)
         channel = null
+        adbKey?.unregister()
+        adbKey = null
         volumeKeys = false
         heldKeys.clear()
         super.cleanUpFlutterEngine(flutterEngine)
