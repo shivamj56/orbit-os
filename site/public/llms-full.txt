@@ -1,6 +1,6 @@
 # Orbit OS in full
 
-Orbit OS is a free Android app, "Orbit OS: TV Remote & Setup" on Google Play (package dev.shiv.orbit), made in India by Shivam Anil Jha. It does two jobs for a Google TV or Android TV: it is a smart TV remote on your phone, and it sets the TV up for you from the phone, with no computer, no cables and no code. Everything it changes can be undone with one tap.
+Orbit OS is a free Android app, "Orbit OS: Smart TV Remote" on Google Play (package dev.shiv.orbit), made in India by Shivam Anil Jha and published on Google Play by Om Shri Hari Trading Pvt Ltd. It does two jobs for a Google TV or Android TV: it is a smart TV remote on your phone, and it sets the TV up for you from the phone, with no computer, no cables and no code. Everything it changes can be undone with one tap.
 
 - Google Play: https://play.google.com/store/apps/details?id=dev.shiv.orbit
 - Website: https://orbit-os-tv.vercel.app/
