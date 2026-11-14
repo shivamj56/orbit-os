@@ -29,6 +29,9 @@ remote (`phone/`). Read [README.md](README.md) and [docs/architecture.md](docs/a
 - TV apps: `cd launcher && ./gradlew :app:assembleRelease :livetv:assembleRelease` with JDK 17 and Android SDK 34.
   Keep the same `ANDROID_USER_HOME`: its key signs both TV apps, and another key cannot update them.
 - Unit tests: `./gradlew :app:testReleaseUnitTest :livetv:testReleaseUnitTest`; tool tests: `pytest tests`.
-- Phone: `cd phone/ui && npm run build`, then `cd phone/app && tool/sync_ui.sh && flutter build apk --release`.
+- Phone: `cd phone/ui && npm run build`, then `cd phone/app && tool/sync_ui.sh && tool/sync_setup.sh && flutter build
+  apk --release` (the TV apps first: sync_setup.sh bundles their APKs).
+- CI: `.github/workflows` ([docs/ci-cd.md](docs/ci-cd.md)). Keep every action pinned to a commit SHA, keep the
+  signer fingerprints in the workflows in step with the keys, and never add a step that publishes on a push.
 - The tools in `tools/` come from CleanYourTV: keep their internal names (`~/.cleanyourtv/` holds every TV's undo
   record, and renaming it would lose them).

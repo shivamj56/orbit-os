@@ -110,9 +110,9 @@ Python 3.9 or later for the TV tools.
 # Orbit Home and Orbit Live TV
 cd launcher && ./gradlew :app:assembleRelease :livetv:assembleRelease
 
-# Orbit, the phone app
+# Orbit, the phone app (it carries both TV apps, so build those first)
 cd phone/ui && npm ci && npm run build
-cd ../app && tool/sync_ui.sh && flutter build apk --release
+cd ../app && tool/sync_ui.sh && tool/sync_setup.sh && flutter build apk --release --target-platform android-arm,android-arm64
 ```
 
 Putting it on a TV takes network debugging on the TV and the tools in [`tools`](tools). The whole path, from the
@@ -121,6 +121,13 @@ first "Allow USB debugging?" to the undo, is in [docs/build-and-install.md](docs
 > [!IMPORTANT]
 > Signing keys, Firebase settings and each TV's personal settings never go into git. Keep a copy of the signing
 > keys somewhere safe: an Android app can only be updated by an app signed with the same key.
+
+### Builds on GitHub
+
+GitHub Actions checks every pull request into `main`: the phone UI, the phone app, both TV apps and the TV tools,
+and the website when `site/` changes. The three signed APKs and the Play bundle can be built there too, from the
+existing keys kept as repository secrets, and a Google Play upload happens only when someone starts it by hand.
+How it works, the secrets and the release steps: [docs/ci-cd.md](docs/ci-cd.md).
 
 ## Tested on
 

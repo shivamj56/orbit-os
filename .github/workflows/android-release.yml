@@ -1,0 +1,203 @@
+name: Android release
+
+# The release started by hand (Actions > Android release > Run workflow). From the branch or commit picked there it
+# builds the signed Play bundle (app-release.aab) and the three APKs through android-build.yml. Only when the form asks
+# for it, it then uploads the bundle to a Google Play track and keeps the files as a GitHub release. Nothing here runs
+# by itself, and the production track needs its own typed confirmation. docs/ci-cd.md
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The version you are releasing, exactly as in phone/app/pubspec.yaml (e.g. 1.4.1+6). Needed to publish.
+        type: string
+        required: false
+      publish_to_play:
+        description: Upload the bundle to Google Play
+        type: boolean
+        default: false
+      play_track:
+        description: Google Play track for the upload
+        type: choice
+        options: [internal, alpha, beta, production]
+        default: internal
+      play_status:
+        description: "draft = finish it in Play Console; completed = send it out after Google's review"
+        type: choice
+        options: [draft, completed]
+        default: draft
+      production_confirm:
+        description: "Production only: type  publish dev.shiv.orbit"
+        type: string
+        required: false
+      release_notes:
+        description: What's new in this version, in English, for Play (optional)
+        type: string
+        required: false
+      github_release:
+        description: Also keep the APKs and the bundle as a GitHub release
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-release
+  cancel-in-progress: false
+
+env:
+  ORBIT_PHONE_SIGNER_SHA256: 168c1033fc9d9fad35cdd803f13f089997f468072d4adf6c8913cfa2fe79e69a
+  BUNDLETOOL_VERSION: 1.18.3
+  BUNDLETOOL_SHA256: a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29
+
+jobs:
+  check:
+    name: Check the release form
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts
+            phone/app/pubspec.yaml
+          sparse-checkout-cone-mode: false
+      - name: Check the version and the Play choices
+        env:
+          WANT_VERSION: ${{ inputs.version }}
+          PUBLISH: ${{ inputs.publish_to_play }}
+          TRACK: ${{ inputs.play_track }}
+          PLAY_STATUS: ${{ inputs.play_status }}
+          CONFIRM: ${{ inputs.production_confirm }}
+          GITHUB_RELEASE: ${{ inputs.github_release }}
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          version=$(sed -n 's/^version: *\([0-9][0-9.]*+[0-9][0-9]*\).*$/\1/p' phone/app/pubspec.yaml)
+          echo "phone/app/pubspec.yaml at $GITHUB_REF_NAME ($GITHUB_SHA): $version"
+          if [ -n "$WANT_VERSION" ] && [ "$WANT_VERSION" != "$version" ]; then
+            echo "::error::The form says $WANT_VERSION, but pubspec.yaml at this commit has $version."
+            exit 1
+          fi
+          if { [ "$PUBLISH" = true ] || [ "$GITHUB_RELEASE" = true ]; } && [ -z "$WANT_VERSION" ]; then
+            echo "::error::Type the version you are releasing ($version) in the form: an upload or a GitHub release needs it."
+            exit 1
+          fi
+          if [ "$PUBLISH" = true ]; then
+            if [ "$TRACK" = production ] && [ "$CONFIRM" != "publish dev.shiv.orbit" ]; then
+              echo "::error::The production track needs its confirmation: type  publish dev.shiv.orbit  in the form."
+              exit 1
+            fi
+            .github/scripts/require-secrets.sh GOOGLE_PLAY_SERVICE_ACCOUNT_JSON
+          fi
+          if [ "$PUBLISH" = true ]; then
+            play="upload to the **$TRACK** track as **$PLAY_STATUS**"
+          else
+            play="no upload"
+          fi
+          {
+            echo "### Release form"
+            echo
+            echo "- Version: \`$version\` from \`$GITHUB_REF_NAME\` (\`$GITHUB_SHA\`)"
+            echo "- Google Play: $play"
+            echo "- GitHub release: $GITHUB_RELEASE"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    name: Build
+    needs: check
+    uses: ./.github/workflows/android-build.yml
+    with:
+      bundle: true
+    secrets: inherit
+
+  publish:
+    name: Upload to Google Play
+    needs: [check, build]
+    if: inputs.publish_to_play
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    # On GitHub Pro the owner can give google-play-production required reviewers (docs/ci-cd.md, "Google Play").
+    environment: ${{ inputs.play_track == 'production' && 'google-play-production' || 'google-play-testing' }}
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: The bundle from the build
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ needs.build.outputs.aab_artifact }}
+          path: ${{ runner.temp }}/aab
+      - name: Check it once more before it leaves
+        run: |
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/bundletool.jar" \
+            "https://github.com/google/bundletool/releases/download/$BUNDLETOOL_VERSION/bundletool-all-$BUNDLETOOL_VERSION.jar"
+          echo "$BUNDLETOOL_SHA256  $RUNNER_TEMP/bundletool.jar" | sha256sum -c -
+          BUNDLETOOL_JAR="$RUNNER_TEMP/bundletool.jar" .github/scripts/verify-aab.sh "$RUNNER_TEMP/aab/app-release.aab" \
+            dev.shiv.orbit "$ORBIT_PHONE_SIGNER_SHA256" "${VERSION%+*}" "${VERSION#*+}"
+      - name: What's new
+        id: notes
+        env:
+          NOTES: ${{ inputs.release_notes }}
+        run: |
+          if [ -n "$NOTES" ]; then
+            mkdir -p "$RUNNER_TEMP/whatsnew"
+            printf '%s\n' "$NOTES" > "$RUNNER_TEMP/whatsnew/whatsnew-en-GB"
+            echo "dir=$RUNNER_TEMP/whatsnew" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload to Google Play
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: dev.shiv.orbit
+          releaseFiles: ${{ runner.temp }}/aab/app-release.aab
+          track: ${{ inputs.play_track }}
+          status: ${{ inputs.play_status }}
+          whatsNewDirectory: ${{ steps.notes.outputs.dir }}
+      - name: Summary
+        env:
+          TRACK: ${{ inputs.play_track }}
+          PLAY_STATUS: ${{ inputs.play_status }}
+        run: |
+          echo "### Google Play: Orbit $VERSION sent to the **$TRACK** track as **$PLAY_STATUS**" >> "$GITHUB_STEP_SUMMARY"
+
+  github-release:
+    name: GitHub release
+    needs: [check, build]
+    if: inputs.github_release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+    steps:
+      - name: The files from the build
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: orbit-*
+          path: ${{ runner.temp }}/built
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v${VERSION%+*}-build${VERSION#*+}"
+          mkdir -p "$RUNNER_TEMP/release"
+          for dir in "$RUNNER_TEMP"/built/*/; do
+            artifact=$(basename "$dir")
+            cp "$dir"/*.apk "$dir"/*.aab "$RUNNER_TEMP/release/" 2>/dev/null || true
+            cp "$dir/SHA256SUMS" "$RUNNER_TEMP/release/$artifact.sha256"
+            cp "$dir/build-info.json" "$RUNNER_TEMP/release/$artifact.build-info.json"
+          done
+          ls -l "$RUNNER_TEMP/release"
+          gh release create "$tag" "$RUNNER_TEMP"/release/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Orbit $VERSION" --generate-notes
+          echo "### GitHub release \`$tag\` created" >> "$GITHUB_STEP_SUMMARY"

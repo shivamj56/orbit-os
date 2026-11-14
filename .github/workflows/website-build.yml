@@ -1,0 +1,67 @@
+name: Website build
+
+# Builds the Orbit OS website (site/: one self-contained dist/index.html) when site/ changes, and keeps the built
+# folder as an artifact. It deploys nothing: the live site is published by Vercel's own Git connection from main
+# (docs/ci-cd.md, "The website"). The Android workflows ignore site-only changes.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/website-build.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/website-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: website-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: Website (site)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - name: Build (tsc + vite)
+        run: npm run build
+      - name: Check the built site
+        run: |
+          test -s dist/index.html
+          for file in dist/*; do
+            echo "$file: $(wc -c < "$file" | tr -d ' ') bytes"
+          done
+          {
+            echo "### Website build"
+            echo
+            echo '| File | Bytes |'
+            echo '|---|---|'
+            for file in dist/*; do
+              echo "| \`${file#dist/}\` | $(wc -c < "$file" | tr -d ' ') |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the built site
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: orbit-site-${{ github.sha }}
+          path: site/dist/
+          retention-days: 14
+          if-no-files-found: error

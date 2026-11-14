@@ -34,8 +34,11 @@ beside them. Orbit Setup's `install` moves such a TV over and removes the earlie
 ```bash
 cd phone/ui && npm ci && npm run build          # makes dist/index.html, the whole interface
 cd ../app && tool/sync_ui.sh                     # copies it into the app
+tool/sync_setup.sh                               # copies both TV APKs (built above) and setup/tv's scripts in
 flutter build apk --release --target-platform android-arm,android-arm64
 ```
+
+GitHub Actions builds it the same way, with the same keys kept as secrets: [ci-cd.md](ci-cd.md).
 
 A release build is signed with `phone/app/android/app/orbit-release.jks` and the passwords in
 `phone/app/android/key.properties`. Neither is in git; keep a copy of both. Tests: `flutter test` in `phone/app`.

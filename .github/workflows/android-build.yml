@@ -1,0 +1,331 @@
+name: Android build
+
+# Orbit's three APKs from one commit: Orbit, the phone app (dev.shiv.orbit), and the two TV apps it carries, Orbit Home
+# (dev.shiv.orbit.home) and Orbit Live TV (dev.shiv.orbit.live). Each is signed with its own existing key from the
+# repository's secrets and checked against that key's public certificate before it is kept. android-release.yml calls
+# this workflow with bundle: true for the Play bundle (app-release.aab). docs/ci-cd.md
+#
+# A push to main builds only once the owner has switched builds on GitHub on: the secrets first, then the repository
+# variable ORBIT_SIGNED_BUILDS = true. Until then they build on the Mac, and a push run shows as skipped instead of
+# failed. A run started by hand always runs, and its first job names any secret that is missing.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'phone/**'
+      - 'launcher/**'
+      - 'setup/**'
+      - '.github/workflows/android-build.yml'
+      - '.github/scripts/**'
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      bundle:
+        description: Also build the Play bundle (app-release.aab)
+        type: boolean
+        default: false
+    secrets:
+      ORBIT_RELEASE_KEYSTORE_BASE64:
+        required: false
+      ORBIT_KEYSTORE_PASSWORD:
+        required: false
+      ORBIT_KEY_ALIAS:
+        required: false
+      ORBIT_KEY_PASSWORD:
+        required: false
+      ORBIT_GOOGLE_SERVICES_JSON_BASE64:
+        required: false
+      ORBIT_TV_DEBUG_KEYSTORE_BASE64:
+        required: false
+    outputs:
+      version:
+        description: The phone app's version from pubspec.yaml, e.g. 1.4.0+5
+        value: ${{ jobs.preflight.outputs.version }}
+      phone_artifact:
+        description: Name of the artifact with the phone APK
+        value: ${{ jobs.phone.outputs.apk_artifact }}
+      aab_artifact:
+        description: Name of the artifact with app-release.aab (with bundle only)
+        value: ${{ jobs.phone.outputs.aab_artifact }}
+      tv_artifact:
+        description: Name of the artifact with the two TV APKs
+        value: ${{ jobs.tv.outputs.artifact }}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-build-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # The toolchain Orbit is built with on the owner's Mac (phone/app/.metadata, pubspec.lock): keep them in step.
+  FLUTTER_VERSION: 3.47.9
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+  # The public certificates Orbit is signed with (not secrets). A key whose certificate differs stops the build: an APK
+  # signed with another key cannot update Orbit on a phone, nor Orbit Home and Live TV on a TV.
+  ORBIT_PHONE_SIGNER_SHA256: 168c1033fc9d9fad35cdd803f13f089997f468072d4adf6c8913cfa2fe79e69a
+  ORBIT_TV_SIGNER_SHA256: ff676c38cd2e88d679b3766fb68435ec756629a5499202af239d416ac387a346
+  # Google's bundletool reads the bundle's manifest; a pinned release with its published checksum.
+  BUNDLETOOL_VERSION: 1.18.3
+  BUNDLETOOL_SHA256: a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29
+
+jobs:
+  preflight:
+    name: Keys and version
+    if: github.event_name != 'push' || vars.ORBIT_SIGNED_BUILDS == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      version_name: ${{ steps.version.outputs.name }}
+      version_code: ${{ steps.version.outputs.code }}
+      short_sha: ${{ steps.version.outputs.short_sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts
+            phone/app/pubspec.yaml
+          sparse-checkout-cone-mode: false
+      - name: Check the signing secrets are there
+        env:
+          ORBIT_RELEASE_KEYSTORE_BASE64: ${{ secrets.ORBIT_RELEASE_KEYSTORE_BASE64 }}
+          ORBIT_KEYSTORE_PASSWORD: ${{ secrets.ORBIT_KEYSTORE_PASSWORD }}
+          ORBIT_KEY_ALIAS: ${{ secrets.ORBIT_KEY_ALIAS }}
+          ORBIT_KEY_PASSWORD: ${{ secrets.ORBIT_KEY_PASSWORD }}
+          ORBIT_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.ORBIT_GOOGLE_SERVICES_JSON_BASE64 }}
+          ORBIT_TV_DEBUG_KEYSTORE_BASE64: ${{ secrets.ORBIT_TV_DEBUG_KEYSTORE_BASE64 }}
+        run: >-
+          .github/scripts/require-secrets.sh ORBIT_RELEASE_KEYSTORE_BASE64 ORBIT_KEYSTORE_PASSWORD ORBIT_KEY_ALIAS
+          ORBIT_KEY_PASSWORD ORBIT_GOOGLE_SERVICES_JSON_BASE64 ORBIT_TV_DEBUG_KEYSTORE_BASE64
+      - name: Read the version
+        id: version
+        run: |
+          version=$(sed -n 's/^version: *\([0-9][0-9.]*+[0-9][0-9]*\).*$/\1/p' phone/app/pubspec.yaml)
+          case "$version" in
+            *+*) ;;
+            *) echo "::error::phone/app/pubspec.yaml has no version like 1.4.0+5"; exit 1 ;;
+          esac
+          {
+            echo "version=$version"
+            echo "name=${version%+*}"
+            echo "code=${version#*+}"
+            echo "short_sha=$(printf '%s' "$GITHUB_SHA" | cut -c1-7)"
+          } >> "$GITHUB_OUTPUT"
+          echo "Orbit $version from $GITHUB_REF_NAME at $GITHUB_SHA"
+
+  tv:
+    name: Orbit Home and Live TV
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      artifact: ${{ steps.names.outputs.artifact }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check the Gradle wrapper is Gradle's own
+        uses: gradle/actions/wrapper-validation@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+      - name: The TV apps' signing key
+        # Both TV apps are signed with the debug key in ANDROID_USER_HOME (launcher/*/build.gradle), the same one as on
+        # the owner's Mac; signing.sh stops if this one has another certificate.
+        env:
+          ORBIT_TV_DEBUG_KEYSTORE_BASE64: ${{ secrets.ORBIT_TV_DEBUG_KEYSTORE_BASE64 }}
+        run: |
+          echo "ANDROID_USER_HOME=$RUNNER_TEMP/android-home" >> "$GITHUB_ENV"
+          ANDROID_USER_HOME="$RUNNER_TEMP/android-home" .github/scripts/signing.sh tv
+      - name: Build Orbit Home and Orbit Live TV
+        working-directory: launcher
+        run: ./gradlew --no-daemon :app:assembleRelease :livetv:assembleRelease
+      - name: Summary header
+        run: |
+          {
+            echo '### TV apps'
+            echo
+            echo '| File | Package | Version | Bytes | Signer |'
+            echo '|---|---|---|---|---|'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Check Orbit Home
+        id: home
+        run: >-
+          .github/scripts/verify-apk.sh launcher/app/build/outputs/apk/release/app-release.apk
+          dev.shiv.orbit.home "$ORBIT_TV_SIGNER_SHA256"
+      - name: Check Orbit Live TV
+        id: live
+        run: >-
+          .github/scripts/verify-apk.sh launcher/livetv/build/outputs/apk/release/livetv-release.apk
+          dev.shiv.orbit.live "$ORBIT_TV_SIGNER_SHA256"
+      - name: Name the files
+        id: names
+        env:
+          HOME_VERSION: ${{ steps.home.outputs.version_name }}
+          LIVE_VERSION: ${{ steps.live.outputs.version_name }}
+          SHORT_SHA: ${{ needs.preflight.outputs.short_sha }}
+        run: |
+          echo "artifact=orbit-tv-apks-home-$HOME_VERSION-live-$LIVE_VERSION-$SHORT_SHA" >> "$GITHUB_OUTPUT"
+          .github/scripts/package-artifacts.sh "$RUNNER_TEMP/tv" \
+            "launcher/app/build/outputs/apk/release/app-release.apk=OrbitHome-$HOME_VERSION.apk" \
+            "launcher/livetv/build/outputs/apk/release/livetv-release.apk=OrbitLiveTV-$LIVE_VERSION.apk"
+      - name: Keep the TV APKs
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ steps.names.outputs.artifact }}
+          path: ${{ runner.temp }}/tv/
+          retention-days: 30
+          if-no-files-found: error
+          overwrite: true
+      - name: Hand them to the phone build
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: tv-build-outputs
+          path: |
+            launcher/app/build/outputs/apk/release/app-release.apk
+            launcher/livetv/build/outputs/apk/release/livetv-release.apk
+          retention-days: 1
+          if-no-files-found: error
+          overwrite: true
+      - name: Remove the key
+        if: always()
+        run: .github/scripts/signing.sh clean
+
+  phone:
+    name: Orbit phone app
+    needs: [preflight, tv]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    outputs:
+      apk_artifact: ${{ steps.names.outputs.apk_artifact }}
+      aab_artifact: ${{ steps.names.outputs.aab_artifact }}
+    env:
+      VERSION: ${{ needs.preflight.outputs.version }}
+      VERSION_NAME: ${{ needs.preflight.outputs.version_name }}
+      VERSION_CODE: ${{ needs.preflight.outputs.version_code }}
+      SHORT_SHA: ${{ needs.preflight.outputs.short_sha }}
+      BUNDLE: ${{ inputs.bundle && 'true' || 'false' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: phone/ui/package-lock.json
+      - name: Build the phone UI (phone/ui)
+        working-directory: phone/ui
+        run: |
+          npm ci
+          npm run build
+          test -s dist/index.html
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: Gradle memory for this runner
+        # android/gradle.properties asks for an 8 GB heap, as much as a hosted runner has in all; the runner's own
+        # Gradle settings take precedence over the project's, and the repository's file stays as it is.
+        run: |
+          mkdir -p ~/.gradle
+          echo 'org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8' \
+            >> ~/.gradle/gradle.properties
+      - name: The TV APKs from the TV job
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: tv-build-outputs
+          path: launcher
+      - name: Orbit's signing key and Firebase file
+        env:
+          ORBIT_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.ORBIT_GOOGLE_SERVICES_JSON_BASE64 }}
+          ORBIT_RELEASE_KEYSTORE_BASE64: ${{ secrets.ORBIT_RELEASE_KEYSTORE_BASE64 }}
+          ORBIT_KEYSTORE_PASSWORD: ${{ secrets.ORBIT_KEYSTORE_PASSWORD }}
+          ORBIT_KEY_ALIAS: ${{ secrets.ORBIT_KEY_ALIAS }}
+          ORBIT_KEY_PASSWORD: ${{ secrets.ORBIT_KEY_PASSWORD }}
+        run: .github/scripts/signing.sh phone
+      - name: Dependencies (exactly pubspec.lock)
+        working-directory: phone/app
+        run: flutter pub get --enforce-lockfile
+      - name: Put the UI and the TV install files into the app
+        # sync_setup.sh needs both TV APKs and setup/tv's two scripts, which is why the TV job runs first.
+        run: |
+          phone/app/tool/sync_ui.sh
+          cmp phone/ui/dist/index.html phone/app/assets/ui/index.html
+          phone/app/tool/sync_setup.sh
+      - name: Build the APK
+        working-directory: phone/app
+        run: flutter build apk --release --target-platform android-arm,android-arm64
+      - name: Check the APK
+        run: |
+          {
+            echo "### Orbit $VERSION"
+            echo
+            echo '| File | Package | Version | Bytes | Signer |'
+            echo '|---|---|---|---|---|'
+          } >> "$GITHUB_STEP_SUMMARY"
+          apk=phone/app/build/app/outputs/flutter-apk/app-release.apk
+          .github/scripts/verify-apk.sh "$apk" dev.shiv.orbit "$ORBIT_PHONE_SIGNER_SHA256" "$VERSION_NAME" "$VERSION_CODE"
+          # The TV apps it installs must be the two just built and checked.
+          unzip -o -q "$apk" 'assets/flutter_assets/assets/setup/*' -d "$RUNNER_TEMP/inside"
+          cmp launcher/app/build/outputs/apk/release/app-release.apk \
+            "$RUNNER_TEMP/inside/assets/flutter_assets/assets/setup/orbit-home.apk"
+          cmp launcher/livetv/build/outputs/apk/release/livetv-release.apk \
+            "$RUNNER_TEMP/inside/assets/flutter_assets/assets/setup/orbit-live.apk"
+      - name: Build the Play bundle
+        if: env.BUNDLE == 'true'
+        working-directory: phone/app
+        run: flutter build appbundle --release --target-platform android-arm,android-arm64
+      - name: Check the Play bundle
+        if: env.BUNDLE == 'true'
+        run: |
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/bundletool.jar" \
+            "https://github.com/google/bundletool/releases/download/$BUNDLETOOL_VERSION/bundletool-all-$BUNDLETOOL_VERSION.jar"
+          echo "$BUNDLETOOL_SHA256  $RUNNER_TEMP/bundletool.jar" | sha256sum -c -
+          BUNDLETOOL_JAR="$RUNNER_TEMP/bundletool.jar" .github/scripts/verify-aab.sh \
+            phone/app/build/app/outputs/bundle/release/app-release.aab dev.shiv.orbit "$ORBIT_PHONE_SIGNER_SHA256" \
+            "$VERSION_NAME" "$VERSION_CODE"
+      - name: Name the files
+        id: names
+        run: |
+          base="$VERSION_NAME-build$VERSION_CODE-$SHORT_SHA"
+          echo "apk_artifact=orbit-phone-apk-$base" >> "$GITHUB_OUTPUT"
+          ORBIT_VERSION="$VERSION" .github/scripts/package-artifacts.sh "$RUNNER_TEMP/apk" \
+            "phone/app/build/app/outputs/flutter-apk/app-release.apk=Orbit-$VERSION_NAME.apk"
+          if [ "$BUNDLE" = true ]; then
+            echo "aab_artifact=orbit-phone-aab-$base" >> "$GITHUB_OUTPUT"
+            ORBIT_VERSION="$VERSION" .github/scripts/package-artifacts.sh "$RUNNER_TEMP/aab" \
+              "phone/app/build/app/outputs/bundle/release/app-release.aab=app-release.aab"
+          fi
+      - name: Keep the phone APK
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ steps.names.outputs.apk_artifact }}
+          path: ${{ runner.temp }}/apk/
+          retention-days: 30
+          if-no-files-found: error
+          overwrite: true
+      - name: Keep the Play bundle
+        if: env.BUNDLE == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ steps.names.outputs.aab_artifact }}
+          path: ${{ runner.temp }}/aab/
+          retention-days: 30
+          if-no-files-found: error
+          overwrite: true
+      - name: Remove the keys
+        if: always()
+        run: .github/scripts/signing.sh clean
