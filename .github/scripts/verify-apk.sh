@@ -40,9 +40,10 @@ if [ $# -eq 5 ]; then
 fi
 
 certs=$("$tools/apksigner" verify --print-certs "$apk" 2>&1) || fail "the signature does not verify: $certs"
-# "Signer #1 certificate SHA-256 digest: …", or "Signer (minSdkVersion=…) certificate …" from newer apksigners,
-# which list a certificate once per Android version range: the same certificate counts once.
-signers=$(printf '%s\n' "$certs" | sed -n 's/^Signer.* certificate SHA-256 digest: *//p' | sort -u)
+# Each build-tools words it its own way: "Signer #1 certificate SHA-256 digest: …" (36.0), "V2 Signer: certificate
+# SHA-256 digest: …" (37.0), "Signer (minSdkVersion=…) certificate …" per Android version range. The same certificate
+# counts once; a Play source stamp is not a signer.
+signers=$(printf '%s\n' "$certs" | grep -v 'Source Stamp' | sed -n 's/^.*[Ss]igner.*certificate SHA-256 digest: *//p' | sort -u)
 count=$(printf '%s\n' "$signers" | grep -c . || true)
 [ "$count" -eq 1 ] ||
   fail "expected one signing certificate, found $count; $(basename -- "$tools")/apksigner said: $(printf '%s' "$certs" | head -n 12 | tr '\n' '|')"
