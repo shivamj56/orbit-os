@@ -22,7 +22,9 @@ void main() {
     test('signing in and out; the account JSON follows', () async {
       final rig = CloudRig().started();
       expect(rig.cloud.accountJson(), {
+        'available': true,
         'signedIn': false,
+        'provider': null,
         'email': null,
         'tvLinked': false,
         'tvOnline': false,
@@ -82,7 +84,9 @@ void main() {
       expect(tv.uid, rig.uid);
       expect(rig.db.read('link/12345678'), isNull, reason: 'the TV deleted its code');
       expect(rig.cloud.accountJson(), {
+        'available': true,
         'signedIn': true,
+        'provider': 'google',
         'email': 'owner@gmail.com',
         'tvLinked': true,
         'tvOnline': true,
@@ -373,7 +377,9 @@ void main() {
       await eventually(() => rig.cloud.connected);
       await bridge.handle('{"id":5,"op":"linkTv","args":{"code":"1234 5678"}}');
       expect(reply(5)['data'], {
+        'available': true,
         'signedIn': true,
+        'provider': 'google',
         'email': 'owner@gmail.com',
         'tvLinked': true,
         'tvOnline': true,
@@ -421,7 +427,9 @@ void main() {
       final wifiOnlyBridge = bridgeFor(wifiOnly(linkFor(null)));
       await wifiOnlyBridge.handle('{"id":2,"op":"account"}');
       expect(reply(2)['data'], {
+        'available': false,
         'signedIn': false,
+        'provider': null,
         'email': null,
         'tvLinked': false,
         'tvOnline': false,

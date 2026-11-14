@@ -42,13 +42,74 @@ export interface AppEntry {
   label: string;
 }
 
-/** Orbit from anywhere (phone/SPEC.md): the Google account on the phone, and whether the TV is linked to it. */
+/** A way to sign in to Orbit's cloud: Google's sheet, or (on an iPhone) Apple's. */
+export type SignInWay = "apple" | "google";
+
+/** Orbit from anywhere (phone/SPEC.md): the account on the phone, and whether the TV is linked to it. */
 export interface Account {
   signedIn: boolean;
+  /** For Apple, often a private relay address (…@privaterelay.appleid.com): shown as it is. */
   email: string | null;
   tvLinked: boolean;
   tvOnline: boolean;
   tvName: string | null;
+  /** How the account signed in; null while signed out. */
+  provider: SignInWay | null;
+  /** False only in a build of the app with no cloud at all: then no account, link or Drive backup can work. */
+  available: boolean;
+}
+
+export const signedOut = (): Account => ({
+  signedIn: false,
+  email: null,
+  tvLinked: false,
+  tvOnline: false,
+  tvName: null,
+  provider: null,
+  available: true,
+});
+
+/**
+ * An `account` reply or event as the page keeps it. An app from before Sign in with Apple says neither `provider` nor
+ * `available`: it has the cloud, and its accounts are Google's.
+ */
+export function readAccount(data: unknown): Account {
+  const a = (data && typeof data === "object" ? data : {}) as Partial<Record<keyof Account, unknown>>;
+  const signedIn = a.signedIn === true;
+  return {
+    signedIn,
+    email: typeof a.email === "string" ? a.email : null,
+    tvLinked: a.tvLinked === true,
+    tvOnline: a.tvOnline === true,
+    tvName: typeof a.tvName === "string" ? a.tvName : null,
+    provider: signedIn ? (a.provider === "apple" ? "apple" : "google") : null,
+    available: a.available !== false,
+  };
+}
+
+/**
+ * What this phone itself offers (the `phone` op): iOS lets no app use the volume buttons, and an iPhone shows Sign in
+ * with Apple first. `signIn` lists the ways in the order to show them.
+ */
+export interface Phone {
+  platform: "android" | "ios" | "web";
+  volumeKeys: boolean;
+  signIn: SignInWay[];
+}
+
+/** An app from before the `phone` op: an Android phone, its volume buttons, and Google's sign-in. */
+export const OLDER_PHONE: Phone = { platform: "android", volumeKeys: true, signIn: ["google"] };
+
+/** A `phone` reply as the page keeps it: ways it does not know are left out, each way once. */
+export function readPhone(data: unknown): Phone {
+  const p = (data && typeof data === "object" ? data : {}) as Partial<Record<keyof Phone, unknown>>;
+  const platform = p.platform === "ios" || p.platform === "web" ? p.platform : "android";
+  const ways: unknown[] = Array.isArray(p.signIn) ? p.signIn : OLDER_PHONE.signIn;
+  return {
+    platform,
+    volumeKeys: typeof p.volumeKeys === "boolean" ? p.volumeKeys : platform !== "ios",
+    signIn: ways.filter((w, i): w is SignInWay => (w === "apple" || w === "google") && ways.indexOf(w) === i),
+  };
 }
 
 /** Help mode (phone/SPEC.md): one picture of the TV's screen, `at` when the TV took it, in this phone's clock. */
@@ -96,10 +157,10 @@ export type MockFactory = (deliver: (m: Message) => void) => (text: string) => v
 
 /**
  * Ops the phone itself answers even in demo mode (phone/SPEC.md, "Demo mode"): its own buzz and screen, the demo switch,
- * the opening intro's hand-over, and opening Orbit's public pages in the browser. Every other op is about a TV, and in
- * demo mode goes to the pretend one.
+ * the opening intro's hand-over, opening Orbit's public pages in the browser, and what the phone offers. Every other op
+ * is about a TV, and in demo mode goes to the pretend one.
  */
-export const PHONE_OPS: ReadonlySet<string> = new Set(["haptic", "keepAwake", "demo", "intro", "openUrl"]);
+export const PHONE_OPS: ReadonlySet<string> = new Set(["haptic", "keepAwake", "demo", "intro", "openUrl", "phone"]);
 
 /** Events from the phone the page still takes in demo mode: the app leaving the screen and coming back. */
 export const PHONE_EVENTS: ReadonlySet<string> = new Set(["lifecycle"]);
@@ -320,17 +381,23 @@ export const drive = {
 /** Tells Flutter which TV the page plays with: the pretend one (on), so it leaves the real TV alone, or the real one. */
 export const phoneDemo = (on: boolean) => bridge.call<{ on: boolean }>("demo", { on });
 
+/** What this phone offers, asked once at the start. An app that does not know the op is an older Android one. */
+export const askPhone = (via: Bridge = bridge): Promise<Phone> =>
+  via.call("phone").then(readPhone, () => OLDER_PHONE);
+
 export const cloud = {
-  account: () => bridge.call<Account>("account"),
-  // Google's own sign-in sheet can take a while: the person is choosing an account.
-  signIn: () => bridge.call<Account>("signIn", {}, 120_000),
-  signOut: () => bridge.call<Account>("signOut"),
-  linkTv: (code: string) => bridge.call<Account>("linkTv", { code }, 40_000),
-  unlinkTv: () => bridge.call<Account>("unlinkTv"),
+  account: () => bridge.call("account").then(readAccount),
+  // Apple's and Google's own sheets can take a while: the person is choosing an account.
+  signIn: (way: SignInWay = "google") => bridge.call("signIn", { with: way }, 120_000).then(readAccount),
+  signOut: () => bridge.call("signOut").then(readAccount),
+  linkTv: (code: string) => bridge.call("linkTv", { code }, 40_000).then(readAccount),
+  unlinkTv: () => bridge.call("unlinkTv").then(readAccount),
   /**
    * Deletes the Orbit account: the TV backups in Google Drive too when `backups`, everything the cloud keeps under the
-   * account, then the account, and signs out (phone/SPEC.md, "Deleting the account"). Google may show its sheet.
+   * account, then the account, and signs out (phone/SPEC.md, "Deleting the account"). Apple or Google may show a sheet.
    */
   deleteAccount: (backups: boolean) =>
-    bridge.call<{ removed: number | null; account: Account }>("deleteAccount", { backups }, 240_000),
+    bridge
+      .call<{ removed: number | null; account: unknown }>("deleteAccount", { backups }, 240_000)
+      .then(({ removed, account }) => ({ removed, account: readAccount(account) })),
 };

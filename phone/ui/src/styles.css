@@ -17,6 +17,8 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* The phone's own face, for Sign in with Apple's button (Apple asks for the system font) and the one beside it. */
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
 
   /* Ink and glass: the TV's dark room. One family of greys, one ribbon of colour (the halo's), mint for "done". */
   --color-ink: #05060a;

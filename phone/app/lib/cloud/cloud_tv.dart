@@ -114,7 +114,9 @@ class CloudTv {
 
   /// `account` op / event: `{"signedIn","email","tvLinked","tvOnline","tvName"}`.
   Map<String, Object?> accountJson() => {
+    'available': true,
     'signedIn': _account.signedIn,
+    'provider': _account.provider,
     'email': _account.email,
     'tvLinked': linked,
     'tvOnline': online,
@@ -197,13 +199,14 @@ class CloudTv {
 
   // ---- linking ----
 
-  /// `linkTv`: the Google ID token to `/link/{code}/token`, then the TV's first `tv/online` within 25 s.
+  /// `linkTv`: what the TV signs in with (a Google ID token, or Apple's identity token and nonce: CloudAccount.linkToken)
+  /// to `/link/{code}/token`, then the TV's first `tv/online` within 25 s.
   Future<void> link(String code) async {
-    if (!_account.signedIn) throw const OpError(401, 'Sign in with Google first.');
+    if (!_account.signedIn) throw OpError(401, _account.signInFirst);
     if (!_connected) throw const OpError(0, 'No internet on the phone.');
-    final token = await _account.freshIdToken();
+    final token = await _account.linkToken();
     final uid = _uid ?? _account.uid;
-    if (uid == null) throw const OpError(401, 'Sign in with Google first.');
+    if (uid == null) throw OpError(401, _account.signInFirst);
     follow(uid);
     // Only a stamp written after the token counts (one from an earlier link of the same TV does not).
     final since = serverNow - 2000;
@@ -237,7 +240,7 @@ class CloudTv {
   /// with it, so the phone no longer counts a TV as linked.
   Future<void> unlink() async {
     final uid = _uid;
-    if (uid == null || !_account.signedIn) throw const OpError(401, 'Sign in with Google first.');
+    if (uid == null || !_account.signedIn) throw OpError(401, _account.signInFirst);
     try {
       await _db
           .update('orbit/$uid/tv', {'unlink': true, 'name': null, 'online': null, 'state': null})
@@ -258,7 +261,7 @@ class CloudTv {
   /// `orbit/{uid}` goes: the TV's name, state and presence, `watch`, commands and answers, and help's `screen`.
   Future<void> eraseAll() async {
     final uid = _uid;
-    if (uid == null || !_account.signedIn) throw const OpError(401, 'Sign in with Google first.');
+    if (uid == null || !_account.signedIn) throw OpError(401, _account.signInFirst);
     final wasLinked = linked && online;
     _erasing = true;
     _syncActive();
@@ -298,7 +301,7 @@ class CloudTv {
   /// deleted). The answer's body, or [OpError] with the TV's status and words.
   Future<Object?> command(String path, Map<String, Object?> body) async {
     final uid = _uid;
-    if (uid == null || !_account.signedIn) throw const OpError(401, 'Sign in with Google first.');
+    if (uid == null || !_account.signedIn) throw OpError(401, _account.signInFirst);
     if (!_connected) throw const OpError(0, 'No internet on the phone.');
     final id = _db.pushId('orbit/$uid/cmd');
     final answer = Completer<Object?>();

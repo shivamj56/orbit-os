@@ -1,14 +1,16 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { bridge, cloud, haptic, tv, type Account, type AppEntry, type Status, type TvState } from "../bridge";
+import { bridge, cloud, haptic, tv, type Account, type AppEntry, type SignInWay, type Status, type TvState } from "../bridge";
 import { setDemoMode, useDemo } from "../demo";
 import { LINKS, openLink } from "../links";
 import { APP_VERSION, openSetup, type FlowMode } from "../setup/flow";
 import type { HomeChoice } from "../setup/lines";
+import { cloudOn, driveIsChosen, signedInWith, waysWords } from "../signin";
 import { patchTv, setAccount, updateSettings, useWorld } from "../store";
 import { ORBIT_HOMES } from "../setup/plan";
 import * as I from "./icons";
 import { Press, Sheet, spring } from "./kit";
+import { SignInPills } from "./SignIn";
 
 // ---- app pictures, kept for the whole run ----
 
@@ -345,9 +347,11 @@ function Row({ title, note, children, onPress, icon }: { title: string; note?: s
 }
 
 export function SettingsSheet({ open, onClose, status }: { open: boolean; onClose: () => void; status: Status }) {
-  const { settings } = useWorld();
+  const { settings, account, phone } = useWorld();
   const demo = useDemo();
   const tv = status.tv;
+  // Accounts, the link from anywhere and the Drive backups: none of them where this build of the app has no cloud.
+  const withCloud = cloudOn(account, phone);
   // A screen of Orbit Setup's over everything: the sheet goes first (setup takes the phone's Back from it).
   const go = (mode: FlowMode, to?: HomeChoice) => () => {
     haptic("light");
@@ -366,7 +370,9 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
             {!tv
               ? "Orbit is looking on this Wi-Fi"
               : status.via === "cloud"
-                ? "Through Google, from anywhere"
+                ? account.provider === "apple"
+                  ? "Through Orbit's cloud, from anywhere"
+                  : "Through Google, from anywhere"
                 : `${tv.address}  ·  ${status.state === "connected" ? "home Wi-Fi" : "not answering now"}`}
           </p>
         </div>
@@ -376,9 +382,12 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
         <Row title="Feel the steps" note="The phone ticks with every move of the TV's focus." onPress={() => updateSettings({ haptics: !settings.haptics })}>
           <Toggle on={settings.haptics} />
         </Row>
-        <Row title="Phone's volume buttons" note="Turn the TV up and down while Orbit is open." onPress={() => updateSettings({ volumeKeys: !settings.volumeKeys })}>
-          <Toggle on={settings.volumeKeys} />
-        </Row>
+        {/* iOS lets no app use the volume buttons: an iPhone has no such row. */}
+        {phone.volumeKeys && (
+          <Row title="Phone's volume buttons" note="Turn the TV up and down while Orbit is open." onPress={() => updateSettings({ volumeKeys: !settings.volumeKeys })}>
+            <Toggle on={settings.volumeKeys} />
+          </Row>
+        )}
         <div className="py-3.5">
           <div className="flex items-center justify-between">
             <span className="text-[15.5px]">Pointer speed</span>
@@ -401,9 +410,16 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
         <section className="mt-4" aria-label="This TV">
           <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">This TV</p>
           <div className="divide-y divide-white/6">
-            <Row icon={<I.CloudUp size={20} />} title="Back up this TV's own setup" note="How the TV was before Orbit OS, as a small file in your own Google Drive." onPress={go("backup")}>
-              <Chevron />
-            </Row>
+            {withCloud && (
+              <Row
+                icon={<I.CloudUp size={20} />}
+                title="Back up this TV's own setup"
+                note={`How the TV was before Orbit OS, as a small file in ${driveIsChosen(account, phone) ? "a Google Drive you choose" : "your own Google Drive"}.`}
+                onPress={go("backup")}
+              >
+                <Chevron />
+              </Row>
+            )}
             <Row icon={<I.Home size={20} />} title="Use the TV's own home screen" note="Only Home changes. Orbit Home stays on the TV for when you want it back." onPress={go("switch", "stock")}>
               <Chevron />
             </Row>
@@ -425,9 +441,11 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
       <section className="mt-4" aria-label="Orbit OS">
         <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">{tv ? "More" : "Orbit OS"}</p>
         <div className="divide-y divide-white/6">
-          <Row icon={<I.CloudDown size={20} />} title="Backups in Google Drive" note="Each TV's backups, and putting a TV back from one." onPress={go("backups")}>
-            <Chevron />
-          </Row>
+          {withCloud && (
+            <Row icon={<I.CloudDown size={20} />} title="Backups in Google Drive" note="Each TV's backups, and putting a TV back from one." onPress={go("backups")}>
+              <Chevron />
+            </Row>
+          )}
           <Row icon={<I.Tv size={20} />} title="Set up Orbit OS on a TV" note="Put Orbit OS on a TV from this phone." onPress={go("install")}>
             <Chevron />
           </Row>
@@ -448,7 +466,7 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
         </div>
       </section>
 
-      <AnywhereCard onDone={onClose} onDelete={go("account")} />
+      {withCloud && <AnywhereCard onDone={onClose} onDelete={go("account")} />}
 
       <section className="mt-4" aria-label="About">
         <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">About</p>
@@ -484,9 +502,10 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
 
 const Chevron = () => <I.Chevron dir="right" size={18} className="shrink-0 text-faint" />;
 
-/** The Google account Orbit uses away from the Wi-Fi, and the TV linked to it. */
+/** The account Orbit uses away from the Wi-Fi (Apple's or Google's), and the TV linked to it. */
 function AnywhereCard({ onDone, onDelete }: { onDone: () => void; onDelete: () => void }) {
-  const { account } = useWorld();
+  const { account, phone } = useWorld();
+  /** What the card is doing: a way's sheet is open ("apple", "google"), or "unlink", or "out". */
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const run = async (what: string, job: () => Promise<Account>) => {
@@ -512,27 +531,26 @@ function AnywhereCard({ onDone, onDelete }: { onDone: () => void; onDelete: () =
       </div>
       <p className="mt-2 text-[13px] leading-relaxed text-faint">
         {account.signedIn
-          ? <>Signed in as <span className="text-muted">{account.email}</span>.{" "}
+          ? <>{signedInWith(account)} as <span className="break-words text-muted">{account.email}</span>.{" "}
               {account.tvLinked ? `${account.tvName || "The TV"} answers this phone from anywhere.` : "Link the TV once with the code it shows at the top of Home."}</>
-          : "Sign in with the Google account that is on the TV, and Orbit reaches it away from home too."}
+          : phone.signIn.includes("apple")
+            ? `Sign in with ${waysWords(phone.signIn)}, and Orbit reaches the TV away from home too.`
+            : "Sign in with the Google account that is on the TV, and Orbit reaches it away from home too."}
       </p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {!account.signedIn && (
-          <Press label="Continue with Google" onPress={() => run("in", cloud.signIn)} disabled={!!busy} className="h-10 rounded-full bg-text px-4 text-[14px] font-medium text-ink">
-            {busy === "in" ? "Opening Google…" : "Continue with Google"}
-          </Press>
-        )}
-        {account.signedIn && account.tvLinked && (
-          <Press label="Unlink the TV" onPress={() => run("unlink", cloud.unlinkTv)} disabled={!!busy} className="glass h-10 rounded-full px-4 text-[14px]">
-            {busy === "unlink" ? "Unlinking…" : "Unlink TV"}
-          </Press>
-        )}
-        {account.signedIn && (
+      {!account.signedIn ? (
+        <SignInPills ways={phone.signIn} busy={busy} onPress={(way: SignInWay) => run(way, () => cloud.signIn(way))} className="mt-3.5" />
+      ) : (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {account.tvLinked && (
+            <Press label="Unlink the TV" onPress={() => run("unlink", cloud.unlinkTv)} disabled={!!busy} className="glass h-10 rounded-full px-4 text-[14px]">
+              {busy === "unlink" ? "Unlinking…" : "Unlink TV"}
+            </Press>
+          )}
           <Press label="Sign out" onPress={() => run("out", cloud.signOut).then(onDone)} disabled={!!busy} className="glass h-10 rounded-full px-4 text-[14px] text-muted">
             Sign out
           </Press>
-        )}
-      </div>
+        </div>
+      )}
       {error && <p className="mt-2 text-[13px] text-rose" role="alert">{error}</p>}
       {account.signedIn && (
         <button type="button" onClick={onDelete} disabled={!!busy} className="mt-3 -mb-1 min-h-11 text-[13.5px] font-medium text-rose/90 disabled:opacity-45">

@@ -2,7 +2,7 @@ name: orbit
 description: "Orbit: the phone remote for the Family room TV. A full-screen WebView (phone/ui) over a Flutter bridge."
 publish_to: 'none'
 
-# versionName+versionCode on Android.
+# versionName+versionCode on Android; CFBundleShortVersionString+CFBundleVersion on an iPhone.
 version: 1.4.0+5
 
 environment:
@@ -14,12 +14,13 @@ dependencies:
   firebase_database: ^13.0.1
   flutter:
     sdk: flutter
-  # Token and the chosen TV, under a key in the Android Keystore.
+  # Token and the chosen TV, under a key in the Android Keystore (the Keychain on an iPhone).
   flutter_secure_storage: ^11.2.0
   # The TV's door: plain HTTP/1.1 on the home Wi-Fi.
   google_sign_in: ^7.2.0
   http: ^1.6.0
-  # Finding the TV's `_orbit._tcp` advert (Android NsdManager; the plugin holds the multicast lock itself).
+  # Finding the TV's `_orbit._tcp` advert (Android NsdManager, the plugin holds the multicast lock itself; Bonjour on an
+  # iPhone, whose Info.plist names the service types).
   nsd: ^5.0.1
   # Orbit Setup keeps one record per TV in app support storage.
   path_provider: ^2.1.5
@@ -28,6 +29,8 @@ dependencies:
   webview_flutter: ^4.14.1
   # Android-only WebView settings: overscroll, text zoom, media without a gesture, insets.
   webview_flutter_android: ^4.14.1
+  # iPhone-only WebView settings: media without a gesture, the inspector in debug builds, no link previews.
+  webview_flutter_wkwebview: ^3.27.2
 
 dev_dependencies:
   flutter_test:

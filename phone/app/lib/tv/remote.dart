@@ -82,9 +82,10 @@ class TvRemote {
     _refresh();
   }
 
-  /// Firebase did not start: the Wi-Fi path only.
+  /// Firebase did not start: the Wi-Fi path only (the page hears `available` false and offers no account).
   void cloudUnavailable() {
     if (!_cloudSettled.isCompleted) _cloudSettled.complete();
+    _refresh();
   }
 
   bool get cloudAvailable => _cloud != null;
@@ -126,10 +127,19 @@ class TvRemote {
     );
   }
 
-  /// `account`: `{"signedIn","email","tvLinked","tvOnline","tvName"}` (all false/null without Firebase).
+  /// `account`: `{"available","signedIn","provider","email","tvLinked","tvOnline","tvName"}`. Without Firebase all
+  /// false/null; `available` false once it is known that Firebase did not start (no account can work in this run).
   Map<String, Object?> get accountJson =>
       _cloud?.accountJson() ??
-      const {'signedIn': false, 'email': null, 'tvLinked': false, 'tvOnline': false, 'tvName': null};
+      {
+        'available': !_cloudSettled.isCompleted,
+        'signedIn': false,
+        'provider': null,
+        'email': null,
+        'tvLinked': false,
+        'tvOnline': false,
+        'tvName': null,
+      };
 
   /// The last TV state from the way in use (for a page that loads again).
   Map<String, Object?>? get tvState => onCloud ? _cloud?.lastState : wifi.tvState;
@@ -249,15 +259,17 @@ class TvRemote {
     return accountJson;
   }
 
-  Future<Map<String, Object?>> signIn() async {
+  /// `signIn` with Google, or with [apple] Sign in with Apple (an iPhone only).
+  Future<Map<String, Object?>> signIn({bool apple = false}) async {
     final account = await _cloudAccount();
+    if (apple && !account.offersApple) throw const OpError(400, 'Sign in with Apple is only on iPhone.');
     try {
-      await account.signIn();
+      await account.signIn(apple: apple);
     } on SignInFailed catch (e) {
       throw OpError(e.cancelled ? 499 : (e.offline ? 0 : 401), e.words);
     } on Object catch (e) {
       debugPrint('orbit: sign-in: $e');
-      throw const OpError(401, 'Google could not sign you in. Try again.');
+      throw OpError(401, '${apple ? 'Apple' : 'Google'} could not sign you in. Try again.');
     }
     _refresh();
     return accountJson;
@@ -290,16 +302,22 @@ class TvRemote {
 
   // ---- backups in Google Drive, and deleting the account ----
 
-  /// The Google account backups go to: the one signed in. Throws [DriveError] `noAccount`.
+  /// The Google account backups go to: the one signed in, or for an Apple account the Google account chosen for them
+  /// (Google's sheet asks the first time). Throws [DriveError] `noAccount`.
   Future<String> backupEmail() async {
     await cloudReady;
     final account = _account;
-    final email = account?.email;
-    if (account == null || !account.signedIn || email == null) {
-      throw const DriveError(
+    if (account == null || !account.signedIn) {
+      throw DriveError(
         'noAccount',
-        'Sign in with Google first. Orbit keeps the backups in that account\'s own Google Drive.',
+        account != null && account.offersApple
+            ? 'Sign in first. Orbit keeps the backups in a Google Drive of your own.'
+            : 'Sign in with Google first. Orbit keeps the backups in that account\'s own Google Drive.',
       );
+    }
+    final email = await account.driveEmail();
+    if (email == null) {
+      throw const DriveError('noAccount', 'Choose a Google account in Google\'s sheet: the backups go to its Drive.');
     }
     return email;
   }
@@ -308,12 +326,13 @@ class TvRemote {
   /// everything the cloud keeps under the account, then the Firebase user itself, and sign-out.
   Future<Map<String, Object?>> deleteAccount({required bool backups, DriveBackups? drive}) async {
     final account = await _cloudAccount();
-    final email = account.email;
-    if (!account.signedIn || email == null) throw const OpError(401, 'Sign in with Google first.');
+    if (!account.signedIn) throw OpError(401, account.signInFirst);
     int? removed;
     if (backups) {
       if (drive == null) throw const DriveError('auth', 'Google Drive is not available in this build of Orbit.');
-      removed = await drive.deleteAll(email);
+      // An Apple account that never chose a Google account for backups has none in any Drive.
+      final email = await account.driveEmail(prompt: false);
+      removed = email == null ? 0 : await drive.deleteAll(email);
     }
     final cloud = _cloud!;
     await cloud.eraseAll();

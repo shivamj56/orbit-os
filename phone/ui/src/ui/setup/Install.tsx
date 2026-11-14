@@ -22,9 +22,10 @@ import {
 import { installRows, whatStopped, type Row } from "../../setup/lines";
 import { disabledByRecord } from "../../setup/plan";
 import { LINKS, openLink } from "../../links";
+import { cloudOn, signedInWith, waysWords } from "../../signin";
 import { useWorld } from "../../store";
-import { GoogleMark } from "../Connect";
 import * as I from "../icons";
+import { SetupSignIn } from "../SignIn";
 import { BackupCard } from "./Backup";
 import { Brand, Card, DoneMark, Lead, Primary, Quiet, Rise, Screen, SectionLabel, Spinner, StepBar, Switch, TextButton, Title, ease } from "./parts";
 
@@ -243,14 +244,23 @@ export function tvGreeting(now: Date, name: string): { title: string; line: stri
 
 export function You() {
   const f = useSetup();
-  const { account } = useWorld();
+  const { account, phone } = useWorld();
+  // A build of the app without the cloud has no account to offer here: the step is the name alone.
+  const withCloud = cloudOn(account, phone);
   const greeting = tvGreeting(new Date(), f.name.trim());
+  const privacy = (
+    <TextButton className="-ml-3 flex items-center gap-1.5 self-start text-[13.5px]" onPress={() => openLink(LINKS.privacy)}>
+      Privacy policy <I.External size={14} />
+    </TextButton>
+  );
   return (
-    <Screen label="Your name and account">
+    <Screen label={withCloud ? "Your name and account" : "Your name"}>
       <StepBar step={7} />
       <Rise className="mt-5 flex flex-col gap-2">
         <Title>Make it yours</Title>
-        <Lead>Your TV greets you by name, and your account lets this phone reach the TV from anywhere.</Lead>
+        <Lead>
+          {withCloud ? "Your TV greets you by name, and your account lets this phone reach the TV from anywhere." : "Your TV greets you by name."}
+        </Lead>
       </Rise>
       <Rise className="mt-[18px]">
         <div className="relative flex h-[122px] flex-col items-center justify-center gap-1.5 overflow-hidden rounded-2xl border border-white/12 bg-night-screen px-4" aria-label={`On your TV: ${greeting.title}`}>
@@ -280,38 +290,41 @@ export function You() {
           className="h-[52px] rounded-[14px] border border-white/14 bg-white/5 px-4 text-[16px] text-snow placeholder:text-slate focus:border-cyan focus:shadow-[0_0_0_3px_rgba(116,209,255,0.18)] focus:outline-none"
         />
       </Rise>
-      <Rise className="mt-[22px] flex flex-col gap-2">
-        <span className="text-[14px] font-semibold text-haze">Your account</span>
-        {account.signedIn ? (
-          <div className="setup-card flex min-h-[52px] items-center gap-3 rounded-[16px] px-4 py-2.5">
-            <DoneMark size={26} />
-            <span className="min-w-0 flex-1 text-[14px] text-haze">
-              Signed in as <span className="break-all text-snow">{account.email}</span>
-            </span>
-          </div>
-        ) : (
-          <motion.button
-            type="button"
-            onClick={signIn}
-            disabled={f.signingIn}
-            whileTap={{ scale: 0.97 }}
-            className="flex h-[52px] items-center justify-center gap-2.5 rounded-[16px] border border-white/14 bg-white/6 text-[16px] font-semibold text-snow disabled:opacity-60"
-          >
-            {f.signingIn ? <Spinner size={18} /> : <GoogleMark />}
-            <span>{f.signingIn ? "Opening Google" : "Continue with Google"}</span>
-          </motion.button>
-        )}
-        {f.signInError ? (
-          <p role="alert" className="text-[13px] leading-snug text-rose">
-            {f.signInError}
-          </p>
-        ) : (
-          !account.signedIn && <p className="text-[13px] leading-snug text-dusk">Google gives Orbit your email, so there is nothing to type. You can also do it later in Settings.</p>
-        )}
-        <TextButton className="-ml-3 flex items-center gap-1.5 self-start text-[13.5px]" onPress={() => openLink(LINKS.privacy)}>
-          Privacy policy <I.External size={14} />
-        </TextButton>
-      </Rise>
+      {withCloud ? (
+        <Rise className="mt-[22px] flex flex-col gap-2">
+          <span className="text-[14px] font-semibold text-haze">Your account</span>
+          {account.signedIn ? (
+            <div className="setup-card flex min-h-[52px] items-center gap-3 rounded-[16px] px-4 py-2.5">
+              <DoneMark size={26} />
+              <span className="min-w-0 flex-1 text-[14px] text-haze">
+                {signedInWith(account)} as <span className="break-all text-snow">{account.email}</span>
+              </span>
+            </div>
+          ) : (
+            <SetupSignIn
+              ways={phone.signIn}
+              busy={f.signingIn}
+              onPress={signIn}
+              size="h-[52px] rounded-[16px] text-[16px] font-semibold"
+              alone={{ className: "border border-white/14 bg-white/6 text-snow", dark: false }}
+            />
+          )}
+          {f.signInError ? (
+            <p role="alert" className="text-[13px] leading-snug text-rose">
+              {f.signInError}
+            </p>
+          ) : (
+            !account.signedIn && (
+              <p className="text-[13px] leading-snug text-dusk">
+                {waysWords(phone.signIn)} gives Orbit your email, so there is nothing to type. You can also do it later in Settings.
+              </p>
+            )
+          )}
+          {privacy}
+        </Rise>
+      ) : (
+        <Rise className="mt-2 flex flex-col">{privacy}</Rise>
+      )}
       <Rise className="mt-auto flex flex-col gap-2 pt-6">
         <Primary onPress={finishName} busy={f.nameBusy}>
           {f.nameBusy ? "Sending your name" : "Finish"}

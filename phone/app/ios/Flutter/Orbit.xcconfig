@@ -1,0 +1,7 @@
+// Orbit's own build settings, under Debug.xcconfig and Release.xcconfig.
+//
+// Google Sign-In's URL scheme is the iPhone OAuth client's reversed id from GoogleService-Info.plist. That file stays
+// out of git, like android/app/google-services.json: tool/ios_firebase.sh copies it into Runner/ and writes the
+// git-ignored Firebase.xcconfig, whose value replaces this placeholder. Without the file Orbit still builds and runs,
+// with the cloud path off (no sign-in, no linking from anywhere, no Drive backups).
+GOOGLE_REVERSED_CLIENT_ID = dev.shiv.orbit.no-google-sign-in

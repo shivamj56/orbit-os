@@ -2,7 +2,7 @@
 // TV › Back up, the card on Ready after a setup, and Settings › Backups with "Put this TV back".
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import type { DriveBackup } from "../../bridge";
+import type { DriveBackup, SignInWay } from "../../bridge";
 import {
   closeSetup,
   deleteBackup,
@@ -20,18 +20,26 @@ import {
   type Flow,
 } from "../../setup/flow";
 import { exactBytes, groupBackups, sizeText } from "../../setup/backup";
+import { WAY_NAMES, cloudOn, driveIsChosen, waysWords } from "../../signin";
 import { useWorld } from "../../store";
-import { GoogleMark } from "../Connect";
 import * as I from "../icons";
+import { SetupSignIn } from "../SignIn";
 import { Brand, Card, DoneMark, Lead, Primary, Quiet, Rise, Screen, SectionLabel, Spinner, Switch, TextButton, Title, Trouble, ease } from "./parts";
 
 const BackupBrand = ({ word = "Backup" }: { word?: string }) => <Brand aside={<span className="text-[13px] tracking-[0.3px] text-dusk">{word}</span>} />;
 
+/** The Primary's and the Quiet button's own looks, for Google's sign-in when it is the only way. */
+const PRIMARY_SIGN_IN = { size: "h-14 rounded-[18px] text-[17px] font-semibold", alone: { className: "bg-cyan text-deep", dark: true } };
+const QUIET_SIGN_IN = { size: "h-[52px] rounded-[18px] text-[16px] font-semibold", alone: { className: "border border-white/12 bg-white/6 text-haze", dark: false } };
+
+/** Where the backups go, in words: an Apple account's go to a Google Drive the person picks the first time. */
+const driveWords = (chosen: boolean) => (chosen ? "a Google Drive you choose" : "your Google Drive");
+
 /** A Drive failure's title: what happened, in a few words; the text under it says what to do. */
-export function troubleTitle(t: DriveTrouble): string {
+export function troubleTitle(t: DriveTrouble, ways: readonly SignInWay[] = ["google"]): string {
   switch (t.reason) {
     case "noAccount":
-      return "Sign in with Google first";
+      return `Sign in with ${waysWords(ways)} first`;
     case "refused":
       return "Google Drive was not allowed";
     case "full":
@@ -60,14 +68,16 @@ function Keeps({ children }: { children: React.ReactNode }) {
 }
 
 /** "This backup uses 6.4 KB of your Google Drive", and the exact count. */
-function SizeLine({ bytes }: { bytes: number }) {
+function SizeLine({ bytes, chosen }: { bytes: number; chosen: boolean }) {
   return (
     <div className="flex items-center gap-3.5 rounded-[18px] border border-cyan/25 bg-cyan/[0.06] px-4 py-3.5">
       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[14px] bg-cyan/14 text-cyan">
         <I.CloudUp size={22} />
       </span>
       <span className="min-w-0">
-        <span className="block text-[15px] leading-snug font-semibold text-snow">This backup uses {sizeText(bytes)} of your Google Drive</span>
+        <span className="block text-[15px] leading-snug font-semibold text-snow">
+          This backup uses {sizeText(bytes)} of {driveWords(chosen)}
+        </span>
         <span className="tabular mt-0.5 block text-[12.5px] text-mist">{exactBytes(bytes)}, in a hidden folder only Orbit can open</span>
       </span>
     </div>
@@ -76,18 +86,21 @@ function SizeLine({ bytes }: { bytes: number }) {
 
 /** What to press: save, sign in first, try again, or done. Shared by the backup screen and Ready's card. */
 function BackupActions({ f, compact = false, onDone }: { f: Flow; compact?: boolean; onDone?: () => void }) {
-  const { account } = useWorld();
+  const { account, phone } = useWorld();
   const b = f.backup;
   const Button = compact ? Quiet : Primary;
   if (b.state === "saved") {
     return onDone ? <Primary onPress={onDone} busy={f.closing}>Done</Primary> : null;
   }
-  if (!account.signedIn || b.error?.reason === "noAccount") {
+  if ((!account.signedIn || b.error?.reason === "noAccount") && b.state !== "saving") {
     return (
-      <Button onPress={signInAndSave} busy={f.signingIn || b.state === "saving"} label="Continue with Google, then back up">
-        {!f.signingIn && b.state !== "saving" && <GoogleMark />}
-        {f.signingIn ? "Opening Google" : b.state === "saving" ? "Saving to Google Drive" : "Continue with Google"}
-      </Button>
+      <SetupSignIn
+        ways={phone.signIn}
+        busy={f.signingIn}
+        onPress={signInAndSave}
+        label={(way) => `Continue with ${WAY_NAMES[way]}, then back up`}
+        {...(compact ? QUIET_SIGN_IN : PRIMARY_SIGN_IN)}
+      />
     );
   }
   return (
@@ -122,12 +135,13 @@ function Saved({ saved, email }: { saved: NonNullable<Flow["backup"]["saved"]>; 
 
 export function BackupScreen() {
   const f = useSetup();
-  const { account } = useWorld();
+  const { account, phone } = useWorld();
   const b = f.backup;
   const name = tvName(f);
   const shown = name === "your TV" ? "this TV" : name;
   const android = f.conn.props?.release ?? f.record?.props?.release;
   const cloud = f.tv?.address === "cloud";
+  const chosen = driveIsChosen(account, phone);
   return (
     <Screen label={`Back up ${shown}`} top={28}>
       <BackupBrand />
@@ -141,7 +155,10 @@ export function BackupScreen() {
       </Rise>
       <Rise className="mt-[18px] flex flex-col gap-2.5">
         <Title>Back up {shown}'s own setup</Title>
-        <Lead>How the TV was before Orbit OS, kept in your own Google Drive, so it can always be put back, even from a new phone.</Lead>
+        <Lead>
+          How the TV was before Orbit OS, kept in {chosen ? "a Google Drive you choose" : "your own Google Drive"}, so it can always be put back, even
+          from a new phone.
+        </Lead>
       </Rise>
       <Rise className="mt-5">
         <Card className="flex flex-col gap-3 p-4">
@@ -171,13 +188,20 @@ export function BackupScreen() {
           </Trouble>
         ) : (
           <>
-            <SizeLine bytes={b.bytes} />
+            <SizeLine bytes={b.bytes} chosen={chosen} />
             {account.signedIn && b.state !== "saved" && (
               <p className="px-1 text-[13px] leading-snug text-mist">
-                It goes to the Google Drive of <span className="break-all text-snow">{account.email}</span>.
+                {chosen ? (
+                  // An Apple account's address is not a Drive's: Google's own sheet asks which Drive.
+                  "It goes to a Google Drive you choose. Google asks which the first time."
+                ) : (
+                  <>
+                    It goes to the Google Drive of <span className="break-all text-snow">{account.email}</span>.
+                  </>
+                )}
               </p>
             )}
-            {b.state === "saved" && b.saved && <Saved saved={b.saved} email={account.email} />}
+            {b.state === "saved" && b.saved && <Saved saved={b.saved} email={chosen ? null : account.email} />}
             {b.state === "failed" && b.error && b.error.reason !== "noAccount" && <Trouble title={troubleTitle(b.error)}>{b.error.text}</Trouble>}
             {b.error?.reason === "noAccount" && <p className="px-1 text-[13px] leading-snug text-dusk">{b.error.text}</p>}
             {f.signInError && (
@@ -229,9 +253,12 @@ export function BackupScreen() {
 
 export function BackupCard() {
   const f = useSetup();
-  const { account } = useWorld();
+  const { account, phone } = useWorld();
   const b = f.backup;
+  // A build of the app without the cloud has no Drive to offer.
+  if (!cloudOn(account, phone)) return null;
   if (b.state !== "ready" && b.state !== "saving" && b.state !== "saved" && b.state !== "failed") return null;
+  const chosen = driveIsChosen(account, phone);
   return (
     <Card className="flex flex-col gap-3 rounded-[18px] p-4">
       <div className="flex items-start gap-3">
@@ -241,16 +268,16 @@ export function BackupCard() {
         <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
           <span className="text-[15px] font-semibold">Keep a copy in Google Drive</span>
           <span className="text-[13px] leading-[1.45] text-mist">
-            How this TV was before Orbit OS, so it can always be put back. This backup uses {sizeText(b.bytes)} of your Google Drive.
+            How this TV was before Orbit OS, so it can always be put back. This backup uses {sizeText(b.bytes)} of {driveWords(chosen)}.
           </span>
         </div>
       </div>
       <AnimatePresence initial={false} mode="wait">
         {b.state === "saved" && b.saved ? (
-          <Saved key="saved" saved={b.saved} email={account.email} />
+          <Saved key="saved" saved={b.saved} email={chosen ? null : account.email} />
         ) : (
           <motion.div key="act" className="flex flex-col gap-2.5" exit={{ opacity: 0 }}>
-            {b.state === "failed" && b.error && b.error.reason !== "noAccount" && <Trouble title={troubleTitle(b.error)}>{b.error.text}</Trouble>}
+            {b.state === "failed" && b.error && b.error.reason !== "noAccount" && <Trouble title={troubleTitle(b.error, phone.signIn)}>{b.error.text}</Trouble>}
             <BackupActions f={f} compact />
           </motion.div>
         )}
@@ -263,10 +290,12 @@ export function BackupCard() {
 
 export function BackupsScreen() {
   const f = useSetup();
-  const { account } = useWorld();
+  const { account, phone } = useWorld();
   const list = f.backups;
   const groups = groupBackups(list.items);
-  const email = list.email ?? account.email;
+  // The list says whose Drive it is; an Apple account's own address is not a Drive's.
+  const email = list.email ?? (driveIsChosen(account, phone) ? null : account.email);
+  const apple = phone.signIn.includes("apple");
   return (
     <Screen label="Backups in Google Drive" top={28}>
       <BackupBrand word="Backups" />
@@ -290,11 +319,15 @@ export function BackupsScreen() {
           </div>
         ) : list.state === "failed" && list.error?.reason === "noAccount" ? (
           <Card className="flex flex-col gap-2 p-4">
-            <span className="text-[15px] font-semibold">Sign in with Google to see them</span>
-            <span className="text-[13.5px] leading-[1.45] text-mist">Orbit keeps backups in the Google Drive of the account it is signed in with.</span>
+            <span className="text-[15px] font-semibold">{apple ? "Sign in to see them" : "Sign in with Google to see them"}</span>
+            <span className="text-[13.5px] leading-[1.45] text-mist">
+              {apple
+                ? "Orbit keeps backups in Google Drive, for the account it is signed in with."
+                : "Orbit keeps backups in the Google Drive of the account it is signed in with."}
+            </span>
           </Card>
         ) : list.state === "failed" && list.error ? (
-          <Trouble title={troubleTitle(list.error)}>{list.error.text}</Trouble>
+          <Trouble title={troubleTitle(list.error, phone.signIn)}>{list.error.text}</Trouble>
         ) : groups.length === 0 ? (
           <Card className="flex flex-col gap-2 p-4">
             <span className="text-[15px] font-semibold">No backups yet</span>
@@ -322,7 +355,7 @@ export function BackupsScreen() {
             </section>
           ))
         )}
-        {list.state === "done" && list.error && <Trouble title={troubleTitle(list.error)}>{list.error.text}</Trouble>}
+        {list.state === "done" && list.error && <Trouble title={troubleTitle(list.error, phone.signIn)}>{list.error.text}</Trouble>}
       </Rise>
 
       <Rise className="mt-auto flex flex-col gap-1.5 pt-6">
@@ -332,10 +365,7 @@ export function BackupsScreen() {
           </p>
         )}
         {list.state === "failed" && list.error?.reason === "noAccount" ? (
-          <Primary onPress={signInAndList} busy={f.signingIn} label="Continue with Google">
-            {!f.signingIn && <GoogleMark />}
-            {f.signingIn ? "Opening Google" : "Continue with Google"}
-          </Primary>
+          <SetupSignIn ways={phone.signIn} busy={f.signingIn} onPress={signInAndList} {...PRIMARY_SIGN_IN} />
         ) : (
           list.state === "failed" && <Primary onPress={loadBackups}>Try again</Primary>
         )}

@@ -14,8 +14,10 @@ import {
   type SetupProps,
   type SetupRecord,
   type SetupTvFound,
+  type SignInWay,
   type TvRef,
 } from "../bridge";
+import { WAY_NAMES } from "../signin";
 import { setAccount } from "../store";
 import { backupBytes, backupText, buildBackup, canBackUp, parseBackup, type BackupInput } from "./backup";
 import { catalog, type Answer, type CatalogQuestion } from "./catalog";
@@ -174,7 +176,8 @@ export interface Flow {
   name: string;
   nameBusy: boolean;
   nameError: string | null;
-  signingIn: boolean;
+  /** The way whose sign-in sheet is open (Apple's or Google's), or null. */
+  signingIn: SignInWay | null;
   signInError: string | null;
 
   closeDev: boolean;
@@ -222,7 +225,7 @@ function initial(): Flow {
     name: "",
     nameBusy: false,
     nameError: null,
-    signingIn: false,
+    signingIn: null,
     signInError: null,
     closeDev: true,
     closing: false,
@@ -896,16 +899,16 @@ export function setName(name: string) {
   set({ name: name.replace(/[\r\n]+/g, " ").slice(0, NAME_MAX), nameError: null });
 }
 
-export async function signIn() {
+export async function signIn(way: SignInWay = "google") {
   if (flow.signingIn) return;
-  set({ signingIn: true, signInError: null });
+  set({ signingIn: way, signInError: null });
   try {
-    setAccount(await cloud.signIn());
+    setAccount(await cloud.signIn(way));
     haptic("success");
   } catch (e) {
-    set({ signInError: (e as Error).message || "Google sign-in did not finish." });
+    set({ signInError: (e as Error).message || `${WAY_NAMES[way]} sign-in did not finish.` });
   } finally {
-    set({ signingIn: false });
+    set({ signingIn: null });
   }
 }
 
@@ -1257,9 +1260,9 @@ export async function saveBackup() {
   }
 }
 
-/** No Google account yet: Google's sign-in first, then the backup. */
-export async function signInAndSave() {
-  await signIn();
+/** No account yet: Apple's or Google's sign-in first, then the backup (Google's sheet then asks for a Drive). */
+export async function signInAndSave(way: SignInWay = "google") {
+  await signIn(way);
   if (!flow.signInError) await saveBackup();
 }
 
@@ -1285,9 +1288,9 @@ export async function loadBackups() {
   }
 }
 
-/** Settings › Backups before Google sign-in: Google's sign-in, then the list. */
-export async function signInAndList() {
-  await signIn();
+/** Settings › Backups before signing in: Apple's or Google's sign-in, then the list. */
+export async function signInAndList(way: SignInWay = "google") {
+  await signIn(way);
   if (!flow.signInError) await loadBackups();
 }
 

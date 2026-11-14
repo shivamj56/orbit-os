@@ -186,7 +186,9 @@ void main() {
       expect((sent.first['data'] as Map)['state'], isA<String>());
       expect(sent.skip(1).take(4).map((m) => m['event']), ['status', 'account', 'lifecycle', 'volumeKey']);
       expect(events('account').single['data'], {
+        'available': false,
         'signedIn': false,
+        'provider': null,
         'email': null,
         'tvLinked': false,
         'tvOnline': false,

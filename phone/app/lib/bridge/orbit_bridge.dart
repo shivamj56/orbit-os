@@ -62,7 +62,7 @@ class OrbitBridge {
   void Function()? onIntro;
 
   /// Ops the phone answers itself even in demo mode; every other op is about the real TV, and is refused meanwhile.
-  static const Set<String> phoneOps = {'demo', 'intro', 'haptic', 'keepAwake', 'openUrl'};
+  static const Set<String> phoneOps = {'demo', 'intro', 'haptic', 'keepAwake', 'openUrl', 'phone'};
 
   /// Where `openUrl` may go: Orbit's public pages (privacy policy, account deletion, issues), nowhere else.
   static bool isPublicLink(String url) {
@@ -240,7 +240,9 @@ class OrbitBridge {
       case 'account':
         return remote.account();
       case 'signIn':
-        return remote.signIn();
+        final way = a.has('with') ? a.text('with', max: 16).trim() : 'google';
+        if (way != 'google' && way != 'apple') throw OpError(400, 'No sign-in called "$way".');
+        return remote.signIn(apple: way == 'apple');
       case 'signOut':
         return remote.signOut();
       case 'linkTv':
@@ -280,6 +282,8 @@ class OrbitBridge {
       case 'intro':
         onIntro?.call();
         return null;
+      case 'phone':
+        return {'platform': native.platform, 'volumeKeys': native.hasVolumeKeys, 'signIn': native.signInWays};
       case 'openUrl':
         final url = a.text('url', max: 512).trim();
         if (!isPublicLink(url)) throw const OpError(400, 'Orbit only opens its own pages.');

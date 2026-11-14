@@ -50,6 +50,8 @@ export function AccountScreen() {
   const { account } = useWorld();
   const a = f.account;
   const email = a.email ?? account.email;
+  // An account that signed in with Apple: the Apple ID stays, and its backups are in a Google Drive the person chose.
+  const apple = account.provider === "apple";
   if (a.state === "deleted") {
     return (
       <Screen label="Your Orbit account is deleted" top={28}>
@@ -94,7 +96,7 @@ export function AccountScreen() {
         <Lead>
           {email ? (
             <>
-              Signed in as <span className="break-all text-haze">{email}</span>. Deleting cannot be undone.
+              {apple ? "Signed in with Apple as" : "Signed in as"} <span className="break-all text-haze">{email}</span>. Deleting cannot be undone.
             </>
           ) : (
             "Deleting cannot be undone."
@@ -104,12 +106,22 @@ export function AccountScreen() {
       <Rise className="mt-5">
         <Card className="flex flex-col gap-3 p-4">
           <SectionLabel>What is deleted</SectionLabel>
-          <Goes>Your Orbit account: the sign-in Orbit keeps for this Google account</Goes>
+          {apple ? (
+            <>
+              <Goes>Your Orbit account: the sign-in Orbit keeps for this Apple ID</Goes>
+              <Goes>Orbit's link to your Apple ID: Orbit stops using Sign in with Apple</Goes>
+            </>
+          ) : (
+            <Goes>Your Orbit account: the sign-in Orbit keeps for this Google account</Goes>
+          )}
           <Goes>Everything Orbit's cloud keeps for it: your TV's link and name, what the TV last said, commands on their way, and Help mode's pictures</Goes>
           <div className="mt-1 border-t border-white/7 pt-3">
             <Tick on={a.backups} onChange={setDeleteBackups} label="Also delete my TV backups from Google Drive">
               <span className="block text-[14.5px] font-semibold text-snow">Also delete my TV backups from Google Drive</span>
-              <span className="mt-0.5 block text-[13px] leading-snug text-mist">The files in Orbit's own hidden folder of your Drive. Without them a lost record cannot be brought back.</span>
+              <span className="mt-0.5 block text-[13px] leading-snug text-mist">
+                The files in Orbit's own hidden folder of {apple ? "the Google Drive you chose for them" : "your Drive"}. Without them a lost record cannot
+                be brought back.
+              </span>
             </Tick>
           </div>
         </Card>
@@ -118,7 +130,14 @@ export function AccountScreen() {
         <Card className="flex flex-col gap-3 p-4">
           <SectionLabel>What stays</SectionLabel>
           <Stays>Your TV: Orbit OS stays on it and keeps working on the home Wi-Fi. It is no longer reachable from anywhere.</Stays>
-          <Stays>Your Google account, and everything else in your Google Drive</Stays>
+          {apple ? (
+            <>
+              <Stays>Your Apple ID</Stays>
+              <Stays>The Google account you chose for the backups, if any, and everything else in its Drive</Stays>
+            </>
+          ) : (
+            <Stays>Your Google account, and everything else in your Google Drive</Stays>
+          )}
           <Stays>This phone's pairing with the TV on the home Wi-Fi (Settings › Forget this TV removes it)</Stays>
         </Card>
       </Rise>
@@ -128,7 +147,9 @@ export function AccountScreen() {
         </Rise>
       )}
       <Rise className="mt-4 flex flex-col gap-1">
-        <p className="px-1 text-[13px] leading-snug text-dusk">Google may ask you to choose your account once more, to be sure it is you.</p>
+        <p className="px-1 text-[13px] leading-snug text-dusk">
+          {apple ? "Apple may ask you to sign in once more, to be sure it is you." : "Google may ask you to choose your account once more, to be sure it is you."}
+        </p>
         <div className="flex flex-wrap gap-x-4">
           <TextButton className="-ml-2 flex items-center gap-1.5" onPress={() => openLink(LINKS.deleteAccount)}>
             How deleting works <I.External size={15} />

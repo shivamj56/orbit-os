@@ -1,6 +1,9 @@
 // A pretend TV for a plain browser (the demo page): it answers every op in phone/SPEC.md the way the real door does,
 // and tells the demo's TV picture what happened through window events ("orbit-mock").
-import type { Account, AppEntry, DriveBackup, Message, Status, TvState } from "./bridge";
+//
+// In the address bar: ?mock-ios makes the browser's pretend phone an iPhone (no volume buttons for Orbit, Sign in with
+// Apple first); ?fresh and ?mock-fail=… are mock-setup.ts's.
+import type { Account, AppEntry, DriveBackup, Message, Phone, SignInWay, Status, TvState } from "./bridge";
 import { MockScreen } from "./mock-screen";
 import { createSetupMock } from "./mock-setup";
 
@@ -82,6 +85,24 @@ function keepDrive(files: DriveFile[]) {
 const listed = ({ text: _text, ...b }: DriveFile): DriveBackup => b;
 const TV = { name: "Family room", address: "192.168.1.20", port: 8090, udp: 8091 };
 
+/** The browser's pretend phone (the `phone` op): a page in a browser, or with ?mock-ios an iPhone. */
+const WEB_PHONE: Phone = { platform: "web", volumeKeys: true, signIn: ["google"] };
+const IOS_PHONE: Phone = { platform: "ios", volumeKeys: false, signIn: ["apple", "google"] };
+
+/** The pretend accounts: Google's, and Apple's with a private relay address, as Hide My Email gives. */
+const PRETEND_EMAIL: Record<SignInWay, string> = { google: "you@gmail.com", apple: "asha.k@privaterelay.appleid.com" };
+/** The Google account whose Drive keeps the backups: an Apple account's backups go to one the person picks. */
+const PRETEND_DRIVE = "you@gmail.com";
+const signedOut = (): Account => ({
+  signedIn: false,
+  email: null,
+  tvLinked: false,
+  tvOnline: false,
+  tvName: null,
+  provider: null,
+  available: true,
+});
+
 export function emitMock(e: MockEvent) {
   window.dispatchEvent(new CustomEvent<MockEvent>("orbit-mock", { detail: e }));
 }
@@ -111,9 +132,12 @@ function banner(label: string, tint: [string, string]): string {
 
 export function createMock(deliver: (m: Message) => void): (text: string) => void {
   let token: string | null = null;
+  let iPhone = false;
   try {
+    const params = new URLSearchParams(location.search);
+    iPhone = params.has("mock-ios");
     // ?fresh is a TV that has never seen Orbit (mock-setup.ts): no phone is paired with it yet.
-    if (new URLSearchParams(location.search).has("fresh")) localStorage.removeItem(TOKEN_KEY);
+    if (params.has("fresh")) localStorage.removeItem(TOKEN_KEY);
     token = localStorage.getItem(TOKEN_KEY);
   } catch {
     token = null;
@@ -142,7 +166,7 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
     pointer: true,
   };
   let ticking = 0;
-  let account: Account = { signedIn: false, email: null, tvLinked: false, tvOnline: false, tvName: null };
+  let account: Account = signedOut();
   let linkCode: string | null = null;
   // Help mode: the TV's screen as pictures, about twice a second, and only when it changed (at least every 5 s).
   const screen = new MockScreen(MOCK_APPS, MOCK_SETTINGS);
@@ -184,7 +208,7 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
   const reply = (id: number, data: unknown) => id && later(40 + Math.random() * 50, () => deliver({ id, ok: true, data }));
   const fail = (id: number, error: string, status?: number) => id && later(60, () => deliver({ id, ok: false, error, status }));
   const refuse = (id: number, error: string, reason: string) => id && later(80, () => deliver({ id, ok: false, error, reason }));
-  const noAccount = (id: number) => refuse(id, "Sign in with Google first. Orbit keeps the backups in that account's own Google Drive.", "noAccount");
+  const noAccount = (id: number) => refuse(id, "Sign in first. Orbit keeps the backups in Google Drive, for the account it is signed in with.", "noAccount");
   const setStatus = (s: Partial<Status>) => {
     status = { ...status, ...s };
     event("status", status);
@@ -491,11 +515,15 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
         clickAt(x, y);
         return reply(id, { ok: true });
       }
+      case "phone":
+        return reply(id, iPhone ? IOS_PHONE : WEB_PHONE);
       case "account":
         return reply(id, account);
       case "signIn":
+        // Either sheet, whatever the pretend phone: in the app's demo the real phone (an iPhone too) chose the ways.
         later(900, () => {
-          account = { ...account, signedIn: true, email: "you@gmail.com" };
+          const way: SignInWay = args.with === "apple" ? "apple" : "google";
+          account = { ...account, signedIn: true, email: PRETEND_EMAIL[way], provider: way };
           event("account", account);
           deliver({ id, ok: true, data: account });
           // The pretend TV, not linked yet, shows its code at the top of Home.
@@ -503,7 +531,7 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
         });
         return;
       case "signOut":
-        account = { signedIn: false, email: null, tvLinked: false, tvOnline: false, tvName: null };
+        account = signedOut();
         event("account", account);
         return reply(id, account);
       case "linkTv":
@@ -554,7 +582,9 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
       }
       case "backupList":
         if (!account.signedIn) return noAccount(id);
-        later(500, () => deliver({ id, ok: true, data: { backups: driveFiles().map(listed), email: account.email } }));
+        later(500, () =>
+          deliver({ id, ok: true, data: { backups: driveFiles().map(listed), email: account.provider === "apple" ? PRETEND_DRIVE : account.email } }),
+        );
         return;
       case "backupLoad": {
         if (!account.signedIn) return noAccount(id);
@@ -567,11 +597,11 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
         keepDrive(driveFiles().filter((f) => f.id !== args.id));
         return reply(id, {});
       case "deleteAccount": {
-        if (!account.signedIn) return fail(id, "Sign in with Google first.", 401);
+        if (!account.signedIn) return fail(id, "Sign in first.", 401);
         later(1400, () => {
           const removed = args.backups ? driveFiles().length : null;
           if (args.backups) keepDrive([]);
-          account = { signedIn: false, email: null, tvLinked: false, tvOnline: false, tvName: null };
+          account = signedOut();
           event("account", account);
           deliver({ id, ok: true, data: { removed, account } });
         });

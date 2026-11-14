@@ -1,6 +1,18 @@
 // What the screens read: the connection, the TV's state, the settings. One small external store, fed by the bridge.
 import { useSyncExternalStore } from "react";
-import { bridge, cloud, setHaptics, type Account, type Status, type TvState } from "./bridge";
+import {
+  OLDER_PHONE,
+  askPhone,
+  bridge,
+  cloud,
+  readAccount,
+  setHaptics,
+  signedOut,
+  type Account,
+  type Phone,
+  type Status,
+  type TvState,
+} from "./bridge";
 import { startHelp, stopHelp } from "./help";
 
 export interface Settings {
@@ -15,6 +27,8 @@ interface World {
   tv: TvState | null;
   settings: Settings;
   account: Account;
+  /** What this phone offers: its volume buttons, and the ways to sign in, in their order (asked once at the start). */
+  phone: Phone;
   /** Which page the connected TV shows: the remote, or Help (its screen on the phone). */
   page: "remote" | "help";
 }
@@ -31,13 +45,13 @@ function loadSettings(): Settings {
 }
 
 const firstStatus = (): Status => ({ state: "searching", tv: null, found: [], via: "wifi", error: null });
-const noAccount = (): Account => ({ signedIn: false, email: null, tvLinked: false, tvOnline: false, tvName: null });
 
 let world: World = {
   status: firstStatus(),
   tv: null,
   settings: loadSettings(),
-  account: noAccount(),
+  account: signedOut(),
+  phone: OLDER_PHONE,
   page: "remote",
 };
 
@@ -69,7 +83,8 @@ export function updateSettings(patch: Partial<Settings>) {
     /* kept for this run only */
   }
   setHaptics(settings.haptics);
-  if (patch.volumeKeys !== undefined) bridge.call("settings", { volumeKeys: settings.volumeKeys }).catch(() => {});
+  // iOS lets no app use the volume buttons: an iPhone is never told about them.
+  if (patch.volumeKeys !== undefined && world.phone.volumeKeys) bridge.call("settings", { volumeKeys: settings.volumeKeys }).catch(() => {});
   set({ settings });
 }
 
@@ -105,6 +120,9 @@ function leaveHelp() {
 }
 
 let started = false;
+/** The phone's own answer, once per start: what it offers does not change with the TV (demo mode or not). */
+let phoneKnown: Promise<Phone> = Promise.resolve(OLDER_PHONE);
+
 export function startWorld() {
   if (started) return;
   started = true;
@@ -118,9 +136,13 @@ export function startWorld() {
     if (status.state !== "connected") stopHelp();
   });
   bridge.on("tvstate", (tv: TvState) => set({ tv }));
-  bridge.on("account", (account: Account) => set({ account }));
+  bridge.on("account", (account: unknown) => set({ account: readAccount(account) }));
   bridge.on("volumeKey", () => {
     /* the app already turned the TV; the next state shows it */
+  });
+  phoneKnown = askPhone().then((phone) => {
+    set({ phone });
+    return phone;
   });
   greet();
 }
@@ -133,7 +155,10 @@ function greet() {
     .call<Status>("hello")
     .then((status) => set({ status }))
     .catch(() => {});
-  bridge.call("settings", { volumeKeys: world.settings.volumeKeys }).catch(() => {});
+  // Only a phone whose volume buttons Orbit may use is told about them (never an iPhone).
+  phoneKnown.then((phone) => {
+    if (phone.volumeKeys) bridge.call("settings", { volumeKeys: world.settings.volumeKeys }).catch(() => {});
+  });
   bridge.call("keepAwake", { on: true }).catch(() => {});
 }
 
@@ -142,6 +167,6 @@ function greet() {
  * as at the start. Help and Orbit Setup are closed by the caller first, while their ops still reach the old side.
  */
 export function restartWorld() {
-  set({ status: firstStatus(), tv: null, account: noAccount(), page: "remote" });
+  set({ status: firstStatus(), tv: null, account: signedOut(), page: "remote" });
   if (started) greet();
 }

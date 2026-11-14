@@ -14,19 +14,30 @@ abstract final class CloudConfig {
 /// `{".sv":"timestamp"}`: filled in with the database's own clock when the write reaches it (ServerValue.timestamp).
 const Map<String, String> kServerTimestamp = {'.sv': 'timestamp'};
 
-/// The Firebase user (the owner's Google account): the same uid on the phone and on the linked TV.
+/// The Firebase user (the owner's Google account, or on an iPhone their Apple ID): the same uid on the phone and on the
+/// linked TV.
 class CloudUser {
-  const CloudUser({required this.uid, this.email});
+  const CloudUser({required this.uid, this.email, this.provider = kGoogleProvider});
 
   final String uid;
   final String? email;
 
-  @override
-  bool operator ==(Object other) => other is CloudUser && other.uid == uid && other.email == email;
+  /// How the account signs in: [kGoogleProvider] or [kAppleProvider].
+  final String provider;
+
+  bool get isApple => provider == kAppleProvider;
 
   @override
-  int get hashCode => Object.hash(uid, email);
+  bool operator ==(Object other) =>
+      other is CloudUser && other.uid == uid && other.email == email && other.provider == provider;
+
+  @override
+  int get hashCode => Object.hash(uid, email, provider);
 }
+
+/// Firebase's provider ids.
+const String kGoogleProvider = 'google.com';
+const String kAppleProvider = 'apple.com';
 
 /// The database's rules refused a write: a link code that is not on the TV, or a path that is not this account's.
 class CloudDenied implements Exception {
@@ -72,6 +83,18 @@ abstract interface class CloudAuth {
 
   /// Proves again, with a fresh Google ID token, that the signed-in user is the person (Firebase's "recent login").
   Future<void> reauthenticateWithGoogleIdToken(String idToken);
+
+  /// Signs in to Firebase with Apple's identity token and the nonce Apple was given the SHA-256 of ([rawNonce], the
+  /// nonce itself). Apple tells the name only the first time: then it becomes the account's display name, which the TV
+  /// greets with. Throws [SignInFailed].
+  Future<CloudUser> signInWithAppleIdToken(String idToken, String rawNonce, {String? givenName, String? familyName});
+
+  /// Firebase's "recent login" with a fresh Apple identity token.
+  Future<void> reauthenticateWithAppleIdToken(String idToken, String rawNonce);
+
+  /// Asks Apple to stop Sign in with Apple for Orbit for this person (as Apple wants when the account is deleted), with
+  /// a fresh authorization code from Apple's sheet.
+  Future<void> revokeAppleAuthorization(String authorizationCode);
 }
 
 /// Firebase wants a fresh sign-in before it deletes the account (`requires-recent-login`).
