@@ -40,9 +40,12 @@ if [ $# -eq 5 ]; then
 fi
 
 certs=$("$tools/apksigner" verify --print-certs "$apk" 2>&1) || fail "the signature does not verify: $certs"
-signers=$(printf '%s\n' "$certs" | sed -n 's/^Signer #[0-9]* certificate SHA-256 digest: //p')
+# "Signer #1 certificate SHA-256 digest: …", or "Signer (minSdkVersion=…) certificate …" from newer apksigners,
+# which list a certificate once per Android version range: the same certificate counts once.
+signers=$(printf '%s\n' "$certs" | sed -n 's/^Signer.* certificate SHA-256 digest: *//p' | sort -u)
 count=$(printf '%s\n' "$signers" | grep -c . || true)
-[ "$count" -eq 1 ] || fail "expected one signer, found $count"
+[ "$count" -eq 1 ] ||
+  fail "expected one signing certificate, found $count; $(basename -- "$tools")/apksigner said: $(printf '%s' "$certs" | head -n 12 | tr '\n' '|')"
 [ "$signers" = "$want_signer" ] || fail "signed by $signers, expected $want_signer"
 
 bytes=$(wc -c < "$apk" | tr -d ' ')
