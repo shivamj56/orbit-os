@@ -11,6 +11,15 @@ abstract interface class NativeHost {
   /// The `haptic` op's kinds.
   static const Set<String> hapticKinds = {'tick', 'light', 'medium', 'heavy', 'success', 'error'};
 
+  /// "android" or "ios".
+  String get platform;
+
+  /// The phone's own volume keys can turn the TV up and down (Android); iOS lets no app take them.
+  bool get hasVolumeKeys;
+
+  /// The ways this phone signs in, in the order the page shows them: Google; on an iPhone Apple first, then Google.
+  List<String> get signInWays;
+
   /// Called with "up" or "down" for each press (and auto-repeat) of a volume key while [setVolumeKeys] is on.
   set onVolumeKey(void Function(String dir)? handler);
 
@@ -32,11 +41,23 @@ abstract interface class NativeHost {
   Future<bool> openUrl(String url);
 }
 
-/// [NativeHost] on Android: MainActivity.kt answers `dev.shiv.orbit/native`.
+/// [NativeHost] on the phone: MainActivity.kt answers `dev.shiv.orbit/native` on Android, NativeChannel.swift on an
+/// iPhone, where Back and the volume keys do not exist for an app.
 class PlatformNativeHost implements NativeHost {
   PlatformNativeHost() {
     _channel.setMethodCallHandler(_onCall);
   }
+
+  static final bool _ios = Platform.isIOS;
+
+  @override
+  String get platform => _ios ? 'ios' : 'android';
+
+  @override
+  bool get hasVolumeKeys => !_ios;
+
+  @override
+  List<String> get signInWays => _ios ? const ['apple', 'google'] : const ['google'];
 
   static const MethodChannel _channel = MethodChannel('dev.shiv.orbit/native');
 
@@ -58,7 +79,7 @@ class PlatformNativeHost implements NativeHost {
 
   @override
   Future<void> setVolumeKeys(bool on) async {
-    if (_volumeKeysSent == on) return;
+    if (!hasVolumeKeys || _volumeKeysSent == on) return;
     _volumeKeysSent = on;
     try {
       await _channel.invokeMethod<void>('setVolumeKeys', on);
@@ -102,8 +123,10 @@ class PlatformNativeHost implements NativeHost {
     }
   }
 
+  /// An iPhone has no Back with nowhere to go, and an iOS app never closes itself: nothing happens there.
   @override
   Future<void> moveToBack() async {
+    if (_ios) return;
     try {
       await _channel.invokeMethod<void>('moveTaskToBack');
     } on Object {

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../bridge/orbit_bridge.dart';
 import '../native/native_host.dart';
@@ -14,6 +15,24 @@ import 'theme.dart';
 
 /// The page in the Flutter assets (phone/ui/dist/index.html, copied by tool/sync_ui.sh).
 const String kUiAsset = 'assets/ui/index.html';
+
+/// Where Orbit's page is on Android.
+const String _androidPagePrefix = 'file:///android_asset/flutter_assets/assets/ui/';
+
+/// Whether [url] is Orbit's own page (or same-document, data: or blob: content). On Android the page is at
+/// [_androidPagePrefix]; on an iPhone it is a file inside the app itself,
+/// `file:///…/Runner.app/Frameworks/App.framework/flutter_assets/assets/ui/index.html`, under a folder that changes with
+/// every install, and the WebView may read nothing outside `assets/ui/`.
+bool isOwnPageUrl(String url, {required bool ios}) {
+  if (url.startsWith('about:blank') || url.startsWith('data:') || url.startsWith('blob:')) return true;
+  if (!ios) return url.startsWith(_androidPagePrefix);
+  final uri = Uri.tryParse(url);
+  return uri != null &&
+      uri.scheme == 'file' &&
+      uri.host.isEmpty &&
+      uri.path.contains('.app/Frameworks/App.framework/flutter_assets/assets/ui/') &&
+      !uri.pathSegments.contains('..');
+}
 
 /// The only screen: the page, full screen behind transparent system bars.
 ///
@@ -45,13 +64,18 @@ class _OrbitScreenState extends State<OrbitScreen> {
   bool _markFading = false;
   Timer? _markTimer;
 
-  static const String _pagePrefix = 'file:///android_asset/flutter_assets/assets/ui/';
-
   @override
   void initState() {
     super.initState();
-    final params = WebViewPlatform.instance is AndroidWebViewPlatform
+    final platform = WebViewPlatform.instance;
+    final params = platform is AndroidWebViewPlatform
         ? AndroidWebViewControllerCreationParams()
+        : platform is WebKitWebViewPlatform
+        // Like Android's setMediaPlaybackRequiresUserGesture(false): the opening intro plays at once, in the page.
+        ? WebKitWebViewControllerCreationParams(
+            allowsInlineMediaPlayback: true,
+            mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+          )
         : const PlatformWebViewControllerCreationParams();
     _controller = WebViewController.fromPlatformCreationParams(params);
     widget.bridge.attach(_controller.runJavaScript);
@@ -111,6 +135,14 @@ class _OrbitScreenState extends State<OrbitScreen> {
         await android.setInsetsForWebContentToIgnore(const [AndroidWebViewInsets.ime]);
         if (kDebugMode) await android.setOnConsoleMessage((m) => debugPrint('page ${m.level.name}: ${m.message}'));
       }
+      final webKit = c.platform;
+      if (webKit is WebKitWebViewController) {
+        // Safari's Web Inspector in debug builds; no link previews or swipe-back: the page is the whole app.
+        await webKit.setInspectable(kDebugMode);
+        await webKit.setAllowsLinkPreview(false);
+        await webKit.setAllowsBackForwardNavigationGestures(false);
+        if (kDebugMode) await webKit.setOnConsoleMessage((m) => debugPrint('page ${m.level.name}: ${m.message}'));
+      }
       await c.loadFlutterAsset(kUiAsset);
     } on Object catch (e, stack) {
       debugPrint('orbit: the page could not be opened: $e\n$stack');
@@ -119,11 +151,7 @@ class _OrbitScreenState extends State<OrbitScreen> {
 
   /// Only Orbit's own page (and same-document, data: or blob: content) ever loads: OrbitNative is reachable from any
   /// page in this WebView, so nothing from the network may become one.
-  static bool _isOwnPage(String url) =>
-      url.startsWith(_pagePrefix) ||
-      url.startsWith('about:blank') ||
-      url.startsWith('data:') ||
-      url.startsWith('blob:');
+  static bool _isOwnPage(String url) => isOwnPageUrl(url, ios: defaultTargetPlatform == TargetPlatform.iOS);
 
   void _sendInsets({bool force = false}) {
     final i = _insets;

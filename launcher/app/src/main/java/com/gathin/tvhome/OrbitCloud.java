@@ -41,9 +41,10 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>Linking, once: not linked yet, the TV signs in anonymously and puts an eight-digit code under /link, which the
  * Island shows when Home comes back. Orbit on the phone, signed in with Google, writes its Google ID token under that
- * code; the TV reads it, takes the code away while still anonymous, and signs in with the token: from then on it is
- * that Google account, and its session (a Firebase refresh token, nothing of Google's) is kept in this app's own
- * storage. Tokens never go to the log.
+ * code (an iPhone signed in with Apple writes {@code apple.com|<nonce>|<Apple's identity token>}); the TV reads it,
+ * takes the code away while still anonymous, and signs in with the token: from then on it is that account, and its
+ * session (a Firebase refresh token, nothing of Google's or Apple's) is kept in this app's own storage. Tokens never go
+ * to the log.
  *
  * <p>Linked: the TV says it is online (every minute, every 15 s while a phone watches), takes the commands that arrive
  * while its stream is open (a command already waiting when it connects is stale, and only deleted), answers each through
@@ -55,7 +56,7 @@ final class OrbitCloud {
         /** Show the eight-digit link code in the Island, or take it away (null). Main thread. */
         void showLinkCode(String code);
 
-        /** The TV is now this Google account's. Main thread. */
+        /** The TV is now this account's (Google, or an iPhone's Apple ID). Main thread. */
         void linked(String email);
 
         /** One of the door's routes, for a command from the cloud. On the cloud's work thread. */
@@ -70,6 +71,8 @@ final class OrbitCloud {
     private static final int CONNECT_MS = 10_000, READ_MS = 15_000;
     private static final String IDENTITY = "https://identitytoolkit.googleapis.com/v1/accounts:";
     private static final String SECURE_TOKEN = "https://securetoken.googleapis.com/v1/token?key=";
+    /** How an iPhone signed in with Apple marks its link token. */
+    static final String APPLE_PREFIX = "apple.com|";
 
     private final Context context;
     private final Host host;
@@ -306,7 +309,7 @@ final class OrbitCloud {
         // Taken away while still the anonymous TV that put it there; after the sign-in the rules no longer let it.
         quietly("DELETE", "/link/" + used, null);
         code = null;
-        signInWithGoogle(token);
+        signInWithLinkToken(token);
         String mail = email();
         main.post(() -> {
             host.showLinkCode(null);
@@ -548,14 +551,30 @@ final class OrbitCloud {
         }
     }
 
-    private void signInWithGoogle(String googleIdToken) throws IOException, JSONException {
+    /** Signs in as the account whose token the phone wrote under the link code ({@link #idpPostBody}). */
+    private void signInWithLinkToken(String token) throws IOException, JSONException {
         JSONObject body = new JSONObject()
-                .put("postBody", "id_token=" + URLEncoder.encode(googleIdToken, "UTF-8") + "&providerId=google.com")
+                .put("postBody", idpPostBody(token))
                 .put("requestUri", "http://localhost")
                 .put("returnSecureToken", true);
         JSONObject out = post(IDENTITY + "signInWithIdp?key=" + key, body);
         setSession(out.getString("localId"), out.getString("refreshToken"), out.getString("idToken"),
                 out.optLong("expiresIn", 3600L), out.optString("email", null), true);
+    }
+
+    /**
+     * The signInWithIdp postBody for a link token: a Google ID token as it is, or an iPhone's Sign in with Apple
+     * {@code apple.com|<nonce>|<identity token>}, whose nonce Firebase checks the token against (phone/SPEC.md, "Sign in
+     * with Apple"). Neither a nonce (base64url) nor a JWT holds a {@code |}.
+     */
+    static String idpPostBody(String token) throws IOException {
+        if (token.startsWith(APPLE_PREFIX)) {
+            String[] parts = token.split("\\|", -1);
+            if (parts.length != 3 || parts[1].isEmpty() || parts[2].isEmpty()) throw new IOException("unreadable Apple token");
+            return "id_token=" + URLEncoder.encode(parts[2], "UTF-8") + "&providerId=apple.com&nonce="
+                    + URLEncoder.encode(parts[1], "UTF-8");
+        }
+        return "id_token=" + URLEncoder.encode(token, "UTF-8") + "&providerId=google.com";
     }
 
     private synchronized void setSession(String id, String refreshToken, String token, long expiresIn, String mail,

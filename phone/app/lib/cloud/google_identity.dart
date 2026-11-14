@@ -32,6 +32,11 @@ abstract interface class GoogleIdentity {
 
   /// Signs out and takes back every permission this app was given (Drive too): when the account is deleted.
   Future<void> revoke();
+
+  /// The Google account this phone uses with Orbit: the one from this run, else Google's quiet sign-in, else (with
+  /// [prompt]) Google's sheet; null when there is none and nothing may be shown. For an Apple account's Drive backups.
+  /// Throws [DriveError] when Google says no.
+  Future<String?> accountEmail({bool prompt = true});
 }
 
 /// [GoogleIdentity] with google_sign_in 7 (Credential Manager), serverClientId = the web client, so the ID token's
@@ -107,6 +112,22 @@ class PluginGoogleIdentity implements GoogleIdentity, DriveAuthorizer {
   }
 
   // ---- Drive (backups) ----
+
+  @override
+  Future<String?> accountEmail({bool prompt = true}) async {
+    try {
+      await _ready();
+      final kept = _account;
+      if (kept != null) return kept.email;
+      final quiet = GoogleSignIn.instance.attemptLightweightAuthentication();
+      final found = quiet == null ? null : await quiet;
+      if (found != null) return (_account = found).email;
+      if (!prompt) return null;
+      return (_account = await GoogleSignIn.instance.authenticate(scopeHint: const [kDriveAppDataScope])).email;
+    } on GoogleSignInException catch (e) {
+      throw describeDrive(e);
+    }
+  }
 
   @override
   Future<String?> accessToken(String email, {bool prompt = true}) async {

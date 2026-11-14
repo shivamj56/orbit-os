@@ -1,7 +1,7 @@
 // Demo mode's routing (phone/SPEC.md, "Demo mode"): in the app, with "Try Orbit without a TV" on, every TV op goes to the
 // pretend TV and only the phone's own ops reach Flutter; each side's events reach the screens only while it is the TV.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Bridge, PHONE_OPS, type BridgeHost, type Message } from "./bridge";
+import { Bridge, OLDER_PHONE, PHONE_OPS, askPhone, readAccount, readPhone, type BridgeHost, type Message } from "./bridge";
 
 interface Sent {
   id: number;
@@ -98,6 +98,39 @@ describe("the bridge in the app", () => {
     p.say({ id: p.sent[0].id, ok: false, error: "Your Google Drive is full.", reason: "full", status: 507 });
     await expect(saving).rejects.toMatchObject({ message: "Your Google Drive is full.", reason: "full", status: 507 });
   });
+
+  it("asks the phone itself what it offers, in demo mode too, and takes an app that does not know the op as Android", async () => {
+    const p = phone();
+    const m = pretend();
+    const bridge = new Bridge(p.host, m.factory);
+    bridge.setDemo(true);
+    const older = askPhone(bridge);
+    expect(p.sent.map((s) => s.op)).toEqual(["phone"]);
+    expect(m.made()).toBe(0);
+    // What an app from before the op answers (and in demo mode an older app refuses it with 409).
+    p.say({ id: p.sent[0].id, ok: false, error: 'Orbit has no "phone".', status: 400 });
+    await expect(older).resolves.toEqual({ platform: "android", volumeKeys: true, signIn: ["google"] });
+    expect(OLDER_PHONE).toEqual({ platform: "android", volumeKeys: true, signIn: ["google"] });
+
+    const iPhone = askPhone(bridge);
+    p.say({ id: p.sent[1].id, ok: true, data: { platform: "ios", volumeKeys: false, signIn: ["apple", "google"] } });
+    await expect(iPhone).resolves.toEqual({ platform: "ios", volumeKeys: false, signIn: ["apple", "google"] });
+  });
+
+  it("keeps the phone's ways in its order, each once, and only the ways it knows", () => {
+    expect(readPhone({ platform: "ios", volumeKeys: false, signIn: ["google", "apple", "google", "facebook"] }).signIn).toEqual(["google", "apple"]);
+    expect(readPhone({ platform: "ios", signIn: ["apple", "google"] })).toEqual({ platform: "ios", volumeKeys: false, signIn: ["apple", "google"] });
+    expect(readPhone({ platform: "android" })).toEqual(OLDER_PHONE);
+    expect(readPhone(null)).toEqual(OLDER_PHONE);
+  });
+
+  it("reads an older app's account as Google's, with the cloud there", () => {
+    const old = { signedIn: true, email: "you@gmail.com", tvLinked: true, tvOnline: false, tvName: "Family room" };
+    expect(readAccount(old)).toEqual({ ...old, provider: "google", available: true });
+    expect(readAccount({ ...old, provider: "apple" }).provider).toBe("apple");
+    expect(readAccount({ signedIn: false, email: null, provider: "google" })).toMatchObject({ signedIn: false, provider: null, available: true });
+    expect(readAccount({ signedIn: false, available: false }).available).toBe(false);
+  });
 });
 
 describe("the bridge in a browser", () => {
@@ -131,7 +164,7 @@ class MemoryStorage {
   }
 }
 
-describe("the demo's pretend Google Drive", () => {
+describe("the demo's pretend phone, accounts and Google Drive", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.stubGlobal("window", {
@@ -189,5 +222,40 @@ describe("the demo's pretend Google Drive", () => {
     expect(gone).toMatchObject({ ok: true, data: { removed: 1, account: { signedIn: false } } });
     expect(got.some((m) => m.event === "account" && (m.data as { signedIn: boolean }).signedIn === false)).toBe(true);
     expect(await ask("backupList")).toMatchObject({ ok: false, reason: "noAccount" });
+  });
+
+  /** The pretend TV made fresh, with this address bar, and a way to ask it something and wait for the answer. */
+  async function pretendTv(search: string) {
+    vi.stubGlobal("location", { search });
+    const { createMock } = await import("./mock");
+    const got: Message[] = [];
+    const post = createMock((m) => got.push(m));
+    let id = 0;
+    const ask = async (op: string, args: Record<string, unknown> = {}) => {
+      const mine = ++id;
+      post(JSON.stringify({ id: mine, op, args }));
+      await vi.advanceTimersByTimeAsync(3000);
+      return got.find((m) => m.id === mine)!;
+    };
+    return { ask, got };
+  }
+
+  it("is a page in a browser, or with ?mock-ios an iPhone", async () => {
+    expect((await (await pretendTv("?fresh")).ask("phone")).data).toEqual({ platform: "web", volumeKeys: true, signIn: ["google"] });
+    expect((await (await pretendTv("?fresh&mock-ios")).ask("phone")).data).toEqual({ platform: "ios", volumeKeys: false, signIn: ["apple", "google"] });
+  });
+
+  it("signs in with Apple as a pretend Apple account, whose backups are in a Google Drive of its own", async () => {
+    const { ask, got } = await pretendTv("?fresh&mock-ios");
+    expect((await ask("account")).data).toMatchObject({ signedIn: false, provider: null, available: true });
+
+    const apple = await ask("signIn", { with: "apple" });
+    expect(apple).toMatchObject({ ok: true, data: { signedIn: true, provider: "apple", email: "asha.k@privaterelay.appleid.com", available: true } });
+    expect(got.some((m) => m.event === "account" && (m.data as { provider: string }).provider === "apple")).toBe(true);
+    // The Drive's own account, not the Apple ID's relay address.
+    expect((await ask("backupList")).data).toMatchObject({ email: "you@gmail.com", backups: [] });
+
+    expect((await ask("signOut")).data).toMatchObject({ signedIn: false, provider: null, email: null });
+    expect(await ask("signIn")).toMatchObject({ ok: true, data: { provider: "google", email: "you@gmail.com" } });
   });
 });

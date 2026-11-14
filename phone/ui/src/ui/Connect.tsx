@@ -1,13 +1,15 @@
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { bridge, BridgeError, cloud, haptic, type Status, type TvRef } from "../bridge";
+import { bridge, BridgeError, cloud, haptic, type SignInWay, type Status, type TvRef } from "../bridge";
 import { setDemoMode, useDemo } from "../demo";
 import { Globe } from "../globe/Globe";
 import { openSetup } from "../setup/flow";
+import { WAY_NAMES, cloudOn, signedInWith, waysWords } from "../signin";
 import { setAccount, useWorld } from "../store";
 import { Press, spring } from "./kit";
 import { Chevron, Gear, Globe as GlobeIcon, Planet, Try, Tv, Wifi } from "./icons";
 import { openSettings } from "./panel";
+import { SignInPills } from "./SignIn";
 
 const fade = {
   initial: { opacity: 0, y: 14, filter: "blur(6px)" },
@@ -18,10 +20,10 @@ const fade = {
 
 /**
  * Before the remote: find the TV on the Wi-Fi and pair once with the six digits it shows; or, from anywhere (and
- * when the Wi-Fi will not reach it), sign in with Google and link the TV once with the eight digits it shows.
+ * when the Wi-Fi will not reach it), sign in (with Apple or Google) and link the TV once with the eight digits it shows.
  */
 export function Connect({ status }: { status: Status }) {
-  const { account } = useWorld();
+  const { account, phone } = useWorld();
   const demo = useDemo();
   const [linking, setLinking] = useState(false);
   const state = status.state;
@@ -110,7 +112,8 @@ export function Connect({ status }: { status: Status }) {
       {!linking && !pairing && (
         <div className="mt-auto pt-5">
           <AnimatePresence initial={false}>{offerSetup && <SetupOffer />}</AnimatePresence>
-          <Anywhere onLink={() => setLinking(true)} />
+          {/* A build of the app without the cloud has no account to sign in to. */}
+          {cloudOn(account, phone) && <Anywhere onLink={() => setLinking(true)} />}
           {bridge.native && !demo && <TryDemo />}
           <ManualAddress />
         </div>
@@ -308,23 +311,24 @@ function Pairing({ tv }: { tv: TvRef | null }) {
   );
 }
 
-/** The way that does not need the Wi-Fi: Google, then the TV's link code, once. */
+/** The way that does not need the Wi-Fi: Apple or Google (as the phone offers), then the TV's link code, once. */
 function Anywhere({ onLink }: { onLink: () => void }) {
-  const { account } = useWorld();
-  const [busy, setBusy] = useState(false);
+  const { account, phone } = useWorld();
+  const [busy, setBusy] = useState<SignInWay | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const signIn = async () => {
-    setBusy(true);
+  const signIn = async (way: SignInWay) => {
+    setBusy(way);
     setError(null);
     try {
-      const next = await cloud.signIn();
+      const next = await cloud.signIn(way);
       setAccount(next);
       haptic("success");
       if (!next.tvLinked) onLink();
     } catch (e) {
-      setError((e as Error).message || "Google sign-in did not finish.");
+      // A sheet closed before an account was chosen says so too, in the line under the buttons.
+      setError((e as Error).message || `${WAY_NAMES[way]} sign-in did not finish.`);
     } finally {
-      setBusy(false);
+      setBusy(null);
     }
   };
   return (
@@ -336,18 +340,16 @@ function Anywhere({ onLink }: { onLink: () => void }) {
       {!account.signedIn ? (
         <>
           <p className="mt-1.5 text-[13px] leading-relaxed text-faint">
-            Sign in with the Google account that is on the TV. Works away from home, and when the Wi-Fi will not reach the TV.
+            {phone.signIn.includes("apple")
+              ? `Sign in with ${waysWords(phone.signIn)}. Works away from home, and when the Wi-Fi will not reach the TV.`
+              : "Sign in with the Google account that is on the TV. Works away from home, and when the Wi-Fi will not reach the TV."}
           </p>
-          <Press label="Continue with Google" onPress={signIn} disabled={busy} feel="medium" className="mt-3.5 h-12 w-full rounded-full bg-text text-ink">
-            <span className="flex items-center gap-2.5 text-[15px] font-medium">
-              <GoogleMark /> {busy ? "Opening Google…" : "Continue with Google"}
-            </span>
-          </Press>
+          <SignInPills ways={phone.signIn} busy={busy} onPress={signIn} className="mt-3.5" />
         </>
       ) : !account.tvLinked ? (
         <>
           <p className="mt-1.5 text-[13px] leading-relaxed text-faint">
-            Signed in as <span className="text-muted">{account.email}</span>. Now link the TV once with the code it shows.
+            {signedInWith(account)} as <span className="break-words text-muted">{account.email}</span>. Now link the TV once with the code it shows.
           </p>
           <Press label="Link your TV" onPress={onLink} feel="medium" className="mt-3.5 h-12 w-full rounded-full bg-text text-[15px] font-medium text-ink">
             Link your TV
@@ -355,7 +357,7 @@ function Anywhere({ onLink }: { onLink: () => void }) {
         </>
       ) : (
         <p className="mt-1.5 text-[13px] leading-relaxed text-faint">
-          {account.tvName || "Your TV"} is linked to <span className="text-muted">{account.email}</span>.{" "}
+          {account.tvName || "Your TV"} is linked to <span className="break-words text-muted">{account.email}</span>.{" "}
           {account.tvOnline ? "Connecting…" : "It is asleep or off now: turn it on with its remote, and Orbit connects by itself."}
         </p>
       )}
@@ -403,17 +405,6 @@ function LinkTv({ onBack }: { onBack: () => void }) {
         Back
       </Press>
     </div>
-  );
-}
-
-export function GoogleMark() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-      <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" />
-      <path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
-      <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z" />
-      <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" />
-    </svg>
   );
 }
 

@@ -1,10 +1,11 @@
 // Fakes for the cloud path: an in-memory Realtime Database (with the link token rule of phone/firebase/
-// database.rules.json and ServerValue.timestamp), Firebase Auth, Google sign-in, and the TV's side of the database.
-// No network anywhere.
+// database.rules.json and ServerValue.timestamp), Firebase Auth, Google sign-in, Sign in with Apple, and the TV's side of
+// the database. No network anywhere.
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:orbit/cloud/account.dart';
+import 'package:orbit/cloud/apple_identity.dart';
 import 'package:orbit/cloud/backend.dart';
 import 'package:orbit/cloud/cloud_tv.dart';
 import 'package:orbit/cloud/google_identity.dart';
@@ -268,6 +269,95 @@ class FakeCloudAuth implements CloudAuth {
     reauths++;
     wantsRecentLogin = false;
   }
+
+  int appleSignIns = 0;
+  final List<String?> appleNames = [];
+  final List<String> revokedCodes = [];
+
+  /// Firebase checks the nonce Apple's token carries against the one it is given (here the fake token keeps it as it is).
+  static bool nonceMatches(String idToken, String rawNonce) => jwtPayload(idToken)?['nonce'] == rawNonce;
+
+  @override
+  Future<CloudUser> signInWithAppleIdToken(
+    String idToken,
+    String rawNonce, {
+    String? givenName,
+    String? familyName,
+  }) async {
+    await Future<void>.delayed(Duration.zero);
+    final email = jwtEmail(idToken);
+    if (email == null || !nonceMatches(idToken, rawNonce)) {
+      throw const SignInFailed('Apple\'s sign-in was not accepted. Try again.');
+    }
+    appleSignIns++;
+    appleNames.add(givenName);
+    final user = CloudUser(uid: uidFor(email), email: email, provider: kAppleProvider);
+    _user = user;
+    _changes.add(user);
+    return user;
+  }
+
+  @override
+  Future<void> reauthenticateWithAppleIdToken(String idToken, String rawNonce) async {
+    await Future<void>.delayed(Duration.zero);
+    final email = jwtEmail(idToken);
+    if (_user == null || email == null || uidFor(email) != _user!.uid || !nonceMatches(idToken, rawNonce)) {
+      throw const SignInFailed('That is another Apple ID. Use the one Orbit is signed in with.');
+    }
+    reauths++;
+    wantsRecentLogin = false;
+  }
+
+  @override
+  Future<void> revokeAppleAuthorization(String authorizationCode) async {
+    await Future<void>.delayed(Duration.zero);
+    revokedCodes.add(authorizationCode);
+  }
+}
+
+/// An unsigned Apple identity token: Apple's issuer, the app as audience, the nonce (kept raw here), ten minutes.
+String fakeAppleToken(String email, String nonce, Duration life) {
+  final payload = base64Url
+      .encode(
+        utf8.encode(
+          jsonEncode({
+            'iss': 'https://appleid.apple.com',
+            'aud': 'dev.shiv.orbit',
+            'sub': '001234.apple-user',
+            'email': email,
+            'nonce': nonce,
+            'exp': DateTime.now().add(life).millisecondsSinceEpoch ~/ 1000,
+            'n': _tokenSerial++,
+          }),
+        ),
+      )
+      .replaceAll('=', '');
+  return 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImFwcGxlIn0.$payload.c2lnbmF0dXJl';
+}
+
+/// Apple's sheet: a new token, nonce and code each time; the name only the first time, as Apple does.
+class FakeApple implements AppleIdentity {
+  FakeApple({this.email = 'asha.k@privaterelay.appleid.com'});
+
+  String email;
+  Duration life = const Duration(minutes: 10);
+  bool cancel = false;
+  int sheets = 0;
+
+  @override
+  Future<AppleCredential> signIn() async {
+    await Future<void>.delayed(Duration.zero);
+    if (cancel) throw const SignInFailed('Sign-in was closed before Apple said who you are.', cancelled: true);
+    sheets++;
+    final nonce = makeNonce();
+    return AppleCredential(
+      identityToken: fakeAppleToken(email, nonce, life),
+      rawNonce: nonce,
+      authorizationCode: 'code-$sheets',
+      email: email,
+      givenName: sheets == 1 ? 'Asha' : null,
+    );
+  }
 }
 
 int _tokenSerial = 0;
@@ -322,6 +412,18 @@ class FakeGoogle implements GoogleIdentity {
 
   @override
   Future<void> revoke() async => revokes++;
+
+  /// Asked for an Apple account's Drive account.
+  int accountAsks = 0;
+
+  @override
+  Future<String?> accountEmail({bool prompt = true}) async {
+    await Future<void>.delayed(Duration.zero);
+    accountAsks++;
+    if (!quietWorks && !prompt) return null;
+    if (!quietWorks) sheets++;
+    return email;
+  }
 }
 
 /// The TV's side of the database: shows link codes, signs in with the token it is given (as the same account), keeps
@@ -389,8 +491,15 @@ class FakeTvSide {
 
   void _signIn(String code, String token) {
     tokenSeen = token;
+    // An Apple account's token is `apple.com|<nonce>|<identity token>` (OrbitCloud.java signs in with both).
+    var idToken = token;
+    if (token.startsWith('$kAppleProvider|')) {
+      final parts = token.split('|');
+      if (parts.length != 3 || !FakeCloudAuth.nonceMatches(parts[2], parts[1])) return;
+      idToken = parts[2];
+    }
     db.write('link/$code', null);
-    uid = FakeCloudAuth.uidFor(jwtEmail(token)!);
+    uid = FakeCloudAuth.uidFor(jwtEmail(idToken)!);
     _online();
     _serve();
   }
@@ -455,14 +564,16 @@ class FakeTvSide {
 
 /// A signed-out account and its (not yet linked) cloud TV on a fake database.
 class CloudRig {
-  CloudRig({CloudTimings timings = fastCloud, int skewMs = 0}) : db = FakeCloudDb(skewMs: skewMs) {
-    account = CloudAccount(auth: auth, google: google);
+  /// With [iphone], Sign in with Apple is offered too.
+  CloudRig({CloudTimings timings = fastCloud, int skewMs = 0, bool iphone = false}) : db = FakeCloudDb(skewMs: skewMs) {
+    account = CloudAccount(auth: auth, google: google, apple: iphone ? apple : null);
     cloud = CloudTv(db: db, account: account, timings: timings);
   }
 
   final FakeCloudDb db;
   final FakeCloudAuth auth = FakeCloudAuth();
   final FakeGoogle google = FakeGoogle();
+  final FakeApple apple = FakeApple();
   late final CloudAccount account;
   late final CloudTv cloud;
 

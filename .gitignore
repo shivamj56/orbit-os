@@ -31,6 +31,9 @@ phone/app/assets/ui/
 # The Firebase project's API key and ids stay on this Mac, never in git (phone/SPEC.md "From anywhere").
 phone/firebase/config.json
 phone/app/android/app/google-services.json
+# The same for the iPhone: Firebase's plist and the URL scheme read from it (phone/app/tool/ios_firebase.sh).
+phone/app/ios/Runner/GoogleService-Info.plist
+phone/app/ios/Flutter/Firebase.xcconfig
 
 # Orbit Setup bundle (both launcher APKs + the two TV scripts), copied in by phone/app/tool/sync_setup.sh
 # before a build. The APKs must never be committed.

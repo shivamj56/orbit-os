@@ -6,7 +6,7 @@ Two halves that meet at one contract:
   vite-plugin-singlefile into ONE self-contained file, `phone/ui/dist/index.html` (scripts, styles, fonts inlined).
   It never talks to the network itself. Everything goes through `window.orbit` (below). Opened in a desktop
   browser it uses a built-in mock TV, so the design can be tried without a phone or a TV.
-- `phone/app/` — Flutter (Android first), package `dev.shiv.orbit`, label "Orbit". A full-screen WebView shows
+- `phone/app/` — Flutter (Android and iPhone), package and bundle id `dev.shiv.orbit`, label "Orbit". A full-screen WebView shows
   `assets/ui/index.html` (a copy of `phone/ui/dist/index.html`, made by `phone/app/tool/sync_ui.sh`). Flutter does
   what a page cannot: find the TV, pair, keep the token, talk HTTP and UDP to the TV, haptics, the phone's own volume
   keys, keep the screen awake.
@@ -71,7 +71,8 @@ Flutter sends a fresh status event whenever any of it changes.
 | pointer | `{"type":"click"}` / `{"type":"longpress"}` / `{"type":"hide"}` | POST /api/pointer `{"action":…}` | the TV's answer |
 | haptic | `{"kind":"tick"\|"light"\|"medium"\|"heavy"\|"success"\|"error"}` | HapticFeedback (selectionClick / light / medium / heavy; success = medium, error = heavy twice) | – (id 0 allowed) |
 | keepAwake | `{"on":true}` | wakelock while the app is in front | `{}` |
-| settings | `{"volumeKeys":true}` | the phone's volume keys turn the TV up/down (default true) | `{}` |
+| settings | `{"volumeKeys":true}` | the phone's volume keys turn the TV up/down (default true; nothing on an iPhone) | `{}` |
+| phone | – | one of the phone's own ops (it answers in demo mode too) | `{"platform":"android"\|"ios","volumeKeys":bool,"signIn":["google"]\|["apple","google"]}`: what this phone offers; an older app does not know the op (the page then assumes Android's answer) |
 
 HTTP errors come back as `ok:false` with the TV's `error` text and `status`. A 401 means the token is no longer
 known: drop it and go to `needsPairing`. A network failure → `offline` (retry every 3 s while the app is in front).
@@ -140,8 +141,8 @@ Bridge ops added for this (page → Flutter):
 
 | op | args | does | reply |
 |---|---|---|---|
-| account | – | – | `{"signedIn":bool,"email":str\|null,"tvLinked":bool,"tvOnline":bool,"tvName":str\|null}` |
-| signIn | – | Google sign-in (Credential Manager, serverClientId = webClientId) → FirebaseAuth | account |
+| account | – | – | `{"available":bool,"signedIn":bool,"provider":"google"\|"apple"\|null,"email":str\|null,"tvLinked":bool,"tvOnline":bool,"tvName":str\|null}`; `available` is false once Firebase is known not to have started (nothing about accounts can work then) |
+| signIn | `{"with":"google"\|"apple"}` (default google) | Google sign-in (Credential Manager, serverClientId = webClientId) → FirebaseAuth; `apple`: Sign in with Apple (an iPhone only, else 400; "Sign in with Apple" below) | account |
 | signOut | – | FirebaseAuth + Google sign out | account |
 | linkTv | `{"code":"12345678"}` | writes the token, waits ≤ 25 s for `tv/online` | account (`tvLinked:true`) or ok:false "That code is not on the TV." / "The TV did not answer. Is it on?" |
 | unlinkTv | – | writes `tv/unlink` | account |
@@ -150,6 +151,30 @@ Event `account` (same shape) whenever it changes. Transport choice: the home Wi-
 otherwise, signed in and the TV online in the cloud (`tv/online` within 3 minutes) → `status.state = "connected"`,
 `status.via = "cloud"`, `status.tv = {"name":…, "address":"cloud", "port":0, "udp":null}`. Over the cloud: `tvstate`
 events come from `/orbit/{uid}/tv/state`; pointer moves are batched to ≤ 10 a second; haptics stay local.
+
+### Sign in with Apple (Orbit on iPhone)
+
+App Store Guideline 4.8: an app that offers Google sign-in offers Sign in with Apple too, as an equal choice. On an
+iPhone the page shows "Continue with Apple" first, then "Continue with Google" (the `phone` op's `signIn` order). An
+Apple account is a Firebase user with the `apple.com` provider; everything under `/orbit/{uid}` works the same.
+
+- Signing in: Dart makes a nonce (32 random bytes, base64url); the phone (ios/Runner/NativeChannel.swift,
+  `appleSignIn`) gives Apple its SHA-256 and shows Apple's sheet; Firebase signs in with Apple's identity token and the
+  nonce. Apple tells the name only the first time: it becomes the account's display name, so the TV's token carries it
+  for the greeting. Apple has no quiet sign-in: each later need (linking a TV, deleting the account) shows the sheet.
+- Linking a TV: the phone writes `apple.com|<nonce>|<identity token>` to `/link/{code}/token` (the token from signing
+  in while it has 5 minutes left and no TV has had it, else a new one from Apple's sheet; it lasts 10 minutes). The
+  rules let an Apple-signed-in user write only that form, and a Google-signed-in user only a Google ID token. The TV
+  (OrbitCloud.java) signs in with `providerId=apple.com` and the nonce (`accounts:signInWithIdp`), and is that account
+  from then on. A TV from before 14 Nov cannot read the Apple form: it needs the Orbit Home that Orbit 1.5 carries.
+- Backups in Google Drive: an Apple account's backups go to the Google account this phone uses with Orbit (Google's own
+  sheet asks the first time; `backupList`'s `email` names it). Drive is a service of its own; it is not the account.
+- Deleting: Apple's sheet once more gives a fresh authorization code and identity token; Firebase asks Apple to revoke
+  Sign in with Apple for Orbit with the code (Apple's rule for deleted accounts; it needs the Apple provider's "OAuth
+  code flow" key in Firebase), the token is the recent sign-in if Firebase wants one, then the user goes as with Google.
+  Without that key the revoke fails quietly and the account still goes.
+- Firebase: the iOS app `dev.shiv.orbit` registered in project `orbit-family-room` (its GoogleService-Info.plist stays
+  out of git; `phone/app/tool/ios_firebase.sh`), and Authentication › Sign-in method › Apple switched on.
 
 ## Help mode (10 Nov): see the TV's screen from the phone and press its buttons
 
@@ -451,8 +476,9 @@ sign-in and backups (a pretend Drive in localStorage), and the whole of Orbit Se
 pretend TV shows above the app with a "Demo · Leave" badge; one tap on it leaves. It stays on across starts until left.
 
 - The page (`bridge.ts`): with demo mode on, every op goes to the pretend TV except the phone's own (`haptic`,
-  `keepAwake`, `demo`, `intro`, `openUrl`), and only the pretend TV's events reach the screens (and the phone's
-  `lifecycle`).
+  `keepAwake`, `demo`, `intro`, `openUrl`, `phone`), and only the pretend TV's events reach the screens (and the
+  phone's `lifecycle`). The pretend sign-in takes Apple too (`asha.k@privaterelay.appleid.com`); in a desktop browser
+  `?mock-ios` makes the mock answer `phone` like an iPhone.
   Switching closes Help and Orbit Setup first, then says hello again to the new side.
 - Flutter: op `demo` `{"on":bool}` → `{"on":bool}` (without `on`, it only answers). While on it leaves the real TV
   alone, as if in the background: no polls, no search of the Wi-Fi, no `watch` heartbeat, help off, the volume keys
@@ -478,6 +504,24 @@ the rest when it fails:
 4. Google forgets Orbit's permissions (`disconnect`), and the phone is signed out.
 
 The privacy policy (docs/privacy.md, "Deleting your account and data") gives the same steps and an e-mail for asking.
+
+## Orbit on iPhone (Orbit 1.5.0)
+
+The same page and bridge in `phone/app/ios` (Swift where Android has Kotlin), bundle id `dev.shiv.orbit`, iPhone only,
+portrait, iOS 15 or later. What differs:
+
+- The page is a file inside the app (`file:///…/Runner.app/Frameworks/App.framework/flutter_assets/assets/ui/…`, a
+  folder that changes with each install); only that folder may load (`isOwnPageUrl`).
+- iOS lets no app take the volume buttons: `phone` says `volumeKeys` false and the page shows no setting for them.
+  There is no Back to leave on either (`moveTaskToBack` does nothing).
+- Orbit Setup's ADB key: RSA-2048 in the Keychain (this phone only, readable after the first unlock), signing with
+  Security's PKCS#1 v1.5 SHA-1 over the token as the digest (ios/Runner/AdbKey.swift, the same answers as AdbKey.kt).
+- The home Wi-Fi: iOS asks once to allow the local network (`NSLocalNetworkUsageDescription`), and Bonjour may browse only
+  the types in Info.plist: `_orbit._tcp`, `_googlecast._tcp`, `_androidtvremote2._tcp`.
+- Sign in with Apple beside Google (above). Firebase's settings come from GoogleService-Info.plist, copied in at build
+  time; without it the app builds with the cloud path off (`account.available` false), and the page offers no account.
+
+Building and sending it to TestFlight: docs/ios.md.
 
 ## Orbit's public pages (Orbit 1.4.0)
 

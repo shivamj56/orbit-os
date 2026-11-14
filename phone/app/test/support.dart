@@ -40,6 +40,19 @@ class FakeNsd implements NsdBrowser {
 }
 
 class FakeNative implements NativeHost {
+  FakeNative({this.platform = 'android'})
+    : hasVolumeKeys = platform == 'android',
+      signInWays = platform == 'ios' ? const ['apple', 'google'] : const ['google'];
+
+  @override
+  final String platform;
+
+  @override
+  final bool hasVolumeKeys;
+
+  @override
+  final List<String> signInWays;
+
   void Function(String dir)? volumeKeyHandler;
   final List<bool> volumeKeys = [];
   final List<bool> keepAwake = [];

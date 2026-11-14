@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 import '../bridge/orbit_bridge.dart';
+import 'dart:io';
+
 import '../cloud/account.dart';
+import '../cloud/apple_identity.dart';
 import '../cloud/backend.dart';
 import '../cloud/cloud_tv.dart';
 import '../cloud/drive.dart';
@@ -83,7 +86,12 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
       _remote.cloudUnavailable();
       return;
     }
-    final account = CloudAccount(auth: backend, google: _google);
+    // Sign in with Apple beside Google on an iPhone (App Store Guideline 4.8).
+    final account = CloudAccount(
+      auth: backend,
+      google: _google,
+      apple: Platform.isIOS ? const PlatformAppleIdentity() : null,
+    );
     _remote.attachCloud(account, CloudTv(db: backend, account: account));
   }
 
