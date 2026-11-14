@@ -15,8 +15,8 @@ android {
         applicationId providers.gradleProperty('launcherApplicationId').getOrElse('dev.shiv.orbit.home')
         minSdk 26
         targetSdk 34
-        versionCode 12
-        versionName '3.3'
+        versionCode 13
+        versionName '3.4'
     }
 
     buildTypes {
