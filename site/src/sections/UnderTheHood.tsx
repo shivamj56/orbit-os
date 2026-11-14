@@ -4,7 +4,6 @@ import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/magicui/te
 import { useReducedMotion } from "@/lib/hooks";
 import { SectionHead } from "@/components/kit/SectionHead";
 import * as I from "@/components/kit/icons";
-import { REPO_URL } from "@/lib/links";
 
 const STEPS = [
   {
@@ -31,13 +30,6 @@ const STEPS = [
     text: "orbit-undo.sh reads the record: the TV's own home screen comes back first, so it is never left without one, and Orbit's own apps go last.",
     tag: "setup/tv/orbit-undo.sh",
   },
-];
-
-const DOCS = [
-  { label: "How it is built", href: `${REPO_URL}/blob/main/docs/architecture.md` },
-  { label: "Phone and TV contract", href: `${REPO_URL}/blob/main/phone/SPEC.md` },
-  { label: "The setup script", href: `${REPO_URL}/blob/main/setup/tv/orbit-setup.sh` },
-  { label: "Tested TVs", href: `${REPO_URL}/tree/main/devices` },
 ];
 
 /** "Under the hood", for developers: phone → the TV's own debugging switch → one script → an undo record. */
@@ -111,22 +103,6 @@ export function UnderTheHood() {
           </div>
         </div>
 
-        <ul className="mt-12 flex flex-wrap gap-2.5" aria-label="Read the source">
-          {DOCS.map((d) => (
-            <li key={d.label}>
-              <a
-                href={d.href}
-                target="_blank"
-                rel="noopener"
-                className="group inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface/70 px-4 text-[0.875rem] text-ink transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-accent/50"
-              >
-                <I.Code size={16} className="text-accent" />
-                {d.label}
-                <I.ArrowUpRight size={15} className="text-dim transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );

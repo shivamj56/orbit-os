@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { SectionHead } from "@/components/kit/SectionHead";
 import * as I from "@/components/kit/icons";
-import { NEW_ISSUE_URL, REPO_URL } from "@/lib/links";
+import { NEW_ISSUE_URL } from "@/lib/links";
 
 // What the family room TV taught Orbit (devices/xiaomi-mitv-axfu0/README.md), in plain words.
 const NOTES = [
@@ -72,10 +72,6 @@ export function TestedTvs() {
                 </motion.li>
               ))}
             </ul>
-            <a href={`${REPO_URL}/tree/main/devices/xiaomi-mitv-axfu0`} target="_blank" rel="noopener" className="group mt-5 inline-flex items-center gap-1.5 text-[0.875rem] font-medium text-accent hover:underline">
-              Read this TV's notes
-              <I.ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
           </article>
 
           <article className="relative flex flex-col justify-between overflow-hidden rounded-[2rem] border border-dashed border-accent-2/40 bg-veil/[0.015] p-6 sm:p-8">

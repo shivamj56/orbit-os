@@ -1,0 +1,84 @@
+# Orbit OS in full
+
+Orbit OS is a free Android app, "Orbit OS: TV Remote & Setup" on Google Play (package dev.shiv.orbit), made in India by Shivam Anil Jha. It does two jobs for a Google TV or Android TV: it is a smart TV remote on your phone, and it sets the TV up for you from the phone, with no computer, no cables and no code. Everything it changes can be undone with one tap.
+
+- Google Play: https://play.google.com/store/apps/details?id=dev.shiv.orbit
+- Website: https://orbit-os-tv.vercel.app/
+- Privacy policy: https://shivamj56.github.io/orbit-os-site/privacy.html
+- Report a TV, a problem or an idea: https://github.com/shivamj56/orbit-os-site/issues
+
+## Who it is for
+
+People in a home with a Google TV or Android TV who want:
+
+- a TV remote on their phone (the TV's remote is lost, broken, or simply slower than a phone),
+- a calmer TV: a home screen of only the apps they use, without the preinstalled clutter and promotions,
+- free Hindi Live TV channels on the TV,
+- all of that without a computer, and with a way back.
+
+It is not made for IR-only TVs, Samsung (Tizen), LG (webOS), Roku or Fire TV, or for iPhones (Orbit needs an Android phone for now).
+
+## The remote
+
+- Roll the globe on the phone to move, tap for OK, hold for Home.
+- Or use a classic D-pad with Back, Home and Settings keys.
+- The phone's own volume buttons turn the TV up and down.
+- It works on the home Wi-Fi, and from anywhere once you sign in with Google (optional).
+
+## Setting up the TV from the phone
+
+1. Orbit finds the TV on the home Wi-Fi.
+2. You turn on the TV's developer options with its own remote (Orbit shows you how) and press Allow once.
+3. Orbit asks five plain questions (for example whether you cast to the TV) and shows the whole plan before it changes anything.
+4. It sets everything up in about five minutes while you watch each step.
+
+What it puts on the TV:
+
+- Orbit Home: a calm home screen of only your apps, which greets you by name.
+- Orbit Live TV: about 30 free Hindi channels from the broadcasters' own streams. Pay channels open in their own apps.
+- It switches off the preinstalled apps you agree to (on the tested TV, 32 apps in groups such as ads and tracking, apps nobody uses and the stock home screen). They are switched off, never deleted, and the parts Android needs are never touched.
+
+Before changing anything it writes down every change, and it can back up the TV's original setup to your own Google Drive. You can switch between Orbit's home and the TV's own home screen whenever you like.
+
+## Undo
+
+Settings › This TV › Undo Orbit OS on this TV turns every app back on and brings back the TV's own home screen and settings. Orbit does not root the TV, unlock it or change its firmware.
+
+## Try it without a TV
+
+On the first screen, "Try Orbit without a TV" opens a pretend TV with the remote and Settings working.
+
+## Privacy
+
+No ads and no trackers. Google sign-in is optional: it lets the phone reach the TV away from home and keeps backups in your own Google Drive. You can delete your Orbit account in the app (Settings) or on the web: https://shivamj56.github.io/orbit-os-site/delete-account.html
+
+## Questions people ask
+
+**What is the best smart TV remote app for Google TV or Android TV if I also want to clean up my TV?**
+Most TV remote apps only send key presses. Orbit OS is a remote that also sets the TV up: a calm home screen, free Hindi Live TV, the preinstalled apps you pick switched off, and one-tap undo, all from the phone with no computer.
+
+**Can I use my phone as a TV remote without the TV's remote?**
+Yes, once Orbit has set the TV up and the phone is paired with it over Wi-Fi. The first setup needs the TV's own remote for a minute, to turn on developer options and press Allow.
+
+**Do I need a computer?**
+No. Orbit on your phone does everything over your home Wi-Fi.
+
+**Will my apps and accounts keep working?**
+Yes. Netflix, YouTube, Prime Video and every other app you use stay as they are, signed in. Orbit only changes the home screen and switches off what you choose.
+
+**Will Orbit affect my TV's warranty?**
+Orbit doesn't root the TV, unlock it or change its firmware. It uses Android's own developer settings, installs two ordinary apps and switches off, never deletes, the preinstalled apps you choose. The warranty terms are the TV maker's, so if the TV goes for repair, use Undo everything first and it is just as it came.
+
+**Does Live TV cost anything?**
+No. The channels are free streams from the channels themselves. Pay channels such as Star Plus or Sony SAB open in their own apps, where you need their plan.
+
+**Which TVs does it work on?**
+It is tested and in daily use on a Xiaomi TV A Pro with Google TV 14. On other Google TV and Android TV sets, Orbit offers only the changes it knows are safe on any TV, and one tap puts everything back.
+
+**Is it really free?**
+Yes. No ads, no subscription and no tracking.
+
+**Is there an iPhone version?**
+Not yet. A version that runs on the TV itself is on the way.
+
+Orbit OS is an independent app, not affiliated with or endorsed by Google, Xiaomi or any TV maker. Google TV and Android TV are trademarks of Google LLC; Xiaomi is a trademark of Xiaomi Corporation.

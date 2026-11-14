@@ -3,7 +3,7 @@
 import { writeFileSync } from "node:fs";
 import { encode } from "uqr";
 
-const url = "https://github.com/shivamj56/orbit-os/releases/latest";
+const url = "https://play.google.com/store/apps/details?id=dev.shiv.orbit";
 const qr = encode(url, { ecc: "M", border: 0 });
 const n = qr.size;
 const inFinder = (x, y) => (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);

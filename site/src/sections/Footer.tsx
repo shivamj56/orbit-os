@@ -1,5 +1,5 @@
 import { OrbitMark, Wordmark } from "@/components/kit/brand";
-import { ISSUES_URL, RELEASES_URL, REPO_URL } from "@/lib/links";
+import { ISSUES_URL, PLAY_URL, REPO_URL } from "@/lib/links";
 import { goTo } from "@/lib/scroll";
 
 export function Footer() {
@@ -15,8 +15,8 @@ export function Footer() {
           <a className="text-soft transition-colors hover:text-ink" href={REPO_URL} target="_blank" rel="noopener">
             GitHub
           </a>
-          <a className="text-soft transition-colors hover:text-ink" href={RELEASES_URL} target="_blank" rel="noopener">
-            Releases
+          <a className="text-soft transition-colors hover:text-ink" href={PLAY_URL} target="_blank" rel="noopener">
+            Google Play
           </a>
           <a className="text-soft transition-colors hover:text-ink" href={ISSUES_URL} target="_blank" rel="noopener">
             Report a problem
