@@ -38,7 +38,8 @@ tool/sync_setup.sh                               # copies both TV APKs (built ab
 flutter build apk --release --target-platform android-arm,android-arm64
 ```
 
-GitHub Actions builds it the same way, with the same keys kept as secrets: [ci-cd.md](ci-cd.md).
+GitHub Actions builds it the same way, with the same keys kept as secrets: [ci-cd.md](ci-cd.md). The iPhone app is
+built on a Mac with Xcode: [ios.md](ios.md).
 
 A release build is signed with `phone/app/android/app/orbit-release.jks` and the passwords in
 `phone/app/android/key.properties`. Neither is in git; keep a copy of both. Tests: `flutter test` in `phone/app`.
@@ -50,7 +51,9 @@ Orbit works on the Wi-Fi without any of this. To use it away from home:
 1. Create a Firebase project. Turn on Google and Anonymous sign-in, and a Realtime Database.
 2. Publish `phone/firebase/database.rules.json` as the database's rules.
 3. Register the Android app (`dev.shiv.orbit`) with your release key's SHA-1, then save the project's settings as
-   `phone/firebase/config.json` and `phone/app/android/app/google-services.json` (both kept out of git).
+   `phone/firebase/config.json` and `phone/app/android/app/google-services.json` (both kept out of git). For the
+   iPhone, also register the iOS app `dev.shiv.orbit`, turn on Apple sign-in, and put its `GoogleService-Info.plist` in
+   place with `phone/app/tool/ios_firebase.sh` ([ios.md](ios.md)).
 4. Put the web API key and the database address in the TV's theme as `orbit_api_key` and `orbit_database_url`.
 
 ## Put it on a TV

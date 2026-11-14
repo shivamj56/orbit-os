@@ -15,6 +15,8 @@ flowchart LR
   HAND["Run workflow by hand"] --> REL["Android release<br/>AAB + 3 APKs"]
   REL -- "only if ticked" --> PLAY["Google Play track"]
   REL -- "only if ticked" --> GHR["GitHub release"]
+  HAND2["Run workflow by hand"] --> IOS["iOS build<br/>build check on macOS"]
+  IOS -- "only if ticked" --> TF["TestFlight"]
 ```
 
 | Workflow | Runs when | Does | Secrets |
@@ -23,8 +25,10 @@ flowchart LR
 | [Website build](../.github/workflows/website-build.yml) | a pull request or push that changes `site/`, or by hand | builds `site/dist/index.html` and keeps it as an artifact | none |
 | [Android build](../.github/workflows/android-build.yml) | a push to `main` that changes `phone/`, `launcher/` or `setup/` (once switched on), or by hand | the three signed APKs, checked and kept for 30 days | the six signing secrets |
 | [Android release](../.github/workflows/android-release.yml) | only by hand | the signed `app-release.aab` and the three APKs; on request a Google Play upload and a GitHub release | the six, and the Play key to publish |
+| [iOS build](../.github/workflows/ios-build.yml) | only by hand (macOS minutes cost ten times Linux's) | a build check of the iPhone app, unsigned; on request the signed app sent to TestFlight | none for the check; for TestFlight the App Store Connect key, Firebase's plist and the TV key ([ios.md](ios.md#on-github-instead-optional)) |
 
-Nothing ever publishes to Google Play by itself: not a push, not a pull request, not a merge.
+Nothing ever publishes to Google Play or the App Store by itself: not a push, not a pull request, not a merge. Nothing
+here ever sends Orbit to App Review: that is done by hand in App Store Connect.
 
 ## 1. How the checks work
 

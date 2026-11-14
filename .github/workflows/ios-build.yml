@@ -1,0 +1,218 @@
+name: iOS build
+
+# Orbit for iPhone, and only when someone starts it (Actions > iOS build > Run workflow): a private repository pays ten
+# times Linux's minutes on macOS. The owner normally builds on the Mac with tool/ios_release.sh; this is the same build
+# on GitHub's Mac. Two ways, picked in the form:
+#
+# - Build check (the default): the app compiles and links for a real iPhone, unsigned, with the bridge-test page and an
+#   empty TV bundle. No secret, nothing kept.
+# - TestFlight: the signed app with the real page, both TV apps and Firebase's settings, checked, then sent to App Store
+#   Connect, where it shows in TestFlight. Sending it to App Review is never done here. docs/ios.md
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Sign it and send it to TestFlight (needs the secrets in docs/ios.md)
+        type: boolean
+        default: false
+      version:
+        description: To upload, the version exactly as in phone/app/pubspec.yaml (e.g. 1.5.0+6)
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-build
+  cancel-in-progress: false
+
+env:
+  # The toolchain Orbit is built with on the owner's Mac (phone/app/.metadata, pubspec.lock): keep them in step.
+  FLUTTER_VERSION: 3.47.9
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+  # Orbit Home and Live TV are signed with this certificate's key (android-build.yml has the same).
+  ORBIT_TV_SIGNER_SHA256: ff676c38cd2e88d679b3766fb68435ec756629a5499202af239d416ac387a346
+
+jobs:
+  check:
+    name: Check the form
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.form.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts
+            phone/app/pubspec.yaml
+          sparse-checkout-cone-mode: false
+      - name: The version, and the secrets an upload needs
+        id: form
+        env:
+          UPLOAD: ${{ inputs.upload }}
+          WANT_VERSION: ${{ inputs.version }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_P8: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8 }}
+          ORBIT_GOOGLE_SERVICE_INFO_PLIST_BASE64: ${{ secrets.ORBIT_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+          ORBIT_TV_DEBUG_KEYSTORE_BASE64: ${{ secrets.ORBIT_TV_DEBUG_KEYSTORE_BASE64 }}
+        run: |
+          version=$(sed -n 's/^version: *\([0-9][0-9.]*+[0-9][0-9]*\).*$/\1/p' phone/app/pubspec.yaml)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "phone/app/pubspec.yaml at $GITHUB_REF_NAME ($GITHUB_SHA): $version"
+          if [ "$UPLOAD" = true ]; then
+            if [ "$WANT_VERSION" != "$version" ]; then
+              echo "::error::To upload, type the version you are releasing ($version) in the form; it says '$WANT_VERSION'."
+              exit 1
+            fi
+            .github/scripts/require-secrets.sh APP_STORE_CONNECT_KEY_ID APP_STORE_CONNECT_ISSUER_ID \
+              APP_STORE_CONNECT_API_KEY_P8 ORBIT_GOOGLE_SERVICE_INFO_PLIST_BASE64 ORBIT_TV_DEBUG_KEYSTORE_BASE64
+            what="signed, checked and sent to TestFlight"
+          else
+            what="build check only: unsigned, nothing kept"
+          fi
+          echo "### Orbit $version for iPhone: $what" >> "$GITHUB_STEP_SUMMARY"
+
+  tv:
+    # The TV apps the iPhone app carries for Orbit Setup, built and checked as android-build.yml's tv job does (keep the
+    # two in step).
+    name: Orbit Home and Live TV
+    needs: check
+    if: inputs.upload
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check the Gradle wrapper is Gradle's own
+        uses: gradle/actions/wrapper-validation@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+      - name: The TV apps' signing key
+        env:
+          ORBIT_TV_DEBUG_KEYSTORE_BASE64: ${{ secrets.ORBIT_TV_DEBUG_KEYSTORE_BASE64 }}
+        run: |
+          echo "ANDROID_USER_HOME=$RUNNER_TEMP/android-home" >> "$GITHUB_ENV"
+          ANDROID_USER_HOME="$RUNNER_TEMP/android-home" .github/scripts/signing.sh tv
+      - name: Build Orbit Home and Orbit Live TV
+        working-directory: launcher
+        run: ./gradlew --no-daemon :app:assembleRelease :livetv:assembleRelease
+      - name: Check both
+        run: |
+          .github/scripts/verify-apk.sh launcher/app/build/outputs/apk/release/app-release.apk \
+            dev.shiv.orbit.home "$ORBIT_TV_SIGNER_SHA256"
+          .github/scripts/verify-apk.sh launcher/livetv/build/outputs/apk/release/livetv-release.apk \
+            dev.shiv.orbit.live "$ORBIT_TV_SIGNER_SHA256"
+      - name: Hand them to the iPhone build
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ios-tv-build-outputs
+          path: |
+            launcher/app/build/outputs/apk/release/app-release.apk
+            launcher/livetv/build/outputs/apk/release/livetv-release.apk
+          retention-days: 1
+          if-no-files-found: error
+          overwrite: true
+      - name: Remove the key
+        if: always()
+        run: .github/scripts/signing.sh clean
+
+  iphone:
+    name: Orbit for iPhone
+    needs: [check, tv]
+    # The TV job is skipped for a build check; this one runs after either.
+    if: always() && needs.check.result == 'success' && (needs.tv.result == 'success' || needs.tv.result == 'skipped')
+    # macOS 26 on Apple silicon, with Xcode 26: App Store Connect takes only builds made with Xcode 26 or later.
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      UPLOAD: ${{ inputs.upload }}
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Xcode
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        if: inputs.upload
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: phone/ui/package-lock.json
+      - name: The page (phone/ui), or the bridge-test page for a check
+        run: |
+          if [ "$UPLOAD" = true ]; then
+            (cd phone/ui && npm ci && npm run build && test -s dist/index.html)
+            phone/app/tool/sync_ui.sh
+          else
+            phone/app/tool/sync_ui.sh --placeholder
+          fi
+      - name: The TV apps from the TV job
+        if: inputs.upload
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ios-tv-build-outputs
+          path: launcher
+      - name: The TV bundle (empty for a check)
+        run: |
+          if [ "$UPLOAD" = true ]; then
+            phone/app/tool/sync_setup.sh
+          else
+            mkdir -p phone/app/assets/setup
+          fi
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: Dependencies (exactly pubspec.lock)
+        working-directory: phone/app
+        run: flutter pub get --enforce-lockfile
+      - name: Build check (unsigned)
+        if: ${{ !inputs.upload }}
+        working-directory: phone/app
+        run: |
+          flutter build ios --release --no-codesign
+          app=build/ios/iphoneos/Runner.app
+          test -d "$app"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Info.plist"
+          echo "### Built: $(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Info.plist") ($(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$app/Info.plist")), $(du -sh "$app" | cut -f1) unsigned" >> "$GITHUB_STEP_SUMMARY"
+      - name: Firebase's settings and the App Store Connect key
+        if: inputs.upload
+        env:
+          ORBIT_GOOGLE_SERVICE_INFO_PLIST_BASE64: ${{ secrets.ORBIT_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_P8: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8 }}
+        run: |
+          umask 077
+          printf '%s' "$ORBIT_GOOGLE_SERVICE_INFO_PLIST_BASE64" | base64 --decode > "$RUNNER_TEMP/GoogleService-Info.plist"
+          phone/app/tool/ios_firebase.sh "$RUNNER_TEMP/GoogleService-Info.plist"
+          rm -f "$RUNNER_TEMP/GoogleService-Info.plist"
+          mkdir -p "$RUNNER_TEMP/asc"
+          printf '%s\n' "$APP_STORE_CONNECT_API_KEY_P8" > "$RUNNER_TEMP/asc/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8"
+          echo "ASC_KEY_PATH=$RUNNER_TEMP/asc/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8" >> "$GITHUB_ENV"
+      - name: Sign, check and send to TestFlight
+        if: inputs.upload
+        working-directory: phone/app
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: |
+          tool/ios_release.sh --upload
+          echo "### Sent to App Store Connect: Orbit $VERSION (TestFlight shows it after Apple's processing)" >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove the key and Firebase's settings
+        if: always()
+        run: |
+          rm -rf "$RUNNER_TEMP/asc"
+          phone/app/tool/ios_firebase.sh --clean

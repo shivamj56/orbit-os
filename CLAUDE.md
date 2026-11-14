@@ -30,7 +30,9 @@ remote (`phone/`). Read [README.md](README.md) and [docs/architecture.md](docs/a
   Keep the same `ANDROID_USER_HOME`: its key signs both TV apps, and another key cannot update them.
 - Unit tests: `./gradlew :app:testReleaseUnitTest :livetv:testReleaseUnitTest`; tool tests: `pytest tests`.
 - Phone: `cd phone/ui && npm run build`, then `cd phone/app && tool/sync_ui.sh && tool/sync_setup.sh && flutter build
-  apk --release` (the TV apps first: sync_setup.sh bundles their APKs).
+  apk --release` (the TV apps first: sync_setup.sh bundles their APKs). iPhone: `tool/ios_release.sh` on a Mac with
+  Xcode ([docs/ios.md](docs/ios.md)); its native code is Swift in `phone/app/ios/Runner`, the twin of the Kotlin in
+  `android/`: change both together.
 - CI: `.github/workflows` ([docs/ci-cd.md](docs/ci-cd.md)). Keep every action pinned to a commit SHA, keep the
   signer fingerprints in the workflows in step with the keys, and never add a step that publishes on a push.
 - The tools in `tools/` come from CleanYourTV: keep their internal names (`~/.cleanyourtv/` holds every TV's undo

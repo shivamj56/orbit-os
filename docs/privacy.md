@@ -1,7 +1,7 @@
 # Orbit privacy policy
 
-Effective 11 November 2026. This covers Orbit, the phone app of Orbit OS (Android package `dev.shiv.orbit`), and what
-it does with your data. Orbit is made by one developer, Shivam Anil Jha.
+Effective 14 November 2026. This covers Orbit, the phone app of Orbit OS (on Android the package `dev.shiv.orbit`, on
+iPhone the app `dev.shiv.orbit`), and what it does with your data. Orbit is made by one developer, Shivam Anil Jha.
 
 This policy is published at https://shivamj56.github.io/orbit-os-site/privacy.html, and Orbit links to it from
 Settings › About.
@@ -12,10 +12,11 @@ Google Drive. There are no analytics, no ads, and nothing is sold.
 
 ## What stays on your phone
 
-- **Your Google account's name and email address**, when you sign in with Google. Google's sign-in and Firebase
-  Authentication keep them on the phone so you stay signed in. Orbit shows your email in Settings.
+- **Your Google account's name and email address**, when you sign in with Google, or on an iPhone **the name and
+  email address Apple shares** when you sign in with Apple (Apple lets you hide your email behind a private relay
+  address). Firebase Authentication keeps them on the phone so you stay signed in. Orbit shows your email in Settings.
 - **Your TV**: its name, its address on your home Wi-Fi, and the pairing token the TV gave this phone. The token is
-  encrypted with a key held in your phone's Android Keystore.
+  encrypted with a key held in your phone's Android Keystore (on an iPhone, its Keychain).
 - **What Orbit Setup changed on each TV it set up**: the undo record (which apps it switched off, the TV's own home
   screen, its accessibility and screensaver settings, and which of Orbit's apps it installed), the TV's model and
   Android version, and the list of apps on the TV that setup read. This is what lets Orbit put a TV back.
@@ -37,8 +38,9 @@ TV). It reads the TV's list of apps and model, and sends the setup files; the TV
 
 ## Through Firebase, while your TV is linked
 
-If you sign in with Google and link your TV, so that Orbit works away from home, the phone and the TV talk through
-Google's Firebase Realtime Database (in Singapore). Under your account, and readable and writable only by your account:
+If you sign in (with Google, or on an iPhone with Apple too) and link your TV, so that Orbit works away from home, the
+phone and the TV talk through Google's Firebase Realtime Database (in Singapore). Under your account, and readable and
+writable only by your account:
 
 - **Commands and replies**: each button press or request on its way to the TV, and the TV's answer. The TV deletes a
   command once it has answered it, and the phone deletes the answer once it has read it.
@@ -49,8 +51,8 @@ Google's Firebase Realtime Database (in Singapore). Under your account, and read
   shows grey or black). They are deleted when help ends. While help is on, the TV shows a note at the top of its screen
   saying that someone can see it.
 
-Linking uses a short code the TV shows: the phone writes a Google sign-in token to that code once, and the TV deletes
-the code when it has used it. Unlinking the TV in Settings removes its link.
+Linking uses a short code the TV shows: the phone writes a Google sign-in token (or Apple's, for an Apple account) to
+that code once, and the TV deletes the code when it has used it. Unlinking the TV in Settings removes its link.
 
 Firebase is a Google service; Google processes this data for Orbit under Google's terms.
 
@@ -62,7 +64,8 @@ If you make a backup (at the end of Orbit Setup, or in Settings › This TV › 
 else in your Drive. A backup holds the undo record, your TV's name, address, model and Android version, the date, the
 list of apps on the TV and which were switched on, and the TV's own home screen, accessibility and screensaver
 settings. Settings › Backups lists your backups, can put a TV back from one, and can delete them. The backup counts
-towards your Google storage like any file.
+towards your Google storage like any file. With an Apple account, Google's own sheet asks the first time which Google
+account's Drive keeps your backups.
 
 ## What Orbit does not do
 
@@ -80,7 +83,8 @@ exactly what goes. With **Also delete my TV backups from Google Drive** left on,
 1. deletes every Orbit backup in your Google Drive;
 2. asks your linked TV to unlink, then deletes everything Orbit's cloud keeps under your account (the TV's link and
    name, what it last said, commands on their way, and Help mode's pictures);
-3. deletes your Orbit account from Firebase Authentication (Google may ask you to choose your account again first);
+3. deletes your Orbit account from Firebase Authentication (Google may ask you to choose your account again first;
+   for an Apple account, Apple asks you to confirm, and Orbit asks Apple to stop Sign in with Apple for Orbit);
 4. removes Orbit's access to your Google account, and signs you out.
 
 Nothing on your TV changes: Orbit OS stays on it and keeps working on your home Wi-Fi.
@@ -96,7 +100,8 @@ are on the web at https://shivamj56.github.io/orbit-os-site/delete-account.html.
 - **Backups one by one**: Settings › Backups, then the bin next to a backup. You can also delete all of Orbit's hidden
   data from Google Drive on the web: Settings › Manage apps, then Options next to Orbit, then Delete hidden app data.
 - **Access to your Google account**: you can remove Orbit at any time at myaccount.google.com › Security › Your
-  connections to third-party apps and services.
+  connections to third-party apps and services. **Sign in with Apple**: on an iPhone, Settings › your name › Sign in
+  with Apple › Orbit › Stop Using Apple ID.
 - **On the TV**: Settings › Undo Orbit OS on this TV puts the TV back the way it was and takes Orbit's apps off it.
 
 ## Children
