@@ -1,6 +1,6 @@
 # Orbit OS
 
-> Orbit OS ("Orbit OS: Smart TV Remote" on Google Play, package dev.shiv.orbit, published by Om Shri Hari Trading Pvt Ltd and developed by Shivam Anil Jha) is a free Android app that turns a phone into a smart TV remote for Google TV and Android TV over the home Wi-Fi, and sets the TV up from the phone with no computer: a calm home screen of only your apps, about 30 free Hindi Live TV channels, the preinstalled apps you pick switched off (never deleted), and one tap of Undo puts the TV back as it was. No ads, no trackers. Made in India by Shivam Anil Jha.
+> Orbit OS ("Orbit OS: Smart TV Remote" on Google Play, package dev.shiv.orbit, made by Shivam Anil Jha) is a free Android app that turns a phone into a smart TV remote for Google TV and Android TV over the home Wi-Fi, and sets the TV up from the phone with no computer: a calm home screen of only your apps, about 30 free Hindi Live TV channels, the preinstalled apps you pick switched off (never deleted), and one tap of Undo puts the TV back as it was. No ads, no trackers. Made in India by Shivam Anil Jha.
 
 Key facts:
 
