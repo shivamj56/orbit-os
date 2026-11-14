@@ -1,218 +1,134 @@
-name: Orbit OS CI and Android builds
+name: Orbit CI
 
+# The quality checks: the phone UI, the phone app, both TV apps and the TV tools, on every pull request into main and
+# on every push to main (the owner also pushes straight to it). Nothing here signs, reads a secret or publishes, so it
+# runs the same on any branch. A change that only touches site/ runs website-build.yml instead. docs/ci-cd.md
 on:
   pull_request:
     branches: [main]
+    paths-ignore: ['site/**']
   push:
     branches: [main]
+    paths-ignore: ['site/**']
   workflow_dispatch:
-    inputs:
-      publish_to_play:
-        description: Upload the phone app bundle to Google Play after building
-        required: true
-        type: boolean
-        default: false
-      play_track:
-        description: Google Play release track (used only when publish_to_play is enabled)
-        required: true
-        type: choice
-        options: [internal, alpha, beta, production]
-        default: internal
 
 permissions:
   contents: read
 
 concurrency:
-  group: orbit-${{ github.workflow }}-${{ github.ref }}
+  group: orbit-ci-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # The toolchain Orbit is built with on the owner's Mac (phone/app/.metadata, pubspec.lock): keep them in step.
+  FLUTTER_VERSION: 3.47.9
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+  PYTHON_VERSION: '3.12'
+
 jobs:
-  checks:
-    name: Source checks
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out source
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: |
-            phone/ui/package-lock.json
-            site/package-lock.json
-
-      - name: Build phone UI
+  phone-ui:
+    name: Phone UI (phone/ui)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
         working-directory: phone/ui
-        run: |
-          npm ci
-          npm test --if-present
-          npm run build
-
-      - name: Build website
-        working-directory: site
-        run: |
-          npm ci
-          npm run build
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Run TV app unit tests
-        run: |
-          chmod +x launcher/gradlew
-          cd launcher
-          ./gradlew :app:testReleaseUnitTest :livetv:testReleaseUnitTest
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Analyze and test phone app
-        working-directory: phone/app
-        run: |
-          flutter pub get
-          flutter analyze
-          flutter test
-
-  android-build:
-    name: Build Android APKs
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
-      - name: Check out source
-        uses: actions/checkout@v4
-
-      - name: Require build secrets
-        env:
-          GOOGLE_SERVICES: ${{ secrets.ORBIT_GOOGLE_SERVICES_JSON_BASE64 }}
-          KEYSTORE: ${{ secrets.ORBIT_RELEASE_KEYSTORE_BASE64 }}
-          STORE_PASSWORD: ${{ secrets.ORBIT_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ORBIT_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ORBIT_KEY_PASSWORD }}
-        run: |
-          missing=0
-          for name in GOOGLE_SERVICES KEYSTORE STORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
-            if [ -z "${!name}" ]; then
-              echo "::error::Missing required GitHub Actions secret for ${name}."
-              missing=1
-            fi
-          done
-          exit "$missing"
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: phone/ui/package-lock.json
-
-      - name: Build phone interface
-        working-directory: phone/ui
+      - run: npm ci
+      - name: Unit tests (vitest)
+        run: npm test
+      - name: Build (tsc + vite)
+        run: npm run build
+      - name: Check the built page
         run: |
-          npm ci
-          npm run build
+          test -s dist/index.html
+          echo "dist/index.html: $(wc -c < dist/index.html | tr -d ' ') bytes"
 
-      - name: Build TV apps
-        run: |
-          chmod +x launcher/gradlew
-          cd launcher
-          ./gradlew :app:assembleRelease :livetv:assembleRelease
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+  flutter:
+    name: Phone app (phone/app)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: phone/app
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
-
-      - name: Restore Firebase Android configuration
-        env:
-          GOOGLE_SERVICES: ${{ secrets.ORBIT_GOOGLE_SERVICES_JSON_BASE64 }}
+      - name: Asset folders
+        # assets/ui and assets/setup are filled by tool/sync_ui.sh and tool/sync_setup.sh before a release build and
+        # are git-ignored. The analyzer and the tests only need the folders, so the bridge-test page stands in.
         run: |
-          printf '%s' "$GOOGLE_SERVICES" | base64 --decode > phone/app/android/app/google-services.json
-          test -s phone/app/android/app/google-services.json
+          tool/sync_ui.sh --placeholder
+          mkdir -p assets/setup
+      - name: Dependencies (exactly pubspec.lock)
+        run: flutter pub get --enforce-lockfile
+      - run: flutter analyze
+      - run: flutter test
 
-      - name: Restore phone release signing key
-        env:
-          KEYSTORE: ${{ secrets.ORBIT_RELEASE_KEYSTORE_BASE64 }}
-          STORE_PASSWORD: ${{ secrets.ORBIT_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ORBIT_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ORBIT_KEY_PASSWORD }}
-        run: |
-          printf '%s' "$KEYSTORE" | base64 --decode > phone/app/android/app/orbit-release.jks
-          cat > phone/app/android/key.properties <<EOF
-          storePassword=$STORE_PASSWORD
-          keyPassword=$KEY_PASSWORD
-          keyAlias=$KEY_ALIAS
-          storeFile=orbit-release.jks
-          EOF
-          chmod 600 phone/app/android/key.properties phone/app/android/app/orbit-release.jks
-
-      - name: Prepare Flutter Android Gradle wrapper
-        working-directory: phone/app
-        run: |
-          flutter pub get
-          printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
-          curl -fsSLo /tmp/gradle.zip https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
-          unzip -q /tmp/gradle.zip -d /tmp
-          cd android
-          /tmp/gradle-9.3.1/bin/gradle wrapper --gradle-version 9.3.1 --distribution-type all
-
-      - name: Bundle TV setup assets into phone app
-        run: |
-          phone/app/tool/sync_ui.sh
-          phone/app/tool/sync_setup.sh
-
-      - name: Build signed phone APK
-        working-directory: phone/app
-        run: flutter build apk --release --target-platform android-arm,android-arm64
-
-      - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+  tv:
+    name: TV apps (launcher)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: launcher
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          name: orbit-os-android-apks
-          if-no-files-found: error
-          retention-days: 30
+          persist-credentials: false
+      - name: Check the Gradle wrapper is Gradle's own
+        uses: gradle/actions/wrapper-validation@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+      - name: Unit tests
+        run: ./gradlew --no-daemon :app:testReleaseUnitTest :livetv:testReleaseUnitTest
+      - name: Release build
+        # Signed with this runner's own throwaway debug key: it proves the release build (R8, lint) still works, and
+        # nothing from it is kept. The real TV builds come from android-build.yml.
+        run: ./gradlew --no-daemon :app:assembleRelease :livetv:assembleRelease
+      - name: Keep the test reports
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: tv-test-reports
           path: |
-            phone/app/build/app/outputs/flutter-apk/app-release.apk
-            launcher/app/build/outputs/apk/release/app-release.apk
-            launcher/livetv/build/outputs/apk/release/livetv-release.apk
+            launcher/app/build/reports/tests/
+            launcher/livetv/build/reports/tests/
+          retention-days: 7
+          if-no-files-found: ignore
 
-      - name: Build signed Android App Bundle for manual Play release
-        if: github.event_name == 'workflow_dispatch'
-        working-directory: phone/app
-        run: flutter build appbundle --release
-
-      - name: Upload Android App Bundle
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
+  python:
+    name: TV tools (tools, tests)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          name: orbit-phone-play-aab
-          if-no-files-found: error
-          retention-days: 30
-          path: phone/app/build/app/outputs/bundle/release/app-release.aab
-
-      - name: Publish phone app to Google Play
-        if: github.event_name == 'workflow_dispatch' && inputs.publish_to_play
-        uses: r0adkll/upload-google-play@v1
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: dev.shiv.orbit
-          releaseFiles: phone/app/build/app/outputs/bundle/release/app-release.aab
-          track: ${{ inputs.play_track }}
-          status: completed
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: tools/requirements.txt
+      - name: Dependencies
+        run: python -m pip install -r tools/requirements.txt pytest==8.4.2
+      - name: Tests (pytest)
+        run: python -m pytest tests -q
