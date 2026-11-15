@@ -37,6 +37,13 @@ Orbit OS is open source, under the GNU General Public License v3.0 or later.
 </p>
 
 <p align="center">
+  <a href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&referrer=utm_source%3Dgithub%26utm_medium%3Dreadme"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="84" alt="Get it on Google Play"></a>
+</p>
+
+<p align="center"><b>Try it on your TV tonight:</b> free, no ads, set up from your phone in about five minutes, and undone in one tap.<br>
+If Orbit is useful to you, a ⭐ on this repository helps other TV owners and developers find it.</p>
+
+<p align="center">
   <img alt="Orbit Home: a curved gallery of apps with a greeting, the date and the weather" src="docs/assets/home.jpg" width="49%">
   <img alt="Control Center: Wi-Fi, Bluetooth, now playing, quick settings, display and sound sliders, scenes" src="docs/assets/control-center.jpg" width="49%">
 </p>

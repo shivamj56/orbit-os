@@ -105,9 +105,10 @@ JSON bodies with `Content-Type: application/json`, and after pairing `x-portal-t
 
 ## From anywhere: Firebase (project `orbit-family-room`, made 10 Nov)
 
-Why: the owner's phone cannot reach the TV over the home Wi-Fi at all (not even Chrome at 192.168.1.7:8090), and he
-wants "sign in with the TV's Google account → control from anywhere". The phone and the TV become the SAME Firebase user
-(the owner's Google account), and talk through the Realtime Database. Values: `phone/firebase/config.json`; rules:
+Why: on the first family-room setup the phone could not reach the TV over the home Wi-Fi at all (not even Chrome at
+the TV's address on port 8090), so the remote needed a way that works from anywhere: "sign in with the TV's Google
+account → control from anywhere". The phone and the TV become the SAME Firebase user (that Google account), and talk
+through the Realtime Database. Values: `phone/firebase/config.json`; rules:
 `phone/firebase/database.rules.json` (published, tested with REST 10 Nov 12:20).
 
 Database (`databaseURL` in config.json, Singapore). Everything lives under `/orbit/{uid}` (uid = that Google account's
@@ -153,9 +154,9 @@ events come from `/orbit/{uid}/tv/state`; pointer moves are batched to ≤ 10 a 
 
 ## Help mode (10 Nov): see the TV's screen from the phone and press its buttons
 
-Why: the owner lives away from home; his parents call when the TV does something they don't understand. Help mode
-shows him the TV's screen (menus, apps, settings; a playing video shows grey or black, the TV cannot capture its video
-layer and DRM apps blank themselves) and lets him press buttons or tap the spot on the picture to click there.
+Why: when a family member at home calls because the TV is doing something they don't understand, the person helping
+from far away needs to see it. Help mode shows the helper the TV's screen (menus, apps, settings; a playing video shows grey or black, the TV cannot capture its video
+layer and DRM apps blank themselves) and lets them press buttons or tap the spot on the picture to click there.
 
 TV routes (door and cloud alike):
 
