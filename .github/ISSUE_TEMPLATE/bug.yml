@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in Orbit OS does not work as it should.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A security problem goes in private instead: see https://github.com/shivamj56/orbit-os/security/policy.
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part
+      options:
+        - Orbit, the phone app
+        - Orbit Setup or Undo
+        - Orbit Home on the TV
+        - Orbit Live TV
+        - The website
+        - The TV tools in tools/
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to make it happen again
+  - type: input
+    id: phone
+    attributes:
+      label: Phone model and Android version
+  - type: input
+    id: tv
+    attributes:
+      label: TV brand and model
+      description: As shown in the TV's Settings › System › About.
+  - type: input
+    id: version
+    attributes:
+      label: Orbit version, or the commit you built
+      description: In the app, Settings › About.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Anything that helps. Leave out your Wi-Fi's name, addresses, emails and codes.

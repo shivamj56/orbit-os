@@ -1,0 +1,22 @@
+name: Idea
+description: Suggest something that would make Orbit OS better.
+labels: ["idea"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What you would like, and what it would make easier for you.
+    validations:
+      required: true
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part
+      options:
+        - Orbit, the phone app
+        - Orbit Setup or Undo
+        - Orbit Home on the TV
+        - Orbit Live TV
+        - The website
+        - Something new
