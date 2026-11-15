@@ -107,7 +107,7 @@ export function StarMoment({ stars }: { stars: number | null }) {
                   <NumberTicker value={stars} className="text-accent-3" /> {stars === 1 ? "star" : "stars"} so far
                 </a>
               ) : (
-                <span className="font-mono text-[0.75rem] text-dim max-sm:hidden">github.com/shivamj56/orbit-os-site</span>
+                <span className="font-mono text-[0.75rem] text-dim max-sm:hidden">github.com/shivamj56/orbit-os</span>
               )}
             </div>
           </div>
