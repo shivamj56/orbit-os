@@ -21,10 +21,10 @@ below are under the GPL too; the parts themselves keep their own licences.
 
 ## Parts that keep their own licences
 
-### CleanYourTV (MIT)
+### Parts under the MIT licence
 
-Orbit OS grew out of [CleanYourTV](https://github.com/Gathin23/CleanYourTV) by Gathin. These parts come from it and
-are used under the MIT licence below, whose notice is kept here as it requires:
+These parts are Copyright (c) 2026 Gathin and are used under the MIT licence below, whose notice is kept here as it
+requires:
 
 - the TV tools in `tools/` and their tests in `tests/` (except `tests/test_orbit_setup_script.py`, which was written
   for Orbit OS);

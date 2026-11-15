@@ -197,9 +197,6 @@ export function Credits({ stars }: { stars: number | null }) {
             <Credit gap>
               <Role>With thanks to</Role>
               <ul className="mt-5 grid gap-3 text-[clamp(1.0625rem,2vw,1.25rem)] text-ink">
-                <li>
-                  CleanYourTV by Gathin <span className="text-dim">(MIT)</span>
-                </li>
                 <li>React Bits</li>
                 <li>Magic UI / 21st.dev</li>
                 <li>

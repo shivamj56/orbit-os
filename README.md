@@ -266,8 +266,6 @@ you share goes out with its source, under the same licence.
 
 Some parts keep their own licences, all listed in [NOTICE.md](NOTICE.md):
 
-- Orbit OS grew out of [CleanYourTV](https://github.com/Gathin23/CleanYourTV) by Gathin, used under the MIT licence:
-  the TV tools in `tools/` and the launcher code that Orbit Home started from.
 - Fonts: Inter and Outfit (SIL Open Font License). Icons: Fluent Emoji (MIT) and Material Design icons (Apache 2.0).
 - The website's React Bits components keep their MIT + Commons Clause licence and are not under the GPL.
 - The GPL covers the code, not the Orbit OS name or icon: a fork that is published needs its own.

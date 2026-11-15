@@ -291,7 +291,7 @@ class that does not exist. Orbit Home's theme provider is `content://dev.shiv.or
 
 ### From the earlier ids
 
-Until 11 Nov the two apps were `com.gathin.tvhome` and `com.gathin.livetv`, ids they took from CleanYourTV. To Android
+Until 11 Nov the two apps were `com.gathin.tvhome` and `com.gathin.livetv`, their first ids. To Android
 the new ones are other apps, so `install` moves a TV that still has the earlier ones:
 
 1. Once the new Orbit Home has started and is Home, the earlier one's look, its `config.json`, goes into the new one:

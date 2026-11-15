@@ -7,7 +7,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        // Orbit Home's own id. The Java package (namespace above) keeps CleanYourTV's name, so a component on the
+        // Orbit Home's own id. The Java package (namespace above) keeps its first name, so a component on the
         // TV is written in full: dev.shiv.orbit.home/com.gathin.tvhome.HomeKeyService, never /.HomeKeyService.
         // Opt-in identity for firmware with a package-name HOME allowlist.
         // Xiaomi: docs/devices/xiaomi-mitv-aetp0-dofus.md (com.ts.launcher).

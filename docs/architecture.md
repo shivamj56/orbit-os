@@ -28,9 +28,9 @@ flowchart TB
 
 ## Orbit Home (`launcher/app`)
 
-The home screen. It started as CleanYourTV's launcher and keeps parts of it (wallpapers, the clock, inputs, the
-app library, its settings screens and the guards that keep it Home); the gallery, the panel, the Island, the
-phone link and the rest below were written for Orbit OS.
+The home screen. Some of its parts (wallpapers, the clock, inputs, the app library, its settings screens and the
+guards that keep it Home) are MIT-licensed code listed in [NOTICE.md](../NOTICE.md); the gallery, the panel, the
+Island, the phone link and the rest below were written for Orbit OS.
 
 Its application id is `dev.shiv.orbit.home`, and Live TV's is `dev.shiv.orbit.live`. The Java packages keep their
 first names, `com.gathin.tvhome` and `com.gathin.livetv`, so a component on the TV is written in full, as in

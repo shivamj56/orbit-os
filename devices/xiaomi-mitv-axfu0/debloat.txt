@@ -1,6 +1,6 @@
 # Xiaomi TV A Pro / A series, model code MiTV-AXFU0 (arctictale), Google TV 14.
 # Tested on firmware UKG3.241124.001.V816.0.26.9.16.UXFAATV: the first TV Orbit OS ran on (8 Nov 2026).
-# Started from CleanYourTV's examples/xiaomi-mitv-axfu0/debloat.txt (MIT), with this household's choices.
+# Based on an MIT-licensed example list (see NOTICE.md), with this household's choices.
 # Kept on by choice: voice search, screen mirroring, the remote's shortcut buttons (partnercustomizer),
 # firmware updates, every streaming app but YouTube Music. Chromecast and Xiaomi TV+ are off, see below.
 # Apply: TV_HOST=<tv ip> tools/disable.sh devices/xiaomi-mitv-axfu0/debloat.txt

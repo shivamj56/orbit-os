@@ -46,8 +46,8 @@ from the TV and picks the matching entry, or the closest one with only the safe 
 
 ## 4. Going public
 
-- [x] Give the TV apps their own ids (`dev.shiv.orbit.home`, `dev.shiv.orbit.live`) in place of the ones inherited
-  from CleanYourTV. On a TV that already runs Orbit OS this means one reinstall; Orbit Setup moves such a TV over.
+- [x] Give the TV apps their own ids (`dev.shiv.orbit.home`, `dev.shiv.orbit.live`) in place of the earlier
+  ones. On a TV that already runs Orbit OS this means one reinstall; Orbit Setup moves such a TV over.
 - [x] A licence: Orbit OS is open source under GPL-3.0-or-later ([LICENSE](../LICENSE), [NOTICE.md](../NOTICE.md)).
 - [x] Issue templates, a guide for contributors ([CONTRIBUTING.md](../CONTRIBUTING.md)) and a security contact
   ([SECURITY.md](../SECURITY.md)).

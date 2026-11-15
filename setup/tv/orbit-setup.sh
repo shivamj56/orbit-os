@@ -22,10 +22,10 @@
 D=${ORBIT_DIR:-/data/local/tmp/orbit}
 PKG=dev.shiv.orbit.home
 LIVE=dev.shiv.orbit.live
-# The Java package Orbit Home's classes keep from CleanYourTV. It is not the app's id, so every component is written
+# The Java package Orbit Home's classes keep from their first version. It is not the app's id, so every component is written
 # in full: $PKG/.HomeKeyService would name dev.shiv.orbit.home.HomeKeyService, which does not exist.
 CLS=com.gathin.tvhome
-# Orbit's two apps before 11 Nov, under the ids they took from CleanYourTV. Install puts the new ones in their place
+# Orbit's two apps before 11 Nov, under their first ids. Install puts the new ones in their place
 # (phone/SPEC.md, "From the earlier ids"). OLD_RE is OLD_PKG as a sed pattern.
 OLD_PKG=com.gathin.tvhome
 OLD_LIVE=com.gathin.livetv

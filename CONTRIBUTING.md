@@ -93,7 +93,7 @@ And on a real TV:
 - Say which tests you ran, and on which phone and TV (model and Android version) you tried the change.
 - For a change to the TV side, say that Undo still puts the TV back.
 - For a change people can see, add screenshots or a short video, before and after.
-- Keep the internal names that come from CleanYourTV: the Java packages `com.gathin.tvhome` and `com.gathin.livetv`,
+- Keep the internal names from the first version: the Java packages `com.gathin.tvhome` and `com.gathin.livetv`,
   by which every component of Orbit's apps is named on a TV, and `~/.cleanyourtv/`, which holds every TV's undo
   record on a computer. Renaming them would lose those records and the components TVs already know.
 - No personal values in tracked files: a name for the greeting, cloud keys and a TV's address belong in that TV's own
