@@ -5,7 +5,7 @@ Orbit OS is a free Android app, "Orbit OS: Smart TV Remote" on Google Play (pack
 - Google Play: https://play.google.com/store/apps/details?id=dev.shiv.orbit
 - Website: https://orbit-os-tv.vercel.app/
 - Source code (open source, GPL-3.0): https://github.com/shivamj56/orbit-os
-- Privacy policy: https://shivamj56.github.io/orbit-os-site/privacy.html
+- Privacy policy: https://orbit-os-tv.vercel.app/privacy.html
 - Report a TV, a problem or an idea: https://github.com/shivamj56/orbit-os-site/issues
 
 ## Who it is for
@@ -51,7 +51,7 @@ On the first screen, "Try Orbit without a TV" opens a pretend TV with the remote
 
 ## Privacy
 
-No ads and no trackers. Google sign-in is optional: it lets the phone reach the TV away from home and keeps backups in your own Google Drive. You can delete your Orbit account in the app (Settings) or on the web: https://shivamj56.github.io/orbit-os-site/delete-account.html
+No ads and no trackers. Google sign-in is optional: it lets the phone reach the TV away from home and keeps backups in your own Google Drive. You can delete your Orbit account in the app (Settings) or on the web: https://orbit-os-tv.vercel.app/delete-account.html
 
 ## Questions people ask
 

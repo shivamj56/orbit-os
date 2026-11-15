@@ -22,6 +22,6 @@ Key facts:
 
 ## Optional
 
-- [Privacy policy](https://shivamj56.github.io/orbit-os-site/privacy.html)
-- [Delete your Orbit account](https://shivamj56.github.io/orbit-os-site/delete-account.html)
+- [Privacy policy](https://orbit-os-tv.vercel.app/privacy.html)
+- [Delete your Orbit account](https://orbit-os-tv.vercel.app/delete-account.html)
 - [Report a TV, a problem or an idea](https://github.com/shivamj56/orbit-os-site/issues)
