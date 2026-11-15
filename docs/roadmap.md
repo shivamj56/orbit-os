@@ -44,13 +44,15 @@ from the TV and picks the matching entry, or the closest one with only the safe 
 - Orbit on the phone signs in with the same account and lists every TV linked to it.
 - The phone's remote reads each TV's buttons and apps from that TV, so the same app fits any TV.
 
-## 4. Before going public
+## 4. Going public
 
-- Give the TV apps their own ids (`dev.shiv.orbit.home`, `dev.shiv.orbit.live`) in place of the ones inherited
-  from CleanYourTV. On a TV that already runs Orbit OS this means one reinstall, so it goes with the first release.
-- Choose a licence.
-- Build signed APKs on GitHub for every release, with checksums.
-- A short demo video and screenshots of every screen; issue templates; a security contact.
+- [x] Give the TV apps their own ids (`dev.shiv.orbit.home`, `dev.shiv.orbit.live`) in place of the ones inherited
+  from CleanYourTV. On a TV that already runs Orbit OS this means one reinstall; Orbit Setup moves such a TV over.
+- [x] A licence: Orbit OS is open source under GPL-3.0-or-later ([LICENSE](../LICENSE), [NOTICE.md](../NOTICE.md)).
+- [x] Issue templates, a guide for contributors ([CONTRIBUTING.md](../CONTRIBUTING.md)) and a security contact
+  ([SECURITY.md](../SECURITY.md)).
+- [ ] Build signed APKs on GitHub for every release, with checksums.
+- [ ] A short demo video and screenshots of every screen.
 
 ## 5. Launch
 

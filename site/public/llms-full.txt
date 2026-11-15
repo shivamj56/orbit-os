@@ -4,6 +4,7 @@ Orbit OS is a free Android app, "Orbit OS: Smart TV Remote" on Google Play (pack
 
 - Google Play: https://play.google.com/store/apps/details?id=dev.shiv.orbit
 - Website: https://orbit-os-tv.vercel.app/
+- Source code (open source, GPL-3.0): https://github.com/shivamj56/orbit-os
 - Privacy policy: https://shivamj56.github.io/orbit-os-site/privacy.html
 - Report a TV, a problem or an idea: https://github.com/shivamj56/orbit-os-site/issues
 
@@ -76,7 +77,7 @@ No. The channels are free streams from the channels themselves. Pay channels suc
 It is tested and in daily use on a Xiaomi TV A Pro with Google TV 14. On other Google TV and Android TV sets, Orbit offers only the changes it knows are safe on any TV, and one tap puts everything back.
 
 **Is it really free?**
-Yes. No ads, no subscription and no tracking.
+Yes. No ads, no subscription and no tracking. Orbit OS is also open source: its code is on GitHub under the GPL-3.0 licence.
 
 **Is there an iPhone version?**
 Not yet. A version that runs on the TV itself is on the way.

@@ -1,18 +1,21 @@
 # Orbit OS: notes for coding agents
 
-Orbit OS is Shivam Jha's project: Orbit Home and Orbit Live TV for Google TV (`launcher/`), and Orbit, the phone
-remote (`phone/`). Read [README.md](README.md) and [docs/architecture.md](docs/architecture.md) first.
+Orbit OS is Shivam Jha's project, open source under GPL-3.0-or-later ([LICENSE](LICENSE), [NOTICE.md](NOTICE.md)):
+Orbit Home and Orbit Live TV for Google TV (`launcher/`), and Orbit, the phone remote (`phone/`). Read
+[README.md](README.md), [docs/architecture.md](docs/architecture.md) and [CONTRIBUTING.md](CONTRIBUTING.md) first.
 
 ## Git
 
-- Commit as `Shivam Jha <95514609+shivamj56@users.noreply.github.com>` (this repo's git config has it). No
-  Co-Authored-By lines: the owner wants one author.
-- `origin` is the owner's private repo. Push only when the owner asks.
-- `upstream` is CleanYourTV, kept for reading only; its push URL is switched off on purpose. Never push there.
+- In the owner's own checkout, commit as `Shivam Jha <95514609+shivamj56@users.noreply.github.com>` (its git config
+  has it), with no Co-Authored-By lines: the owner wants one author. Anyone else commits under their own name and
+  sends a pull request.
+- `origin` is the owner's repository, github.com/shivamj56/orbit-os. Push only when the owner asks.
+- In the owner's checkout, `upstream` is CleanYourTV, kept for reading only; its push URL is switched off on purpose.
+  Never push there.
 - Never commit `work/`, `backup/`, `shots/`, `tools/adbkey`, `tools/venv/`, signing keys (`*.jks`,
   `key.properties`), `phone/firebase/config.json`, `google-services.json` or APKs.
 - No personal values in tracked files: a name for the greeting, cloud keys and a TV's address belong in that TV's
-  own theme on the owner's computer.
+  own theme on the computer that pushes it.
 
 ## On a real TV
 

@@ -1,5 +1,5 @@
-// Orbit's public pages (the source repository is private, so these live on the Orbit OS site). The page cannot leave
-// the app's WebView: inside the app the phone's own browser opens them (the `openUrl` op); in a browser, a new tab.
+// Orbit's public pages, on the Orbit OS site (shivamj56/orbit-os-site), the only places the `openUrl` op opens. The
+// page cannot leave the app's WebView: inside the app the phone's own browser opens them; in a browser, a new tab.
 import { bridge } from "./bridge";
 
 export const LINKS = {

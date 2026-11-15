@@ -481,9 +481,9 @@ The privacy policy (docs/privacy.md, "Deleting your account and data") gives the
 
 ## Orbit's public pages (Orbit 1.4.0)
 
-The source repository is private, so the pages people need live on the Orbit OS site: the privacy policy
-(https://shivamj56.github.io/orbit-os-site/privacy.html, the public copy of docs/privacy.md), account deletion on the
-web (https://shivamj56.github.io/orbit-os-site/delete-account.html) and problems
+The pages people need from the app live on the Orbit OS site, the public repository shivamj56/orbit-os-site: the
+privacy policy (https://shivamj56.github.io/orbit-os-site/privacy.html, the public copy of docs/privacy.md), account
+deletion on the web (https://shivamj56.github.io/orbit-os-site/delete-account.html) and problems
 (https://github.com/shivamj56/orbit-os-site/issues). The page links them from Settings › About (Privacy policy, Report
 a problem), the delete-account screen and the setup's account step (`phone/ui/src/links.ts`).
 

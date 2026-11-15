@@ -2,8 +2,8 @@
 
 The public page for Orbit OS: one self-contained `dist/index.html` (scripts, styles, fonts, pictures and the boot film
 are all inside it), so it can be hosted anywhere or opened straight from disk. At runtime it fetches nothing except the
-optional star count from `api.github.com`; when that fails (offline, or the repository is still private) the page simply
-leaves the number out.
+optional star count from `api.github.com`; when that fails (offline, or GitHub says no) the page simply leaves the
+number out.
 
 ```bash
 cd site
@@ -50,7 +50,9 @@ unlayered) cannot override them.
 
 ## Components taken from other projects
 
-Each file keeps a header naming its source, its licence and anything changed.
+Each file keeps a header naming its source, its licence and anything changed. They keep their own licences, whose
+texts are beside them (`components/reactbits/LICENSE.md`, `components/magicui/LICENSE.md`): the React Bits files are
+not under Orbit OS's GPL ([NOTICE.md](../NOTICE.md)).
 
 | Component | From | Licence | Installed with | Changes |
 |---|---|---|---|---|

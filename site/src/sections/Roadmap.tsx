@@ -30,7 +30,7 @@ const COLUMNS: { when: string; status: StatusMarkStatus; note: string; items: It
     items: [
       { icon: <I.Tv size={17} />, title: "Setup on the TV itself", text: "The same pictures and questions on the TV, moved with the remote, for homes without an Android phone." },
       { icon: <I.Users size={17} />, title: "Your name, your account", text: "A first start on the TV that asks your name and email, and one account for the TV and the phone." },
-      { icon: <I.Bolt size={17} />, title: "A public release", text: "Signed releases on GitHub with checksums, a licence, a short video." },
+      { icon: <I.Bolt size={17} />, title: "A public release", text: "Signed releases on GitHub with checksums, and a short video." },
     ],
   },
   {

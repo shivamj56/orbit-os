@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { REPO_API } from "./links";
 
 /**
- * The repository's live star count, or null. The page must look complete without it: the repository may still be
- * private, the visitor may be offline, or the API may say no. One request per visit, cached for the session.
+ * The repository's live star count, or null. The page must look complete without it: the visitor may be offline, or
+ * the API may say no. One request per visit, cached for the session.
  */
 let pending: Promise<number | null> | null = null;
 

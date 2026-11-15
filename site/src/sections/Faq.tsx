@@ -11,7 +11,7 @@ const QA = [
   { q: "Will my apps and accounts keep working?", a: "Yes. Netflix, YouTube, Prime Video and every other app you use stay as they are, signed in. Orbit only changes the home screen and switches off what you choose." },
   { q: "Does Live TV cost anything?", a: "No. The 30 channels are free streams from the channels themselves. Pay channels such as Star Plus or Sony SAB open in their own apps, where you need their plan." },
   { q: "I have an iPhone. Can I use Orbit?", a: "Not yet. Orbit needs an Android phone for now. A version you can run on the TV itself is on the way." },
-  { q: "Is it really free?", a: "Yes. No ads, no subscription and no tracking." },
+  { q: "Is it really free?", a: "Yes. No ads, no subscription and no tracking. Orbit OS is also open source: its code is on GitHub under the GPL-3.0 licence." },
   { q: "Which TVs does it work on?", a: "It is tested and in daily use on a Xiaomi TV A Pro with Google TV 14. On other Google TV and Android TV sets, Orbit offers only the changes it knows are safe on any TV, and one tap puts everything back." },
   { q: "What exactly does it switch off?", a: "Only what you agree to after reading the list. On the tested TV that was 32 apps, in groups like ads and tracking, apps nobody uses and the stock home screen. They are switched off, never deleted, and the parts Android needs are never touched." },
 ];
