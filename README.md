@@ -30,7 +30,8 @@ no computer.
 It runs on top of Google TV: no root, no unlocked bootloader, no factory reset. What it switches off is disabled,
 never uninstalled, and one tap of Undo brings the TV back the way it was.
 
-Orbit OS is open source, under the GNU General Public License v3.0 or later.
+Orbit OS is open source, under the GNU General Public License v3.0 or later. It is made in India by
+[Shivam Jha](https://shivamj56.github.io/Myself/) (Shivam Anil Jha).
 
 <p align="center">
   <img alt="The same Google TV before Orbit and after; the ad on the stock home is blurred" src="docs/assets/before-after.gif" width="400">
