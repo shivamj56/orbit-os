@@ -100,8 +100,8 @@ fits this free project.
 
 | File | From | How |
 |---|---|---|
-| `assets/img/home.webp`, `control-center.webp` | `docs/assets/*.jpg` | `python3 scripts/prepare-assets.py` |
-| `assets/setup/*.webp` | the phone app's own setup mock, 780 × 1688 screenshots, no private data | same script (pass the folder if it moves) |
+| `assets/img/home.webp`, `control-center.webp` | `docs/assets/*.jpg` | `python3 scripts/prepare-assets.py <setup screenshots>` |
+| `assets/setup/*.webp` | the phone app's own setup mock, 780 × 1688 screenshots, no private data | same script, from the folder it is given (or `ORBIT_SETUP_SHOTS`) |
 | `assets/film/boot-intro.mp4`, `poster.webp` | `launcher/app/src/main/res/raw/boot_intro.mp4`, its first 0.8 s cut | same script (it never overwrites the cut film) |
 | `assets/brand/shiv-mark.svg` | `work/family-room/intro/logo/shiv-mark.svg` | same script |
 | `assets/brand/qr-release.svg` | the download link, for visitors on a computer | `node scripts/make-qr.mjs` |

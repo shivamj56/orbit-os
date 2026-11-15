@@ -1,10 +1,12 @@
 """Copies the pictures, the boot film and the mark the site uses into src/assets, sized for where they are shown.
 
-Run from site/:  python3 scripts/prepare-assets.py [path-to-setup-screenshots]
-The setup screenshots (780 x 1688, from the phone app's own mock) are not in git; pass their folder if they move.
+Run from site/:  python3 scripts/prepare-assets.py <setup-screenshots-folder>
+             or  ORBIT_SETUP_SHOTS=<setup-screenshots-folder> python3 scripts/prepare-assets.py
+The setup screenshots (780 x 1688 PNGs, from the phone app's own mock) are not in git, so their folder is always given.
 """
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
@@ -14,10 +16,30 @@ from PIL import Image
 
 SITE = Path(__file__).resolve().parent.parent
 REPO = SITE.parent
-SHOTS = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(
-    "/private/tmp/claude-501/-Users-shiv-Downloads-Neon-Option-Chain/aaeb0250-dd76-41fe-8d7e-f1b8c33113ac/scratchpad/setup-shots"
-)
 OUT = SITE / "src" / "assets"
+# The phone's setup, one screen per step, as the mock's screenshots name them.
+SETUP_SCREENS = [
+    "01-welcome", "02b-find-found", "03-devmode", "04-allow-waiting", "06-question-cast", "09-question-ads",
+    "11-plan", "13b-installing", "14-you", "15-ready", "16-remote",
+]
+
+
+def shots_folder() -> Path:
+    """The setup screenshots' folder, from the command line or ORBIT_SETUP_SHOTS; stops before anything is written."""
+    given = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("ORBIT_SETUP_SHOTS", "")
+    if not given:
+        sys.exit("prepare-assets: no folder of setup screenshots. Run: python3 scripts/prepare-assets.py <folder>\n"
+                 "(or set ORBIT_SETUP_SHOTS=<folder>). They are the phone app's own mock, 780 x 1688 PNGs, not in git.")
+    folder = Path(given).expanduser()
+    if not folder.is_dir():
+        sys.exit(f"prepare-assets: {folder} is not a folder. Nothing was written.")
+    missing = [f"{name}.png" for name in SETUP_SCREENS if not (folder / f"{name}.png").is_file()]
+    if missing:
+        sys.exit(f"prepare-assets: {folder} has no {', '.join(missing)}. Nothing was written.")
+    return folder
+
+
+SHOTS = shots_folder()
 
 
 def webp(src: Path, dst: Path, width: int | None = None, quality: int = 80) -> None:
@@ -34,10 +56,7 @@ webp(REPO / "docs/assets/home.jpg", OUT / "img/home.webp", quality=84)
 webp(REPO / "docs/assets/control-center.jpg", OUT / "img/control-center.webp", quality=80)
 
 # The phone's setup, one screen per step (shown about 300 px wide, so 600 px covers a 2x screen).
-for name in [
-    "01-welcome", "02b-find-found", "03-devmode", "04-allow-waiting", "06-question-cast", "09-question-ads",
-    "11-plan", "13b-installing", "14-you", "15-ready", "16-remote",
-]:
+for name in SETUP_SCREENS:
     webp(SHOTS / f"{name}.png", OUT / f"setup/{name}.webp", width=600, quality=80)
 
 # The owner's boot film and a poster frame (the S mark over "Developed by Shiv"). The film in src/assets has its first
