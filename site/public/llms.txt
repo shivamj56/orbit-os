@@ -10,6 +10,7 @@ Key facts:
 - Remote: roll a globe to move, tap for OK, hold for Home, or use a classic D-pad with Back, Home and Settings; the phone's volume buttons turn the TV up and down; works away from home after an optional Google sign-in.
 - Setup: Orbit finds the TV on the Wi-Fi, asks five plain questions, shows the whole plan before changing anything, and sets up the TV in about five minutes. It does not root the TV or change its firmware.
 - Undo: every change is written down first; one tap brings back the TV's own home screen, apps and settings.
+- Wikidata: https://www.wikidata.org/wiki/Q142179520
 - Open source: the code of the phone app, the TV apps and the setup script is on GitHub under the GNU GPL v3.0 or later, https://github.com/shivamj56/orbit-os.
 - Not made for: IR-only TVs, Samsung (Tizen), LG (webOS), Roku or Fire TV, and iPhones.
 
