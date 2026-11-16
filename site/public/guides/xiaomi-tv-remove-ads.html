@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Xiaomi TV: remove ads, PatchWall promotions and clutter · Orbit OS</title>
+<meta name="description" content="Where the ads on Xiaomi and Redmi TVs with Google TV or Android TV come from, which Xiaomi apps show them, which ones you must keep, and how to switch them off from your phone with one-tap undo.">
+<link rel="canonical" href="https://orbit-os-tv.vercel.app/guides/xiaomi-tv-remove-ads.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Shivam Anil Jha">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Orbit OS">
+<meta property="og:title" content="Xiaomi TV: remove ads, PatchWall promotions and clutter">
+<meta property="og:description" content="Which Xiaomi apps show the promotions, which to keep, and how to switch them off from your phone with one-tap undo.">
+<meta property="og:url" content="https://orbit-os-tv.vercel.app/guides/xiaomi-tv-remove-ads.html">
+<meta property="og:image" content="https://orbit-os-tv.vercel.app/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;600&display=swap">
+<link rel="stylesheet" href="/legal.css">
+<link rel="stylesheet" href="/guides/guides.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Xiaomi TV: remove ads, PatchWall promotions and clutter",
+      "description": "Which Xiaomi apps show the promotions on Xiaomi and Redmi TVs with Google TV or Android TV, which to keep, and how to switch them off from a phone with one-tap undo.",
+      "inLanguage": "en",
+      "datePublished": "2026-11-16",
+      "dateModified": "2026-11-16",
+      "mainEntityOfPage": "https://orbit-os-tv.vercel.app/guides/xiaomi-tv-remove-ads.html",
+      "image": "https://orbit-os-tv.vercel.app/social-card.jpg",
+      "author": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" },
+      "publisher": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Orbit OS", "item": "https://orbit-os-tv.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://orbit-os-tv.vercel.app/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Xiaomi TV: remove ads" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "How do I remove ads on a Xiaomi TV?", "acceptedAnswer": { "@type": "Answer", "text": "The promotions come from Google TV's sponsored banner and from Xiaomi apps such as PatchWall's promoted rows (com.mitv.tvhome.atv), Mi Channel promotions and the promoted tab. Settings can't switch these off. Switching off those apps and using a different home screen removes them; Orbit OS does it from a phone, tested on a Xiaomi TV A Pro, with one-tap undo." } },
+        { "@type": "Question", "name": "Which Xiaomi TV apps should I keep?", "acceptedAnswer": { "@type": "Answer", "text": "Keep com.mitv.livetv (inputs and HDMI) and com.mitv.overseaservice (without it the remote loses its pairing after standby). Keep Xiaomi TV+ if you watch its free channels." } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a href="/"><img src="/icon-180.png" alt=""><span class="brand">Orbit <b>OS</b></span></a></header>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Orbit OS</a> › <a href="/guides/">Guides</a></nav>
+
+  <h1>Xiaomi TV: remove ads, PatchWall promotions and clutter</h1>
+  <p class="meta">By <a href="https://shivamjha.dev/">Shivam Anil Jha</a>, who makes Orbit OS · 16 November 2026 · 5 minute read</p>
+
+  <div class="answer"><p><strong>Short answer:</strong> on Xiaomi and Redmi TVs with Google TV or Android TV, the ads come from two places: Google TV's own sponsored banner, and Xiaomi's apps (PatchWall's promoted rows, Mi Channel promotions and a promoted tab). Settings can't switch either off. Switching off the Xiaomi promotion apps and using a different home screen removes them. Orbit OS does that from your phone. It is tested every day on a Xiaomi TV A Pro, and one tap undoes it.</p></div>
+
+  <h2>The Xiaomi apps behind the promotions</h2>
+  <p>On a Xiaomi TV A Pro with Google TV 14, these are the Xiaomi packages that show promotions, send reports or pop up on their own. Your model may have some of them, or similar ones:</p>
+  <div class="table"><table>
+    <thead><tr><th>Package</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>com.mitv.tvhome.atv</code></td><td>PatchWall promoted rows</td></tr>
+      <tr><td><code>com.mitv.tvhome.michannel</code></td><td>Mi Channel promotions</td></tr>
+      <tr><td><code>com.mitv.tvhome.oemtab</code></td><td>Xiaomi promoted tab</td></tr>
+      <tr><td><code>com.xm.webcontent</code></td><td>Xiaomi web content</td></tr>
+      <tr><td><code>com.mitv.toolhouse</code></td><td>Xiaomi tool house</td></tr>
+      <tr><td><code>com.miui.tv.analytics</code></td><td>Xiaomi analytics</td></tr>
+      <tr><td><code>com.xiaomi.statistic</code></td><td>Xiaomi usage statistics</td></tr>
+      <tr><td><code>com.xiaomi.mitv.detection</code></td><td>Xiaomi device reports</td></tr>
+      <tr><td><code>com.xiaomi.tvqs.overseas.y24</code></td><td>Xiaomi surveys</td></tr>
+      <tr><td><code>com.xiaomo.tv.milegal</code></td><td>Xiaomi legal pop-ups</td></tr>
+      <tr><td><code>android.autoinstalls.config.soc.amlogic</code></td><td>Apps the maker installs on its own</td></tr>
+    </tbody>
+  </table></div>
+  <p>The banner at the very top belongs to Google TV's own home screen, not to Xiaomi. Only a different home screen removes it. <a href="/guides/remove-ads-google-tv.html">Here's how that works.</a></p>
+
+  <h2>Keep these Xiaomi apps</h2>
+  <ul>
+    <li><code>com.mitv.livetv</code>: inputs and HDMI. Your set-top box goes through it.</li>
+    <li><code>com.mitv.overseaservice</code>: without it, the remote loses its pairing after standby.</li>
+    <li><strong>Xiaomi TV+</strong> (<code>com.mitv.tvhome.mitvplus</code>), if you watch its free channels. Orbit asks you first.</li>
+    <li><strong>The TV's video player and gallery</strong>, if you play films or photos from a USB drive. Orbit asks about these too.</li>
+  </ul>
+
+  <h2>From your phone with Orbit OS</h2>
+  <ol>
+    <li>Install <a href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&amp;referrer=utm_source%3Dorbit-site%26utm_medium%3Dguide%26utm_campaign%3Dxiaomi-tv-remove-ads">Orbit OS from Google Play</a> on your Android phone, on the same Wi-Fi as the TV.</li>
+    <li>On the TV, open <strong>Settings › System › About</strong>, select <strong>Android TV OS build</strong> and press OK seven times. Then, in <strong>System › Developer options</strong>, turn on <strong>USB debugging</strong>.</li>
+    <li>In Orbit, pick the TV and press <strong>Allow</strong> on the TV once.</li>
+    <li>Answer five plain questions: casting, USB playback, voice search, Xiaomi's free channels, and ads and tracking. Orbit shows the whole plan before it changes anything.</li>
+  </ol>
+  <p>On the tested TV it switches off 32 apps (never deletes them), puts Orbit Home there as a calm home screen of only your apps, and adds about 30 free Hindi Live TV channels from the broadcasters' own streams. The stock home screen is switched off only after Orbit Home has started, and every change is written down first. <strong>Settings › This TV › Undo</strong> brings PatchWall and every app back.</p>
+
+  <h2>By hand with a computer</h2>
+  <p>With <a href="/guides/turn-on-usb-debugging-google-tv.html">USB debugging on</a> and Android's platform tools on a computer:</p>
+  <pre><code>adb connect 192.168.1.20:5555        # your TV's address
+adb shell pm disable-user --user 0 com.mitv.tvhome.atv
+adb shell pm disable-user --user 0 com.mitv.tvhome.michannel
+adb shell pm disable-user --user 0 com.mitv.tvhome.oemtab</code></pre>
+  <p>Write down every package you switch off. <code>adb shell pm enable &lt;package&gt;</code> turns one back on. The full list, with what never to touch, is in <a href="/guides/debloat-google-tv.html">the debloat guide</a>.</p>
+
+  <h2>Questions</h2>
+  <h3>Does this remove YouTube ads?</h3>
+  <p>No. Ads inside YouTube come from YouTube itself.</p>
+  <h3>Will a Xiaomi update bring the ads back?</h3>
+  <p>An update can add new preinstalled apps. If new promotions appear, run Orbit's setup again from <strong>Settings › This TV</strong> and review the new plan.</p>
+  <h3>Is my warranty safe?</h3>
+  <p>Orbit doesn't root the TV, unlock it or change its firmware; it uses Android's own developer settings and switches apps off, never deletes them. The warranty terms are Xiaomi's, so before a repair, use Undo first and the TV is just as it came.</p>
+
+  <div class="cta">
+    <h2>A calmer Xiaomi TV in about five minutes</h2>
+    <p>Orbit OS is free, open source (GPL-3.0) and has no ads or trackers.</p>
+    <div class="links">
+      <a class="btn primary" href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&amp;referrer=utm_source%3Dorbit-site%26utm_medium%3Dguide%26utm_campaign%3Dxiaomi-tv-remove-ads">Get it on Google Play</a>
+      <a class="btn" href="https://github.com/shivamj56/orbit-os">Read the code on GitHub</a>
+    </div>
+  </div>
+
+  <h2>More guides</h2>
+  <ul class="related">
+    <li><a href="/guides/remove-ads-google-tv.html">Remove ads from the Google TV home screen</a></li>
+    <li><a href="/guides/debloat-google-tv.html">Debloat Google TV and Android TV without a computer</a></li>
+    <li><a href="/guides/turn-on-usb-debugging-google-tv.html">Turn on Developer options and USB debugging</a></li>
+    <li><a href="/guides/android-tv-ads-band-kaise-kare.html">Android TV में ads कैसे बंद करें (हिंदी)</a></li>
+  </ul>
+
+  <footer>
+    <p>Orbit OS is made in India by <a href="https://shivamjha.dev/">Shivam Anil Jha</a>. It is an independent app, not affiliated with or endorsed by Google, Xiaomi or any TV maker. Google TV and Android TV are trademarks of Google LLC; Xiaomi and PatchWall are trademarks of Xiaomi Corporation.</p>
+    <p><a href="/">Orbit OS</a> · <a href="/guides/">Guides</a> · <a href="/privacy.html">Privacy</a></p>
+  </footer>
+</div>
+</body>
+</html>

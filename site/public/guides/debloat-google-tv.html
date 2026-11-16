@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Debloat Google TV and Android TV without a computer: a safe list · Orbit OS</title>
+<meta name="description" content="Which preinstalled apps you can switch off on Google TV and Android TV, which ones you must never touch, the ADB commands to do it by hand, and the no-computer way with one-tap undo.">
+<link rel="canonical" href="https://orbit-os-tv.vercel.app/guides/debloat-google-tv.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Shivam Anil Jha">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Orbit OS">
+<meta property="og:title" content="Debloat Google TV and Android TV without a computer">
+<meta property="og:description" content="A safe list of what to switch off, what never to touch, the ADB commands, and the no-computer way with one-tap undo.">
+<meta property="og:url" content="https://orbit-os-tv.vercel.app/guides/debloat-google-tv.html">
+<meta property="og:image" content="https://orbit-os-tv.vercel.app/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;600&display=swap">
+<link rel="stylesheet" href="/legal.css">
+<link rel="stylesheet" href="/guides/guides.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Debloat Google TV and Android TV without a computer",
+      "description": "Which preinstalled apps you can switch off on Google TV and Android TV, which ones never to touch, the ADB commands, and the no-computer way with one-tap undo.",
+      "inLanguage": "en",
+      "datePublished": "2026-11-16",
+      "dateModified": "2026-11-16",
+      "mainEntityOfPage": "https://orbit-os-tv.vercel.app/guides/debloat-google-tv.html",
+      "image": "https://orbit-os-tv.vercel.app/social-card.jpg",
+      "author": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" },
+      "publisher": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Orbit OS", "item": "https://orbit-os-tv.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://orbit-os-tv.vercel.app/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Debloat Google TV and Android TV" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is it better to disable or uninstall bloatware on Android TV?", "acceptedAnswer": { "@type": "Answer", "text": "Disable it. A disabled app stays on the TV, stops running and comes back with one command (pm enable), and a factory reset restores everything." } },
+        { "@type": "Question", "name": "Which apps should never be disabled on Google TV?", "acceptedAnswer": { "@type": "Answer", "text": "Google Play services (com.google.android.gms), the Play Store (com.android.vending), Google Services Framework (com.google.android.gsf), Android TV Remote Service (com.google.android.tv.remote.service), the TV's recommendations service (com.google.android.tvrecommendations), Android's own system parts and the TV maker's input and remote services." } },
+        { "@type": "Question", "name": "Can I debloat Google TV without a PC?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. An app on an Android phone can do it over the home Wi-Fi once USB debugging is on. Orbit OS shows the whole list before changing anything and undoes it with one tap." } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a href="/"><img src="/icon-180.png" alt=""><span class="brand">Orbit <b>OS</b></span></a></header>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Orbit OS</a> › <a href="/guides/">Guides</a></nav>
+
+  <h1>Debloat Google TV and Android TV without a computer</h1>
+  <p class="meta">By <a href="https://shivamjha.dev/">Shivam Anil Jha</a>, who makes Orbit OS · 16 November 2026 · 7 minute read</p>
+
+  <div class="answer"><p><strong>Short answer:</strong> debloating a TV means switching off the preinstalled apps you never use, so they stop taking memory, waking up at every start and showing promotions. Switch them off; don't delete them. A switched-off app comes back with one command, and a factory reset brings everything back. Below is the list Orbit OS uses on a tested TV, what never to touch, the commands for doing it by hand, and the no-computer way.</p></div>
+
+  <h2>Switch off, don't uninstall</h2>
+  <p>Android has two ways to get rid of a preinstalled app for your user:</p>
+  <ul>
+    <li><code>pm disable-user --user 0 &lt;package&gt;</code> switches the app off. It stays on the TV but never runs. <code>pm enable &lt;package&gt;</code> turns it back on.</li>
+    <li><code>pm uninstall --user 0 &lt;package&gt;</code> removes it for your user. It is harder to get back, and nothing about it is faster than switching off.</li>
+  </ul>
+  <p>Use the first one. Orbit OS only ever switches apps off.</p>
+
+  <h2>Never switch these off</h2>
+  <div class="table"><table>
+    <thead><tr><th>Package</th><th>Why it has to stay</th></tr></thead>
+    <tbody>
+      <tr><td><code>com.google.android.gms</code></td><td>Google Play services: sign-in, casting, and most apps rely on it.</td></tr>
+      <tr><td><code>com.android.vending</code></td><td>The Play Store, which also updates your apps.</td></tr>
+      <tr><td><code>com.google.android.gsf</code></td><td>Google Services Framework, under Play services.</td></tr>
+      <tr><td><code>com.google.android.tv.remote.service</code></td><td>Android TV Remote Service: phone remotes and the Google TV app's remote use it.</td></tr>
+      <tr><td><code>com.google.android.tvrecommendations</code></td><td>The service apps use to put their rows on a home screen.</td></tr>
+      <tr><td>Android's own parts</td><td>The package called <code>android</code>, the system UI, settings and Android's services.</td></tr>
+      <tr><td>The maker's TV services</td><td>Inputs, HDMI and the remote. On Xiaomi TVs: <code>com.mitv.livetv</code> and <code>com.mitv.overseaservice</code> (without it, the remote loses its pairing after standby).</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>What Orbit OS switches off on a tested TV</h2>
+  <p>This is the list from Orbit's code (<a href="https://github.com/shivamj56/orbit-os/blob/main/phone/ui/src/setup/catalog.json">catalog.json</a>) for the Xiaomi TV A Pro with Google TV 14, where it is in daily use. Google's packages exist on most Google TV sets; the Xiaomi ones only on Xiaomi TVs. Orbit only offers the packages it finds on your TV and knows.</p>
+  <h3>Ads and tracking</h3>
+  <div class="table"><table>
+    <tbody>
+      <tr><td><code>com.google.android.feedback</code></td><td>Google feedback reports</td></tr>
+      <tr><td><code>com.miui.tv.analytics</code></td><td>Xiaomi analytics</td></tr>
+      <tr><td><code>com.xiaomi.statistic</code></td><td>Xiaomi usage statistics</td></tr>
+      <tr><td><code>com.xiaomi.mitv.detection</code></td><td>Xiaomi device reports</td></tr>
+      <tr><td><code>com.xiaomi.tvqs.overseas.y24</code></td><td>Xiaomi surveys</td></tr>
+      <tr><td><code>com.xiaomo.tv.milegal</code></td><td>Xiaomi legal pop-ups</td></tr>
+      <tr><td><code>com.mitv.tvhome.atv</code></td><td>PatchWall promoted rows</td></tr>
+      <tr><td><code>com.mitv.tvhome.michannel</code></td><td>Mi Channel promotions</td></tr>
+      <tr><td><code>com.mitv.tvhome.oemtab</code></td><td>Xiaomi promoted tab</td></tr>
+      <tr><td><code>com.mitv.toolhouse</code></td><td>Xiaomi tool house</td></tr>
+      <tr><td><code>com.xm.webcontent</code></td><td>Xiaomi web content</td></tr>
+      <tr><td><code>android.autoinstalls.config.soc.amlogic</code></td><td>Apps the maker installs on its own</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Apps nobody in the house uses</h3>
+  <div class="table"><table>
+    <tbody>
+      <tr><td><code>com.google.android.youtube.tvmusic</code></td><td>YouTube Music</td></tr>
+      <tr><td><code>com.google.android.play.games</code></td><td>Google Play Games</td></tr>
+      <tr><td><code>com.xiaomi.mimusic2</code></td><td>The TV's music player</td></tr>
+      <tr><td><code>com.xiaomi.mitv.scenemode</code></td><td>Xiaomi scene modes</td></tr>
+      <tr><td><code>com.xiaomi.mi_connect_service</code></td><td>Mi Connect (Xiaomi phone to TV)</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Woken at every start</h3>
+  <div class="table"><table>
+    <tbody>
+      <tr><td><code>com.google.android.partnersetup</code></td><td>Partner setup</td></tr>
+      <tr><td><code>com.google.android.syncadapters.calendar</code></td><td>Calendar sync</td></tr>
+      <tr><td><code>com.android.providers.calendar</code></td><td>Calendar storage</td></tr>
+      <tr><td><code>com.android.dynsystem</code></td><td>System image updater for developers</td></tr>
+      <tr><td><code>com.xiaomi.mitv.tvmanager</code></td><td>Xiaomi TV manager</td></tr>
+      <tr><td><code>com.xiaomi.mitv.manualhelp</code></td><td>Xiaomi manual and help</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Only if you say so</h3>
+  <p>Orbit asks before touching these, because some homes need them:</p>
+  <ul>
+    <li><strong>Casting:</strong> <code>com.google.android.apps.mediashell</code> (Chromecast built-in). Keep it if you cast from your phone.</li>
+    <li><strong>Voice search:</strong> <code>com.google.android.katniss</code> (Google Assistant). Without it, the remote's microphone button stops answering.</li>
+    <li><strong>USB playback:</strong> the TV's own video player and gallery, for films and photos on a USB drive.</li>
+    <li><strong>The maker's free channels:</strong> on Xiaomi, Xiaomi TV+.</li>
+    <li><strong>The stock home screen:</strong> only together with another home screen. See <a href="/guides/remove-ads-google-tv.html">removing ads from the Google TV home screen</a>.</li>
+  </ul>
+
+  <h2>Doing it by hand with a computer</h2>
+  <ol>
+    <li><a href="/guides/turn-on-usb-debugging-google-tv.html">Turn on Developer options and USB debugging</a> on the TV.</li>
+    <li>Install Android's platform tools on the computer, then connect to the TV over the Wi-Fi and press <strong>Allow</strong> on the TV:
+      <pre><code>adb connect 192.168.1.20:5555        # your TV's address
+adb shell pm list packages -s        # the TV's system apps</code></pre></li>
+    <li>Switch apps off one at a time, and write each one down:
+      <pre><code>adb shell pm disable-user --user 0 com.google.android.feedback</code></pre></li>
+    <li>To see what is switched off, or to turn one back on:
+      <pre><code>adb shell pm list packages -d
+adb shell pm enable com.google.android.feedback</code></pre></li>
+  </ol>
+
+  <h2>Doing it from your phone with Orbit OS</h2>
+  <p>Orbit OS does the same thing over your home Wi-Fi with no computer and no commands. It reads the TV's app list, asks five plain questions (do you cast, use voice search, play from USB…), shows the whole plan, writes down every change first and can back up the TV's original setup to your own Google Drive. It also puts a calm home screen and about 30 free Hindi Live TV channels on the TV. Undo turns every app back on with one tap.</p>
+  <p>It is tested and in daily use on a Xiaomi TV A Pro with Google TV 14. On other Google TV and Android TV sets it offers only the changes it knows are safe on any TV. It is not for Samsung, LG, Roku or Fire TV.</p>
+
+  <h2>Questions</h2>
+  <h3>Will debloating make my TV faster?</h3>
+  <p>It frees memory and stops apps from waking at every start, which most people notice on cheaper TVs. It can't make a slow chip fast, and the gain differs from TV to TV.</p>
+  <h3>Is it the same as rooting?</h3>
+  <p>No. Switching apps off uses Android's own developer settings. Nothing is unlocked, flashed or deleted.</p>
+  <h3>What if something stops working?</h3>
+  <p>Turn that app back on (<code>pm enable</code>, or Undo in Orbit). If you lost track, a factory reset brings every preinstalled app back.</p>
+
+  <div class="cta">
+    <h2>Debloat from your phone, undo in one tap</h2>
+    <p>Orbit OS is free, open source (GPL-3.0) and has no ads or trackers.</p>
+    <div class="links">
+      <a class="btn primary" href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&amp;referrer=utm_source%3Dorbit-site%26utm_medium%3Dguide%26utm_campaign%3Ddebloat-google-tv">Get it on Google Play</a>
+      <a class="btn" href="https://github.com/shivamj56/orbit-os">Read the code on GitHub</a>
+    </div>
+  </div>
+
+  <h2>More guides</h2>
+  <ul class="related">
+    <li><a href="/guides/remove-ads-google-tv.html">Remove ads from the Google TV home screen</a></li>
+    <li><a href="/guides/xiaomi-tv-remove-ads.html">Xiaomi TV: remove ads and PatchWall promotions</a></li>
+    <li><a href="/guides/turn-on-usb-debugging-google-tv.html">Turn on Developer options and USB debugging</a></li>
+    <li><a href="/guides/android-tv-ads-band-kaise-kare.html">Android TV में ads कैसे बंद करें (हिंदी)</a></li>
+  </ul>
+
+  <footer>
+    <p>Orbit OS is made in India by <a href="https://shivamjha.dev/">Shivam Anil Jha</a>. It is an independent app, not affiliated with or endorsed by Google, Xiaomi or any TV maker. Google TV and Android TV are trademarks of Google LLC; Xiaomi is a trademark of Xiaomi Corporation.</p>
+    <p><a href="/">Orbit OS</a> · <a href="/guides/">Guides</a> · <a href="/privacy.html">Privacy</a></p>
+  </footer>
+</div>
+</body>
+</html>

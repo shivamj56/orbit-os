@@ -9,7 +9,7 @@ export function Footer() {
         <div className="flex items-center gap-3 text-ink">
           <OrbitMark size={26} />
           <Wordmark className="text-[1.0625rem]" />
-          <span className="text-[0.8125rem] text-dim">© 2026 Shivam Jha</span>
+          <span className="text-[0.8125rem] text-dim">© 2026 Shivam Anil Jha</span>
         </div>
         <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2 text-[0.875rem]">
           <a className="text-soft transition-colors hover:text-ink" href={REPO_URL} target="_blank" rel="noopener">
@@ -18,8 +18,14 @@ export function Footer() {
           <a className="text-soft transition-colors hover:text-ink" href={PLAY_URL} target="_blank" rel="noopener">
             Google Play
           </a>
+          <a className="text-soft transition-colors hover:text-ink" href="/guides/">
+            Guides
+          </a>
           <a className="text-soft transition-colors hover:text-ink" href={ISSUES_URL} target="_blank" rel="noopener">
             Report a problem
+          </a>
+          <a className="text-soft transition-colors hover:text-ink" href="/privacy.html">
+            Privacy
           </a>
           <a
             className="text-soft transition-colors hover:text-ink"

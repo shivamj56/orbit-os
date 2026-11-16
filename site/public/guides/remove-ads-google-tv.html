@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How to remove ads from the Google TV home screen (2026) · Orbit OS</title>
+<meta name="description" content="Google TV has no switch for its sponsored banner. What Apps only mode really hides, what it keeps, how people replace the home screen with ADB, and the no-computer way with one-tap undo.">
+<link rel="canonical" href="https://orbit-os-tv.vercel.app/guides/remove-ads-google-tv.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Shivam Anil Jha">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Orbit OS">
+<meta property="og:title" content="How to remove ads from the Google TV home screen">
+<meta property="og:description" content="What Apps only mode hides, what it keeps, and how to get a home screen of only your apps, with one-tap undo.">
+<meta property="og:url" content="https://orbit-os-tv.vercel.app/guides/remove-ads-google-tv.html">
+<meta property="og:image" content="https://orbit-os-tv.vercel.app/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;600&display=swap">
+<link rel="stylesheet" href="/legal.css">
+<link rel="stylesheet" href="/guides/guides.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "How to remove ads from the Google TV home screen",
+      "description": "What Apps only mode hides, what it keeps, how people replace the home screen with ADB, and the no-computer way with one-tap undo.",
+      "inLanguage": "en",
+      "datePublished": "2026-11-16",
+      "dateModified": "2026-11-16",
+      "mainEntityOfPage": "https://orbit-os-tv.vercel.app/guides/remove-ads-google-tv.html",
+      "image": "https://orbit-os-tv.vercel.app/social-card.jpg",
+      "author": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" },
+      "publisher": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Orbit OS", "item": "https://orbit-os-tv.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://orbit-os-tv.vercel.app/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Remove ads from the Google TV home screen" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Can you turn off ads on the Google TV home screen?", "acceptedAnswer": { "@type": "Answer", "text": "Not with a setting. Apps only mode hides personalised recommendations, but Google says sponsored content can still appear. A home screen with no ads needs a different home screen app, set up by hand with ADB or from a phone with an app such as Orbit OS." } },
+        { "@type": "Question", "name": "Does this remove ads inside YouTube?", "acceptedAnswer": { "@type": "Answer", "text": "No. Ads inside YouTube and other apps come from those apps. Changing the home screen does not touch them." } },
+        { "@type": "Question", "name": "Can I undo it?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Apps only mode turns off in the same menu. Apps switched off with ADB come back with pm enable, and Orbit OS puts everything back with one tap. A factory reset also brings back every preinstalled app." } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a href="/"><img src="/icon-180.png" alt=""><span class="brand">Orbit <b>OS</b></span></a></header>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Orbit OS</a> › <a href="/guides/">Guides</a></nav>
+
+  <h1>How to remove ads from the Google TV home screen</h1>
+  <p class="meta">By <a href="https://shivamjha.dev/">Shivam Anil Jha</a>, who makes Orbit OS · 16 November 2026 · 6 minute read</p>
+
+  <div class="answer"><p><strong>Short answer:</strong> Google TV has no setting that switches off its sponsored banner. <em>Apps only mode</em> hides the recommendations, but Google itself says sponsored content can still appear. For a home screen with no ads at all you need a different home screen app: set up by hand with a computer, or from your phone with Orbit OS, free and with one-tap undo.</p></div>
+
+  <h2>Where the ads come from</h2>
+  <ul>
+    <li><strong>The big banner at the top</strong> is sponsored. It is part of Google TV's own home screen app (<code>com.google.android.apps.tv.launcherx</code>).</li>
+    <li><strong>Rows of films and shows</strong> are recommendations from your streaming apps and from Google.</li>
+    <li><strong>Extra promoted rows and apps</strong> come from some TV makers on top of Google's. Xiaomi's PatchWall rows are an example; see <a href="/guides/xiaomi-tv-remove-ads.html">the Xiaomi guide</a>.</li>
+  </ul>
+  <p>So the ads are not one switch. They live inside the home screen itself, which is why the only full fix is to stop using that home screen.</p>
+
+  <h2>Way 1: Apps only mode (built in, one minute)</h2>
+  <ol>
+    <li>On the home screen, open <strong>Settings</strong> (top right).</li>
+    <li>Open <strong>Accounts &amp; Sign In</strong> and select your profile.</li>
+    <li>Select <strong>Apps only mode</strong> and choose <strong>Turn on</strong>.</li>
+  </ol>
+  <p>The names can differ a little between TV makers and Google TV versions. To switch it off later, use the same menu.</p>
+  <p><strong>What it hides:</strong> personalised recommendations, so the home screen shows mostly your apps. <strong>What it keeps:</strong> Google's help page says sponsored content and some teasers may still appear, and most people still see the large banner. It also doesn't touch the maker's own promoted apps.</p>
+
+  <h2>Way 2: Replace the home screen by hand (needs a computer)</h2>
+  <p>Google TV has no "choose your home app" setting the way a phone does. A launcher you install from the Play Store only opens when you open it; the Home button still goes back to Google TV's home. To make another launcher the real home, people switch off Google TV's own home screen with ADB from a computer:</p>
+  <pre><code>adb connect 192.168.1.20:5555        # your TV's address on the Wi-Fi
+adb shell pm disable-user --user 0 com.google.android.apps.tv.launcherx
+adb shell pm disable-user --user 0 com.google.android.tungsten.setupwraith</code></pre>
+  <p>To undo it:</p>
+  <pre><code>adb shell pm enable com.google.android.apps.tv.launcherx
+adb shell pm enable com.google.android.tungsten.setupwraith</code></pre>
+  <p>On the Xiaomi TV A Pro we use every day, Google TV's setup app (<code>tungsten.setupwraith</code>) has to be switched off together with the home screen, or it brings the stock home back.</p>
+  <div class="warn"><p><strong>Do this only after another launcher is installed and opens properly.</strong> With no home screen app at all, the TV can start to an empty screen. Keep the computer at hand until you have checked that the Home button works. You need <a href="/guides/turn-on-usb-debugging-google-tv.html">USB debugging turned on</a> first.</p></div>
+
+  <h2>Way 3: From your phone with Orbit OS (no computer)</h2>
+  <p>Orbit OS does Way 2 for you over your home Wi-Fi, with the checks built in. It puts <strong>Orbit Home</strong> on the TV, a calm home screen of only your apps, and switches off the stock home screen only after Orbit Home has started. It writes down every change before making it, and one tap of Undo brings everything back.</p>
+  <ol>
+    <li>Install <a href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&amp;referrer=utm_source%3Dorbit-site%26utm_medium%3Dguide%26utm_campaign%3Dremove-ads-google-tv">Orbit OS from Google Play</a> on your Android phone.</li>
+    <li>On the TV, open <strong>Settings › System › About</strong>, select <strong>Android TV OS build</strong> and press OK seven times. Then, in <strong>System › Developer options</strong>, turn on <strong>USB debugging</strong>.</li>
+    <li>In Orbit, pick your TV, press <strong>Allow</strong> on the TV once, answer five plain questions and look at the plan before anything changes.</li>
+  </ol>
+  <p>It takes about five minutes. Netflix, YouTube, Prime Video and your other apps stay installed and signed in. You also get about 30 free Hindi Live TV channels and a remote on your phone.</p>
+  <p><strong>Honest limits:</strong> Orbit is tested and in daily use on a Xiaomi TV A Pro with Google TV 14. On other Google TV and Android TV sets it offers only the changes it knows are safe on any TV. It is not for Samsung, LG, Roku or Fire TV, and TVs that only offer <em>Wireless debugging</em> are not supported yet.</p>
+
+  <h2>Which way should you pick?</h2>
+  <div class="table"><table>
+    <thead><tr><th></th><th>Removes the banner</th><th>Needs a computer</th><th>How to undo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Apps only mode</strong></td><td>No, it can stay</td><td>No</td><td>Same menu</td></tr>
+      <tr><td><strong>Launcher by hand (ADB)</strong></td><td>Yes</td><td>Yes</td><td><code>pm enable</code> or a factory reset</td></tr>
+      <tr><td><strong>Orbit OS</strong></td><td>Yes</td><td>No</td><td>One tap</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Questions</h2>
+  <h3>Does this remove ads inside YouTube?</h3>
+  <p>No. Ads inside YouTube and other apps come from those apps. Changing the home screen doesn't touch them.</p>
+  <h3>Will my apps keep working?</h3>
+  <p>Yes. Only the home screen changes. Your apps, sign-ins and downloads stay as they are.</p>
+  <h3>Is it safe for my TV and its warranty?</h3>
+  <p>Nothing here roots the TV or changes its firmware. Switched-off apps are still on the TV, and a factory reset brings every one of them back. The warranty terms are the TV maker's, so before a repair, undo the changes first.</p>
+
+  <div class="cta">
+    <h2>A home screen of only your apps</h2>
+    <p>Orbit OS is free, open source (GPL-3.0) and has no ads or trackers.</p>
+    <div class="links">
+      <a class="btn primary" href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&amp;referrer=utm_source%3Dorbit-site%26utm_medium%3Dguide%26utm_campaign%3Dremove-ads-google-tv">Get it on Google Play</a>
+      <a class="btn" href="https://github.com/shivamj56/orbit-os">Read the code on GitHub</a>
+    </div>
+  </div>
+
+  <h2>More guides</h2>
+  <ul class="related">
+    <li><a href="/guides/debloat-google-tv.html">Debloat Google TV and Android TV without a computer</a></li>
+    <li><a href="/guides/xiaomi-tv-remove-ads.html">Xiaomi TV: remove ads and PatchWall promotions</a></li>
+    <li><a href="/guides/turn-on-usb-debugging-google-tv.html">Turn on Developer options and USB debugging</a></li>
+    <li><a href="/guides/android-tv-ads-band-kaise-kare.html">Android TV में ads कैसे बंद करें (हिंदी)</a></li>
+  </ul>
+
+  <footer>
+    <p>Orbit OS is made in India by <a href="https://shivamjha.dev/">Shivam Anil Jha</a>. It is an independent app, not affiliated with or endorsed by Google or any TV maker. Google TV and Android TV are trademarks of Google LLC. Sources: <a href="https://support.google.com/googletv/answer/10070784">Google TV Help, Apps only mode</a>.</p>
+    <p><a href="/">Orbit OS</a> · <a href="/guides/">Guides</a> · <a href="/privacy.html">Privacy</a></p>
+  </footer>
+</div>
+</body>
+</html>

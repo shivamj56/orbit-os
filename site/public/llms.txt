@@ -20,6 +20,14 @@ Key facts:
 - [Google Play listing](https://play.google.com/store/apps/details?id=dev.shiv.orbit): install the app
 - [Source code](https://github.com/shivamj56/orbit-os): the phone app, the TV apps and the setup script, open source under GPL-3.0, and this website
 
+## Guides
+
+- [How to remove ads from the Google TV home screen](https://orbit-os-tv.vercel.app/guides/remove-ads-google-tv.html): what Apps only mode hides and keeps, replacing the home screen with ADB, and the no-computer way
+- [Debloat Google TV and Android TV without a computer](https://orbit-os-tv.vercel.app/guides/debloat-google-tv.html): a safe list of packages to switch off, what never to touch, and the ADB commands
+- [Xiaomi TV: remove ads, PatchWall promotions and clutter](https://orbit-os-tv.vercel.app/guides/xiaomi-tv-remove-ads.html): the Xiaomi packages behind the promotions and which ones to keep
+- [Turn on Developer options and USB debugging on Google TV and Android TV](https://orbit-os-tv.vercel.app/guides/turn-on-usb-debugging-google-tv.html)
+- [Android TV और Google TV में ads कैसे बंद करें (Hindi)](https://orbit-os-tv.vercel.app/guides/android-tv-ads-band-kaise-kare.html)
+
 ## Optional
 
 - [Privacy policy](https://orbit-os-tv.vercel.app/privacy.html)

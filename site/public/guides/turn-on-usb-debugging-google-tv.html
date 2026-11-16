@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Turn on Developer options and USB debugging on Google TV and Android TV · Orbit OS</title>
+<meta name="description" content="Step by step: open Developer options on Google TV or Android TV, turn on USB debugging, allow a phone or computer to connect over Wi-Fi, and switch it off again afterwards.">
+<link rel="canonical" href="https://orbit-os-tv.vercel.app/guides/turn-on-usb-debugging-google-tv.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Shivam Anil Jha">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Orbit OS">
+<meta property="og:title" content="Turn on Developer options and USB debugging on Google TV">
+<meta property="og:description" content="Seven presses, one switch and one Allow, with what to do when the menu looks different.">
+<meta property="og:url" content="https://orbit-os-tv.vercel.app/guides/turn-on-usb-debugging-google-tv.html">
+<meta property="og:image" content="https://orbit-os-tv.vercel.app/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;600&display=swap">
+<link rel="stylesheet" href="/legal.css">
+<link rel="stylesheet" href="/guides/guides.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Turn on Developer options and USB debugging on Google TV and Android TV",
+      "description": "Open Developer options on Google TV or Android TV, turn on USB debugging, allow a phone or computer to connect, and switch it off again afterwards.",
+      "inLanguage": "en",
+      "datePublished": "2026-11-16",
+      "dateModified": "2026-11-16",
+      "mainEntityOfPage": "https://orbit-os-tv.vercel.app/guides/turn-on-usb-debugging-google-tv.html",
+      "image": "https://orbit-os-tv.vercel.app/social-card.jpg",
+      "author": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" },
+      "publisher": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Orbit OS", "item": "https://orbit-os-tv.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://orbit-os-tv.vercel.app/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Turn on USB debugging" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "How do I turn on developer options on Google TV?", "acceptedAnswer": { "@type": "Answer", "text": "Open Settings, System, About, select Android TV OS build and press OK seven times. Developer options then appears under Settings, System." } },
+        { "@type": "Question", "name": "Is it safe to leave USB debugging on?", "acceptedAnswer": { "@type": "Answer", "text": "Only phones and computers you allow on the TV can connect. Still, switch it off when you are done; a phone remote such as Orbit OS keeps working without it." } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a href="/"><img src="/icon-180.png" alt=""><span class="brand">Orbit <b>OS</b></span></a></header>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Orbit OS</a> › <a href="/guides/">Guides</a></nav>
+
+  <h1>Turn on Developer options and USB debugging on Google TV and Android TV</h1>
+  <p class="meta">By <a href="https://shivamjha.dev/">Shivam Anil Jha</a>, who makes Orbit OS · 16 November 2026 · 3 minute read</p>
+
+  <div class="answer"><p><strong>Short answer:</strong> open <strong>Settings › System › About</strong>, select <strong>Android TV OS build</strong> and press OK seven times. Then open <strong>System › Developer options</strong> and turn on <strong>USB debugging</strong>. When a phone app or a computer connects, the TV asks <em>"Allow USB debugging?"</em>. Tick <em>Always allow</em> and press OK.</p></div>
+
+  <h2>On Google TV</h2>
+  <ol>
+    <li>Open <strong>Settings</strong> (top right of the home screen), then <strong>System › About</strong>.</li>
+    <li>Scroll to <strong>Android TV OS build</strong> and press OK on it seven times. The TV counts down and then says you are a developer.</li>
+    <li>Go back to <strong>System</strong>. <strong>Developer options</strong> is now there.</li>
+    <li>Open it and turn on <strong>USB debugging</strong>.</li>
+  </ol>
+
+  <h2>On older Android TV menus</h2>
+  <p>Many Android TV sets from before Google TV put the same things under <strong>Settings › Device Preferences</strong>: press OK seven times on <strong>About › Build</strong>, then find <strong>Developer options</strong> in Device Preferences. Menu names differ a little between makers; the seven presses always go on the build number.</p>
+
+  <h2>Allowing a phone or computer</h2>
+  <p>Despite its name, USB debugging also lets a phone app or a computer on the same Wi-Fi connect to the TV. The first time one does, the TV shows <em>"Allow USB debugging?"</em> with a key fingerprint. Tick <strong>Always allow from this computer</strong> and press <strong>OK</strong>. Nothing can connect until you press Allow on the TV itself.</p>
+
+  <h2>When it doesn't work</h2>
+  <h3>No Developer options after pressing seven times</h3>
+  <p>Make sure you pressed on the build number (<em>Android TV OS build</em> on Google TV, <em>Build</em> on older menus), and press until the TV says you are a developer.</p>
+  <h3>My TV only has "Wireless debugging"</h3>
+  <p>Some newer devices offer only <em>Wireless debugging</em>, which uses a pairing code. Orbit OS doesn't support those yet. If your TV is one of them, please <a href="https://github.com/shivamj56/orbit-os-site/issues">tell us the model</a>.</p>
+  <h3>The phone can't find the TV</h3>
+  <p>The phone and the TV must be on the same Wi-Fi, and the TV must be on, not in standby. Some routers keep devices apart ("guest" or "AP isolation" networks); use the main network.</p>
+
+  <h2>Switch it off when you are done</h2>
+  <p>Leaving USB debugging on is not dangerous in itself, because only devices you allowed can connect. Still, switch it off once you have finished: open <strong>System › Developer options</strong> and turn off <strong>USB debugging</strong>. Orbit's phone remote keeps working without it. Orbit asks you to turn it on again only when you change the setup or use Undo.</p>
+
+  <div class="cta">
+    <h2>Set up your TV from your phone</h2>
+    <p>With USB debugging on, Orbit OS can give your TV a calm home screen, free Hindi Live TV and a phone remote, and undo it all with one tap. It is free, open source (GPL-3.0) and has no ads or trackers.</p>
+    <div class="links">
+      <a class="btn primary" href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&amp;referrer=utm_source%3Dorbit-site%26utm_medium%3Dguide%26utm_campaign%3Dusb-debugging">Get it on Google Play</a>
+      <a class="btn" href="https://github.com/shivamj56/orbit-os">Read the code on GitHub</a>
+    </div>
+  </div>
+
+  <h2>More guides</h2>
+  <ul class="related">
+    <li><a href="/guides/remove-ads-google-tv.html">Remove ads from the Google TV home screen</a></li>
+    <li><a href="/guides/debloat-google-tv.html">Debloat Google TV and Android TV without a computer</a></li>
+    <li><a href="/guides/xiaomi-tv-remove-ads.html">Xiaomi TV: remove ads and PatchWall promotions</a></li>
+    <li><a href="/guides/android-tv-ads-band-kaise-kare.html">Android TV में ads कैसे बंद करें (हिंदी)</a></li>
+  </ul>
+
+  <footer>
+    <p>Orbit OS is made in India by <a href="https://shivamjha.dev/">Shivam Anil Jha</a>. It is an independent app, not affiliated with or endorsed by Google or any TV maker. Google TV and Android TV are trademarks of Google LLC.</p>
+    <p><a href="/">Orbit OS</a> · <a href="/guides/">Guides</a> · <a href="/privacy.html">Privacy</a></p>
+  </footer>
+</div>
+</body>
+</html>

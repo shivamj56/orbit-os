@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Android TV और Google TV में ads कैसे बंद करें (बिना कंप्यूटर के) · Orbit OS</title>
+<meta name="description" content="Google TV और Android TV की home screen से ads कैसे हटाएँ: Apps only mode क्या छुपाता है और क्या नहीं, और फ़ोन से साफ़ home screen, जो एक टैप में वापस भी हो जाती है।">
+<link rel="canonical" href="https://orbit-os-tv.vercel.app/guides/android-tv-ads-band-kaise-kare.html">
+<link rel="alternate" hreflang="hi" href="https://orbit-os-tv.vercel.app/guides/android-tv-ads-band-kaise-kare.html">
+<link rel="alternate" hreflang="en" href="https://orbit-os-tv.vercel.app/guides/remove-ads-google-tv.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Shivam Anil Jha">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:site_name" content="Orbit OS">
+<meta property="og:title" content="Android TV और Google TV में ads कैसे बंद करें">
+<meta property="og:description" content="Apps only mode क्या करता है, और फ़ोन से बिना कंप्यूटर के साफ़ home screen, एक टैप में वापस।">
+<meta property="og:url" content="https://orbit-os-tv.vercel.app/guides/android-tv-ads-band-kaise-kare.html">
+<meta property="og:image" content="https://orbit-os-tv.vercel.app/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@400;600&display=swap">
+<link rel="stylesheet" href="/legal.css">
+<link rel="stylesheet" href="/guides/guides.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Android TV और Google TV में ads कैसे बंद करें",
+      "description": "Google TV और Android TV की home screen से ads हटाने के तरीके, और फ़ोन से बिना कंप्यूटर के साफ़ home screen, एक टैप में वापस।",
+      "inLanguage": "hi",
+      "datePublished": "2026-11-16",
+      "dateModified": "2026-11-16",
+      "mainEntityOfPage": "https://orbit-os-tv.vercel.app/guides/android-tv-ads-band-kaise-kare.html",
+      "image": "https://orbit-os-tv.vercel.app/social-card.jpg",
+      "author": { "@type": "Person", "name": "Shivam Anil Jha", "alternateName": "शिवम अनिल झा", "url": "https://shivamjha.dev/" },
+      "publisher": { "@type": "Person", "name": "Shivam Anil Jha", "url": "https://shivamjha.dev/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Orbit OS", "item": "https://orbit-os-tv.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://orbit-os-tv.vercel.app/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Android TV में ads कैसे बंद करें" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "inLanguage": "hi",
+      "mainEntity": [
+        { "@type": "Question", "name": "Google TV में ads कैसे बंद करें?", "acceptedAnswer": { "@type": "Answer", "text": "Settings में sponsored banner बंद करने का कोई बटन नहीं है। Apps only mode सुझाव छुपा देता है, पर sponsored content फिर भी दिख सकता है। पूरी तरह साफ़ home screen के लिए दूसरी home screen app चाहिए, जो Orbit OS फ़ोन से लगा देता है और एक टैप में वापस भी कर देता है।" } },
+        { "@type": "Question", "name": "क्या YouTube के ads भी बंद होंगे?", "acceptedAnswer": { "@type": "Answer", "text": "नहीं। YouTube के ads YouTube की अपनी app से आते हैं; home screen बदलने से वो नहीं हटते।" } },
+        { "@type": "Question", "name": "क्या इसके लिए कंप्यूटर चाहिए?", "acceptedAnswer": { "@type": "Answer", "text": "नहीं। Orbit OS आपके Android फ़ोन से घर के Wi-Fi पर सब कर देता है। TV के रिमोट से सिर्फ़ developer mode चालू करना और एक बार Allow दबाना होता है।" } }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a href="/"><img src="/icon-180.png" alt=""><span class="brand">Orbit <b>OS</b></span></a></header>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Orbit OS</a> › <a href="/guides/">Guides</a></nav>
+
+  <h1>Android TV और Google TV में ads कैसे बंद करें</h1>
+  <p class="meta">लेखक: <a href="https://shivamjha.dev/">शिवम अनिल झा</a>, Orbit OS के निर्माता · 16 नवंबर 2026 · 4 मिनट</p>
+
+  <div class="answer"><p><strong>छोटा जवाब:</strong> Google TV की Settings में ऊपर वाला sponsored banner बंद करने का कोई बटन नहीं है। <em>Apps only mode</em> सुझाव (recommendations) छुपा देता है, पर Google खुद कहता है कि sponsored content फिर भी दिख सकता है। पूरी तरह साफ़ home screen के लिए दूसरी home screen app चाहिए। यह काम आप फ़ोन से Orbit OS के ज़रिए कर सकते हैं: मुफ़्त, बिना कंप्यूटर के, और एक टैप में सब पहले जैसा भी हो जाता है।</p></div>
+
+  <h2>ये ads आते कहाँ से हैं?</h2>
+  <ul>
+    <li><strong>ऊपर का बड़ा banner:</strong> यह Google TV की अपनी home screen का हिस्सा है, और sponsored होता है।</li>
+    <li><strong>फ़िल्मों और शो की पंक्तियाँ:</strong> आपकी streaming apps और Google के सुझाव।</li>
+    <li><strong>TV कंपनी की अपनी promotions:</strong> जैसे Xiaomi TV पर PatchWall की promoted पंक्तियाँ और Mi Channel। <a href="/guides/xiaomi-tv-remove-ads.html">Xiaomi TV की पूरी guide (English)</a></li>
+  </ul>
+
+  <h2>तरीका 1: Apps only mode (TV में ही, 1 मिनट)</h2>
+  <ol>
+    <li>Home screen पर ऊपर दाईं ओर <strong>Settings</strong> खोलें।</li>
+    <li><strong>Accounts &amp; Sign In</strong> में जाकर अपनी profile चुनें।</li>
+    <li><strong>Apps only mode</strong> चुनें और <strong>Turn on</strong> दबाएँ।</li>
+  </ol>
+  <p>अलग-अलग TV में इनके नाम थोड़े अलग हो सकते हैं। <strong>क्या हटता है:</strong> आपके लिए चुने गए सुझाव। <strong>क्या रहता है:</strong> Google के अनुसार sponsored content और कुछ teasers दिख सकते हैं, और ज़्यादातर लोगों को बड़ा banner दिखता रहता है। बंद करने के लिए इसी menu में वापस जाएँ।</p>
+
+  <h2>तरीका 2: फ़ोन से, Orbit OS के साथ (बिना कंप्यूटर)</h2>
+  <p>Orbit OS आपके घर के Wi-Fi से TV पर <strong>Orbit Home</strong> लगाता है: ऐसी home screen जिसमें सिर्फ़ आपकी apps हों, कोई ad नहीं। TV की पुरानी home screen तभी बंद होती है जब Orbit Home चालू हो जाए। हर बदलाव पहले लिख लिया जाता है, और एक टैप (Undo) से सब वापस आ जाता है।</p>
+  <ol>
+    <li>अपने Android फ़ोन पर <a href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&amp;referrer=utm_source%3Dorbit-site%26utm_medium%3Dguide%26utm_campaign%3Dads-band-hindi">Google Play से Orbit OS</a> install करें।</li>
+    <li>TV पर <strong>Settings › System › About</strong> खोलें और <strong>Android TV OS build</strong> पर रिमोट से OK सात बार दबाएँ। फिर <strong>System › Developer options</strong> में <strong>USB debugging</strong> चालू करें। (<a href="/guides/turn-on-usb-debugging-google-tv.html">तस्वीरों वाली guide, English</a>)</li>
+    <li>Orbit में अपना TV चुनें, TV पर एक बार <strong>Allow</strong> दबाएँ, पाँच आसान सवालों के जवाब दें और बदलाव से पहले पूरा plan देखें।</li>
+  </ol>
+  <p>लगभग पाँच मिनट लगते हैं। Netflix, YouTube, Prime Video जैसी सारी apps वैसे ही चलती रहेंगी, और उनका sign-in भी।</p>
+  <p><strong>साथ में मिलता है:</strong> करीब 30 मुफ़्त हिंदी Live TV चैनल (चैनलों की अपनी stream से), फ़ोन पर रिमोट, और विज्ञापन व ट्रैकिंग वाली पहले से लगी apps बंद (delete नहीं, सिर्फ़ बंद)।</p>
+
+  <h2>किन TV पर चलता है?</h2>
+  <p>Google TV और Android TV पर। यह Xiaomi TV A Pro (Google TV 14) पर रोज़ इस्तेमाल में है। बाकी Google TV और Android TV पर Orbit सिर्फ़ वही बदलाव करता है जो हर TV पर सुरक्षित हैं। Samsung, LG, Roku और Fire TV पर यह नहीं चलता। जिन TV में सिर्फ़ <em>Wireless debugging</em> होता है, वो अभी support नहीं हैं।</p>
+
+  <h2>सवाल-जवाब</h2>
+  <h3>क्या YouTube के अंदर के ads भी बंद होंगे?</h3>
+  <p>नहीं। YouTube के ads YouTube की अपनी app से आते हैं; home screen बदलने से वो नहीं हटते।</p>
+  <h3>क्या TV की warranty पर असर पड़ेगा?</h3>
+  <p>Orbit TV को root नहीं करता, unlock नहीं करता और firmware नहीं बदलता। यह सिर्फ़ Android की अपनी developer settings इस्तेमाल करता है और apps को बंद करता है, delete नहीं। Warranty की शर्तें TV कंपनी की होती हैं, इसलिए repair से पहले Undo कर दें।</p>
+  <h3>क्या पैसे लगते हैं?</h3>
+  <p>नहीं। Orbit OS मुफ़्त है: कोई ad नहीं, कोई subscription नहीं, कोई tracking नहीं। इसका code <a href="https://github.com/shivamj56/orbit-os">GitHub पर open source</a> (GPL-3.0) है।</p>
+  <h3>क्या app हिंदी में है?</h3>
+  <p>अभी app अंग्रेज़ी में है, पर Live TV में हिंदी चैनल हैं और Play Store पेज हिंदी में भी है।</p>
+  <h3>पहले जैसा कैसे करें?</h3>
+  <p>Orbit में <strong>Settings › This TV › Undo Orbit OS on this TV</strong>। Factory reset से भी सब पहले जैसा हो जाता है।</p>
+
+  <div class="cta">
+    <h2>फ़ोन से TV साफ़ करें, एक टैप में वापस</h2>
+    <p>Orbit OS मुफ़्त और open source है, कोई ad या tracker नहीं।</p>
+    <div class="links">
+      <a class="btn primary" href="https://play.google.com/store/apps/details?id=dev.shiv.orbit&amp;referrer=utm_source%3Dorbit-site%26utm_medium%3Dguide%26utm_campaign%3Dads-band-hindi">Google Play से डाउनलोड करें</a>
+      <a class="btn" href="https://github.com/shivamj56/orbit-os">GitHub पर code देखें</a>
+    </div>
+  </div>
+
+  <h2>और guides</h2>
+  <ul class="related">
+    <li><a href="/guides/remove-ads-google-tv.html">Remove ads from the Google TV home screen (English)</a></li>
+    <li><a href="/guides/debloat-google-tv.html">Debloat Google TV and Android TV without a computer (English)</a></li>
+    <li><a href="/guides/xiaomi-tv-remove-ads.html">Xiaomi TV: remove ads and PatchWall promotions (English)</a></li>
+  </ul>
+
+  <footer>
+    <p>Orbit OS को भारत में <a href="https://shivamjha.dev/">शिवम अनिल झा</a> ने बनाया है। यह एक स्वतंत्र app है; Google, Xiaomi या किसी TV कंपनी से जुड़ी नहीं है। Google TV और Android TV, Google LLC के trademark हैं।</p>
+    <p><a href="/">Orbit OS</a> · <a href="/guides/">Guides</a> · <a href="/privacy.html">Privacy</a></p>
+  </footer>
+</div>
+</body>
+</html>
