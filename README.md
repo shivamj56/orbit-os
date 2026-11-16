@@ -82,6 +82,15 @@ If Orbit is useful to you, a ⭐ on this repository helps other TV owners and de
   <img alt="The boot film's last frame: the S mark and the words Developed by Shiv" src="docs/assets/boot-film.jpg" width="62%">
 </p>
 
+### Prefer to do it by hand?
+
+The website has plain guides with the ADB commands and the safe list Orbit uses:
+[remove ads from the Google TV home screen](https://orbit-os-tv.vercel.app/guides/remove-ads-google-tv.html) ·
+[debloat Google TV and Android TV](https://orbit-os-tv.vercel.app/guides/debloat-google-tv.html) ·
+[Xiaomi TV: remove ads and PatchWall promotions](https://orbit-os-tv.vercel.app/guides/xiaomi-tv-remove-ads.html) ·
+[turn on USB debugging](https://orbit-os-tv.vercel.app/guides/turn-on-usb-debugging-google-tv.html) ·
+[हिंदी में](https://orbit-os-tv.vercel.app/guides/android-tv-ads-band-kaise-kare.html)
+
 ## How it works
 
 Orbit OS is two apps on the TV, one on the phone, and the script that sets a TV up. Nothing in the TV's firmware
