@@ -369,25 +369,25 @@ final class GuideView extends View {
         String say;
         switch (bannerState) {
             case ZAPPING:
-                say = ch.paid() ? "OK opens " + ch.appName : "OK to watch now";
+                say = ch.paid() ? getContext().getString(R.string.guide_paid_opens, ch.appName) : getContext().getString(R.string.guide_watch_now);
                 break;
             case CONNECTING:
-                say = SystemClock.uptimeMillis() - connectingSince > 6000L ? "Still connecting, the channel is slow right now" : "Connecting…";
+                say = SystemClock.uptimeMillis() - connectingSince > 6000L ? getContext().getString(R.string.guide_slow) : getContext().getString(R.string.guide_connecting);
                 break;
             case OFF_AIR:
-                say = "Not on air right now.  ▲ ▼ another channel";
+                say = getContext().getString(R.string.guide_off_air_now);
                 break;
             case NO_NET:
-                say = "The TV is not online. Check the Wi-Fi";
+                say = getContext().getString(R.string.guide_offline);
                 break;
             case PAUSED:
-                say = "Paused.  OK or ▶ goes back to live";
+                say = getContext().getString(R.string.guide_paused);
                 break;
             case EXIT:
-                say = "Press BACK again to go Home";
+                say = getContext().getString(R.string.guide_back_again);
                 break;
             default:
-                say = "▲ ▼  Channels      OK  All channels";
+                say = getContext().getString(R.string.guide_keys);
         }
         small.setColor(bannerState == OFF_AIR || bannerState == NO_NET ? 0xE6FFB49C : bannerState == EXIT ? 0xFFFFFFFF : 0x9EFFFFFF);
         c.drawText(ellipsize(say, small, BW - 240f), x, BY + 131f, small);
@@ -462,7 +462,7 @@ final class GuideView extends View {
 
         c.drawText("Live TV", 56f, 72f, title);
         rowSub.setColor(0x80FFFFFF);
-        c.drawText("Free Hindi channels", 56f, 100f, rowSub);
+        c.drawText(getContext().getString(R.string.guide_free_channels), 56f, 100f, rowSub);
         clock.setTextAlign(Paint.Align.RIGHT);
         c.drawText(clockNow(), GW - 44f, 70f, clock);
 
@@ -547,10 +547,10 @@ final class GuideView extends View {
             c.drawText(sub, 184f + 24f, y + 64f, rowSub);
             return;
         } else if (ch.paid()) {
-            sub = "Opens in " + ch.appName + "  ›";
+            sub = getContext().getString(R.string.channel_opens_in, ch.appName);
             color = 0xD9E9B3FF;
         } else if (ch.offAir || ch.checkFailed) {
-            sub = ch.offAir ? "Off air right now" : "May be off air";
+            sub = ch.offAir ? getContext().getString(R.string.channel_off_air) : getContext().getString(R.string.channel_maybe_off_air);
             color = 0xCCFF9C86;
         } else {
             sub = ch.group;

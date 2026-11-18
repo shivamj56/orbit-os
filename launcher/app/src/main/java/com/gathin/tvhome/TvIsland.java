@@ -45,8 +45,9 @@ final class TvIsland extends View {
 
         Event(String key, String title, String detail, int accent, int glyph, Bitmap icon, boolean[][] qr, long holdMs) {
             this.key = key;
-            this.title = title;
-            this.detail = detail == null ? "" : detail;
+            // Orbit's words in the launcher's language, whoever put them together.
+            this.title = Words.tm(title);
+            this.detail = detail == null ? "" : Words.tm(detail);
             this.accent = accent;
             this.glyph = glyph;
             this.icon = icon;

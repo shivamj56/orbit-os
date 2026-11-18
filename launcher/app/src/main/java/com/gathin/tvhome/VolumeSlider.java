@@ -681,7 +681,7 @@ final class VolumeSlider extends View {
         if (muted) {
             mutePaint.setColor(colour);
             mutePaint.setAlpha(alpha);
-            c.drawText("Mute", wx(NUMBER_END), knobY + 19f * u, mutePaint);
+            c.drawText(Words.t("Mute"), wx(NUMBER_END), knobY + 19f * u, mutePaint);
         } else {
             digitPaint.setColor(blend(colour, Color.WHITE, 0.22f));
             digitPaint.setAlpha(alpha);
@@ -738,6 +738,6 @@ final class VolumeSlider extends View {
             c.drawBitmap(art, null, to, labelPaint);
         }
         unitPaint.setAlpha(Math.round(230f * fade));
-        c.drawText("Vol", labelEnd, bottom + 7f * u, unitPaint);
+        c.drawText(Words.t("Vol"), labelEnd, bottom + 7f * u, unitPaint);
     }
 }

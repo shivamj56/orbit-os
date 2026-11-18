@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Orbit Live TV's words. Translations are in values-<language>/strings.xml (tools/i18n, phone/SPEC.md "Languages"). -->
+<resources>
+    <string name="guide_paid_opens">OK opens %1$s</string>
+    <string name="guide_watch_now">OK to watch now</string>
+    <string name="guide_connecting">Connecting…</string>
+    <string name="guide_slow">Still connecting, the channel is slow right now</string>
+    <string name="guide_off_air_now">Not on air right now.  ▲ ▼ another channel</string>
+    <string name="guide_offline">The TV is not online. Check the Wi-Fi</string>
+    <string name="guide_paused">Paused.  OK or ▶ goes back to live</string>
+    <string name="guide_back_again">Press BACK again to go Home</string>
+    <string name="guide_keys">▲ ▼  Channels      OK  All channels</string>
+    <string name="guide_free_channels">Free Hindi channels</string>
+    <string name="channel_opens_in">Opens in %1$s  ›</string>
+    <string name="channel_off_air">Off air right now</string>
+    <string name="channel_maybe_off_air">May be off air</string>
+    <string name="no_channel">There is no channel %1$s</string>
+</resources>

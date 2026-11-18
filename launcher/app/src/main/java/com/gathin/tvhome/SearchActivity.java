@@ -112,7 +112,7 @@ public class SearchActivity extends Activity {
         field.setTextSize(0, 27f * u);
         field.setTextColor(Color.WHITE);
         field.setHintTextColor(0xFF9CA3AF);
-        field.setHint("Search movies, shows and apps");
+        field.setHint(Words.t("Search movies, shows and apps"));
         field.setSingleLine(true);
         field.setImeOptions(EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         field.setPadding(Math.round(30f * u), 0, Math.round(30f * u), 0);
@@ -304,15 +304,15 @@ public class SearchActivity extends Activity {
         boolean inResults = focused != null && focused != field;
         row.removeAllViews();
         if (words.isEmpty()) {
-            heading.setText("Type a name, then press the keyboard's search key");
+            heading.setText(Words.t("Type a name, then press the keyboard's search key"));
             return;
         }
-        heading.setText("Results for “" + words + "”");
+        heading.setText(Words.t("Results for “{words}”", "words", words));
         String lower = words.toLowerCase(Locale.ROOT);
         List<String> shown = new ArrayList<>();
         for (App app : apps) {
             if (app.name.toLowerCase(Locale.ROOT).contains(lower)) {
-                row.addView(card(app, "Open", null));
+                row.addView(card(app, Words.t("Open"), null));
                 shown.add(app.pkg);
             }
         }

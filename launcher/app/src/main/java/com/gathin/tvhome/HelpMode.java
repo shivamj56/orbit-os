@@ -111,7 +111,7 @@ final class HelpMode {
         showNote();
         TvIsland island = HomeKeyService.island();
         if (island != null) {
-            island.show(new TvIsland.Event("cc-help", name() + " can see this screen", "Orbit help is on, to help you from the phone",
+            island.show(new TvIsland.Event("cc-help", name() + " can see this screen", Words.mark("Orbit help is on, to help you from the phone"),
                     0xFF74D1FF, TvIsland.ICON_PHONE, null, null, 5_000L));
         }
         main.post(tick);
@@ -232,10 +232,10 @@ final class HelpMode {
         p.setColor(0xFFFFFFFF);
         p.setTextAlign(android.graphics.Paint.Align.CENTER);
         p.setTextSize(26f);
-        c.drawText("This app hides its picture", W / 2f, H / 2f - 8f, p);
+        c.drawText(Words.t("This app hides its picture"), W / 2f, H / 2f - 8f, p);
         p.setColor(0xB3FFFFFF);
         p.setTextSize(18f);
-        c.drawText("Netflix and Prime Video do this. Back or Home leaves it.", W / 2f, H / 2f + 26f, p);
+        c.drawText(Words.t("Netflix and Prime Video do this. Back or Home leaves it."), W / 2f, H / 2f + 26f, p);
         encodeSoftware(b);
     }
 
@@ -266,7 +266,7 @@ final class HelpMode {
         Context c = service;
         TextView t = new TextView(c);
         // The dot in red, like a camera's light: this screen is being seen right now.
-        android.text.SpannableString words = new android.text.SpannableString("●  " + name() + " can see this screen");
+        android.text.SpannableString words = new android.text.SpannableString("●  " + Words.t("{name} can see this screen", "name", name()));
         words.setSpan(new android.text.style.ForegroundColorSpan(0xFFFF3B5C), 0, 1, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         t.setText(words);
         t.setTextColor(0xF2FFFFFF);

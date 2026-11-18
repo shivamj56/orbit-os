@@ -307,7 +307,7 @@ final class ControlCenter extends View {
     private int backLevel = -1;
     private boolean homeCovered;
     // Read once per opening (or when they change), never per frame: some of them are calls into the system.
-    private String outputName = "TV speakers", clockText = "", ampmText = "", dateText = "";
+    private String outputName = Words.mark("TV speakers"), clockText = "", ampmText = "", dateText = "";
     private List<TvIsland.Note> notesNow = new ArrayList<>();
     private String[] titleLines = {""};
     private String titleFor;
@@ -367,7 +367,7 @@ final class ControlCenter extends View {
     private String qrLink = "";
 
     // what the tiles show
-    private String npTitle = "Nothing playing", npSub = "", npApp = "";
+    private String npTitle = Words.mark("Nothing playing"), npSub = "", npApp = "";
     private long npPos, npDur;
     private boolean playing, muted;
     private int volPct, lightPct = 100;
@@ -426,12 +426,12 @@ final class ControlCenter extends View {
     }
 
     private static final String[][] ROUNDS = {
-            {"inputs", "Inputs"}, {"picture", "Picture"}, {"soundmode", "Sound mode"}, {"sleep", "Sleep timer"},
-            {"saver", "Screensaver"}, {"quiet", "Quiet"}, {"clear", "Clear all"}, {"recents", "Recent apps"}};
+            {"inputs", Words.mark("Inputs")}, {"picture", Words.mark("Picture")}, {"soundmode", Words.mark("Sound mode")}, {"sleep", Words.mark("Sleep timer")},
+            {"saver", Words.mark("Screensaver")}, {"quiet", Words.mark("Quiet")}, {"clear", Words.mark("Clear all")}, {"recents", Words.mark("Recent apps")}};
     private static final int[] ROUND_ICONS = {R.drawable.cc_inputs, R.drawable.cc_picture, R.drawable.cc_eq, R.drawable.cc_timer,
             R.drawable.cc_sparkle, R.drawable.cc_moon, R.drawable.cc_broom, R.drawable.cc_recents};
     private static final int[] ROUND_COLORS = {0xFFFF9F0A, 0xFFE0A800, 0xFF0FA3B1, 0xFFFF9F0A, 0xFFBF5AF2, 0xFFBF5AF2, 0xFF30D158, 0xFF0A84FF};
-    private static final String[] SCENES = {"Movie Night", "Bhakti", "Good Night"};
+    private static final String[] SCENES = {Words.mark("Movie Night"), "Bhakti", Words.mark("Good Night")};
     private static final int[] SCENE_ICONS = {R.drawable.cc_film, R.drawable.cc_diya, R.drawable.cc_night};
 
     private void build() {
@@ -1117,17 +1117,17 @@ final class ControlCenter extends View {
                 capsule(c, m, R.drawable.cc_bt, "Bluetooth", btLine, 0xFF0A84FF, btOn, a);
                 break;
             case "cast":
-                capsule(c, m, R.drawable.cc_cast, "Cast", "Ready as Family room", 0xFF0FA3B1, true, a);
+                capsule(c, m, R.drawable.cc_cast, Words.mark("Cast"), Words.mark("Ready as Family room"), 0xFF0FA3B1, true, a);
                 break;
             case "np":
                 nowPlaying(c, m, a);
                 break;
             case "display":
-                slider(c, m, "Display", R.drawable.cc_sun_s, clamp(light.v, 0f, 100f), String.valueOf(lightPct), a);
+                slider(c, m, Words.mark("Display"), R.drawable.cc_sun_s, clamp(light.v, 0f, 100f), String.valueOf(lightPct), a);
                 break;
             case "sound":
-                slider(c, m, "Sound", muted ? R.drawable.cc_muted : R.drawable.cc_speaker, clamp(volume.v, 0f, 100f),
-                        muted ? "Muted" : String.valueOf(volPct), a);
+                slider(c, m, Words.mark("Sound"), muted ? R.drawable.cc_muted : R.drawable.cc_speaker, clamp(volume.v, 0f, 100f),
+                        muted ? Words.mark("Muted") : String.valueOf(volPct), a);
                 break;
             case "scenes":
                 scenes(c, m, a);
@@ -1192,7 +1192,7 @@ final class ControlCenter extends View {
         fill.setColor(0xFFFF3B30);
         fill.setAlpha(Math.round(255f * a));
         c.drawCircle(tx + 5f, m.y + 30f, 4f, fill);
-        drawText(c, npApp.isEmpty() ? "Now playing" : npApp, tx + 16f, m.y + 34.5f, caps, a);
+        drawText(c, npApp.isEmpty() ? Words.mark("Now playing") : npApp, tx + 16f, m.y + 34.5f, caps, a);
         if (!npTitle.equals(titleFor)) {
             titleFor = npTitle;
             titleLines = wrap(npTitle, big, 244f, 2);
@@ -1274,7 +1274,7 @@ final class ControlCenter extends View {
         drawText(c, valueText, "sound".equals(m.id) ? m.x + m.w - 262f : m.x + m.w - 84f, cy + 5f, sub, a);
         sub.setTextAlign(Paint.Align.LEFT);
         if ("sound".equals(m.id)) {
-            String out = outputName;
+            String out = Words.tm(outputName);
             float tw = chipText.measureText(out);
             float rx = m.x + m.w - 14f, lx = rx - tw - 54f;
             r.set(lx, cy - 20f, rx, cy + 20f);
@@ -1298,12 +1298,13 @@ final class ControlCenter extends View {
             fill.setColor(on ? 0xFFFFFFFF : 0x14FFFFFF);
             fill.setAlpha(Math.round((on ? 255f : 20f) * a));
             c.drawRoundRect(r, 24f, 24f, fill);
-            float tw = chipText.measureText(SCENES[i]);
+            String name = Words.tm(SCENES[i]);
+            float tw = chipText.measureText(name);
             float x0 = x + 84f - (tw + 31f) / 2f;
             drawIcon(c, SCENE_ICONS[i], x0 + 11f, y + 24f, 22f, on ? 0xFFC2410C : 0xFFFFD60A, a);
             int keep = chipText.getColor();
             chipText.setColor(on ? 0xFF16161B : 0xFFFFFFFF);
-            drawText(c, SCENES[i], x0 + 31f, y + 29.5f, chipText, a);
+            drawText(c, name, x0 + 31f, y + 29.5f, chipText, a);
             chipText.setColor(keep);
         }
     }
@@ -1311,10 +1312,11 @@ final class ControlCenter extends View {
     private void notes(Canvas c, Mod m, float a) {
         List<TvIsland.Note> list = notesNow;
         drawIcon(c, R.drawable.cc_bell, m.x + 27f, m.y + 22f, 15f, 0x75FFFFFF, a);
-        drawText(c, "NOTIFICATIONS", m.x + 42f, m.y + 26f, caps, a);
+        String head = Words.t("Notifications").toUpperCase(Locale.getDefault());
+        drawText(c, head, m.x + 42f, m.y + 26f, caps, a);
         if (!list.isEmpty()) {
             String n = String.valueOf(list.size());
-            float bw = Math.max(20f, caps.measureText(n) + 12f), bx = m.x + 42f + caps.measureText("NOTIFICATIONS") + 10f;
+            float bw = Math.max(20f, caps.measureText(n) + 12f), bx = m.x + 42f + caps.measureText(head) + 10f;
             r.set(bx, m.y + 12f, bx + bw, m.y + 32f);
             fill.setColor(0xFFFF375F);
             fill.setAlpha(Math.round(255f * a));
@@ -1340,7 +1342,7 @@ final class ControlCenter extends View {
         }
         if (list.isEmpty() && score == null) {
             drawIcon(c, R.drawable.cc_check, m.x + 28f, m.y + 58f, 16f, 0x75FFFFFF, a);
-            drawText(c, "You are all caught up", m.x + 46f, m.y + 63f, sub, a);
+            drawText(c, Words.mark("You are all caught up"), m.x + 46f, m.y + 63f, sub, a);
             return;
         }
         for (int i = 0; i < Math.min(2 - first, list.size()); i++) {
@@ -1377,7 +1379,7 @@ final class ControlCenter extends View {
     }
 
     private void hint(Canvas c, float a) {
-        String[][] parts = {{"OK", "Select"}, {"Hold OK", "More"}, {"Back", "Close"}};
+        String[][] parts = {{"OK", Words.t("Select")}, {Words.t("Hold OK"), Words.t("More")}, {Words.t("Back"), Words.t("Close")}};
         float total = 0f;
         for (String[] p : parts) total += caps.measureText(p[0]) + 16f + 8f + sub.measureText(p[1]) + 28f;
         float x = 640f - (total - 28f) / 2f, y = 684f;
@@ -1445,7 +1447,7 @@ final class ControlCenter extends View {
                 drawIcon(c, R.drawable.cc_chev, rx - 9f, mid, 18f, 0x75FFFFFF, a);
             } else if (it.type == CYCLE && it.values != null) {
                 // the value as a small glass pill, so it reads as something OK changes
-                String v = it.values[it.index];
+                String v = Words.tm(it.values[it.index]);
                 float vw = chipText.measureText(v) + 28f;
                 r.set(rx - vw, mid - 16f, rx, mid + 16f);
                 fill.setColor(0x1FFFFFFF);
@@ -1607,29 +1609,29 @@ final class ControlCenter extends View {
         Detail d;
         switch (kind) {
             case "wifi": {
-                d = new Detail(kind, R.drawable.cc_wifi, 0xFF30D158, "Wi-Fi", wifiOn ? "Connected" : "Not connected", from);
+                d = new Detail(kind, R.drawable.cc_wifi, 0xFF30D158, "Wi-Fi", wifiOn ? Words.mark("Connected") : Words.mark("Not connected"), from);
                 for (String[] line : wifiDetails()) d.items.add(new Item(INFO, 0, line[0] + "   " + line[1], null));
-                Item settings = new Item(ACTION, R.drawable.cc_gear, "Wi-Fi settings", "Join another network");
+                Item settings = new Item(ACTION, R.drawable.cc_gear, Words.mark("Wi-Fi settings"), Words.mark("Join another network"));
                 settings.act = () -> closeThen(() -> service.ccOpen(SystemSettings.intent(service, Settings.ACTION_WIFI_SETTINGS)));
                 d.items.add(settings);
                 return d;
             }
             case "bt": {
-                d = new Detail(kind, R.drawable.cc_bt, 0xFF0A84FF, "Bluetooth", btOn ? "On · visible as Family room" : "Off", from);
+                d = new Detail(kind, R.drawable.cc_bt, 0xFF0A84FF, "Bluetooth", btOn ? Words.mark("On · visible as Family room") : Words.mark("Off"), from);
                 for (String[] dev : bluetoothDevices()) {
                     Item it = new Item(ACTION, iconFor(dev[2]), dev[0], dev[1]);
                     it.act = () -> closeThen(() -> service.ccOpen(SystemSettings.intent(service, Settings.ACTION_BLUETOOTH_SETTINGS)));
                     d.items.add(it);
                 }
-                Item pair = new Item(ACTION, R.drawable.cc_plus, "Pair a new device", "Remotes and accessories");
+                Item pair = new Item(ACTION, R.drawable.cc_plus, Words.mark("Pair a new device"), Words.mark("Remotes and accessories"));
                 pair.act = () -> closeThen(() -> service.ccOpen(SystemSettings.intent(service, Settings.ACTION_BLUETOOTH_SETTINGS)));
                 d.items.add(pair);
                 return d;
             }
             case "cast": {
-                d = new Detail(kind, R.drawable.cc_cast, 0xFF0FA3B1, "Cast to this TV", "Ready as Family room", from);
-                d.items.add(new Item(INFO, 0, "On your phone, open Screen Cast and choose Family room.", null));
-                Item go = new Item(ACTION, R.drawable.cc_cast, "Open Miracast", "Show your phone's screen here");
+                d = new Detail(kind, R.drawable.cc_cast, 0xFF0FA3B1, Words.mark("Cast to this TV"), Words.mark("Ready as Family room"), from);
+                d.items.add(new Item(INFO, 0, Words.mark("On your phone, open Screen Cast and choose Family room."), null));
+                Item go = new Item(ACTION, R.drawable.cc_cast, Words.mark("Open Miracast"), Words.mark("Show your phone's screen here"));
                 go.act = () -> closeThen(() -> {
                     Intent i = AppSwitcher.launchIntent(service, CAST_APP);
                     if (i != null) service.ccOpen(i);
@@ -1638,8 +1640,8 @@ final class ControlCenter extends View {
                 return d;
             }
             case "inputs": {
-                d = new Detail(kind, R.drawable.cc_inputs, 0xFFFF9F0A, "Inputs", "Google TV", from);
-                Item home = new Item(RADIO, R.drawable.cc_tv, "Google TV", "Home screen");
+                d = new Detail(kind, R.drawable.cc_inputs, 0xFFFF9F0A, Words.mark("Inputs"), "Google TV", from);
+                Item home = new Item(RADIO, R.drawable.cc_tv, "Google TV", Words.mark("Home screen"));
                 home.on = true;
                 home.act = () -> closeThen(service::ccHome);
                 d.items.add(home);
@@ -1654,17 +1656,17 @@ final class ControlCenter extends View {
             }
             case "sleep": {
                 long left = service.ccSleepLeftMs();
-                d = new Detail(kind, R.drawable.cc_timer, 0xFFFF9F0A, "Sleep timer",
-                        left > 0 ? "The TV sleeps in " + Math.max(1L, (left + 59_999L) / 60_000L) + " min" : "Off", from);
+                d = new Detail(kind, R.drawable.cc_timer, 0xFFFF9F0A, Words.mark("Sleep timer"),
+                        left > 0 ? "The TV sleeps in " + Math.max(1L, (left + 59_999L) / 60_000L) + " min" : Words.mark("Off"), from);
                 int[] minutes = {0, 15, 30, 60, 90};
                 int chosen = service.ccSleepChosen();
                 for (int mins : minutes) {
-                    Item it = new Item(RADIO, R.drawable.cc_timer, mins == 0 ? "Off" : mins + " minutes", null);
+                    Item it = new Item(RADIO, R.drawable.cc_timer, mins == 0 ? Words.mark("Off") : Words.n(mins, "{n} minute", "{n} minutes"), null);
                     it.on = mins == chosen && !service.ccSleepAtEnd();
                     it.act = () -> {
                         service.ccSleepIn(mins);
-                        if (detail != null) detail.sub = mins == 0 ? "Off" : "The TV sleeps in " + mins + " min";
-                        toast(mins == 0 ? "Sleep timer off" : "The TV sleeps in " + mins + " minutes", R.drawable.cc_timer);
+                        if (detail != null) detail.sub = mins == 0 ? Words.mark("Off") : "The TV sleeps in " + mins + " min";
+                        toast(mins == 0 ? Words.mark("Sleep timer off") : Words.n(mins, "The TV sleeps in {n} minute", "The TV sleeps in {n} minutes"), R.drawable.cc_timer);
                     };
                     d.items.add(it);
                 }
@@ -1672,12 +1674,12 @@ final class ControlCenter extends View {
                 long rest = remainingMs();
                 if (rest > 60_000L) {
                     String at = clockOf(System.currentTimeMillis() + rest);
-                    Item end = new Item(RADIO, R.drawable.cc_moon, "When this ends", "At " + at + ", after " + ellipsize(npTitle, small, 300f));
+                    Item end = new Item(RADIO, R.drawable.cc_moon, Words.mark("When this ends"), "At " + at + ", after " + ellipsize(npTitle, small, 300f));
                     end.on = service.ccSleepAtEnd();
                     end.act = () -> {
                         long untilEnd = remainingMs();
                         service.ccSleepAfterMs(untilEnd + 20_000L);
-                        if (detail != null) detail.sub = "The TV sleeps when this ends";
+                        if (detail != null) detail.sub = Words.mark("The TV sleeps when this ends");
                         toast("The TV sleeps when this ends, at " + clockOf(System.currentTimeMillis() + untilEnd), R.drawable.cc_moon);
                     };
                     d.items.add(1, end);
@@ -1686,48 +1688,48 @@ final class ControlCenter extends View {
             }
             case "outputs": {
                 String now = service.ccOutput();
-                d = new Detail(kind, R.drawable.cc_speaker, 0xFF0FA3B1, "Sound plays on", now, from);
+                d = new Detail(kind, R.drawable.cc_speaker, 0xFF0FA3B1, Words.mark("Sound plays on"), now, from);
                 for (String[] out : service.ccOutputs()) {
                     Item it = new Item(RADIO, iconFor(out[1]), out[0], out[2]);
                     it.on = out[0].equals(now);
-                    it.act = () -> toast("Change it in Sound settings", R.drawable.cc_gear);
+                    it.act = () -> toast(Words.mark("Change it in Sound settings"), R.drawable.cc_gear);
                     d.items.add(it);
                 }
-                Item memory = new Item(TOGGLE, R.drawable.cc_speaker, "Remember each app's volume", "Netflix loud, YouTube soft: each comes back as you left it");
+                Item memory = new Item(TOGGLE, R.drawable.cc_speaker, Words.mark("Remember each app's volume"), Words.mark("Netflix loud, YouTube soft: each comes back as you left it"));
                 memory.on = service.ccAppVolume();
                 memory.act = () -> {
                     service.ccSetAppVolume(memory.on);
-                    toast(memory.on ? "Each app keeps its own volume" : "One volume for every app", R.drawable.cc_speaker);
+                    toast(memory.on ? Words.mark("Each app keeps its own volume") : Words.mark("One volume for every app"), R.drawable.cc_speaker);
                 };
                 d.items.add(memory);
-                Item s = new Item(ACTION, R.drawable.cc_gear, "Sound settings", "Speakers, soundbar, headphones");
+                Item s = new Item(ACTION, R.drawable.cc_gear, Words.mark("Sound settings"), Words.mark("Speakers, soundbar, headphones"));
                 s.act = () -> closeThen(() -> service.ccOpen(SystemSettings.intent(service, Settings.ACTION_SOUND_SETTINGS)));
                 d.items.add(s);
                 return d;
             }
             case "nowplaying": {
                 d = new Detail(kind, R.drawable.cc_note, accentA != 0 ? accentA : 0xFFFF3B30, npTitle,
-                        npApp.isEmpty() ? "Nothing is playing" : npApp + (remainingMs() > 0 ? " · ends " + clockOf(System.currentTimeMillis() + remainingMs()) : ""), from);
+                        npApp.isEmpty() ? Words.mark("Nothing is playing") : npApp + (remainingMs() > 0 ? " · ends " + clockOf(System.currentTimeMillis() + remainingMs()) : ""), from);
                 if (mediaPkg != null) {
-                    Item openApp = new Item(ACTION, R.drawable.cc_tv, "Open " + (npApp.isEmpty() ? "the app" : npApp), "Back to it, full screen");
+                    Item openApp = new Item(ACTION, R.drawable.cc_tv, "Open " + (npApp.isEmpty() ? "the app" : npApp), Words.mark("Back to it, full screen"));
                     openApp.act = this::openPlayingApp;
                     d.items.add(openApp);
                 }
-                Item words = new Item(ACTION, R.drawable.cc_note, "Lyrics", "The words on screen, in time with the song");
+                Item words = new Item(ACTION, R.drawable.cc_note, Words.mark("Lyrics"), Words.mark("The words on screen, in time with the song"));
                 words.act = () -> switchDetail("lyrics");
                 d.items.add(words);
-                Item phone = new Item(ACTION, R.drawable.cc_phone, "Continue on your phone", "Scan a code: it opens there, from here");
+                Item phone = new Item(ACTION, R.drawable.cc_phone, Words.mark("Continue on your phone"), Words.mark("Scan a code: it opens there, from here"));
                 phone.act = () -> switchDetail("phone");
                 d.items.add(phone);
-                String[] pauses = {"Off", "15 min", "30 min", "60 min"};
+                String[] pauses = {Words.mark("Off"), "15 min", "30 min", "60 min"};
                 int[] pauseMins = {0, 15, 30, 60};
                 int pi = 0;
                 for (int i = 0; i < pauseMins.length; i++) if (pauseMins[i] == service.ccPauseChosen()) pi = i;
-                Item pause = cycle(R.drawable.cc_timer, "Pause the video after", "The TV stays on; only the video stops", pauses, pi);
+                Item pause = cycle(R.drawable.cc_timer, Words.mark("Pause the video after"), Words.mark("The TV stays on; only the video stops"), pauses, pi);
                 pause.act = () -> {
                     int mins = pauseMins[pause.index];
                     service.ccPauseIn(mins);
-                    toast(mins == 0 ? "Pause timer off" : "The video pauses in " + mins + " minutes", R.drawable.cc_timer);
+                    toast(mins == 0 ? Words.mark("Pause timer off") : Words.n(mins, "The video pauses in {n} minute", "The video pauses in {n} minutes"), R.drawable.cc_timer);
                 };
                 d.items.add(pause);
                 if (speedOk) {
@@ -1735,7 +1737,7 @@ final class ControlCenter extends View {
                     float[] values = {0.75f, 1f, 1.25f, 1.5f, 2f};
                     int si = 1;
                     for (int i = 0; i < values.length; i++) if (Math.abs(values[i] - speedNow) < 0.01f) si = i;
-                    Item speed = cycle(R.drawable.cc_sparkle, "Speed", "Faster or slower, same pitch", speeds, si);
+                    Item speed = cycle(R.drawable.cc_sparkle, Words.mark("Speed"), Words.mark("Faster or slower, same pitch"), speeds, si);
                     speed.act = () -> {
                         setSpeed(values[speed.index]);
                         toast("Speed " + speeds[speed.index], R.drawable.cc_sparkle);
@@ -1744,18 +1746,18 @@ final class ControlCenter extends View {
                 } else {
                     d.items.add(new Item(INFO, 0, "Speed: " + (npApp.isEmpty() ? "this app" : npApp) + " keeps its own speed.", null));
                 }
-                Item subs = new Item(TOGGLE, R.drawable.cc_eye, "Subtitles", "In apps that follow the TV's subtitle setting");
+                Item subs = new Item(TOGGLE, R.drawable.cc_eye, Words.mark("Subtitles"), Words.mark("In apps that follow the TV's subtitle setting"));
                 subs.on = service.ccCaptions();
                 subs.act = () -> {
                     boolean done = service.ccSetCaptions(subs.on);
-                    toast(!done ? "This TV keeps its subtitle setting locked" : subs.on ? "Subtitles on" : "Subtitles off", R.drawable.cc_eye);
+                    toast(!done ? Words.mark("This TV keeps its subtitle setting locked") : subs.on ? Words.mark("Subtitles on") : Words.mark("Subtitles off"), R.drawable.cc_eye);
                 };
                 d.items.add(subs);
-                String[] sizes = {"Small", "Normal", "Large", "Huge"};
+                String[] sizes = {Words.mark("Small"), Words.mark("Normal"), Words.mark("Large"), Words.mark("Huge")};
                 float[] scales = {0.75f, 1f, 1.5f, 2f};
                 int zi = 1;
                 for (int i = 0; i < scales.length; i++) if (Math.abs(scales[i] - service.ccCaptionScale()) < 0.01f) zi = i;
-                Item size = cycle(R.drawable.cc_eye, "Subtitle size", null, sizes, zi);
+                Item size = cycle(R.drawable.cc_eye, Words.mark("Subtitle size"), null, sizes, zi);
                 size.act = () -> {
                     service.ccSetCaptionScale(scales[size.index]);
                     toast("Subtitles " + sizes[size.index].toLowerCase(Locale.ROOT), R.drawable.cc_eye);
@@ -1765,21 +1767,21 @@ final class ControlCenter extends View {
             }
             case "lyrics": {
                 d = new Detail(kind, R.drawable.cc_note, accentA != 0 ? accentA : 0xFFFF3B30, PanelMedia.cleanTitle(npTitle),
-                        "Looking for the words…", from);
+                        Words.mark("Looking for the words…"), from);
                 d.custom = LYRICS;
                 d.w = 700f;
                 d.h = 470f;
                 return d;
             }
             case "phone": {
-                d = new Detail(kind, R.drawable.cc_phone, 0xFF30D158, "Continue on your phone", "Point the phone's camera at the code", from);
+                d = new Detail(kind, R.drawable.cc_phone, 0xFF30D158, Words.mark("Continue on your phone"), Words.mark("Point the phone's camera at the code"), from);
                 d.custom = PHONE;
                 d.w = 560f;
                 d.h = 440f;
                 return d;
             }
             case "bhakti": {
-                d = new Detail(kind, R.drawable.cc_diya, 0xFFFF9F0A, "Bhakti", "Live, or on YouTube from the start", from);
+                d = new Detail(kind, R.drawable.cc_diya, 0xFFFF9F0A, "Bhakti", Words.mark("Live, or on YouTube from the start"), from);
                 // The two devotional channels of Live TV first, when it is on the TV: on air now, nothing to pick.
                 if (AppSwitcher.launchIntent(getContext(), LIVE_TV) != null) {
                     String[][] live = {{"Aastha", "aastha", "Live TV \u00B7 bhajan, satsang"}, {"Sanskar", "sanskar", "Live TV \u00B7 katha, aarti"}};
@@ -1815,9 +1817,9 @@ final class ControlCenter extends View {
             }
             case "notes": {
                 List<TvIsland.Note> list = TvIsland.history();
-                d = new Detail(kind, R.drawable.cc_bell, 0xFFFF375F, "Notifications",
-                        list.isEmpty() ? "Nothing new" : list.size() + " since the TV came on", from);
-                if (list.isEmpty()) d.items.add(new Item(INFO, 0, "You are all caught up.", null));
+                d = new Detail(kind, R.drawable.cc_bell, 0xFFFF375F, Words.mark("Notifications"),
+                        list.isEmpty() ? Words.mark("Nothing new") : list.size() + " since the TV came on", from);
+                if (list.isEmpty()) d.items.add(new Item(INFO, 0, Words.mark("You are all caught up."), null));
                 for (int i = 0; i < Math.min(5, list.size()); i++) {
                     TvIsland.Note n = list.get(i);
                     Item it = new Item(NOTE, R.drawable.cc_sparkle, n.title, n.detail);
@@ -1825,32 +1827,32 @@ final class ControlCenter extends View {
                     d.items.add(it);
                 }
                 if (!list.isEmpty()) {
-                    Item clear = new Item(ACTION, R.drawable.cc_broom, "Clear all", null);
+                    Item clear = new Item(ACTION, R.drawable.cc_broom, Words.mark("Clear all"), null);
                     clear.act = () -> {
                         TvIsland.clearHistory();
                         notesNow = TvIsland.history();
                         closeDetail(false);
-                        toast("Notifications cleared", R.drawable.cc_bell);
+                        toast(Words.mark("Notifications cleared"), R.drawable.cc_bell);
                     };
                     d.items.add(clear);
                 }
                 return d;
             }
             case "orbit": {
-                d = new Detail(kind, R.drawable.cc_phone, 0xFF30D158, "Orbit", orbitOn ? "Your phone is linked to this TV" : "No phone linked yet", from);
-                d.items.add(new Item(INFO, 0, orbitOn ? "Works on any network: at home, at work, anywhere." : "Open Orbit on your phone: Use from anywhere, Link.", null));
+                d = new Detail(kind, R.drawable.cc_phone, 0xFF30D158, "Orbit", orbitOn ? Words.mark("Your phone is linked to this TV") : Words.mark("No phone linked yet"), from);
+                d.items.add(new Item(INFO, 0, orbitOn ? Words.mark("Works on any network: at home, at work, anywhere.") : Words.mark("Open Orbit on your phone: Use from anywhere, Link."), null));
                 if (!orbitOn) {
-                    Item code = new Item(ACTION, R.drawable.cc_link, "Show the link code", "On Home, at the top");
+                    Item code = new Item(ACTION, R.drawable.cc_link, Words.mark("Show the link code"), Words.mark("On Home, at the top"));
                     code.act = () -> closeThen(service::ccHome);
                     d.items.add(code);
                 }
                 return d;
             }
             case "power": {
-                d = new Detail(kind, R.drawable.cc_power, 0xFFFF3B30, "Power", "Family room TV", from);
-                Item sleep = new Item(ACTION, R.drawable.cc_moon, "Sleep now", "Standby; the remote wakes it");
+                d = new Detail(kind, R.drawable.cc_power, 0xFFFF3B30, Words.mark("Power"), Words.mark("Family room TV"), from);
+                Item sleep = new Item(ACTION, R.drawable.cc_moon, Words.mark("Sleep now"), Words.mark("Standby; the remote wakes it"));
                 sleep.act = () -> closeThen(service::ccSleepNow);
-                Item restart = new Item(ACTION, R.drawable.cc_restart, "Restart", "Asks once more on the TV");
+                Item restart = new Item(ACTION, R.drawable.cc_restart, Words.mark("Restart"), Words.mark("Asks once more on the TV"));
                 restart.act = () -> closeThen(service::ccPowerMenu);
                 d.items.add(sleep);
                 d.items.add(restart);
@@ -2123,6 +2125,7 @@ final class ControlCenter extends View {
     // ---------------------------------------------------------------- actions
 
     private void toast(String text, int icon) {
+        text = Words.tm(text);
         if (!open) {
             TvIsland island = HomeKeyService.island();
             if (island != null) island.show(new TvIsland.Event("cc-toast", text, "", 0xFF74D1FF, TvIsland.ICON_NONE, null, null, 2600L));
@@ -2161,13 +2164,13 @@ final class ControlCenter extends View {
 
     private void toggleQuiet() {
         TvIsland.quiet = !TvIsland.quiet;
-        toast(TvIsland.quiet ? "Quiet on: no pop-ups while you watch" : "Quiet off", R.drawable.cc_moon);
+        toast(TvIsland.quiet ? Words.mark("Quiet on: no pop-ups while you watch") : Words.mark("Quiet off"), R.drawable.cc_moon);
     }
 
     private void toggleEye() {
         boolean on = !service.ccEye();
         service.ccSetEye(on);
-        toast(on ? "Eye comfort on: a warmer picture" : "Eye comfort off", R.drawable.cc_eye);
+        toast(on ? Words.mark("Eye comfort on: a warmer picture") : Words.mark("Eye comfort off"), R.drawable.cc_eye);
     }
 
     private void toggleMute() {
@@ -2176,7 +2179,7 @@ final class ControlCenter extends View {
         am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_TOGGLE_MUTE, 0);
         readVolume();
         volume.to(muted ? 0f : volPct);
-        toast(muted ? "Sound off" : "Sound on · " + volPct, muted ? R.drawable.cc_muted : R.drawable.cc_speaker);
+        toast(muted ? Words.mark("Sound off") : "Sound on · " + volPct, muted ? R.drawable.cc_muted : R.drawable.cc_speaker);
     }
 
     private void adjust(String which, int step) {
@@ -2211,7 +2214,7 @@ final class ControlCenter extends View {
             lightPct = 55;
             service.ccSetLight(lightPct);
             light.to(lightPct);
-            toast("Movie Night: lights down, Quiet on", R.drawable.cc_film);
+            toast(Words.mark("Movie Night: lights down, Quiet on"), R.drawable.cc_film);
         } else if (i == 1) {
             // The Bhakti corner: a card of the family's own bhajans, each one press away on YouTube.
             openDetail("bhakti");
@@ -2221,7 +2224,7 @@ final class ControlCenter extends View {
             lightPct = 35;
             service.ccSetLight(lightPct);
             light.to(lightPct);
-            toast("Good Night: the TV sleeps in 30 minutes", R.drawable.cc_night);
+            toast(Words.mark("Good Night: the TV sleeps in 30 minutes"), R.drawable.cc_night);
         }
         wake();
     }
@@ -2236,7 +2239,7 @@ final class ControlCenter extends View {
     private void playPause() {
         MediaController mc = session();
         if (mc == null) {
-            toast("Nothing is playing", R.drawable.cc_note);
+            toast(Words.mark("Nothing is playing"), R.drawable.cc_note);
             return;
         }
         PlaybackState s = mc.getPlaybackState();
@@ -2287,7 +2290,7 @@ final class ControlCenter extends View {
         readBluetooth();
         String orbit = service.ccOrbit();
         orbitOn = "Linked".equals(orbit);
-        orbitLine = orbit == null ? "Off" : orbit;
+        orbitLine = orbit == null ? Words.mark("Off") : orbit;
     }
 
     private MediaController session() {
@@ -2319,8 +2322,8 @@ final class ControlCenter extends View {
         MediaController mc = session();
         readAt = SystemClock.uptimeMillis();
         if (mc == null) {
-            npTitle = "Nothing playing";
-            npSub = "Your last app picks up here";
+            npTitle = Words.mark("Nothing playing");
+            npSub = Words.mark("Your last app picks up here");
             npApp = "";
             npPos = npDur = 0;
             playing = false;
@@ -2347,7 +2350,7 @@ final class ControlCenter extends View {
         String t = md != null ? md.getString(MediaMetadata.METADATA_KEY_TITLE) : null;
         String a = md != null ? md.getString(MediaMetadata.METADATA_KEY_ARTIST) : null;
         if (a == null && md != null) a = md.getString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE);
-        npTitle = t != null && !t.isEmpty() ? t : "Playing";
+        npTitle = t != null && !t.isEmpty() ? t : Words.mark("Playing");
         npSub = a != null ? a : "";
         try {
             PackageManager pm = service.getPackageManager();
@@ -2479,7 +2482,7 @@ final class ControlCenter extends View {
 
     private void showLyricsState() {
         if (detail == null || detail.custom != LYRICS) return;
-        detail.sub = lyricsLoading ? "Looking for the words…" : lyrics == null ? "No words found for this one" : lyrics.source
+        detail.sub = lyricsLoading ? Words.mark("Looking for the words…") : lyrics == null ? Words.mark("No words found for this one") : lyrics.source
                 + (lyrics.synced ? "" : " · following the song's length");
     }
 
@@ -2503,7 +2506,7 @@ final class ControlCenter extends View {
         float mid = top + 88f + (cth - 88f) / 2f;
         if (l == null || l.lines.isEmpty()) {
             sub.setTextAlign(Paint.Align.CENTER);
-            drawText(c, lyricsLoading ? "…" : "Try a song with a clearer title, or the Bhakti corner.", ctx, mid, sub, a);
+            drawText(c, lyricsLoading ? "…" : Words.mark("Try a song with a clearer title, or the Bhakti corner."), ctx, mid, sub, a);
             sub.setTextAlign(Paint.Align.LEFT);
             return;
         }
@@ -2546,7 +2549,7 @@ final class ControlCenter extends View {
         }
         if (detail != null) {
             detail.sub = PanelMedia.youTubeId(mediaId) != null && YOUTUBE.equals(mediaPkg)
-                    ? "Opens in YouTube at " + time(pos) : "Opens a search for this title on the phone";
+                    ? "Opens in YouTube at " + time(pos) : Words.mark("Opens a search for this title on the phone");
         }
     }
 
@@ -2557,7 +2560,7 @@ final class ControlCenter extends View {
         Bitmap m = qrPicture;
         if (m == null) {
             sub.setTextAlign(Paint.Align.CENTER);
-            drawText(c, "No code for this one", ctx, top + cth / 2f + 20f, sub, a);
+            drawText(c, Words.mark("No code for this one"), ctx, top + cth / 2f + 20f, sub, a);
             sub.setTextAlign(Paint.Align.LEFT);
             return;
         }
@@ -2590,7 +2593,7 @@ final class ControlCenter extends View {
         wifiOn = caps != null && caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
         boolean wired = caps != null && caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
         if (!wifiOn) {
-            wifiLine = wired ? "Ethernet connected" : "Not connected";
+            wifiLine = wired ? Words.mark("Ethernet connected") : Words.mark("Not connected");
             return;
         }
         String ssid = ssid();
@@ -2613,7 +2616,7 @@ final class ControlCenter extends View {
         if (info == null) return "";
         int level = wm.calculateSignalLevel(info.getRssi()), max = Math.max(1, wm.getMaxSignalLevel());
         float q = level / (float) max;
-        return q >= 0.75f ? "Strong" : q >= 0.5f ? "Good" : q >= 0.25f ? "Fair" : "Weak";
+        return q >= 0.75f ? Words.mark("Strong") : q >= 0.5f ? Words.mark("Good") : q >= 0.25f ? Words.mark("Fair") : Words.mark("Weak");
     }
 
     private List<String[]> wifiDetails() {
@@ -2621,16 +2624,16 @@ final class ControlCenter extends View {
         WifiManager wm = service.getSystemService(WifiManager.class);
         @SuppressWarnings("deprecation") WifiInfo info = wm != null ? wm.getConnectionInfo() : null;
         if (!wifiOn || info == null) {
-            out.add(new String[]{"Network", wifiLine});
+            out.add(new String[]{Words.mark("Network"), wifiLine});
             return out;
         }
         String ssid = ssid();
-        out.add(new String[]{"Network", ssid != null ? ssid : "Connected"});
-        out.add(new String[]{"Signal", signal() + " (" + info.getRssi() + " dBm)"});
+        out.add(new String[]{Words.mark("Network"), ssid != null ? ssid : Words.mark("Connected")});
+        out.add(new String[]{Words.mark("Signal"), signal() + " (" + info.getRssi() + " dBm)"});
         int f = info.getFrequency();
-        out.add(new String[]{"Band", (f >= 5900 ? "6 GHz" : f >= 4900 ? "5 GHz" : "2.4 GHz") + " · " + info.getLinkSpeed() + " Mbps"});
+        out.add(new String[]{Words.mark("Band"), (f >= 5900 ? "6 GHz" : f >= 4900 ? "5 GHz" : "2.4 GHz") + " · " + info.getLinkSpeed() + " Mbps"});
         String ip = address();
-        if (ip != null) out.add(new String[]{"Address", ip});
+        if (ip != null) out.add(new String[]{Words.mark("Address"), ip});
         return out;
     }
 
@@ -2654,7 +2657,7 @@ final class ControlCenter extends View {
         BluetoothAdapter ad = bm != null ? bm.getAdapter() : null;
         btOn = ad != null && ad.isEnabled();
         if (!btOn) {
-            btLine = "Off";
+            btLine = Words.mark("Off");
             return;
         }
         int connected = 0;
@@ -2665,7 +2668,7 @@ final class ControlCenter extends View {
                 if (name == null) name = d[0];
             }
         }
-        btLine = connected == 0 ? "On" : connected == 1 ? "On · " + name : "On · " + connected + " devices";
+        btLine = connected == 0 ? Words.mark("On") : connected == 1 ? "On · " + name : Words.n(connected, "On · {n} device", "On · {n} devices");
     }
 
     /** Paired devices: name, "Connected" or "Paired", and a kind for the icon. */
@@ -2693,7 +2696,7 @@ final class ControlCenter extends View {
                 String kind = major == BluetoothClass.Device.Major.AUDIO_VIDEO ? (name.toLowerCase(Locale.ROOT).contains("bar") ? "soundbar" : "headphones")
                         : major == BluetoothClass.Device.Major.PHONE ? "phone"
                         : major == BluetoothClass.Device.Major.PERIPHERAL ? "remote" : "bt";
-                out.add(new String[]{name, on ? "Connected" : "Paired", kind});
+                out.add(new String[]{name, on ? Words.mark("Connected") : Words.mark("Paired"), kind});
             }
         } catch (SecurityException noPermission) {
             // shown as no devices
@@ -2712,8 +2715,8 @@ final class ControlCenter extends View {
                 CharSequence name = info.loadCustomLabel(service);
                 if (name == null || name.length() == 0) name = info.loadLabel(service);
                 int state = tim.getInputState(info.getId());
-                String line = state == TvInputManager.INPUT_STATE_CONNECTED ? "Connected"
-                        : state == TvInputManager.INPUT_STATE_CONNECTED_STANDBY ? "Connected, asleep" : "Nothing connected";
+                String line = state == TvInputManager.INPUT_STATE_CONNECTED ? Words.mark("Connected")
+                        : state == TvInputManager.INPUT_STATE_CONNECTED_STANDBY ? Words.mark("Connected, asleep") : Words.mark("Nothing connected");
                 out.add(new String[]{name.toString(), line, info.getId()});
             }
         } catch (RuntimeException unavailable) {
@@ -2744,6 +2747,7 @@ final class ControlCenter extends View {
 
     private static void drawText(Canvas c, String s, float x, float y, TextPaint p, float a) {
         if (s == null || s.isEmpty()) return;
+        s = Words.tm(s);
         int keep = p.getAlpha();
         p.setAlpha(Math.round(keep * a));
         c.drawText(s, x, y, p);
@@ -2752,10 +2756,12 @@ final class ControlCenter extends View {
 
     private static String ellipsize(String s, TextPaint p, float w) {
         if (s == null) return "";
+        s = Words.tm(s);
         return TextUtils.ellipsize(s, p, w, TextUtils.TruncateAt.END).toString();
     }
 
     private static String[] wrap(String s, TextPaint p, float w, int lines) {
+        s = Words.tm(s);
         if (p.measureText(s) <= w || lines == 1) return new String[]{ellipsize(s, p, w)};
         int cut = p.breakText(s, true, w, null);
         int space = s.lastIndexOf(' ', cut);

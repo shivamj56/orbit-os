@@ -211,7 +211,7 @@ final class RecentVideos {
                 if (told) continue;
                 item.appOnly = true;
                 item.title = item.appName;
-                item.detail = "Continue where you left off";
+                item.detail = Words.t("Continue where you left off");
             }
             shown.add(item);
         }

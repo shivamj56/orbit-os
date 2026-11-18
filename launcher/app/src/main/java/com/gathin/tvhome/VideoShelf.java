@@ -211,7 +211,7 @@ final class VideoShelf extends View {
     private void readApps() {
         apps.clear();
         Context c = getContext();
-        apps.add(new App(null, "Home", null, c.getDrawable(R.drawable.cc_tv)));
+        apps.add(new App(null, Words.t("Home"), null, c.getDrawable(R.drawable.cc_tv)));
         GalleryHomeView home = GalleryHomeView.alive();
         List<AppAdapter.Entry> row = home != null ? home.rowEntries() : null;
         if (row != null && !row.isEmpty()) {
@@ -331,7 +331,8 @@ final class VideoShelf extends View {
         if (!title.isEmpty() || !playing.isEmpty()) {
             int at = indexOf(playing);
             String app = at >= 0 ? apps.get(at).label : "";
-            String what = !title.isEmpty() ? "Still playing  ·  " + title : app.isEmpty() ? "Still playing" : "Still playing in " + app;
+            String what = !title.isEmpty() ? Words.t("Still playing") + "  ·  " + title
+                    : app.isEmpty() ? Words.t("Still playing") : Words.t("Still playing in {app}", "app", app);
             what = TextUtils.ellipsize(what, line, 760f, TextUtils.TruncateAt.END).toString();
             line.setAlpha(Math.round(255f * fade));
             card.setColor(0xFFFF3B30);
@@ -341,7 +342,7 @@ final class VideoShelf extends View {
         }
         hint.setAlpha(Math.round(166f * fade));
         hint.setTextAlign(Paint.Align.RIGHT);
-        c.drawText("Back  keep watching      Home  all of Home", 1196f, 482f + dy, hint);
+        c.drawText(Words.t("Back  keep watching      Home  all of Home"), 1196f, 482f + dy, hint);
         hint.setTextAlign(Paint.Align.LEFT);
 
         float cy = ROW_Y + dy;
@@ -383,13 +384,14 @@ final class VideoShelf extends View {
             c.drawRoundRect(r, 18f, 18f, rim);
             if (a.pkg != null && a.pkg.equals(playing)) {
                 // the app that is playing says so: OK on it just goes back to the video
-                float bw = badge.measureText("Playing") + 18f;
+                String playingWord = Words.t("Playing");
+        float bw = badge.measureText(playingWord) + 18f;
                 RectF b = new RectF(r.left + 10f, r.top + 10f, r.left + 10f + bw, r.top + 32f);
                 card.setColor(0xFFFFFFFF);
                 card.setAlpha(Math.round(235f * fade));
                 c.drawRoundRect(b, 11f, 11f, card);
                 badge.setAlpha(Math.round(255f * fade));
-                c.drawText("Playing", b.left + 9f, b.top + 15.5f, badge);
+                c.drawText(playingWord, b.left + 9f, b.top + 15.5f, badge);
             }
             if (near > 0.5f) {
                 name.setAlpha(Math.round(255f * fade * near));

@@ -35,7 +35,7 @@ final class MovieNight {
         since = SystemClock.elapsedRealtime();
         TvIsland island = HomeKeyService.island();
         if (island != null) {
-            island.show(new TvIsland.Event("movie", "Movie Night", "Notifications paused until the film ends", 0xFFE9B3FF,
+            island.show(new TvIsland.Event("movie", Words.mark("Movie Night"), Words.mark("Notifications paused until the film ends"), 0xFFE9B3FF,
                     TvIsland.ICON_FILM, null, null, 2600L));
         }
         GalleryHomeView home = GalleryHomeView.alive();
@@ -63,7 +63,7 @@ final class MovieNight {
         if (home != null) home.setMovieNight(false);
         TvIsland island = HomeKeyService.island();
         if (say && island != null) {
-            island.show(new TvIsland.Event("movie", "Movie Night ended", "Notifications are back", 0xFFE9B3FF,
+            island.show(new TvIsland.Event("movie", Words.mark("Movie Night ended"), Words.mark("Notifications are back"), 0xFFE9B3FF,
                     TvIsland.ICON_FILM, null, null, 2200L));
         }
     }

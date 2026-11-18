@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Locale;
 
 /**
  * The gallery home (config.xml gallery_home): the apps on the inside of a cylinder, a light in the middle that turns
@@ -204,7 +205,7 @@ final class GalleryHomeView extends View {
     private final Paint dustFar = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final Path searchIcon = new Path(), micIcon = new Path();
-    private final String hint = "Search apps, movies and shows";
+    private static final String HINT = Words.mark("Search apps, movies and shows");
     private final Drawable[] topIcons = new Drawable[3];
     private final boolean[] topIconDark = new boolean[3];
 
@@ -437,8 +438,8 @@ final class GalleryHomeView extends View {
         if (item.duration > 0L && item.position > 0L && item.position < item.duration) {
             long minutes = Math.max(1L, (item.duration - item.position) / 60_000L);
             line.append("   ·   ");
-            if (minutes >= 60L) line.append(minutes / 60L).append(" h ").append(minutes % 60L).append(" min left");
-            else line.append(minutes).append(" min left");
+            if (minutes >= 60L) line.append(Words.t("{h} h {m} min left", "h", minutes / 60L, "m", minutes % 60L));
+            else line.append(Words.t("{m} min left", "m", minutes));
         }
         ribbonLine = TextUtils.ellipsize(line, new TextPaint(recentLinePaint), room, TextUtils.TruncateAt.END).toString();
     }
@@ -450,7 +451,8 @@ final class GalleryHomeView extends View {
     private void refreshTexts() {
         Calendar now = Calendar.getInstance();
         Context ctx = getContext();
-        CharSequence date = DateFormat.format("EEEE, d MMMM", now);
+        // The weekday, day and month in the order and words of the launcher's language.
+        CharSequence date = DateFormat.format(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEEdMMMM"), now);
         CharSequence time = DateFormat.getTimeFormat(ctx).format(now.getTime());
         dateLine = date + "   ·   " + time;
         String weather = Weather.text();
@@ -459,20 +461,20 @@ final class GalleryHomeView extends View {
         festiveDay = HomeDays.on(java.time.LocalDate.now());
         String title, line;
         if (festiveDay != null) {
-            title = festiveDay.named ? named(festiveDay.title) : festiveDay.title;
-            line = festiveDay.line;
+            title = festiveDay.named ? named(Words.tm(festiveDay.title)) : Words.tm(festiveDay.title);
+            line = Words.tm(festiveDay.line);
         } else if (hour >= 5 && hour < 12) {
-            title = "Good Morning";
-            line = "Hello, I wish you a wonderful day";
+            title = Words.t("Good Morning");
+            line = Words.t("Hello, I wish you a wonderful day");
         } else if (hour >= 12 && hour < 17) {
-            title = "Good Afternoon";
-            line = "Hello, I wish you a wonderful day";
+            title = Words.t("Good Afternoon");
+            line = Words.t("Hello, I wish you a wonderful day");
         } else if (hour >= 17 && hour < 22) {
-            title = "Good Evening";
-            line = "Hello, I wish you a relaxing evening";
+            title = Words.t("Good Evening");
+            line = Words.t("Hello, I wish you a relaxing evening");
         } else {
-            title = "Good Night";
-            line = "Hello, I wish you a peaceful night";
+            title = Words.t("Good Night");
+            line = Words.t("Hello, I wish you a peaceful night");
         }
         if (festiveDay == null) title = named(title);
         String key = title + "|" + line;
@@ -1131,8 +1133,8 @@ final class GalleryHomeView extends View {
         final Context ctx = getContext();
         new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
-            Bitmap wordOne = GalleryArt.word(ctx, "Continue", wordSize);
-            Bitmap wordTwo = GalleryArt.word(ctx, "Watching", wordSize);
+            Bitmap wordOne = GalleryArt.word(ctx, Words.t("Continue"), wordSize);
+            Bitmap wordTwo = GalleryArt.word(ctx, Words.t("Watching"), wordSize);
             Bitmap room = GalleryArt.roomMask(ROOM_W, ROOM_H);
             RuntimeShader roomMade = GalleryArt.roomShader(room);
             RuntimeShader bloomMade = GalleryArt.tintShader(GalleryArt.bloomMask(BLOOM_W, BLOOM_H));
@@ -1610,7 +1612,7 @@ final class GalleryHomeView extends View {
         c.drawPath(searchIcon, iconPaint);
         hintPaint.setColor(mixArgb(0xFF9A9EA6, 0xFFF5F6F8, searchFocus));
         hintPaint.setAlpha(alpha);
-        c.drawText(hint, pill.left + 54f * u, pill.centerY() + hintPaint.getTextSize() * 0.35f, hintPaint);
+        c.drawText(Words.t(HINT), pill.left + 54f * u, pill.centerY() + hintPaint.getTextSize() * 0.35f, hintPaint);
 
         iconPaint.setColor(mixArgb(0xFFDADDE2, 0xFF08090B, micFocus));
         iconPaint.setAlpha(alpha);

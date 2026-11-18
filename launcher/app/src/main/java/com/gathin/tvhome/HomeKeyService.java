@@ -142,7 +142,7 @@ public class HomeKeyService extends AccessibilityService {
     private int sleepChosen;
     private long sleepAt;
     private final Runnable sleepWarn = () -> {
-        if (island != null) island.show(new TvIsland.Event("cc-sleep", "The TV sleeps in a minute", "Sleep timer",
+        if (island != null) island.show(new TvIsland.Event("cc-sleep", Words.mark("The TV sleeps in a minute"), Words.mark("Sleep timer"),
                 0xFFFF9F0A, TvIsland.ICON_NONE, null, null, 8000L));
     };
     private final Runnable sleepNow = () -> {
@@ -158,6 +158,7 @@ public class HomeKeyService extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
         running = this;
+        Words.init(this);
         settingsScancodes = getResources().getIntArray(R.array.settings_key_scancodes);
         // The service is directBootAware: Android 11 skips a service that is not while the user is still
         // locked at boot, writes accessibility_enabled=0 and, on TCL G03 firmware, never binds it after the
@@ -390,7 +391,7 @@ public class HomeKeyService extends AccessibilityService {
                 @Override
                 public void showPairingCode(String code, String url) {
                     if (island == null || portal == null) return;
-                    String address = url == null ? "The TV is not on the Wi-Fi" : "Open " + url.replaceFirst("^https?://", "").replaceAll("/$", "") + " on your phone";
+                    String address = url == null ? Words.mark("The TV is not on the Wi-Fi") : "Open " + url.replaceFirst("^https?://", "").replaceAll("/$", "") + " on your phone";
                     island.show(new TvIsland.Event("pair", "Phone code   " + code.substring(0, 3) + " " + code.substring(3), address,
                             0xFF74D1FF, TvIsland.ICON_PHONE, null, portal.qr(), 180_000L));
                 }
@@ -437,20 +438,20 @@ public class HomeKeyService extends AccessibilityService {
                         return;
                     }
                     island.show(new TvIsland.Event("orbit-link", "Orbit link code   " + code.substring(0, 4) + " " + code.substring(4),
-                            "On your phone: Orbit, Use from anywhere, Link", 0xFF74D1FF, TvIsland.ICON_PHONE, null, null, 120_000L));
+                            Words.mark("On your phone: Orbit, Use from anywhere, Link"), 0xFF74D1FF, TvIsland.ICON_PHONE, null, null, 120_000L));
                 }
 
                 @Override
                 public void linked(String email) {
                     if (island == null) return;
-                    island.show(new TvIsland.Event("orbit-linked", "Orbit is linked", email != null ? email : "This TV answers your phone from anywhere",
+                    island.show(new TvIsland.Event("orbit-linked", Words.mark("Orbit is linked"), email != null ? email : Words.mark("This TV answers your phone from anywhere"),
                             0xFF4BE3A0, TvIsland.ICON_PHONE, null, null, 6_000L));
                 }
 
                 @Override
                 public PortalHttp.Response handle(String path, JSONObject body) {
                     PhonePortal door = portal;
-                    return door != null ? door.handleCloud(path, body) : PortalHttp.Response.error(503, "The TV is closing the door.");
+                    return door != null ? door.handleCloud(path, body) : PortalHttp.Response.error(503, Words.mark("The TV is closing the door."));
                 }
             });
             if (cloud != null) cloud.start();
@@ -949,7 +950,7 @@ public class HomeKeyService extends AccessibilityService {
         if (switcher == null || memoryClear == null || memoryClear.running()) return;
         List<String> apps = switcher.packages();
         apps.remove(getPackageName());
-        switcher.clearing("Closing…");
+        switcher.clearing(Words.t("Closing…"));
         memoryClear.clear(apps, new MemoryClear.Listener() {
             @Override
             public void onProgress(int done, int total, String label) {
@@ -962,7 +963,7 @@ public class HomeKeyService extends AccessibilityService {
                 if (switcher != null) switcher.close();
                 openHome();
                 if (island != null) {
-                    island.show(new TvIsland.Event("ram", "Memory cleared", closed + (closed == 1 ? " app" : " apps") + " closed"
+                    island.show(new TvIsland.Event("ram", Words.mark("Memory cleared"), Words.n(closed, "{n} app closed", "{n} apps closed")
                             + (freeMb > 0 ? "   ·   " + freeMb + " MB free" : ""), 0xFF4BE3A0, TvIsland.ICON_NONE, null, null, 3000L));
                 }
             }
@@ -1003,7 +1004,7 @@ public class HomeKeyService extends AccessibilityService {
     /** Clear all goes through the recent apps row: its scrim hides the Settings pages the clearing walks through. */
     void ccClearAll() {
         if (switcher == null || memoryClear == null || memoryClear.running() || !switcher.open(frontActivity)) {
-            if (island != null) island.show(new TvIsland.Event("cc-ram", "Nothing to close", "No apps are open in the background",
+            if (island != null) island.show(new TvIsland.Event("cc-ram", Words.mark("Nothing to close"), Words.mark("No apps are open in the background"),
                     0xFF4BE3A0, TvIsland.ICON_NONE, null, null, 2600L));
             return;
         }
@@ -1031,12 +1032,12 @@ public class HomeKeyService extends AccessibilityService {
     }
 
     String ccOrbit() {
-        return cloud == null ? null : cloud.linkedNow() ? "Linked" : "Not linked";
+        return cloud == null ? null : cloud.linkedNow() ? Words.mark("Linked") : Words.mark("Not linked");
     }
 
     String ccWeatherLine() {
         String weather = Weather.text();
-        return weather.isEmpty() ? "Family room" : weather + " · Family room";
+        return weather.isEmpty() ? Words.mark("Family room") : weather + " · Family room";
     }
 
     void ccSleepIn(int minutes) {
@@ -1079,7 +1080,7 @@ public class HomeKeyService extends AccessibilityService {
         pauseAt = 0L;
         MediaController mc = anyPlaying();
         if (mc != null) mc.getTransportControls().pause();
-        if (island != null) island.show(new TvIsland.Event("cc-pause", "Paused, as you asked", "OK on the remote plays it again",
+        if (island != null) island.show(new TvIsland.Event("cc-pause", Words.mark("Paused, as you asked"), Words.mark("OK on the remote plays it again"),
                 0xFFFF9F0A, TvIsland.ICON_NONE, null, null, 6000L));
     };
 
@@ -1250,15 +1251,15 @@ public class HomeKeyService extends AccessibilityService {
         String[] say = null;
         if (t.contains("bhajan") || t.contains("aarti") || t.contains("chalisa") || t.contains("bhakti") || t.contains("kirtan")
                 || t.contains("mantra") || title.contains("भजन") || title.contains("आरती") || title.contains("चालीसा")) {
-            say = new String[]{"Bhakti", "The words are in the panel: Settings button, Now playing, Lyrics"};
+            say = new String[]{"Bhakti", Words.mark("The words are in the panel: Settings button, Now playing, Lyrics")};
         } else if (length >= 40L * 60_000L) {
-            say = new String[]{"A film is starting", "Movie Night is in the panel: Settings button, Scenes"};
+            say = new String[]{Words.mark("A film is starting"), Words.mark("Movie Night is in the panel: Settings button, Scenes")};
         }
         java.util.Calendar cal = java.util.Calendar.getInstance();
         int day = cal.get(java.util.Calendar.DAY_OF_YEAR);
         if (say == null && cal.get(java.util.Calendar.HOUR_OF_DAY) >= 22 && eyeHintDay != day && !ccEye()) {
             eyeHintDay = day;
-            say = new String[]{"Late night viewing", "Eye comfort and Sleep when this ends are in the panel"};
+            say = new String[]{Words.mark("Late night viewing"), Words.mark("Eye comfort and Sleep when this ends are in the panel")};
         }
         if (say == null) return;
         hintAt = now;
@@ -1306,13 +1307,13 @@ public class HomeKeyService extends AccessibilityService {
                 if (t == AudioDeviceInfo.TYPE_HDMI_ARC || t == AudioDeviceInfo.TYPE_HDMI_EARC) arc = true;
             }
         }
-        return bluetooth ? "Headphones" : arc ? "Soundbar" : "TV speakers";
+        return bluetooth ? Words.mark("Headphones") : arc ? Words.mark("Soundbar") : Words.mark("TV speakers");
     }
 
     /** Every place sound can go now: name, icon kind, and a line under it. */
     List<String[]> ccOutputs() {
         List<String[]> out = new ArrayList<>();
-        out.add(new String[]{"TV speakers", "speaker", "Built in"});
+        out.add(new String[]{Words.mark("TV speakers"), "speaker", Words.mark("Built in")});
         AudioManager am = getSystemService(AudioManager.class);
         if (am == null) return out;
         boolean bt = false, arc = false;
@@ -1321,10 +1322,10 @@ public class HomeKeyService extends AccessibilityService {
             if (!bt && (t == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || t == AudioDeviceInfo.TYPE_BLE_HEADSET || t == AudioDeviceInfo.TYPE_BLE_SPEAKER)) {
                 bt = true;
                 CharSequence name = d.getProductName();
-                out.add(new String[]{"Headphones", "headphones", name != null && name.length() > 0 ? name.toString() : "Bluetooth"});
+                out.add(new String[]{Words.mark("Headphones"), "headphones", name != null && name.length() > 0 ? name.toString() : "Bluetooth"});
             } else if (!arc && (t == AudioDeviceInfo.TYPE_HDMI_ARC || t == AudioDeviceInfo.TYPE_HDMI_EARC)) {
                 arc = true;
-                out.add(new String[]{"Soundbar", "soundbar", t == AudioDeviceInfo.TYPE_HDMI_EARC ? "HDMI eARC" : "HDMI ARC"});
+                out.add(new String[]{Words.mark("Soundbar"), "soundbar", t == AudioDeviceInfo.TYPE_HDMI_EARC ? "HDMI eARC" : "HDMI ARC"});
             }
         }
         return out;

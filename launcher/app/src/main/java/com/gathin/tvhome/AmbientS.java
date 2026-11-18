@@ -109,7 +109,7 @@ final class AmbientS implements TextureView.SurfaceTextureListener {
     }
 
     private void updateDate() {
-        String line = DateFormat.format("EEEE, d MMMM", Calendar.getInstance()).toString();
+        String line = DateFormat.format(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEEdMMMM"), Calendar.getInstance()).toString();
         String weather = Weather.text();
         if (!weather.isEmpty()) line += "   ·   " + weather;
         date.setText(line.toUpperCase(Locale.getDefault()));

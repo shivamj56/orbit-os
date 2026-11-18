@@ -457,7 +457,7 @@ public final class LiveTvActivity extends Activity implements GuideView.Listener
                 return;
             }
         }
-        guide.toast("There is no channel " + want);
+        guide.toast(getString(R.string.no_channel, String.valueOf(want)));
     }
 
     private void openApp(Channels.Channel ch) {

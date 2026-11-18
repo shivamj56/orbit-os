@@ -1,0 +1,1749 @@
+{
+  "about": "Orbit's own words on the TV, made by tools/i18n/extract-tv.cjs from the launcher's Words.t/mark/n and Words.PATTERNS: do not edit by hand. Translations: launcher/app/src/main/assets/words/<code>.json, keyed by these texts.",
+  "texts": [
+    {
+      "text": "{band} · {speed} Mbps",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "{h} h {m} min left",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java",
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "{m} min left",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java",
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "{n} apps closed",
+      "one": "{n} app closed",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java",
+        "Words.java"
+      ]
+    },
+    {
+      "text": "{n} min",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "{n} minutes",
+      "one": "{n} minute",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "{n} since the TV came on",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "{name} can see this screen",
+      "kind": "tv",
+      "where": [
+        "HelpMode.java",
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "{signal} ({rssi} dBm)",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "●  {name} can see this screen",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "A film is starting",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Address",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Apps that stream will wait for it",
+      "kind": "tv",
+      "where": [
+        "IslandEvents.java"
+      ]
+    },
+    {
+      "text": "Asks once more on the TV",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "At {time}, after {title}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Back",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Back  keep watching      Home  all of Home",
+      "kind": "tv",
+      "where": [
+        "VideoShelf.java"
+      ]
+    },
+    {
+      "text": "Back online",
+      "kind": "tv",
+      "where": [
+        "IslandEvents.java"
+      ]
+    },
+    {
+      "text": "Back to it, full screen",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Band",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Battery low",
+      "kind": "tv",
+      "where": [
+        "IslandEvents.java"
+      ]
+    },
+    {
+      "text": "Built in",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Cast",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Cast to this TV",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Change it in Sound settings",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Clear",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Clear all",
+      "kind": "tv",
+      "where": [
+        "AppSwitcher.java",
+        "ControlCenter.java",
+        "Words.java"
+      ]
+    },
+    {
+      "text": "Close",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Closing…",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Cloudy",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Colour everything today",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Connected",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java",
+        "IslandEvents.java"
+      ]
+    },
+    {
+      "text": "Connected, asleep",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Continue",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Continue on your phone",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Continue where you left off",
+      "kind": "tv",
+      "where": [
+        "RecentVideos.java"
+      ]
+    },
+    {
+      "text": "Disconnected",
+      "kind": "tv",
+      "where": [
+        "IslandEvents.java"
+      ]
+    },
+    {
+      "text": "Display",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Drizzle",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Each app keeps its own volume",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "ends {time}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Ends {time}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Ethernet connected",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Eye comfort and Sleep when this ends are in the panel",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Eye comfort off",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Eye comfort on: a warmer picture",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Fair",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Family room",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Family room TV",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Faster or slower, same pitch",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Fog",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "For the bond that always holds",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Ganpati Bappa Morya",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Good",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Good Afternoon",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Good Evening",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Good Morning",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Good Night",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java",
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Good Night: the TV sleeps in 30 minutes",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Happy Chhath Puja",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Diwali",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Dussehra",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Ganesh Chaturthi",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Gurpurab",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Holi",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java",
+        "Words.java"
+      ]
+    },
+    {
+      "text": "Happy Independence Day",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Janmashtami",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Lohri",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Maha Shivratri",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Makar Sankranti",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Navratri",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy New Year",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy New Year's Eve",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Raksha Bandhan",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Happy Republic Day",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Har Har Mahadev",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Headphones",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java",
+        "IslandEvents.java"
+      ]
+    },
+    {
+      "text": "Hello, I wish you a peaceful night",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Hello, I wish you a relaxing evening",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Hello, I wish you a wonderful day",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Hold OK",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Home",
+      "kind": "tv",
+      "where": [
+        "VideoShelf.java"
+      ]
+    },
+    {
+      "text": "Home screen",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Huge",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "In apps that follow the TV's subtitle setting",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Inputs",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Jai Chhathi Maiya",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Jai Hind",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Jai Shri Krishna",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Join another network",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Joy to you and everyone at home",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Large",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Last opened {when}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Late night viewing",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Linked",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Live, or on YouTube from the start",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Looking for the words…",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Lyrics",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "May good always win",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "May the lights find you",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "May this year be your best one yet",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "May your kites fly high",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Memory cleared",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Merry Christmas",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "More",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Mostly clear",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Mostly sunny",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Movie Night",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java",
+        "MovieNight.java"
+      ]
+    },
+    {
+      "text": "Movie Night ended",
+      "kind": "tv",
+      "where": [
+        "MovieNight.java"
+      ]
+    },
+    {
+      "text": "Movie Night is in the panel: Settings button, Scenes",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Movie Night: lights down, Quiet on",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Mute",
+      "kind": "tv",
+      "where": [
+        "VolumeSlider.java"
+      ]
+    },
+    {
+      "text": "Muted",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Netflix and Prime Video do this. Back or Home leaves it.",
+      "kind": "tv",
+      "where": [
+        "HelpMode.java"
+      ]
+    },
+    {
+      "text": "Netflix loud, YouTube soft: each comes back as you left it",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Network",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Nine nights of light",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "No apps are open in the background",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "No code for this one",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "No internet",
+      "kind": "tv",
+      "where": [
+        "IslandEvents.java"
+      ]
+    },
+    {
+      "text": "No phone linked yet",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "No words found for this one",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Normal",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Not connected",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Not linked",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Nothing connected",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Nothing is playing",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Nothing new",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Nothing playing",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Nothing to close",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Notifications",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Notifications are back",
+      "kind": "tv",
+      "where": [
+        "MovieNight.java"
+      ]
+    },
+    {
+      "text": "Notifications cleared",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Notifications paused until the film ends",
+      "kind": "tv",
+      "where": [
+        "MovieNight.java"
+      ]
+    },
+    {
+      "text": "Now playing",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Off",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "OK on the remote plays it again",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "On",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "On · {n} devices",
+      "one": "On · {n} device",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "On · {name}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "On · visible as {name}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "On · visible as Family room",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "On Home, at the top",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "On your phone, open Screen Cast and choose Family room.",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "On your phone: Orbit, Use from anywhere, Link",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "One more night of this year",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "One volume for every app",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Open",
+      "kind": "tv",
+      "where": [
+        "SearchActivity.java"
+      ]
+    },
+    {
+      "text": "Open {address} on your phone",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Open {app}",
+      "kind": "tv",
+      "where": [
+        "Words.java",
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Open Miracast",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Open Orbit on your phone: Use from anywhere, Link.",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Opens a search for this title on the phone",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Opens in YouTube at {time}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Orbit help is on, to help you from the phone",
+      "kind": "tv",
+      "where": [
+        "HelpMode.java"
+      ]
+    },
+    {
+      "text": "Orbit is linked",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Orbit link code   {code}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Pair a new device",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Paired",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Pause the video after",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Pause timer off",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Paused, as you asked",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Phone code   {code}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Picture",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Playing",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java",
+        "VideoShelf.java"
+      ]
+    },
+    {
+      "text": "Point the phone's camera at the code",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Power",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Press Inputs to watch it",
+      "kind": "tv",
+      "where": [
+        "IslandEvents.java"
+      ]
+    },
+    {
+      "text": "Quiet",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Quiet off",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Quiet on: no pop-ups while you watch",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Rain",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Ready as {name}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Ready as Family room",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Recent apps",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Remember each app's volume",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Remotes and accessories",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Restart",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Results for “{words}”",
+      "kind": "tv",
+      "where": [
+        "SearchActivity.java",
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Scan a code: it opens there, from here",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Screensaver",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Search apps, movies and shows",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Search movies, shows and apps",
+      "kind": "tv",
+      "where": [
+        "SearchActivity.java"
+      ]
+    },
+    {
+      "text": "Select",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Show the link code",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Show your phone's screen here",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Showers",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Signal",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Sleep now",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Sleep timer",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java",
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Sleep timer off",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Small",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Snow",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Snow showers",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Sound",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Sound mode",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Sound off",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Sound on · {level}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Sound plays on",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Sound settings",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Soundbar",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Speakers, soundbar, headphones",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Speed",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Speed {speed}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Speed: {app} keeps its own speed.",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Standby; the remote wakes it",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Still playing",
+      "kind": "tv",
+      "where": [
+        "VideoShelf.java"
+      ]
+    },
+    {
+      "text": "Still playing in {app}",
+      "kind": "tv",
+      "where": [
+        "VideoShelf.java",
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Strong",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Subtitle size",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Subtitles",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Subtitles {size}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "Subtitles off",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Subtitles on",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Sunny",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "The bonfire's warmth to you and yours",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "The TV is closing the door.",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "The TV is not on the Wi-Fi",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "The TV sleeps in {n} min",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "The TV sleeps in {n} minutes",
+      "one": "The TV sleeps in {n} minute",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "The TV sleeps in a minute",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "The TV sleeps when this ends",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "The TV sleeps when this ends, at {time}",
+      "kind": "tv",
+      "where": [
+        "Words.java PATTERNS"
+      ]
+    },
+    {
+      "text": "The TV stays on; only the video stops",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "The video pauses in {n} minutes",
+      "one": "The video pauses in {n} minute",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "The words are in the panel: Settings button, Now playing, Lyrics",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "The words on screen, in time with the song",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "This app hides its picture",
+      "kind": "tv",
+      "where": [
+        "HelpMode.java"
+      ]
+    },
+    {
+      "text": "This TV answers your phone from anywhere",
+      "kind": "tv",
+      "where": [
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "This TV keeps its subtitle setting locked",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Thunderstorm",
+      "kind": "tv",
+      "where": [
+        "Weather.java"
+      ]
+    },
+    {
+      "text": "Try a song with a clearer title, or the Bhakti corner.",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "TV speakers",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java",
+        "HomeKeyService.java"
+      ]
+    },
+    {
+      "text": "Type a name, then press the keyboard's search key",
+      "kind": "tv",
+      "where": [
+        "SearchActivity.java"
+      ]
+    },
+    {
+      "text": "Vol",
+      "kind": "tv",
+      "where": [
+        "VolumeSlider.java"
+      ]
+    },
+    {
+      "text": "Watching",
+      "kind": "tv",
+      "where": [
+        "GalleryHomeView.java"
+      ]
+    },
+    {
+      "text": "Weak",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "When this ends",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Wi-Fi settings",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Wishing you peace and light",
+      "kind": "tv",
+      "where": [
+        "HomeDays.java"
+      ]
+    },
+    {
+      "text": "Words from lrclib.net",
+      "kind": "tv",
+      "where": [
+        "PanelMedia.java"
+      ]
+    },
+    {
+      "text": "Works on any network: at home, at work, anywhere.",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "You are all caught up",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "You are all caught up.",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Your last app picks up here",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Your phone is linked to this TV",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    }
+  ]
+}

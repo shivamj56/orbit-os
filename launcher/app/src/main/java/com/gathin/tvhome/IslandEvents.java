@@ -62,22 +62,22 @@ final class IslandEvents {
             } catch (SecurityException noPermission) {
                 return;
             }
-            if (name == null || name.trim().isEmpty()) name = "Headphones";
+            if (name == null || name.trim().isEmpty()) name = Words.mark("Headphones");
             String key = "bt:" + device.getAddress();
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 connectedAt.put(key, SystemClock.elapsedRealtime());
-                island.show(new TvIsland.Event(key, name, "Connected", BLUE, TvIsland.ICON_HEADPHONES, null, null, 3500L));
+                island.show(new TvIsland.Event(key, name, Words.mark("Connected"), BLUE, TvIsland.ICON_HEADPHONES, null, null, 3500L));
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 connectedAt.remove(key);
-                island.show(new TvIsland.Event(key, name, "Disconnected", GREY, TvIsland.ICON_HEADPHONES, null, null, 3000L));
+                island.show(new TvIsland.Event(key, name, Words.mark("Disconnected"), GREY, TvIsland.ICON_HEADPHONES, null, null, 3000L));
             } else if (BATTERY_CHANGED.equals(action)) {
                 Long at = connectedAt.get(key);
                 int level = intent.getIntExtra(BATTERY_LEVEL, -1);
                 // The battery is news right after connecting, or when it runs low.
                 boolean fresh = at != null && SystemClock.elapsedRealtime() - at < 30_000L;
                 if (level < 0 || !(fresh || level <= 15)) return;
-                island.show(new TvIsland.Event(key, name, (fresh ? "Connected   ·   " : "Battery low   ·   ") + level + "%",
+                island.show(new TvIsland.Event(key, name, (fresh ? Words.mark("Connected") : Words.mark("Battery low")) + "   ·   " + level + "%",
                         level <= 15 ? RED : BLUE, TvIsland.ICON_HEADPHONES, null, null, 3500L));
             }
         }
@@ -90,7 +90,7 @@ final class IslandEvents {
                 main.removeCallbacks(offline);
                 if (lostAt != 0L && SystemClock.elapsedRealtime() - lostAt >= OFFLINE_AFTER_MS && quietOver()) {
                     island.dismiss("net");
-                    island.show(new TvIsland.Event("net", "Back online", "", GREEN, TvIsland.ICON_ONLINE, null, null, 2500L));
+                    island.show(new TvIsland.Event("net", Words.mark("Back online"), "", GREEN, TvIsland.ICON_ONLINE, null, null, 2500L));
                 }
                 lostAt = 0L;
             });
@@ -115,13 +115,13 @@ final class IslandEvents {
             if (info == null || info.getType() != TvInputInfo.TYPE_HDMI) return;
             CharSequence label = info.loadLabel(context);
             island.show(new TvIsland.Event("in:" + inputId, (label == null ? "HDMI" : label.toString()) + " connected",
-                    "Press Inputs to watch it", VIOLET, TvIsland.ICON_HDMI, null, null, 3500L));
+                    Words.mark("Press Inputs to watch it"), VIOLET, TvIsland.ICON_HDMI, null, null, 3500L));
         }
     };
 
     private void showOffline() {
         if (lostAt != 0L && quietOver()) {
-            island.show(new TvIsland.Event("net", "No internet", "Apps that stream will wait for it", RED, TvIsland.ICON_OFFLINE, null, null, 4000L));
+            island.show(new TvIsland.Event("net", Words.mark("No internet"), Words.mark("Apps that stream will wait for it"), RED, TvIsland.ICON_OFFLINE, null, null, 4000L));
         }
     }
 

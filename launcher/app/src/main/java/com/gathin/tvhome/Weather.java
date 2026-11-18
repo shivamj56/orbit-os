@@ -119,16 +119,16 @@ final class Weather {
 
     /** WMO weather codes, as Open-Meteo gives them, in one or two words. */
     static String words(int code, boolean day) {
-        if (code == 0) return day ? "Sunny" : "Clear";
-        if (code <= 2) return day ? "Mostly sunny" : "Mostly clear";
-        if (code == 3) return "Cloudy";
-        if (code == 45 || code == 48) return "Fog";
-        if (code >= 51 && code <= 57) return "Drizzle";
-        if (code >= 61 && code <= 67) return "Rain";
-        if (code >= 71 && code <= 77) return "Snow";
-        if (code >= 80 && code <= 82) return "Showers";
-        if (code >= 85 && code <= 86) return "Snow showers";
-        if (code >= 95) return "Thunderstorm";
+        if (code == 0) return day ? Words.t("Sunny") : Words.t("Clear");
+        if (code <= 2) return day ? Words.t("Mostly sunny") : Words.t("Mostly clear");
+        if (code == 3) return Words.t("Cloudy");
+        if (code == 45 || code == 48) return Words.t("Fog");
+        if (code >= 51 && code <= 57) return Words.t("Drizzle");
+        if (code >= 61 && code <= 67) return Words.t("Rain");
+        if (code >= 71 && code <= 77) return Words.t("Snow");
+        if (code >= 80 && code <= 82) return Words.t("Showers");
+        if (code >= 85 && code <= 86) return Words.t("Snow showers");
+        if (code >= 95) return Words.t("Thunderstorm");
         return "";
     }
 

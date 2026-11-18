@@ -346,7 +346,7 @@ final class AppSwitcher extends View {
 
     /** Under the row: Clear all, and how much memory is free (or which app it is closing). */
     private void drawClear(Canvas c, float e) {
-        String text = "Clear all";
+        String text = Words.t("Clear all");
         float tw = label.measureText(text), sw = heading.measureText(status);
         float pw = 44f * u + tw + (status.isEmpty() ? 0f : 18f * u + sw), ph = 46f * u;
         float cx = getWidth() / 2f, top = 560f * u;

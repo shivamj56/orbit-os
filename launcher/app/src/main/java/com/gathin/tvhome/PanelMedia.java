@@ -103,7 +103,7 @@ final class PanelMedia {
                 }
             }
             if (best == null) return null;
-            String source = "Words from lrclib.net";
+            String source = Words.t("Words from lrclib.net");
             String timed = best.isNull("syncedLyrics") ? "" : best.optString("syncedLyrics", "");
             if (!timed.isEmpty()) {
                 List<Line> lines = parseLrc(timed);

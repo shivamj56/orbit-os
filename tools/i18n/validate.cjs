@@ -11,7 +11,8 @@ const path = require("path");
 const { marks } = require("./languages.cjs");
 
 const [dir, ...codes] = process.argv.slice(2);
-const phone = new Map(JSON.parse(fs.readFileSync(path.join(dir, "phone.json"), "utf8")).map((e) => [e.id, e]));
+const listFile = fs.existsSync(path.join(dir, "phone.json")) ? "phone.json" : "texts.json";
+const phone = new Map(JSON.parse(fs.readFileSync(path.join(dir, listFile), "utf8")).map((e) => [e.id, e]));
 
 function load(code) {
   const out = {};
@@ -36,8 +37,8 @@ for (const code of codes) {
   const wanted = new Set([...job.phone, ...tv.keys()]);
   for (const id of wanted) {
     const value = got[id];
-    const english = id.startsWith("t:") ? tv.get(id) : phone.get(id);
-    const plural = id.startsWith("t:") ? english.plural : english.one ? { one: english.one, other: english.text } : null;
+    const english = tv.has(id) ? tv.get(id) : phone.get(id);
+    const plural = tv.has(id) ? english.plural : english.one ? { one: english.one, other: english.text } : null;
     if (value === undefined) {
       problems.push(`${id} missing`);
       continue;

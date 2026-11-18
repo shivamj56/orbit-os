@@ -30,24 +30,24 @@ final class HomeDays {
 
     private static final int SAFFRON = 0xFFFF9933, INDIA_GREEN = 0xFF1FA34A, GOLD = 0xFFFFB23C, EMBER = 0xFFFF7A1A;
 
-    private static final Day NEW_YEAR = new Day("Happy New Year", "May this year be your best one yet", GOLD, 0xFFFFE6A8, true);
-    private static final Day LOHRI = new Day("Happy Lohri", "The bonfire's warmth to you and yours", EMBER, 0xFFFFC24D, true);
-    private static final Day SANKRANTI = new Day("Happy Makar Sankranti", "May your kites fly high", 0xFFFFB300, 0xFFFF4D8D, true);
-    private static final Day REPUBLIC = new Day("Happy Republic Day", "Jai Hind", SAFFRON, INDIA_GREEN, true);
-    private static final Day INDEPENDENCE = new Day("Happy Independence Day", "Jai Hind", SAFFRON, INDIA_GREEN, true);
-    private static final Day CHRISTMAS = new Day("Merry Christmas", "Joy to you and everyone at home", 0xFFFF3B3B, 0xFF27D17F, true);
-    private static final Day NEW_YEARS_EVE = new Day("Happy New Year's Eve", "One more night of this year", GOLD, 0xFFE9B3FF, true);
+    private static final Day NEW_YEAR = new Day(Words.mark("Happy New Year"), Words.mark("May this year be your best one yet"), GOLD, 0xFFFFE6A8, true);
+    private static final Day LOHRI = new Day(Words.mark("Happy Lohri"), Words.mark("The bonfire's warmth to you and yours"), EMBER, 0xFFFFC24D, true);
+    private static final Day SANKRANTI = new Day(Words.mark("Happy Makar Sankranti"), Words.mark("May your kites fly high"), 0xFFFFB300, 0xFFFF4D8D, true);
+    private static final Day REPUBLIC = new Day(Words.mark("Happy Republic Day"), Words.mark("Jai Hind"), SAFFRON, INDIA_GREEN, true);
+    private static final Day INDEPENDENCE = new Day(Words.mark("Happy Independence Day"), Words.mark("Jai Hind"), SAFFRON, INDIA_GREEN, true);
+    private static final Day CHRISTMAS = new Day(Words.mark("Merry Christmas"), Words.mark("Joy to you and everyone at home"), 0xFFFF3B3B, 0xFF27D17F, true);
+    private static final Day NEW_YEARS_EVE = new Day(Words.mark("Happy New Year's Eve"), Words.mark("One more night of this year"), GOLD, 0xFFE9B3FF, true);
 
-    private static final Day CHHATH = new Day("Happy Chhath Puja", "Jai Chhathi Maiya", 0xFFFF8A3D, 0xFFFFD15C, true);
-    private static final Day GURPURAB = new Day("Happy Gurpurab", "Wishing you peace and light", SAFFRON, 0xFF3D6BFF, true);
-    private static final Day SHIVRATRI = new Day("Har Har Mahadev", "Happy Maha Shivratri", 0xFF3D6BFF, 0xFFB9C4FF, false);
-    private static final Day HOLI = new Day("Happy Holi", "Colour everything today", 0xFFFF3FA4, 0xFF2FD3FF, true);
-    private static final Day RAKHI = new Day("Happy Raksha Bandhan", "For the bond that always holds", 0xFFFF4D6D, GOLD, true);
-    private static final Day JANMASHTAMI = new Day("Happy Janmashtami", "Jai Shri Krishna", 0xFF1FA2FF, 0xFFFFD34D, true);
-    private static final Day GANESH = new Day("Ganpati Bappa Morya", "Happy Ganesh Chaturthi", 0xFFFF8A00, 0xFFFF3D3D, false);
-    private static final Day NAVRATRI = new Day("Happy Navratri", "Nine nights of light", 0xFFFF3D6E, 0xFFFFB23C, true);
-    private static final Day DUSSEHRA = new Day("Happy Dussehra", "May good always win", EMBER, GOLD, true);
-    private static final Day DIWALI = new Day("Happy Diwali", "May the lights find you", GOLD, EMBER, true);
+    private static final Day CHHATH = new Day(Words.mark("Happy Chhath Puja"), Words.mark("Jai Chhathi Maiya"), 0xFFFF8A3D, 0xFFFFD15C, true);
+    private static final Day GURPURAB = new Day(Words.mark("Happy Gurpurab"), Words.mark("Wishing you peace and light"), SAFFRON, 0xFF3D6BFF, true);
+    private static final Day SHIVRATRI = new Day(Words.mark("Har Har Mahadev"), Words.mark("Happy Maha Shivratri"), 0xFF3D6BFF, 0xFFB9C4FF, false);
+    private static final Day HOLI = new Day(Words.mark("Happy Holi"), Words.mark("Colour everything today"), 0xFFFF3FA4, 0xFF2FD3FF, true);
+    private static final Day RAKHI = new Day(Words.mark("Happy Raksha Bandhan"), Words.mark("For the bond that always holds"), 0xFFFF4D6D, GOLD, true);
+    private static final Day JANMASHTAMI = new Day(Words.mark("Happy Janmashtami"), Words.mark("Jai Shri Krishna"), 0xFF1FA2FF, 0xFFFFD34D, true);
+    private static final Day GANESH = new Day(Words.mark("Ganpati Bappa Morya"), Words.mark("Happy Ganesh Chaturthi"), 0xFFFF8A00, 0xFFFF3D3D, false);
+    private static final Day NAVRATRI = new Day(Words.mark("Happy Navratri"), Words.mark("Nine nights of light"), 0xFFFF3D6E, 0xFFFFB23C, true);
+    private static final Day DUSSEHRA = new Day(Words.mark("Happy Dussehra"), Words.mark("May good always win"), EMBER, GOLD, true);
+    private static final Day DIWALI = new Day(Words.mark("Happy Diwali"), Words.mark("May the lights find you"), GOLD, EMBER, true);
 
     /** Lunar days: first and last date, inclusive, and the day. */
     private static final Object[][] DATED = {
