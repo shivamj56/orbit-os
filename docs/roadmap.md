@@ -58,7 +58,9 @@ from the TV and picks the matching entry, or the closest one with only the safe 
 
 - [ ] Try Orbit on the TV for 15 minutes before setting it up: nothing switched off, the TV's own home stays the
   default, and Orbit closes by itself when the time is up.
-- [ ] Brazilian Portuguese for the phone app and the TV ([#3](https://github.com/shivamj56/orbit-os/issues/3)).
+- [x] Brazilian Portuguese for the phone app and the TV ([#3](https://github.com/shivamj56/orbit-os/issues/3)), and
+  every other language Android offers: about 80 ([tools/i18n](../tools/i18n/README.md)).
+- [ ] Native speakers to check the translations, most of which were first made with an AI model.
 - [ ] More than one home-screen layout, and your own wallpaper ([#3](https://github.com/shivamj56/orbit-os/issues/3)).
 - [x] The phone finds the TV again when the router gives it a new address
   ([#3](https://github.com/shivamj56/orbit-os/issues/3)).

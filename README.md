@@ -78,6 +78,15 @@ If Orbit is useful to you, a ⭐ on this repository helps other TV owners and de
 | **From anywhere** | Pair once on the Wi-Fi with the code on the TV; link with Google sign-in and an 8-digit code, and the remote works away from home through the cloud. |
 | **Help mode** | See the TV's screen on the phone, menus and apps, and tap it to press buttons for family at home. The TV shows who is watching, and help ends by itself. |
 
+### In your language
+
+The phone app and Orbit Home speak every language Android offers, about 80, from Afrikaans to Zulu: Hindi and the
+other Indian languages, Brazilian Portuguese, Arabic and Urdu (right to left), Chinese, Japanese and the rest.
+- The app follows your phone's language; Settings › Language picks another.
+- The TV follows its own language.
+- The translations are new, and help from native speakers is welcome:
+  [fix a translation](tools/i18n/README.md#fix-a-translation).
+
 <p align="center">
   <img alt="The boot film's last frame: the S mark and the words Developed by Shiv" src="docs/assets/boot-film.jpg" width="62%">
 </p>

@@ -495,3 +495,50 @@ The WebView never leaves the page, so op `openUrl` `{"url":…}` → `{"opened":
 (MainActivity, `Intent.ACTION_VIEW`). Flutter takes only https links under `shivamj56.github.io/orbit-os-site/` and
 `github.com/shivamj56/orbit-os-site`, and refuses anything else with 400. It is one of the phone's own ops, so it works
 in demo mode too. In a browser the page opens a new tab instead.
+
+## Languages (Orbit 1.5.0)
+
+The app and Orbit Home speak every language Android offers (about 80). The list is `phone/ui/src/i18n/languages.ts`.
+How texts are written, translated and checked is in `tools/i18n/README.md`.
+
+**Which language.**
+- The page follows the phone's language (`navigator.languages`, matched with `languageFor`: `pt` is Brazilian,
+  `es-MX` is Latin American Spanish, `zh-Hant` is Taiwan's Chinese).
+- Settings › Language picks another one, or "The phone's language" again. The choice is kept on the phone
+  (localStorage `orbit-language`).
+- The list shows each language in its own words, with its name in the language on screen beside it
+  (`Intl.DisplayNames`). It can be searched.
+
+**The texts.**
+- English is written in the code: `t("…")`, `tn(n, one, other)` for counts, `rich()` for words with marked-up parts.
+- A language's texts are one JSON file, `public/locales/<code>.json`, keyed by the English. Only the language on screen
+  is loaded:
+  - In the app, op `language` `{"code":"pt-BR"}` → `{"texts":{…}}` reads `assets/ui/locales/<code>.json`, which
+    tool/sync_ui.sh copies from the build. Flutter takes only a plain language tag, never a path. It answers 404 for a
+    language without a file, and the page then stays in English. It is one of the phone's own ops, so it works in demo
+    mode too.
+  - In a browser the page fetches `./locales/<code>.json`.
+  - The first frame waits for the file for up to 1.2 s.
+- A text without a translation shows in English.
+- Messages that reach the page from Flutter, the TV's door or the setup scripts stay English on the wire. The page
+  translates them where they show, with `tm()`: the exact text first, then the catalog's texts with values in them
+  ("The TV answered {status}.").
+
+**How it looks.**
+- `<html lang>` and `dir` follow the language. Arabic, Persian, Urdu and Hebrew read right to left.
+  - Back and forward arrows turn round (`.rtl-flip`).
+  - The remote's own arrows never do: up, down, left and right are the TV's.
+- Scripts whose letters join or stack (Arabic, the Indian scripts, Thai, Burmese…) keep their own letter spacing and
+  get room for their marks.
+- Vietnamese headings use Inter, since Outfit has no Vietnamese letters.
+- Numbers use Western digits in every language, like the TV's addresses and codes beside them. Dates, lists and
+  decimal marks follow the language.
+
+**On the TV.**
+- Orbit Home shows Orbit's own words through `Words.java`, in the launcher's language: the TV's, or config.json's
+  `locale`. They come from `assets/words/<code>.json`.
+- The Control Center's drawText, the island's events and the toasts translate whatever reaches them (`Words.tm`),
+  including the texts the code puts together (`Words.PATTERNS`).
+- The launcher's older texts and Orbit Live TV's are Android strings.xml files.
+- The weekday and month of the date follow the language's own order (`DateFormat.getBestDateTimePattern`).
+

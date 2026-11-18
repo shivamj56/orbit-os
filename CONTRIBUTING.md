@@ -18,6 +18,10 @@ Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md). A securi
 - **Add your TV to [`devices/`](devices).** Copy the closest folder, name it after the model code, and change the list
   after reading what is on the TV ([devices/README.md](devices/README.md)). Each group of packages to switch off says
   why, and the folder's README says what must go together.
+- **Fix a translation.** Orbit speaks about 80 languages, and most translations were first made with an AI model.
+  If yours reads wrong anywhere, change it in `phone/ui/public/locales/<code>.json` (the phone) or
+  `launcher/app/src/main/assets/words/<code>.json` (the TV) and send a pull request:
+  [how](tools/i18n/README.md#fix-a-translation).
 - **Send code.** For anything bigger than a small fix, open an issue first and say what you plan, so that nobody
   spends days on something that cannot go in.
 

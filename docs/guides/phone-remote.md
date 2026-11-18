@@ -42,6 +42,7 @@ This guide is for a TV that already has Orbit OS set up (the Orbit home screen s
 **The phone's own volume buttons** change the TV's volume while Orbit is open. You can turn that off in Settings.
 
 **Settings** (the gear) holds:
+- **Language**: Orbit follows your phone's language. Pick another here; there are about 80.
 - the pointer speed,
 - the volume buttons,
 - switching between the TV's homes,

@@ -42,6 +42,7 @@ Este guia é para uma TV que já tem o Orbit OS configurado (a tela inicial do O
 **Os botões de volume do próprio celular** mudam o volume da TV enquanto o Orbit está aberto. Dá para desligar isso em Settings.
 
 **Settings** (a engrenagem) tem:
+- **Idioma**: o Orbit segue o idioma do seu celular. Escolha outro aqui; são cerca de 80.
 - a velocidade do ponteiro,
 - os botões de volume,
 - a troca entre as telas iniciais da TV,
