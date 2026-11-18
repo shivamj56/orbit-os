@@ -14,6 +14,7 @@ import {
   signIn,
   skipName,
   tryAgain,
+  tvLabel,
   tvName,
   undoHere,
   useSetup,
@@ -27,6 +28,7 @@ import { GoogleMark } from "../Connect";
 import * as I from "../icons";
 import { BackupCard } from "./Backup";
 import { Brand, Card, DoneMark, Lead, Primary, Quiet, Rise, Screen, SectionLabel, Spinner, StepBar, Switch, TextButton, Title, ease } from "./parts";
+import { t, tn, tm, rich, mark } from "../../i18n";
 
 /** The clock, once every `ms` while `on`: for "about a minute left". */
 function useNow(ms: number, on = true) {
@@ -47,15 +49,16 @@ export function runPercent(f: Flow): number {
 }
 
 function timeLeft(f: Flow, now: number): string {
-  if (f.run.done?.ok) return "done";
-  if (f.pushed < 1) return "sending Orbit to the TV";
+  if (f.run.done?.ok) return t("done");
+  if (f.pushed < 1) return t("sending Orbit to the TV");
   const p = f.run.progress;
   const spent = now - f.runStarted;
-  if (p < 8 || spent < 5000) return "starting";
+  if (p < 8 || spent < 5000) return t("starting");
   const left = (spent * (100 - p)) / p;
-  if (left < 40_000) return "less than a minute left";
-  if (left < 90_000) return "about a minute left";
-  return `about ${Math.round(left / 60_000)} minutes left`;
+  if (left < 40_000) return t("less than a minute left");
+  if (left < 90_000) return t("about a minute left");
+  const minutes = Math.round(left / 60_000);
+  return tn(minutes, "about {n} minute left", "about {n} minutes left");
 }
 
 /** The ring of the canvas: a 10 px track and the setup's ribbon going round it. */
@@ -69,7 +72,7 @@ export function Ring({ value, sub }: { value: number; sub: string }) {
     return () => a.stop();
   }, [value, shown]);
   return (
-    <div className="relative grid aspect-square h-full max-h-[210px] place-items-center" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)} aria-valuetext={`${Math.round(value)}%, ${sub}`}>
+    <div className="relative grid aspect-square h-full max-h-[210px] place-items-center" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)} aria-valuetext={t("{percent}%, {state}", { percent: Math.round(value), state: sub })}>
       <svg viewBox="0 0 210 210" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <defs>
           <linearGradient id="setup-progress" x1="0" y1="0" x2="1" y2="1">
@@ -128,9 +131,9 @@ export function StepRow({ row }: { row: Row }) {
             row.state === "active" || row.state === "fail" ? "font-semibold text-snow" : row.state === "done" ? "text-mist" : "text-dusk"
           }`}
         >
-          {row.text}
+          {tm(row.text)}
         </span>
-        {row.detail && <span className="mt-0.5 block text-[12.5px] leading-snug text-mist">The TV said: {row.detail}</span>}
+        {row.detail && <span className="mt-0.5 block text-[12.5px] leading-snug text-mist">{t("The TV said: {why}", { why: tm(row.detail) })}</span>}
       </span>
     </motion.div>
   );
@@ -146,16 +149,16 @@ export function Installing() {
   const trouble = done ? rows.filter((r) => r.state === "fail") : [];
   const name = tvName(f);
   return (
-    <Screen label={`Setting up ${name}`}>
+    <Screen label={t("Setting up {name}", { name: tvLabel(name) })}>
       <StepBar step={6} />
       <Rise className="mt-[26px] flex shrink-0 items-center justify-center" style={{ height: "clamp(160px, 27vh, 230px)" }}>
         <Ring value={runPercent(f)} sub={timeLeft(f, now)} />
       </Rise>
       <Rise className="mt-2.5 flex flex-col items-center gap-1.5 text-center">
         <Title size={26} className="tracking-[-0.4px]">
-          {done ? `${name === "your TV" ? "Your TV" : name} is set up` : `Setting up ${name}`}
+          {done ? t("{tv} is set up", { tv: name === "your TV" ? t("Your TV") : name }) : t("Setting up {name}", { name: tvLabel(name) })}
         </Title>
-        <Lead>{done ? "Orbit OS is on the TV." : "Keep the TV on and this app open."}</Lead>
+        <Lead>{done ? t("Orbit OS is on the TV.") : t("Keep the TV on and this app open.")}</Lead>
       </Rise>
       <Rise className="mt-[22px]">
         <Card className="flex flex-col gap-1 px-4 py-2.5" aria-live="polite">
@@ -167,16 +170,17 @@ export function Installing() {
       {trouble.length > 0 && (
         <Rise className="mt-3">
           <p className="rounded-[16px] bg-white/[0.035] px-4 py-3 text-[13.5px] leading-snug text-mist">
-            {trouble.length === 1 ? "One thing did not work. " : "A few things did not work. "}
-            The rest of Orbit OS works, and setting it up again later tries {trouble.length === 1 ? "it" : "them"} once more.
+            {trouble.length === 1
+              ? t("One thing did not work. The rest of Orbit OS works, and setting it up again later tries it once more.")
+              : t("A few things did not work. The rest of Orbit OS works, and setting it up again later tries them once more.")}
           </p>
         </Rise>
       )}
       <Rise className="mt-auto flex flex-col gap-2 pt-5">
         <Quiet onPress={continueFromInstall} disabled={!done}>
-          Continue
+          {t("Continue")}
         </Quiet>
-        <span className="text-center text-[13px] text-dusk">{done ? (trouble.length ? "Continue when you are ready" : "Moving on") : "Orbit moves on by itself when the TV is ready"}</span>
+        <span className="text-center text-[13px] text-dusk">{done ? (trouble.length ? t("Continue when you are ready") : t("Moving on")) : t("Orbit moves on by itself when the TV is ready")}</span>
       </Rise>
     </Screen>
   );
@@ -191,7 +195,7 @@ export function Failed() {
   const switchedOff = disabledByRecord(f.run.undo).length;
   const canPutBack = !f.runError && (f.run.undo.length > 0 || !!f.record);
   return (
-    <Screen label="Setup stopped">
+    <Screen label={t("Setup stopped")}>
       <StepBar step={6} onBack={back} />
       <Rise className="mt-[30px]">
         <span className="grid h-14 w-14 place-items-center rounded-full bg-ice/12 text-ice">
@@ -199,26 +203,28 @@ export function Failed() {
         </span>
       </Rise>
       <Rise className="mt-[18px] flex flex-col gap-2.5">
-        <Title>Setup stopped</Title>
+        <Title>{t("Setup stopped")}</Title>
         <Lead>
           {f.runError
-            ? "The connection to the TV closed before the setup finished. Nothing is broken."
-            : `Nothing is broken: ${name === "your TV" ? "the TV" : name} still has its own home screen.`}
-          {!f.runError && switchedOff > 0 ? " Some apps were already switched off; Put back what changed switches them on again." : ""}
+            ? t("The connection to the TV closed before the setup finished. Nothing is broken.")
+            : name === "your TV"
+              ? t("Nothing is broken: the TV still has its own home screen.")
+              : t("Nothing is broken: {tv} still has its own home screen.", { tv: name })}
+          {!f.runError && switchedOff > 0 ? t(" Some apps were already switched off; Put back what changed switches them on again.") : ""}
         </Lead>
       </Rise>
       <Rise className="mt-5">
         <Card className="p-4">
-          <SectionLabel>What stopped</SectionLabel>
-          <p className="mt-2 text-[15px] leading-snug text-snow">{f.runError ?? stopped.text}</p>
-          {!f.runError && stopped.detail && <p className="mt-1 text-[13px] leading-snug text-mist">The TV said: {stopped.detail}</p>}
+          <SectionLabel>{t("What stopped")}</SectionLabel>
+          <p className="mt-2 text-[15px] leading-snug text-snow">{tm(f.runError ?? stopped.text)}</p>
+          {!f.runError && stopped.detail && <p className="mt-1 text-[13px] leading-snug text-mist">{t("The TV said: {why}", { why: tm(stopped.detail) })}</p>}
         </Card>
       </Rise>
       <Rise className="mt-auto flex flex-col gap-2.5 pt-6">
-        <Primary onPress={tryAgain}>{f.runError ? "Connect and try again" : "Try again"}</Primary>
-        {canPutBack && <Quiet onPress={undoHere}>Put back what changed</Quiet>}
+        <Primary onPress={tryAgain}>{f.runError ? t("Connect and try again") : t("Try again")}</Primary>
+        {canPutBack && <Quiet onPress={undoHere}>{t("Put back what changed")}</Quiet>}
         <TextButton tone="mist" onPress={closeSetup}>
-          Close
+          {t("Close")}
         </TextButton>
       </Rise>
     </Screen>
@@ -232,13 +238,13 @@ export function tvGreeting(now: Date, name: string): { title: string; line: stri
   const h = now.getHours();
   const [title, line] =
     h >= 5 && h < 12
-      ? ["Good Morning", "Hello, I wish you a wonderful day"]
+      ? [t("Good Morning"), t("Hello, I wish you a wonderful day")]
       : h >= 12 && h < 17
-        ? ["Good Afternoon", "Hello, I wish you a wonderful day"]
+        ? [t("Good Afternoon"), t("Hello, I wish you a wonderful day")]
         : h >= 17 && h < 22
-          ? ["Good Evening", "Hello, I wish you a relaxing evening"]
-          : ["Good Night", "Hello, I wish you a peaceful night"];
-  return { title: name ? `${title}, ${name}` : title, line };
+          ? [t("Good Evening"), t("Hello, I wish you a relaxing evening")]
+          : [t("Good Night"), t("Hello, I wish you a peaceful night")];
+  return { title: name ? t("{greeting}, {name}", { greeting: title, name }) : title, line };
 }
 
 export function You() {
@@ -246,26 +252,26 @@ export function You() {
   const { account } = useWorld();
   const greeting = tvGreeting(new Date(), f.name.trim());
   return (
-    <Screen label="Your name and account">
+    <Screen label={t("Your name and account")}>
       <StepBar step={7} />
       <Rise className="mt-5 flex flex-col gap-2">
-        <Title>Make it yours</Title>
-        <Lead>Your TV greets you by name, and your account lets this phone reach the TV from anywhere.</Lead>
+        <Title>{t("Make it yours")}</Title>
+        <Lead>{t("Your TV greets you by name, and your account lets this phone reach the TV from anywhere.")}</Lead>
       </Rise>
       <Rise className="mt-[18px]">
-        <div className="relative flex h-[122px] flex-col items-center justify-center gap-1.5 overflow-hidden rounded-2xl border border-white/12 bg-night-screen px-4" aria-label={`On your TV: ${greeting.title}`}>
+        <div className="relative flex h-[122px] flex-col items-center justify-center gap-1.5 overflow-hidden rounded-2xl border border-white/12 bg-night-screen px-4" aria-label={t("On your TV: {title}", { title: greeting.title })}>
           <div
             className="absolute -bottom-[70px] left-1/2 h-[120px] w-[260px] -translate-x-1/2 rounded-full"
             style={{ background: "radial-gradient(closest-side, rgba(233,179,255,0.22), rgba(5,7,13,0))" }}
           />
-          <span className="absolute top-2.5 left-3 text-[10px] tracking-[0.6px] text-slate uppercase">On your TV</span>
+          <span className="absolute top-2.5 left-3 text-[10px] tracking-[0.6px] text-slate uppercase">{t("On your TV")}</span>
           <span className="relative max-w-full truncate font-display text-[25px] font-light tracking-[-0.3px]">{greeting.title}</span>
           <span className="relative text-[11.5px] text-mist">{greeting.line}</span>
         </div>
       </Rise>
       <Rise className="mt-[22px] flex flex-col gap-2">
         <label htmlFor="setup-name" className="text-[14px] font-semibold text-haze">
-          Your name
+          {t("Your name")}
         </label>
         <input
           id="setup-name"
@@ -274,19 +280,19 @@ export function You() {
           maxLength={NAME_MAX}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && finishName()}
-          placeholder="What should the TV call you?"
+          placeholder={t("What should the TV call you?")}
           autoComplete="given-name"
           enterKeyHint="done"
           className="h-[52px] rounded-[14px] border border-white/14 bg-white/5 px-4 text-[16px] text-snow placeholder:text-slate focus:border-cyan focus:shadow-[0_0_0_3px_rgba(116,209,255,0.18)] focus:outline-none"
         />
       </Rise>
       <Rise className="mt-[22px] flex flex-col gap-2">
-        <span className="text-[14px] font-semibold text-haze">Your account</span>
+        <span className="text-[14px] font-semibold text-haze">{t("Your account")}</span>
         {account.signedIn ? (
           <div className="setup-card flex min-h-[52px] items-center gap-3 rounded-[16px] px-4 py-2.5">
             <DoneMark size={26} />
             <span className="min-w-0 flex-1 text-[14px] text-haze">
-              Signed in as <span className="break-all text-snow">{account.email}</span>
+              {rich(t("Signed in as {email}"), { email: <span className="break-all text-snow">{account.email}</span> })}
             </span>
           </div>
         ) : (
@@ -298,33 +304,33 @@ export function You() {
             className="flex h-[52px] items-center justify-center gap-2.5 rounded-[16px] border border-white/14 bg-white/6 text-[16px] font-semibold text-snow disabled:opacity-60"
           >
             {f.signingIn ? <Spinner size={18} /> : <GoogleMark />}
-            <span>{f.signingIn ? "Opening Google" : "Continue with Google"}</span>
+            <span>{f.signingIn ? t("Opening Google") : t("Continue with Google")}</span>
           </motion.button>
         )}
         {f.signInError ? (
           <p role="alert" className="text-[13px] leading-snug text-rose">
-            {f.signInError}
+            {tm(f.signInError)}
           </p>
         ) : (
-          !account.signedIn && <p className="text-[13px] leading-snug text-dusk">Google gives Orbit your email, so there is nothing to type. You can also do it later in Settings.</p>
+          !account.signedIn && <p className="text-[13px] leading-snug text-dusk">{t("Google gives Orbit your email, so there is nothing to type. You can also do it later in Settings.")}</p>
         )}
         <TextButton className="-ml-3 flex items-center gap-1.5 self-start text-[13.5px]" onPress={() => openLink(LINKS.privacy)}>
-          Privacy policy <I.External size={14} />
+          {t("Privacy policy")}{" "}<I.External size={14} />
         </TextButton>
       </Rise>
       <Rise className="mt-auto flex flex-col gap-2 pt-6">
         <Primary onPress={finishName} busy={f.nameBusy}>
-          {f.nameBusy ? "Sending your name" : "Finish"}
+          {f.nameBusy ? t("Sending your name") : t("Finish")}
         </Primary>
         {f.nameError ? (
           <>
             <p role="alert" className="text-center text-[13px] leading-snug text-rose">
-              {f.nameError}
+              {tm(f.nameError)}
             </p>
-            <TextButton onPress={skipName}>Finish without the name</TextButton>
+            <TextButton onPress={skipName}>{t("Finish without the name")}</TextButton>
           </>
         ) : (
-          <span className="text-center text-[13px] text-dusk">Your name stays on your TV</span>
+          <span className="text-center text-[13px] text-dusk">{t("Your name stays on your TV")}</span>
         )}
       </Rise>
     </Screen>
@@ -340,13 +346,13 @@ export function Ready() {
   const shown = name === "your TV" ? "Your TV" : name;
   const linked = account.tvLinked;
   return (
-    <Screen label="Your TV is ready" top={28}>
+    <Screen label={t("Your TV is ready")} top={28}>
       <Brand
         aside={
           <span className="flex min-w-0 items-center gap-1.5 rounded-xl border border-sage/30 bg-sage/10 px-2.5 py-1.5 text-[12.5px] text-[#bff1db]">
             <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-sage" />
             <span className="truncate">
-              {shown} · {linked ? "linked" : status.state === "connected" ? "connected" : "set up"}
+              {shown === "Your TV" ? t("Your TV") : shown} · {linked ? t("linked") : status.state === "connected" ? t("connected") : t("set up")}
             </span>
           </span>
         }
@@ -356,19 +362,25 @@ export function Ready() {
       </Rise>
       <Rise className="mt-6 flex flex-col gap-2">
         <Title size={32} className="tracking-[-0.6px]">
-          Your TV is ready
+          {t("Your TV is ready")}
         </Title>
         <Lead>
-          Orbit OS is on {shown === "Your TV" ? "your TV" : shown}, and this phone is its remote{linked ? ", at home or away" : ""}.
+          {shown === "Your TV"
+            ? linked
+              ? t("Orbit OS is on your TV, and this phone is its remote, at home or away.")
+              : t("Orbit OS is on your TV, and this phone is its remote.")
+            : linked
+              ? t("Orbit OS is on {tv}, and this phone is its remote, at home or away.", { tv: shown })
+              : t("Orbit OS is on {tv}, and this phone is its remote.", { tv: shown })}
         </Lead>
       </Rise>
       <Rise className="mt-5">
         <Card className="flex items-center gap-3.5 rounded-[18px] p-4">
           <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
-            <span className="text-[15px] font-semibold">Close developer mode</span>
-            <span className="text-[13px] leading-[1.4] text-mist">Recommended. Orbit keeps working; this shuts the door the setup used.</span>
+            <span className="text-[15px] font-semibold">{t("Close developer mode")}</span>
+            <span className="text-[13px] leading-[1.4] text-mist">{t("Recommended. Orbit keeps working; this shuts the door the setup used.")}</span>
           </div>
-          <Switch on={f.closeDev} onChange={setCloseDev} label="Close developer mode" />
+          <Switch on={f.closeDev} onChange={setCloseDev} label={t("Close developer mode")} />
         </Card>
       </Rise>
       <Rise className="mt-3">
@@ -377,19 +389,19 @@ export function Ready() {
       <Rise className="mt-3.5 flex flex-col gap-2.5 px-1 pt-1">
         <div className="flex items-start gap-3">
           <I.Gear size={20} className="mt-px shrink-0 text-ice" />
-          <span className="text-[14px] leading-[1.45] text-haze">The remote's Settings button opens the Control Center</span>
+          <span className="text-[14px] leading-[1.45] text-haze">{t("The remote's Settings button opens the Control Center")}</span>
         </div>
         <div className="flex items-start gap-3">
           <I.Channels size={20} className="mt-px shrink-0 text-lilac" />
-          <span className="text-[14px] leading-[1.45] text-haze">Live TV is the first tile on Home</span>
+          <span className="text-[14px] leading-[1.45] text-haze">{t("Live TV is the first tile on Home")}</span>
         </div>
       </Rise>
       <Rise className="mt-auto flex flex-col gap-1.5 pt-6">
         <Primary onPress={openRemote} busy={f.closing}>
-          Open the remote
+          {t("Open the remote")}
         </Primary>
         <TextButton tone="mist" onPress={undoHere} disabled={f.closing}>
-          Undo everything on this TV
+          {t("Undo everything on this TV")}
         </TextButton>
       </Rise>
     </Screen>
@@ -398,12 +410,12 @@ export function Ready() {
 
 const TILES: { label: string; tint: [string, string] }[] = [
   // Neutral names: this preview is in store screenshots and the demo, so no other company's apps are on it.
-  { label: "Live TV", tint: ["#b86bff", "#2a0b52"] },
-  { label: "Movies", tint: ["#ff5a4e", "#5a0f12"] },
-  { label: "Music", tint: ["#1ed7a0", "#063426"] },
-  { label: "News", tint: ["#1aa3ff", "#062a52"] },
-  { label: "Photos", tint: ["#f2c14e", "#3d2a06"] },
-  { label: "Apps", tint: ["#34a853", "#0b2f19"] },
+  { label: mark("Live TV"), tint: ["#b86bff", "#2a0b52"] },
+  { label: mark("Movies"), tint: ["#ff5a4e", "#5a0f12"] },
+  { label: mark("Music"), tint: ["#1ed7a0", "#063426"] },
+  { label: mark("News"), tint: ["#1aa3ff", "#062a52"] },
+  { label: mark("Photos"), tint: ["#f2c14e", "#3d2a06"] },
+  { label: mark("Apps"), tint: ["#34a853", "#0b2f19"] },
 ];
 
 /** Orbit Home as the TV now shows it: the greeting over the curved row, Live TV first. */
@@ -411,7 +423,7 @@ function HomePreview({ name }: { name: string }) {
   const greeting = tvGreeting(new Date(), name);
   const focus = 1;
   return (
-    <div className="rounded-[18px] border border-white/10 bg-[#11141f] p-[7px]" role="img" aria-label="Orbit Home on the TV: a curved row of apps under a greeting">
+    <div className="rounded-[18px] border border-white/10 bg-[#11141f] p-[7px]" role="img" aria-label={t("Orbit Home on the TV: a curved row of apps under a greeting")}>
       <div className="relative h-[182px] overflow-hidden rounded-[12px]" style={{ containerType: "inline-size", background: "radial-gradient(60% 70% at 50% 62%, #3a0d2a 0%, #12060f 55%, #030304 100%)" }}>
         <div className="absolute inset-x-0 top-[9%] truncate px-4 text-center font-display font-light text-white/90" style={{ fontSize: "6cqw" }}>
           {greeting.title}
@@ -420,19 +432,19 @@ function HomePreview({ name }: { name: string }) {
           {greeting.line}
         </div>
         <div className="absolute inset-x-0 top-[44%] h-[34%]">
-          {TILES.map((t, i) => {
+          {TILES.map((tile, i) => {
             const d = i - focus;
             return (
               <motion.div
-                key={t.label}
+                key={tile.label}
                 className="absolute top-0 h-full overflow-hidden rounded-[1.6cqw] border border-white/15"
-                style={{ width: "17%", left: "41.5%", background: `linear-gradient(135deg, ${t.tint[0]}, ${t.tint[1]})` }}
+                style={{ width: "17%", left: "41.5%", background: `linear-gradient(135deg, ${tile.tint[0]}, ${tile.tint[1]})` }}
                 initial={{ x: `${d * 118 + 160}%`, opacity: 0 }}
                 animate={{ x: `${d * 118}%`, scale: d === 0 ? 1.16 : 1 - Math.min(0.22, Math.abs(d) * 0.07), opacity: 1 - Math.abs(d) * 0.18, rotateY: d * -14 }}
                 transition={{ type: "spring", stiffness: 260, damping: 30, delay: 0.25 + i * 0.05 }}
               >
                 <div className="grid h-full place-items-center px-1 text-center font-display font-medium text-white" style={{ fontSize: "2.1cqw" }}>
-                  {t.label}
+                  {t(tile.label)}
                 </div>
               </motion.div>
             );

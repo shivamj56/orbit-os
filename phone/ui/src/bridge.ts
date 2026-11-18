@@ -1,6 +1,7 @@
 // The page's only way out: window.OrbitNative (the Flutter app) or, in a plain browser, the mock TV in mock.ts.
 // The contract is phone/SPEC.md.
 import { createMock } from "./mock";
+import { mark } from "./i18n";
 
 export type ConnState = "searching" | "found" | "needsPairing" | "pairing" | "connected" | "offline";
 
@@ -99,7 +100,7 @@ export type MockFactory = (deliver: (m: Message) => void) => (text: string) => v
  * the opening intro's hand-over, and opening Orbit's public pages in the browser. Every other op is about a TV, and in
  * demo mode goes to the pretend one.
  */
-export const PHONE_OPS: ReadonlySet<string> = new Set(["haptic", "keepAwake", "demo", "intro", "openUrl"]);
+export const PHONE_OPS: ReadonlySet<string> = new Set(["haptic", "keepAwake", "demo", "intro", "openUrl", "language"]);
 
 /** Events from the phone the page still takes in demo mode: the app leaving the screen and coming back. */
 export const PHONE_EVENTS: ReadonlySet<string> = new Set(["lifecycle"]);
@@ -146,7 +147,7 @@ export class Bridge {
     return new Promise<T>((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(new BridgeError("The TV did not answer."));
+        reject(new BridgeError(mark("The TV did not answer.")));
       }, timeoutMs);
       this.pending.set(id, { resolve, reject, timer });
       this.route(op)(JSON.stringify({ id, op, args: args ?? {} }));
@@ -181,7 +182,7 @@ export class Bridge {
       if (m.ok) waiting.resolve(m.data ?? {});
       else {
         const reason = m.reason ?? (m.data as { reason?: string } | undefined)?.reason;
-        waiting.reject(new BridgeError(m.error || "Something went wrong.", m.status, typeof reason === "string" ? reason : undefined));
+        waiting.reject(new BridgeError(m.error || mark("Something went wrong."), m.status, typeof reason === "string" ? reason : undefined));
       }
       return;
     }

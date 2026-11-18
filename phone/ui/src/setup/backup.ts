@@ -4,6 +4,7 @@
 // were on and off, and the home screen, accessibility and screensaver settings the TV had.
 import type { DriveBackup, SetupProps } from "../bridge";
 import { ORBIT_HOMES, mergeUndo } from "./plan";
+import { num, t, tn } from "../i18n";
 
 export const BACKUP_KIND = "orbit-tv-backup";
 export const BACKUP_VERSION = 1;
@@ -81,7 +82,7 @@ export function canBackUp(undo: readonly string[]): boolean {
 /** The backup itself. Throws when there is no undo record (then nothing says how the TV was). */
 export function buildBackup(input: BackupInput): TvBackup {
   const undo = mergeUndo(input.undo);
-  if (!undo.length) throw new Error("There is no record of what Orbit changed on this TV.");
+  if (!undo.length) throw new Error(t("There is no record of what Orbit changed on this TV."));
   const props = input.props ?? null;
   const now = input.now ?? {};
 
@@ -158,18 +159,16 @@ export const backupBytes = (text: string): number => new TextEncoder().encode(te
 
 /** "812 bytes", "6.4 KB", "18 KB", "1.2 MB". */
 export function sizeText(bytes: number): string {
-  if (bytes < 1024) return `${bytes} ${bytes === 1 ? "byte" : "bytes"}`;
+  if (bytes < 1024) return tn(bytes, "{n} byte", "{n} bytes");
   const kb = bytes / 1024;
-  if (kb < 10) return `${trim(kb.toFixed(1))} KB`;
-  if (kb < 1024) return `${Math.round(kb)} KB`;
+  if (kb < 10) return t("{size} KB", { size: num(kb, { maximumFractionDigits: 1 }) });
+  if (kb < 1024) return t("{size} KB", { size: num(Math.round(kb)) });
   const mb = kb / 1024;
-  return `${mb < 10 ? trim(mb.toFixed(1)) : Math.round(mb)} MB`;
+  return t("{size} MB", { size: mb < 10 ? num(mb, { maximumFractionDigits: 1 }) : num(Math.round(mb)) });
 }
 
-const trim = (n: string) => n.replace(/\.0$/, "");
-
 /** "6,552 bytes": the exact count, for under the rounded one. */
-export const exactBytes = (bytes: number): string => `${bytes.toLocaleString("en-US")} ${bytes === 1 ? "byte" : "bytes"}`;
+export const exactBytes = (bytes: number): string => tn(bytes, "{n} byte", "{n} bytes");
 
 /** A file from Drive, checked: it must be one of Orbit's TV backups with an undo record. Throws otherwise. */
 export function parseBackup(text: string): TvBackup {
@@ -177,15 +176,15 @@ export function parseBackup(text: string): TvBackup {
   try {
     data = JSON.parse(text);
   } catch {
-    throw new Error("That file is not an Orbit backup.");
+    throw new Error(t("That file is not an Orbit backup."));
   }
   const b = data as Partial<TvBackup> | null;
-  if (!b || typeof b !== "object" || b.kind !== BACKUP_KIND) throw new Error("That file is not an Orbit backup.");
-  if (typeof b.version !== "number" || b.version > BACKUP_VERSION) throw new Error("This backup was made by a newer Orbit. Update Orbit, then try again.");
-  if (!Array.isArray(b.undo) || !b.undo.every((l) => typeof l === "string")) throw new Error("This backup has no record of what Orbit changed.");
+  if (!b || typeof b !== "object" || b.kind !== BACKUP_KIND) throw new Error(t("That file is not an Orbit backup."));
+  if (typeof b.version !== "number" || b.version > BACKUP_VERSION) throw new Error(t("This backup was made by a newer Orbit. Update Orbit, then try again."));
+  if (!Array.isArray(b.undo) || !b.undo.every((l) => typeof l === "string")) throw new Error(t("This backup has no record of what Orbit changed."));
   const undo = mergeUndo(b.undo);
-  if (!undo.length) throw new Error("This backup has no record of what Orbit changed.");
-  if (!b.tv || typeof b.tv.name !== "string") throw new Error("That file is not an Orbit backup.");
+  if (!undo.length) throw new Error(t("This backup has no record of what Orbit changed."));
+  if (!b.tv || typeof b.tv.name !== "string") throw new Error(t("That file is not an Orbit backup."));
   return { ...(b as TvBackup), undo };
 }
 

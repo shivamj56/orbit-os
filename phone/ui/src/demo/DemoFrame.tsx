@@ -6,6 +6,7 @@ import { App } from "../App";
 import { haptic } from "../bridge";
 import { setDemoMode } from "../demo";
 import { MockTv } from "./MockTv";
+import { t } from "../i18n";
 
 export function DemoFrame() {
   const [tvShown, setTvShown] = useState(true);
@@ -42,7 +43,7 @@ function DemoBar({ tvShown, onTv }: { tvShown: boolean; onTv: () => void }) {
       <motion.button
         type="button"
         whileTap={{ scale: 0.95 }}
-        aria-label="Demo mode is on: leave the demo"
+        aria-label={t("Demo mode is on: leave the demo")}
         onClick={() => {
           haptic("medium");
           setDemoMode(false);
@@ -53,13 +54,13 @@ function DemoBar({ tvShown, onTv }: { tvShown: boolean; onTv: () => void }) {
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan/60" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
         </span>
-        <span className="font-semibold tracking-[0.06em] text-[#cdebff] uppercase">Demo</span>
+        <span className="font-semibold tracking-[0.06em] text-[#cdebff] uppercase">{t("Demo")}</span>
         <span className="text-white/35">·</span>
-        <span className="font-medium text-text">Leave</span>
+        <span className="font-medium text-text">{t("Leave")}</span>
       </motion.button>
-      <span className="min-w-0 flex-1 truncate text-[12px] text-faint">A pretend TV. Yours is left alone.</span>
+      <span className="min-w-0 flex-1 truncate text-[12px] text-faint">{t("A pretend TV. Yours is left alone.")}</span>
       <button type="button" onClick={onTv} className="h-9 shrink-0 rounded-full px-3 text-[12.5px] text-muted" aria-expanded={tvShown}>
-        {tvShown ? "Hide TV" : "Show TV"}
+        {tvShown ? t("Hide TV") : t("Show TV")}
       </button>
     </div>
   );

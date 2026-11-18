@@ -8,6 +8,7 @@ import { ORBIT_HOMES } from "../setup/plan";
 import * as I from "./icons";
 import { Press, Toast, spring } from "./kit";
 import { AppsSheet, PlayerSheet, SleepSheet, TypeSheet, useIcon } from "./Sheets";
+import { t, tm } from "../i18n";
 
 type SheetName = "apps" | "type" | "player" | "sleep" | null;
 
@@ -28,7 +29,7 @@ export function Remote({ status }: { status: Status }) {
   }, []);
   const fail = useCallback((e: unknown) => {
     haptic("error");
-    say((e as Error).message || "The TV did not take that.");
+    say(tm((e as Error).message) || t("The TV did not take that."));
   }, [say]);
   const key = useCallback((k: Key) => tv.key(k).catch(fail), [fail]);
 
@@ -41,24 +42,24 @@ export function Remote({ status }: { status: Status }) {
       <header className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="truncate font-display text-[23px] leading-tight font-normal tracking-[-0.01em]">
-            {state?.tv || status.tv?.name || "Your TV"}
+            {state?.tv || status.tv?.name || t("Your TV")}
           </h1>
           <p className="mt-0.5 flex items-center gap-1.5 text-[12.5px] text-muted">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mint/60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-mint" />
             </span>
-            {status.via === "cloud" ? "Connected from anywhere" : "On your home Wi-Fi"}
+            {status.via === "cloud" ? t("Connected from anywhere") : t("On your home Wi-Fi")}
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <Press label="Help: see the TV's screen" onPress={openHelp} feel="medium" className="glass h-11 rounded-full pr-4 pl-3 text-text">
+          <Press label={t("Help: see the TV's screen")} onPress={openHelp} feel="medium" className="glass h-11 rounded-full pr-4 pl-3 text-text">
             <span className="flex items-center gap-2 text-[14px] font-medium">
               <I.Lifebuoy size={18} className="text-gold" />
-              Help
+              {t("Help")}
             </span>
           </Press>
-          <Press label="Settings" onPress={openSettings} className="glass h-11 w-11 shrink-0 rounded-full text-muted">
+          <Press label={t("Settings")} onPress={openSettings} className="glass h-11 w-11 shrink-0 rounded-full text-muted">
             <I.Gear size={20} />
           </Press>
         </div>
@@ -97,7 +98,7 @@ export function Remote({ status }: { status: Status }) {
               haptic("medium");
               if (mode === "focus") {
                 key("recents");
-                say("Recent apps");
+                say(t("Recent apps"));
               } else tv.click(true).catch(fail);
             }}
             onMove={(dx, dy) => tv.move(dx, dy)}
@@ -106,24 +107,24 @@ export function Remote({ status }: { status: Status }) {
         </div>
       </div>
       <p className={`-mt-1 mb-3 text-center text-[12px] text-faint transition-opacity duration-300 ${touching ? "opacity-0" : "opacity-100"}`}>
-        {mode === "focus" ? "Roll to move  ·  tap for OK  ·  hold for recent apps" : "Glide to point  ·  tap to click  ·  two fingers to scroll"}
+        {mode === "focus" ? t("Roll to move  ·  tap for OK  ·  hold for recent apps") : t("Glide to point  ·  tap to click  ·  two fingers to scroll")}
       </p>
 
       <div className="mb-4 grid grid-cols-3 gap-3">
-        <KeyButton label="Back" onPress={() => key("back")}>
+        <KeyButton label={t("Back")} onPress={() => key("back")}>
           <I.Back size={24} />
         </KeyButton>
-        <KeyButton label="Home" onPress={() => key("home")}>
+        <KeyButton label={t("Home")} onPress={() => key("home")}>
           <I.Home size={24} />
         </KeyButton>
-        <KeyButton label="Recent" onPress={() => key("recents")}>
+        <KeyButton label={t("Recent")} onPress={() => key("recents")}>
           <I.Recents size={24} />
         </KeyButton>
       </div>
 
       <Dock state={state} {...volumeKeys(state, fail)} onSheet={setSheet} />
 
-      <AppsSheet open={sheet === "apps"} onClose={() => setSheet(null)} onLaunched={(label) => say(`Opening ${label}`)} onFail={fail} />
+      <AppsSheet open={sheet === "apps"} onClose={() => setSheet(null)} onLaunched={(label) => say(t("Opening {app}", { app: label }))} onFail={fail} />
       <TypeSheet open={sheet === "type"} onClose={() => setSheet(null)} onDone={say} onFail={fail} />
       <PlayerSheet open={sheet === "player"} onClose={() => setSheet(null)} state={state} onFail={fail} />
       <SleepSheet
@@ -131,7 +132,7 @@ export function Remote({ status }: { status: Status }) {
         onClose={() => setSheet(null)}
         onSleep={() => {
           setSheet(null);
-          tv.sleep().then(() => say("Good night")).catch(fail);
+          tv.sleep().then(() => say(t("Good night"))).catch(fail);
         }}
       />
     </div>
@@ -142,11 +143,11 @@ function NowPlaying({ state, onOpen, onFail }: { state: TvState | null; onOpen: 
   const pkg = state?.pkg && !ORBIT_HOMES.has(state.pkg) ? state.pkg : null;
   const art = useIcon(pkg);
   const hasMedia = !!state?.title;
-  const head = hasMedia ? state!.title : state?.app || "Home";
-  const sub = hasMedia ? [state!.player || state!.app, state!.playing ? "Playing" : "Paused"].filter(Boolean).join("  ·  ") : "On the TV now";
+  const head = hasMedia ? state!.title : state?.app || t("Home");
+  const sub = hasMedia ? [state!.player || state!.app, state!.playing ? t("Playing") : t("Paused")].filter(Boolean).join("  ·  ") : t("On the TV now");
   return (
     <motion.div layout className="glass mt-4 flex items-center gap-3 rounded-[22px] p-2.5 pr-3" transition={spring}>
-      <button type="button" onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-3 text-left" aria-label="What is playing">
+      <button type="button" onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-3 text-left" aria-label={t("What is playing")}>
         <span className="relative h-11 w-[78px] shrink-0 overflow-hidden rounded-[12px] bg-white/6">
           <AnimatePresence>
             {art ? (
@@ -165,7 +166,7 @@ function NowPlaying({ state, onOpen, onFail }: { state: TvState | null; onOpen: 
       </button>
       {hasMedia && (
         <Press
-          label={state!.playing ? "Pause" : "Play"}
+          label={state!.playing ? t("Pause") : t("Play")}
           onPress={() => {
             tv.media("play_pause").catch(onFail);
             patchTv({ playing: !state!.playing });
@@ -181,12 +182,12 @@ function NowPlaying({ state, onOpen, onFail }: { state: TvState | null; onOpen: 
 
 function ModeSwitch({ mode, onChange }: { mode: "focus" | "cursor"; onChange: (m: "focus" | "cursor") => void }) {
   const items = [
-    { id: "focus" as const, label: "Focus", icon: <I.FocusMark size={16} /> },
-    { id: "cursor" as const, label: "Cursor", icon: <I.CursorMark size={15} /> },
+    { id: "focus" as const, label: t("Focus"), icon: <I.FocusMark size={16} /> },
+    { id: "cursor" as const, label: t("Cursor"), icon: <I.CursorMark size={15} /> },
   ];
   return (
     <div className="mt-4 flex justify-center">
-      <div className="glass relative flex rounded-full p-1" role="tablist" aria-label="How the globe works">
+      <div className="glass relative flex rounded-full p-1" role="tablist" aria-label={t("How the globe works")}>
         {items.map((it) => (
           <button
             key={it.id}
@@ -256,15 +257,15 @@ function Dock({
   onSheet: (s: SheetName) => void;
 }) {
   return (
-    <nav className="glass flex items-center gap-1 rounded-[26px] p-1.5" aria-label="TV controls">
+    <nav className="glass flex items-center gap-1 rounded-[26px] p-1.5" aria-label={t("TV controls")}>
       <VolumeGroup state={state} onVolume={onVolume} onMute={onMute} />
-      <Press label="Keyboard" onPress={() => onSheet("type")} className="h-[54px] w-[52px] rounded-[20px] text-text">
+      <Press label={t("Keyboard")} onPress={() => onSheet("type")} className="h-[54px] w-[52px] rounded-[20px] text-text">
         <I.Keyboard size={22} />
       </Press>
-      <Press label="Apps" onPress={() => onSheet("apps")} className="h-[54px] w-[52px] rounded-[20px] text-text">
+      <Press label={t("Apps")} onPress={() => onSheet("apps")} className="h-[54px] w-[52px] rounded-[20px] text-text">
         <I.Apps size={21} />
       </Press>
-      <Press label="Sleep" onPress={() => onSheet("sleep")} className="h-[54px] w-[52px] rounded-[20px] text-rose">
+      <Press label={t("Sleep")} onPress={() => onSheet("sleep")} className="h-[54px] w-[52px] rounded-[20px] text-rose">
         <I.Power size={21} />
       </Press>
     </nav>
@@ -285,10 +286,10 @@ export function VolumeGroup({
   const level: 0 | 1 | 2 = share < 0.05 ? 0 : share < 0.5 ? 1 : 2;
   return (
     <div className="flex flex-1 items-center rounded-[20px] bg-white/[0.035]">
-      <Press label="Volume down" onPress={() => onVolume(-1)} repeat feel="tick" className="h-[54px] w-12 rounded-[20px] text-text">
+      <Press label={t("Volume down")} onPress={() => onVolume(-1)} repeat feel="tick" className="h-[54px] w-12 rounded-[20px] text-text">
         <I.Minus size={20} />
       </Press>
-      <Press label={state?.muted ? "Unmute" : "Mute"} onPress={onMute} className="h-[54px] flex-1 rounded-[16px]">
+      <Press label={state?.muted ? t("Unmute") : t("Mute")} onPress={onMute} className="h-[54px] flex-1 rounded-[16px]">
         <span className="flex flex-col items-center gap-1">
           <span className={`flex items-center gap-1.5 ${state?.muted ? "text-rose" : "text-text"}`}>
             <I.Speaker size={17} level={level} muted={state?.muted} />
@@ -303,7 +304,7 @@ export function VolumeGroup({
           </span>
         </span>
       </Press>
-      <Press label="Volume up" onPress={() => onVolume(1)} repeat feel="tick" className="h-[54px] w-12 rounded-[20px] text-text">
+      <Press label={t("Volume up")} onPress={() => onVolume(1)} repeat feel="tick" className="h-[54px] w-12 rounded-[20px] text-text">
         <I.Plus size={20} />
       </Press>
     </div>

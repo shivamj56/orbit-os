@@ -194,3 +194,31 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---- Languages (phone/SPEC.md, "Languages"): the page's lang and dir follow Settings › Language. ---- */
+
+/* Outfit has no Vietnamese letters: Vietnamese headings use Inter, which has them all. */
+:root:lang(vi) {
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Scripts whose letters join, stack or carry marks above and below: letter spacing pulls them apart, so they keep
+   their own spacing, and tight lines get room for the marks. */
+:root:is(:lang(ar), :lang(fa), :lang(ur), :lang(he), :lang(hi), :lang(mr), :lang(ne), :lang(bn), :lang(as), :lang(gu),
+    :lang(pa), :lang(or), :lang(ta), :lang(te), :lang(kn), :lang(ml), :lang(si), :lang(th), :lang(lo), :lang(km),
+    :lang(my), :lang(am), :lang(ka), :lang(hy))
+  * {
+  letter-spacing: normal !important;
+}
+:root:is(:lang(hi), :lang(mr), :lang(ne), :lang(bn), :lang(as), :lang(gu), :lang(pa), :lang(or), :lang(ta), :lang(te),
+    :lang(kn), :lang(ml), :lang(si), :lang(th), :lang(lo), :lang(km), :lang(my))
+  :is(.leading-tight, .leading-snug, [class*="leading-["]) {
+  line-height: 1.5 !important;
+}
+
+/* Back and forward arrows point the other way in a right-to-left language. The remote's own arrows (up, down, left,
+   right on the TV) never turn. */
+:root[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+

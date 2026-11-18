@@ -32,6 +32,7 @@ import {
   visibleQuestions,
   type Plan,
 } from "./plan";
+import { t } from "../i18n";
 
 /** The app's own version, for the backups it makes (phone/app/pubspec.yaml). */
 export const APP_VERSION = "1.4.0";
@@ -281,6 +282,9 @@ export function modelName(f: Pick<Flow, "tv" | "conn">): string | null {
 
 export const tvName = (f: Pick<Flow, "tv">) => (f.tv?.name && f.tv.name !== "TV" ? f.tv.name : "your TV");
 
+/** tvName as the screen shows it: a TV's own name, or "your TV" in the language on screen. */
+export const tvLabel = (name: string) => (name === "your TV" ? t("your TV") : name);
+
 // ---- the phone's Back ----
 
 // Setup is one step of history while it is open: the phone's Back comes here first, goes one screen back, and puts
@@ -477,7 +481,7 @@ function startScan() {
       mergeFound(Array.isArray(tvs) ? tvs : []);
     } catch (e) {
       if (job !== scanJob) return;
-      set({ scan: { ...flow.scan, error: (e as Error).message || "Orbit could not look on this Wi-Fi." } });
+      set({ scan: { ...flow.scan, error: (e as Error).message || t("Orbit could not look on this Wi-Fi.") } });
     }
     const rounds = flow.scan.rounds + 1;
     if (rounds >= SCAN_ROUNDS) {
@@ -548,7 +552,7 @@ const HOSTNAME = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z
 export function chooseAddress(text: string): string | null {
   const address = text.trim();
   if (!ADDRESS.test(address) && !(HOSTNAME.test(address) && /[a-z]/i.test(address) && address.includes("."))) {
-    return "That is not an address. It is four numbers with dots, like 192.168.1.20.";
+    return t("That is not an address. It is four numbers with dots, like 192.168.1.20.");
   }
   const known = flow.scan.tvs.find((t) => t.address === address);
   chooseTv(known ?? { name: "Your TV", address, model: null, orbit: false, manual: true });
@@ -608,7 +612,7 @@ export async function itsOn() {
     go("allow");
   } else {
     haptic("error");
-    set({ probe: { open: false, busy: false, note: "Not yet. Check that USB debugging is on, then press It's on again." } });
+    set({ probe: { open: false, busy: false, note: t("Not yet. Check that USB debugging is on, then press It's on again.") } });
   }
 }
 
@@ -622,15 +626,15 @@ export function connectError(e: unknown): string {
   const why = reason || (/^(refused|timeout|unreachable|tls)$/.test(said) ? said : "");
   switch (why) {
     case "refused":
-      return "The TV said Cancel. Try again and choose Allow.";
+      return t("The TV said Cancel. Try again and choose Allow.");
     case "timeout":
-      return "Nobody pressed Allow in time. Try again, and press Allow when the TV asks.";
+      return t("Nobody pressed Allow in time. Try again, and press Allow when the TV asks.");
     case "unreachable":
-      return "Orbit cannot reach the TV. Check that it is on, on this Wi-Fi, and that USB debugging is on.";
+      return t("Orbit cannot reach the TV. Check that it is on, on this Wi-Fi, and that USB debugging is on.");
     case "tls":
-      return "This TV only offers Wireless debugging, which Orbit Setup does not support yet.";
+      return t("This TV only offers Wireless debugging, which Orbit Setup does not support yet.");
     default:
-      return said || "The TV did not open the connection. Try again.";
+      return said || t("The TV did not open the connection. Try again.");
   }
 }
 
@@ -680,7 +684,7 @@ async function readTv() {
     if (flow.continuing) continueFromAllow();
   } catch {
     if (!flow.open) return;
-    set({ read: { ...flow.read, state: "failed", error: "Orbit could not read the TV's list of apps. Try again." }, continuing: false });
+    set({ read: { ...flow.read, state: "failed", error: t("Orbit could not read the TV's list of apps. Try again.") }, continuing: false });
   }
 }
 
@@ -811,7 +815,7 @@ async function runInstall() {
     const { exit } = await setupTv.run(`sh ${TV_DIR}/orbit-setup.sh install`);
     if (flow.run.exit === null && typeof exit === "number") set({ run: { ...flow.run, exit } });
   } catch (e) {
-    set({ runError: (e as Error).message || "The connection to the TV closed." });
+    set({ runError: (e as Error).message || t("The connection to the TV closed.") });
   } finally {
     stop();
     running = false;
@@ -903,7 +907,7 @@ export async function signIn() {
     setAccount(await cloud.signIn());
     haptic("success");
   } catch (e) {
-    set({ signInError: (e as Error).message || "Google sign-in did not finish." });
+    set({ signInError: (e as Error).message || t("Google sign-in did not finish.") });
   } finally {
     set({ signingIn: false });
   }
@@ -925,7 +929,7 @@ export async function finishName() {
     go("ready");
   } catch {
     haptic("error");
-    set({ nameBusy: false, nameError: "The TV did not take the name. Try again, or finish without it." });
+    set({ nameBusy: false, nameError: t("The TV did not take the name. Try again, or finish without it.") });
   } finally {
     stop();
   }
@@ -1004,7 +1008,7 @@ async function runUndo() {
     const { exit } = await setupTv.run(`sh ${TV_DIR}/orbit-undo.sh`);
     if (flow.run.exit === null && typeof exit === "number") set({ run: { ...flow.run, exit } });
   } catch (e) {
-    set({ runError: (e as Error).message || "The connection to the TV closed." });
+    set({ runError: (e as Error).message || t("The connection to the TV closed.") });
   } finally {
     stop();
     running = false;
@@ -1097,7 +1101,7 @@ async function runSwitch() {
     const { exit } = await setupTv.run(`sh ${TV_DIR}/orbit-setup.sh switch ${to}`);
     if (flow.run.exit === null && typeof exit === "number") set({ run: { ...flow.run, exit } });
   } catch (e) {
-    set({ runError: (e as Error).message || "The connection to the TV closed." });
+    set({ runError: (e as Error).message || t("The connection to the TV closed.") });
   } finally {
     stop();
     running = false;
@@ -1215,7 +1219,7 @@ async function readForBackup() {
     go("backup");
   } catch {
     if (!flow.open) return;
-    set({ continuing: false, read: { ...flow.read, state: "failed", error: "Orbit could not read the TV's list of apps. Try again." } });
+    set({ continuing: false, read: { ...flow.read, state: "failed", error: t("Orbit could not read the TV's list of apps. Try again.") } });
   }
 }
 
@@ -1229,7 +1233,7 @@ export function readTvForBackup() {
 function driveTrouble(e: unknown): DriveTrouble {
   const reason = e instanceof BridgeError ? e.reason ?? "other" : "other";
   const said = (e as Error)?.message;
-  return { reason, text: said || "Google Drive did not answer. Try again." };
+  return { reason, text: said || t("Google Drive did not answer. Try again.") };
 }
 
 /** Saves the file to Drive; Google's own sheet asks for Drive the first time. */
@@ -1327,7 +1331,7 @@ export async function restoreFrom(item: DriveBackup) {
       backups: {
         ...flow.backups,
         opening: null,
-        error: e instanceof BridgeError ? driveTrouble(e) : { reason: "file", text: (e as Error).message || "That backup could not be read." },
+        error: e instanceof BridgeError ? driveTrouble(e) : { reason: "file", text: (e as Error).message || t("That backup could not be read.") },
       },
     });
   }

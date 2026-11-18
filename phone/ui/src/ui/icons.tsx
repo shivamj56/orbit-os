@@ -197,8 +197,10 @@ export const Lifebuoy = (p: P) => (
   </Svg>
 );
 const turns = { up: 0, right: 90, down: 180, left: 270 } as const;
-export const Chevron = ({ dir = "up", ...p }: P & { dir?: keyof typeof turns }) => (
-  <Svg {...p}>
+// Left and right mean back and forward in a list: in a right-to-left language they turn round (the class does it).
+const sideways = (dir: string, className?: string) => (dir === "left" || dir === "right" ? `rtl-flip ${className ?? ""}` : className);
+export const Chevron = ({ dir = "up", className, ...p }: P & { dir?: keyof typeof turns }) => (
+  <Svg {...p} className={sideways(dir, className)}>
     <path d="m6.5 14.5 5.5-5.5 5.5 5.5" transform={`rotate(${turns[dir]} 12 12)`} />
   </Svg>
 );
@@ -212,8 +214,8 @@ export const Eye = (p: P) => (
 // ---- Orbit Setup ----
 
 /** The setup's own back and forward arrows: taller than the remote's chevrons, as the canvas draws them. */
-export const Caret = ({ dir = "left", ...p }: P & { dir?: "left" | "right" }) => (
-  <Svg {...p}>
+export const Caret = ({ dir = "left", className, ...p }: P & { dir?: "left" | "right" }) => (
+  <Svg {...p} className={sideways(dir, className)}>
     <path d={dir === "left" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"} />
   </Svg>
 );

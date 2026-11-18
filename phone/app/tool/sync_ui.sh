@@ -25,3 +25,14 @@ cp -- "$src" "$dest.part"
 mv -- "$dest.part" "$dest"
 bytes=$(wc -c < "$dest" | tr -d ' ')
 echo "sync_ui: $src -> $dest ($bytes bytes)"
+
+# The page's translations (phone/ui/public/locales, copied into dist by Vite): one file per language, which the page
+# asks Flutter for (the `language` op) only when it is the language on screen. The placeholder has none.
+locales="$app_dir/assets/ui/locales"
+mkdir -p "$locales"
+rm -f -- "$locales"/*.json
+if [ "${1:-}" != "--placeholder" ] && [ -d "$app_dir/../ui/dist/locales" ]; then
+  cp -- "$app_dir/../ui/dist/locales/"*.json "$locales/"
+fi
+count=$(find "$locales" -name '*.json' | wc -l | tr -d ' ')
+echo "sync_ui: $count language files -> $locales"

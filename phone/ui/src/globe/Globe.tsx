@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { FRAG, VERT } from "./shader";
 import { introPhase, registerGlobe } from "../intro/store";
 import { axisAngle, inverseMat3, multiply, normalize, type Quat } from "./quat";
+import { t } from "../i18n";
 
 export type Dir = "up" | "down" | "left" | "right";
 export type Mode = "focus" | "cursor";
@@ -363,7 +364,7 @@ export function Globe({ mode, asleep = false, speed = 1, onStep, onTap, onLong, 
     <div
       ref={wrap}
       className="relative aspect-square w-full touch-none select-none"
-      aria-label={mode === "focus" ? "Trackball: roll to move, tap for OK" : "Touchpad: glide to point, tap to click"}
+      aria-label={mode === "focus" ? t("Trackball: roll to move, tap for OK") : t("Touchpad: glide to point, tap to click")}
       role="application"
     >
       <canvas ref={canvas} className="absolute inset-0 h-full w-full" />

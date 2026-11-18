@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { bridge } from "../bridge";
 import { INTRO_FRAG, INTRO_VERT } from "./shader";
 import { globeTarget, introEnds, introHands, introStarts } from "./store";
+import { t } from "../i18n";
 
 const SEEN_KEY = "orbit-intro-seen";
 
@@ -370,7 +371,7 @@ function Scene({ frozenAt, onDone, onNoGl }: { frozenAt: number | null; onDone: 
         Orbit
       </div>
       <button type="button" className="sr-only" onClick={() => skip.current()}>
-        Skip the intro
+        {t("Skip the intro")}
       </button>
     </div>
   );

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../app/demo_store.dart';
 import '../cloud/drive.dart';
@@ -31,7 +33,9 @@ class OrbitBridge {
     SetupHost? setup,
     this.drive,
     this.demoStore,
-  }) : setup = setup ?? const _NoSetup() {
+    Future<String> Function(String key)? loadAsset,
+  })  : setup = setup ?? const _NoSetup(),
+        _loadAsset = loadAsset ?? rootBundle.loadString {
     _events = EventQueue(_send);
     remote.onStatus = (status) => _events.push('status', status.toJson());
     remote.onTvState = (state) => _events.push('tvstate', state);
@@ -58,11 +62,17 @@ class OrbitBridge {
   /// Where demo mode is kept between starts of the app (phone/SPEC.md, "Demo mode").
   final DemoStore? demoStore;
 
+  /// Reads one of the app's assets: the page's translations live in assets/ui/locales/ (phone/SPEC.md, "Languages").
+  final Future<String> Function(String key) _loadAsset;
+
   /// The page shows the opening intro's first frame (`intro` op): the screen's own copy of the mark can go.
   void Function()? onIntro;
 
   /// Ops the phone answers itself even in demo mode; every other op is about the real TV, and is refused meanwhile.
-  static const Set<String> phoneOps = {'demo', 'intro', 'haptic', 'keepAwake', 'openUrl'};
+  static const Set<String> phoneOps = {'demo', 'intro', 'haptic', 'keepAwake', 'openUrl', 'language'};
+
+  /// A language file's name: a plain BCP 47 tag ("hi", "pt-BR", "sr-Latn", "es-419"), never a path.
+  static final RegExp languageTag = RegExp(r'^[a-z]{2,3}(-[A-Za-z0-9]{2,8}){0,2}$');
 
   /// Where `openUrl` may go: Orbit's public pages (privacy policy, account deletion, issues), nowhere else.
   static bool isPublicLink(String url) {
@@ -280,6 +290,8 @@ class OrbitBridge {
       case 'intro':
         onIntro?.call();
         return null;
+      case 'language':
+        return {'texts': await _languageTexts(a.text('code', max: 24).trim())};
       case 'openUrl':
         final url = a.text('url', max: 512).trim();
         if (!isPublicLink(url)) throw const OpError(400, 'Orbit only opens its own pages.');
@@ -462,6 +474,21 @@ class OrbitBridge {
         debugPrint('orbit: the page did not take a message: $e');
       }),
     );
+  }
+
+  /// The page's texts in one language (the `language` op): assets/ui/locales/<code>.json, copied there by
+  /// tool/sync_ui.sh from phone/ui's build. Only the language the page asks for is read.
+  Future<Object?> _languageTexts(String code) async {
+    if (!languageTag.hasMatch(code)) throw const OpError(400, 'That is not a language.');
+    final String text;
+    try {
+      text = await _loadAsset('assets/ui/locales/$code.json');
+    } catch (_) {
+      throw const OpError(404, 'Orbit has no texts for that language yet.');
+    }
+    final texts = jsonDecode(text);
+    if (texts is! Map) throw const OpError(500, 'That language file is broken.');
+    return texts;
   }
 }
 

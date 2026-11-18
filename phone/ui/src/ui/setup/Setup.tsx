@@ -29,6 +29,10 @@ import { PlanScreen, Questions } from "./Choices";
 import { SwitchConfirm, Switched, Switching } from "./Switch";
 import { UndoConfirm, Undone, Undoing } from "./Undo";
 import { Brand, Card, DoneMark, Lead, NumberedStep, Primary, Rise, Screen, SectionLabel, Spinner, StepBar, TextButton, Title, Trouble, ease } from "./parts";
+import { t, rich, tm, mark, tn } from "../../i18n";
+
+/** A TV menu's own words, in bold. */
+const strong = (words: React.ReactNode) => <b className="font-semibold text-snow">{words}</b>;
 
 const SCREENS: Record<SetupStep, ComponentType> = {
   welcome: Welcome,
@@ -85,28 +89,28 @@ function Welcome() {
         className="pointer-events-none absolute top-[120px] -left-[60px] h-[360px] w-[510px] rounded-full"
         style={{ background: "radial-gradient(closest-side, rgba(116,209,255,0.14), rgba(9,12,22,0))" }}
       />
-      <Brand aside={<span className="text-[13px] tracking-[0.3px] text-dusk">Setup</span>} />
+      <Brand aside={<span className="text-[13px] tracking-[0.3px] text-dusk">{t("Setup")}</span>} />
       <Rise className="relative flex items-center justify-center [@media(max-height:780px)]:!h-[140px]" style={{ height: "clamp(180px, 34vh, 300px)" }}>
         <PlanetArt />
       </Rise>
       <Rise className="relative flex flex-col gap-3">
         <Title size={34} className="leading-[1.12] tracking-[-0.6px]">
-          Put Orbit OS on your TV
+          {t("Put Orbit OS on your TV")}
         </Title>
-        <p className="text-[16px] leading-[1.5] text-mist">No computer and no code. This phone does the work over the Wi-Fi, in about five minutes.</p>
+        <p className="text-[16px] leading-[1.5] text-mist">{t("No computer and no code. This phone does the work over the Wi-Fi, in about five minutes.")}</p>
       </Rise>
       <Rise className="relative mt-6">
         <Card className="flex flex-col gap-3.5 p-[18px]">
-          <Need icon={<I.Wifi size={22} className="text-cyan" />}>The TV is on, and on the same Wi-Fi as this phone</Need>
-          <Need icon={<I.Remote size={22} className="text-ice" />}>The TV's remote is in your hand</Need>
-          <Need icon={<I.Undo size={22} className="text-lilac" />}>Everything it switches off comes back with one tap</Need>
-          <Need icon={<I.Shield size={22} className="text-mint" />}>No rooting, no firmware change: only Android's own settings</Need>
+          <Need icon={<I.Wifi size={22} className="text-cyan" />}>{t("The TV is on, and on the same Wi-Fi as this phone")}</Need>
+          <Need icon={<I.Remote size={22} className="text-ice" />}>{t("The TV's remote is in your hand")}</Need>
+          <Need icon={<I.Undo size={22} className="text-lilac" />}>{t("Everything it switches off comes back with one tap")}</Need>
+          <Need icon={<I.Shield size={22} className="text-mint" />}>{t("No rooting, no firmware change: only Android's own settings")}</Need>
         </Card>
-        <p className="mt-2.5 px-1 text-[13px] leading-[1.4] text-dusk">TV going for repair? Use Undo everything first.</p>
+        <p className="mt-2.5 px-1 text-[13px] leading-[1.4] text-dusk">{t("TV going for repair? Use Undo everything first.")}</p>
       </Rise>
       <Rise className="relative mt-auto flex flex-col items-stretch gap-2 pt-6">
-        <Primary onPress={start}>Start setup</Primary>
-        <TextButton onPress={closeSetup}>Not now</TextButton>
+        <Primary onPress={start}>{t("Start setup")}</Primary>
+        <TextButton onPress={closeSetup}>{t("Not now")}</TextButton>
       </Rise>
     </Screen>
   );
@@ -184,7 +188,7 @@ const CHIP_SPOTS = [
 function modelLine(tv: SetupTv, all: SetupTv[]): string {
   const known = tv.model ? catalog.models[tv.model]?.name ?? tv.model : null;
   const twin = all.some((t) => t !== tv && t.name === tv.name);
-  return [known ?? (tv.manual ? "Typed address" : "Android TV"), twin || !known ? tv.address : null].filter(Boolean).join(" · ");
+  return [known ?? (tv.manual ? t("Typed address") : "Android TV"), twin || !known ? tv.address : null].filter(Boolean).join(" · ");
 }
 
 function Find() {
@@ -193,7 +197,7 @@ function Find() {
   const bar = stepCount(f, "find");
   // Undo from a backup: the TV the backup was made on is marked, and the button says what happens.
   const from = f.fromBackup;
-  const title = from ? `Which TV is ${from.tv}?` : "Find your TV";
+  const title = from ? t("Which TV is {tv}?", { tv: from.tv }) : t("Find your TV");
   return (
     <Screen label={title}>
       <StepBar step={bar.step} total={bar.total} onBack={back} />
@@ -201,27 +205,27 @@ function Find() {
         <Title>{title}</Title>
         {from && (
           <Lead>
-            Choose the TV to put back. When the backup was made it was at <span className="tabular text-haze">{from.address}</span>.
+            {rich(t("Choose the TV to put back. When the backup was made it was at {address}."), { address: <span className="tabular text-haze">{from.address}</span> })}
           </Lead>
         )}
         <div className="flex min-h-6 items-center gap-2 text-[15px] text-mist" aria-live="polite">
           {f.scan.busy ? (
             <>
               <span className="h-2 w-2 rounded-full bg-cyan" style={{ animation: "setup-blink 1.6s ease-in-out infinite" }} />
-              <span>Looking on this Wi-Fi</span>
+              <span>{t("Looking on this Wi-Fi")}</span>
             </>
           ) : (
             <>
-              <span>{tvs.length ? (tvs.length === 1 ? "Found one TV" : `Found ${tvs.length} TVs`) : "No TV found yet"}</span>
+              <span>{tvs.length ? (tvs.length === 1 ? t("Found one TV") : t("Found {length} TVs", { length: tvs.length })) : t("No TV found yet")}</span>
               <button type="button" onClick={rescan} className="-my-2.5 min-h-11 px-2 font-medium text-ice">
-                Look again
+                {t("Look again")}
               </button>
             </>
           )}
         </div>
         {!tvs.length && f.scan.error && (
           <p role="alert" className="text-[13px] leading-snug text-rose">
-            Orbit could not look on this Wi-Fi. {f.scan.error}
+            {t("Orbit could not look on this Wi-Fi.")} {tm(f.scan.error)}
           </p>
         )}
       </Rise>
@@ -265,7 +269,7 @@ function Find() {
 
       {tvs.length > 0 && (
         <Rise>
-          <SectionLabel>Found on this Wi-Fi</SectionLabel>
+          <SectionLabel>{t("Found on this Wi-Fi")}</SectionLabel>
           <ul className="mt-3 flex flex-col gap-3">
             {tvs.map((tv) => (
               <motion.li
@@ -280,28 +284,32 @@ function Find() {
                   <I.Tv size={24} />
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col gap-[3px]">
-                  <span className="truncate text-[17px] font-semibold">{tv.name === "TV" ? "Your TV" : tv.name}</span>
+                  <span className="truncate text-[17px] font-semibold">{tv.name === "TV" ? t("Your TV") : tv.name}</span>
                   <span className="tabular truncate text-[13px] text-mist">{modelLine(tv, tvs)}</span>
                   {from && tv.address === from.address ? (
                     <span className="flex items-center gap-1.5 text-[12.5px] text-cyan">
-                      <I.CloudDown size={13} className="shrink-0" /> Where the backup was made
+                      <I.CloudDown size={13} className="shrink-0" /> {t("Where the backup was made")}
                     </span>
                   ) : (
                     tv.orbit && (
                       <span className="flex items-center gap-1.5 text-[12.5px] text-dusk">
-                        <I.Planet size={13} className="shrink-0" /> Orbit OS is on it
+                        <I.Planet size={13} className="shrink-0" /> {t("Orbit OS is on it")}
                       </span>
                     )
                   )}
                 </span>
                 <motion.button
                   type="button"
-                  aria-label={`${from ? "Put back" : "Set up"} ${tv.name === "TV" ? "this TV" : tv.name}`}
+                  aria-label={
+                    tv.name === "TV"
+                      ? from ? t("Put back this TV") : t("Set up this TV")
+                      : from ? t("Put back {tv}", { tv: tv.name }) : t("Set up {tv}", { tv: tv.name })
+                  }
                   whileTap={{ scale: 0.95 }}
                   onClick={() => chooseTv(tv)}
                   className="h-11 shrink-0 rounded-[14px] bg-cyan px-[18px] text-[15px] font-semibold text-deep"
                 >
-                  This one
+                  {t("This one")}
                 </motion.button>
               </motion.li>
             ))}
@@ -322,9 +330,9 @@ function NotListed() {
   const [error, setError] = useState<string | null>(null);
   return (
     <div className="flex flex-col gap-1.5 rounded-[18px] bg-white/[0.03] p-4">
-      <span className="text-[15px] font-medium text-haze">Not listed?</span>
+      <span className="text-[15px] font-medium text-haze">{t("Not listed?")}</span>
       <span className="text-[14px] leading-[1.45] text-mist">
-        Turn the TV on and check it uses the same Wi-Fi. A TV on a cable can still be found if it is on the same router.
+        {t("Turn the TV on and check it uses the same Wi-Fi. A TV on a cable can still be found if it is on the same router.")}
       </span>
       <AnimatePresence initial={false} mode="wait">
         {typing ? (
@@ -341,7 +349,7 @@ function NotListed() {
             }}
           >
             <label htmlFor="setup-address" className="text-[13px] text-dusk">
-              On the TV: Settings › Network & Internet, then your Wi-Fi
+              {t("On the TV: Settings › Network & Internet, then your Wi-Fi")}
             </label>
             <div className="flex gap-2">
               <input
@@ -359,7 +367,7 @@ function NotListed() {
                 className="tabular h-12 min-w-0 flex-1 rounded-[14px] border border-white/14 bg-white/5 px-4 text-[16px] text-snow placeholder:text-slate focus:border-cyan focus:shadow-[0_0_0_3px_rgba(116,209,255,0.18)] focus:outline-none"
               />
               <button type="submit" disabled={!address.trim()} className="h-12 shrink-0 rounded-[14px] bg-cyan px-4 text-[15px] font-semibold text-deep disabled:opacity-45">
-                Use it
+                {t("Use it")}
               </button>
             </div>
             {error && (
@@ -371,7 +379,7 @@ function NotListed() {
         ) : (
           <motion.div key="link" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <button type="button" onClick={() => setTyping(true)} className="mt-1 min-h-11 self-start text-[15px] font-medium text-ice">
-              Type the TV's address
+              {t("Type the TV's address")}
             </button>
           </motion.div>
         )}
@@ -391,41 +399,31 @@ function DevMode() {
   const bar = stepCount(f, "devmode");
   const name = tvName(f);
   return (
-    <Screen label={again ? "Turn on USB debugging" : "Turn on developer mode"}>
+    <Screen label={again ? t("Turn on USB debugging") : t("Turn on developer mode")}>
       <StepBar step={bar.step} total={bar.total} onBack={back} />
       <Rise className="mt-[22px] flex flex-col gap-2">
-        <Title>{again ? "Turn on USB debugging" : "Turn on developer mode"}</Title>
+        <Title>{again ? t("Turn on USB debugging") : t("Turn on developer mode")}</Title>
         <Lead>
           {again
-            ? "Orbit needs the same door it used to set the TV up. Do this with the remote; Orbit moves on as soon as it sees the change."
-            : "Android keeps this switch on the TV itself. Do these steps with the remote; Orbit moves on as soon as it sees the change."}
+            ? t("Orbit needs the same door it used to set the TV up. Do this with the remote; Orbit moves on as soon as it sees the change.")
+            : t("Android keeps this switch on the TV itself. Do these steps with the remote; Orbit moves on as soon as it sees the change.")}
         </Lead>
       </Rise>
       <Rise className="mt-5">{again ? <DebugArt /> : <AboutArt name={f.tv && !f.tv.manual && name !== "your TV" ? name : null} />}</Rise>
       <Rise className="mt-[18px] flex flex-col gap-3.5">
         {again ? (
           <>
-            <NumberedStep n={1}>
-              Open <b className="font-semibold text-snow">Settings › System › Developer options</b>
-            </NumberedStep>
-            <NumberedStep n={2}>
-              Turn on <b className="font-semibold text-snow">USB debugging</b>
-            </NumberedStep>
+            <NumberedStep n={1}>{rich(t("Open <b>Settings › System › Developer options</b>"), { b: strong })}</NumberedStep>
+            <NumberedStep n={2}>{rich(t("Turn on <b>USB debugging</b>"), { b: strong })}</NumberedStep>
             <p className="pl-[42px] text-[13px] leading-snug text-dusk">
-              No Developer options? Open System › About and press OK seven times on Android TV OS build.
+              {t("No Developer options? Open System › About and press OK seven times on Android TV OS build.")}
             </p>
           </>
         ) : (
           <>
-            <NumberedStep n={1}>
-              Open <b className="font-semibold text-snow">Settings › System › About</b>
-            </NumberedStep>
-            <NumberedStep n={2}>
-              Select <b className="font-semibold text-snow">Android TV OS build</b> and press OK seven times
-            </NumberedStep>
-            <NumberedStep n={3}>
-              Back in <b className="font-semibold text-snow">System › Developer options</b>, turn on <b className="font-semibold text-snow">USB debugging</b>
-            </NumberedStep>
+            <NumberedStep n={1}>{rich(t("Open <b>Settings › System › About</b>"), { b: strong })}</NumberedStep>
+            <NumberedStep n={2}>{rich(t("Select <b>Android TV OS build</b> and press OK seven times"), { b: strong })}</NumberedStep>
+            <NumberedStep n={3}>{rich(t("Back in <b>System › Developer options</b>, turn on <b>USB debugging</b>"), { b: strong })}</NumberedStep>
           </>
         )}
       </Rise>
@@ -433,10 +431,10 @@ function DevMode() {
         <div className="setup-card flex min-h-[64px] items-center gap-3 rounded-[18px] px-4 py-2.5" aria-live="polite">
           {f.probe.open && !f.probe.busy ? <DoneMark size={22} /> : <Spinner size={20} />}
           <span className="flex-1 text-[14px] text-haze">
-            {f.probe.busy ? "Looking for it" : f.probe.open ? "USB debugging is on" : again ? "Waiting for USB debugging" : "Waiting for developer mode"}
+            {f.probe.busy ? t("Looking for it") : f.probe.open ? t("USB debugging is on") : again ? t("Waiting for USB debugging") : t("Waiting for developer mode")}
           </span>
           <button type="button" onClick={itsOn} disabled={f.probe.busy} className="h-11 shrink-0 px-1 text-[15px] font-semibold text-ice disabled:opacity-45">
-            {f.probe.open ? "Continue" : "It's on"}
+            {f.probe.open ? t("Continue") : t("It's on")}
           </button>
         </div>
         {f.probe.note && (
@@ -463,13 +461,19 @@ function AboutArt({ name }: { name: string | null }) {
     return () => window.clearInterval(t);
   }, [still]);
   const left = 7 - presses;
-  const toast = presses >= 7 ? "You are now a developer!" : presses >= 3 ? `You are now ${left} ${left === 1 ? "step" : "steps"} away from being a developer.` : null;
+  // The TV's own words while OK is pressed on the build number (Android's, in the language on screen).
+  const toast =
+    presses >= 7
+      ? t("You are now a developer!")
+      : presses >= 3
+        ? tn(left, "You are now {n} step away from being a developer.", "You are now {n} steps away from being a developer.")
+        : null;
   return (
     <div aria-hidden="true">
-      <TvPicture place="Settings › System" title="About">
+      <TvPicture place={t("Settings › System")} title={t("About")}>
         <div className="mt-2.5 flex flex-col gap-1">
-          <ArtRow label="Device name" value={name ?? <ArtBar />} />
-          <ArtRow label="Android TV OS version" value={<ArtBar width={20} />} />
+          <ArtRow label={t("Device name")} value={name ?? <ArtBar />} />
+          <ArtRow label={t("Android TV OS version")} value={<ArtBar width={20} />} />
           <motion.div
             key={presses}
             className="flex items-center justify-between rounded-[10px] bg-snow px-2.5 py-2 text-[11px] font-semibold text-[#0a0f22] shadow-[0_0_0_3px_rgba(116,209,255,0.45)]"
@@ -477,7 +481,7 @@ function AboutArt({ name }: { name: string | null }) {
             animate={{ scale: 1, boxShadow: "0 0 0 3px rgba(116,209,255,0.45)" }}
             transition={{ duration: 0.35 }}
           >
-            <span>Android TV OS build</span>
+            <span>{t("Android TV OS build")}</span>
             <span className="h-2 w-24 rounded-full bg-[#0a0f22]/20" />
           </motion.div>
         </div>
@@ -500,7 +504,7 @@ function AboutArt({ name }: { name: string | null }) {
         {Array.from({ length: 7 }, (_, i) => (
           <span key={i} className={`h-[9px] w-[9px] rounded-full transition-colors duration-200 ${i < presses ? "bg-cyan" : "border-[1.5px] border-ice/50"}`} />
         ))}
-        <span className="ml-1.5 text-[13px] text-mist">Seven presses of OK</span>
+        <span className="ml-1.5 text-[13px] text-mist">{t("Seven presses of OK")}</span>
       </div>
     </div>
   );
@@ -517,14 +521,14 @@ function DebugArt() {
   }, [still]);
   return (
     <div aria-hidden="true">
-      <TvPicture place="Settings › System" title="Developer options">
+      <TvPicture place={t("Settings › System")} title={t("Developer options")}>
         <div className="mt-2.5 flex flex-col gap-1">
-          <ArtRow label="Stay awake" value={<ArtSwitch on={false} />} />
+          <ArtRow label={t("Stay awake")} value={<ArtSwitch on={false} />} />
           <div className="flex items-center justify-between rounded-[10px] bg-snow px-2.5 py-2 text-[11px] font-semibold text-[#0a0f22] shadow-[0_0_0_3px_rgba(116,209,255,0.45)]">
-            <span>USB debugging</span>
+            <span>{t("USB debugging")}</span>
             <ArtSwitch on={on} dark />
           </div>
-          <ArtRow label="Wireless debugging" value={<ArtSwitch on={false} />} />
+          <ArtRow label={t("Wireless debugging")} value={<ArtSwitch on={false} />} />
         </div>
       </TvPicture>
     </div>
@@ -545,7 +549,7 @@ function ArtSwitch({ on, dark }: { on: boolean; dark?: boolean }) {
 function TvPicture({ place, title, children, height = 194 }: { place: string; title: string; children: React.ReactNode; height?: number }) {
   return (
     <div className="relative flex flex-col overflow-hidden rounded-2xl border border-white/12 bg-night-screen px-4 pt-4" style={{ height }}>
-      <span className="text-[10px] tracking-[0.6px] text-dusk uppercase">On your TV · {place}</span>
+      <span className="text-[10px] tracking-[0.6px] text-dusk uppercase">{t("On your TV · {place}", { place })}</span>
       <span className="mt-1 text-[17px] font-semibold">{title}</span>
       {children}
     </div>
@@ -565,12 +569,12 @@ function ArtRow({ label, value }: { label: string; value: React.ReactNode }) {
 
 /** What the open connection is for, once Allow was pressed. */
 const ALLOWED: Record<Flow["mode"], string> = {
-  install: "Orbit can set it up now",
-  undo: "Orbit can put it back now",
-  switch: "Orbit can switch the home screen now",
-  backup: "Orbit can read the TV for the backup now",
-  backups: "Orbit can put it back now",
-  account: "Orbit is connected to the TV",
+  install: mark("Orbit can set it up now"),
+  undo: mark("Orbit can put it back now"),
+  switch: mark("Orbit can switch the home screen now"),
+  backup: mark("Orbit can read the TV for the backup now"),
+  backups: mark("Orbit can put it back now"),
+  account: mark("Orbit is connected to the TV"),
 };
 
 function Allow() {
@@ -580,26 +584,22 @@ function Allow() {
   const name = tvName(f);
   const model = modelName(f);
   return (
-    <Screen label="Press Allow on the TV">
+    <Screen label={t("Press Allow on the TV")}>
       <StepBar step={bar.step} total={bar.total} onBack={back} />
       <Rise className="mt-[22px] flex flex-col gap-2">
-        <Title>Press Allow on the TV</Title>
+        <Title>{t("Press Allow on the TV")}</Title>
         <Lead>
           {f.mode === "install"
-            ? "The TV is asking whether this phone may set it up. It is Android's own question, and it is asked only once."
-            : "If the TV asks whether this phone may connect, allow it. It is Android's own question; a TV that was told to always allow this phone does not ask."}
+            ? t("The TV is asking whether this phone may set it up. It is Android's own question, and it is asked only once.")
+            : t("If the TV asks whether this phone may connect, allow it. It is Android's own question; a TV that was told to always allow this phone does not ask.")}
         </Lead>
       </Rise>
       <Rise className="mt-5">
         <AllowArt done={c.state === "connected"} />
       </Rise>
       <Rise className="mt-5 flex flex-col gap-3.5">
-        <NumberedStep n={1}>
-          Tick <b className="font-semibold text-snow">Always allow</b>, so Orbit can put things back later without asking again
-        </NumberedStep>
-        <NumberedStep n={2}>
-          Move to <b className="font-semibold text-snow">Allow</b> and press OK on the remote
-        </NumberedStep>
+        <NumberedStep n={1}>{rich(t("Tick <b>Always allow</b>, so Orbit can put things back later without asking again"), { b: strong })}</NumberedStep>
+        <NumberedStep n={2}>{rich(t("Move to <b>Allow</b> and press OK on the remote"), { b: strong })}</NumberedStep>
       </Rise>
       <Rise className="mt-auto flex flex-col gap-3.5 pt-5">
         <AnimatePresence mode="wait" initial={false}>
@@ -608,26 +608,28 @@ function Allow() {
               <div className="flex items-center gap-3 rounded-[18px] border border-sage/35 bg-sage/8 px-4 py-3.5" role="status">
                 <DoneMark size={30} />
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="truncate text-[15px] font-semibold">Connected to {name === "your TV" ? model ?? "the TV" : name}</span>
-                  <span className="text-[13px] text-mist">{ALLOWED[f.mode]}</span>
+                  <span className="truncate text-[15px] font-semibold">
+                    {name === "your TV" && !model ? t("Connected to the TV") : t("Connected to {tv}", { tv: name === "your TV" ? model! : name })}
+                  </span>
+                  <span className="text-[13px] text-mist">{t(ALLOWED[f.mode])}</span>
                 </div>
               </div>
-              {f.read.state === "failed" && !f.continuing && <Trouble title={f.read.error ?? "Orbit could not read the TV."} />}
+              {f.read.state === "failed" && !f.continuing && <Trouble title={f.read.error ? tm(f.read.error) : t("Orbit could not read the TV.")} />}
               <Primary onPress={continueFromAllow} busy={f.continuing}>
-                {f.continuing ? "Reading the TV" : f.read.state === "failed" ? "Try again" : "Continue"}
+                {f.continuing ? t("Reading the TV") : f.read.state === "failed" ? t("Try again") : t("Continue")}
               </Primary>
             </motion.div>
           ) : c.state === "failed" ? (
             <motion.div key="failed" className="flex flex-col gap-3.5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease }}>
-              <Trouble title={c.error ?? "The TV did not open the connection."} />
-              <Primary onPress={retryConnect}>Try again</Primary>
+              <Trouble title={c.error ? tm(c.error) : t("The TV did not open the connection.")} />
+              <Primary onPress={retryConnect}>{t("Try again")}</Primary>
             </motion.div>
           ) : (
             <motion.div key="wait" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <div className="setup-card flex min-h-[64px] items-center gap-3 rounded-[18px] px-4 py-2.5" role="status">
                 <Spinner size={20} />
                 <span className="flex-1 text-[14px] text-haze">
-                  {c.state === "waiting" ? "Waiting for Allow on the TV" : `Connecting to ${name === "your TV" ? "the TV" : name}`}
+                  {c.state === "waiting" ? t("Waiting for Allow on the TV") : name === "your TV" ? t("Connecting to the TV") : t("Connecting to {tv}", { tv: name })}
                 </span>
               </div>
             </motion.div>
@@ -648,8 +650,8 @@ function AllowArt({ done }: { done: boolean }) {
         animate={{ opacity: done ? 0.35 : 1, scale: done ? 0.96 : 1 }}
         transition={{ duration: 0.4, ease }}
       >
-        <span className="text-[14px] font-semibold">Allow USB debugging?</span>
-        <span className="text-[10.5px] leading-[1.45] text-[#c3c9d9]">The computer's RSA key fingerprint is:</span>
+        <span className="text-[14px] font-semibold">{t("Allow USB debugging?")}</span>
+        <span className="text-[10.5px] leading-[1.45] text-[#c3c9d9]">{t("The computer's RSA key fingerprint is:")}</span>
         <span className="flex gap-1">
           {Array.from({ length: 8 }, (_, i) => (
             <span key={i} className="h-1.5 w-5 rounded-full bg-[#c3c9d9]/25" />
@@ -659,11 +661,11 @@ function AllowArt({ done }: { done: boolean }) {
           <span className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[3px] bg-cyan text-deep">
             <I.Check size={10} strokeWidth={3.4} />
           </span>
-          <span className="text-[11px] text-snow">Always allow from this computer</span>
+          <span className="text-[11px] text-snow">{t("Always allow from this computer")}</span>
         </div>
         <div className="mt-1 flex justify-end gap-1.5">
-          <span className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-[#c3c9d9]">Cancel</span>
-          <span className="rounded-lg bg-snow px-3.5 py-1.5 text-[11px] font-semibold text-[#0a0f22]">Allow</span>
+          <span className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-[#c3c9d9]">{t("Cancel")}</span>
+          <span className="rounded-lg bg-snow px-3.5 py-1.5 text-[11px] font-semibold text-[#0a0f22]">{t("Allow")}</span>
         </div>
       </motion.div>
       <AnimatePresence>

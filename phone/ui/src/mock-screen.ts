@@ -2,9 +2,10 @@
 // photographs its own screen (640 x 360, the TV's 1280 x 720 at half size) and sent as a JPEG, as the real TV sends
 // them. It follows the same events as the demo's TV picture (demo/MockTv.tsx), and knows what a click there hits.
 import type { MockEvent } from "./mock";
+import { mark, t, tm } from "./i18n";
 
 /** The Control Center's tiles (mock.ts MOCK_CONTROL; kept here so this file needs nothing else of mock.ts). */
-const CONTROL = ["Settings", "Wi-Fi", "Bluetooth", "Picture", "Sound", "Sleep timer"];
+const CONTROL = [mark("Settings"), "Wi-Fi", "Bluetooth", mark("Picture"), mark("Sound"), mark("Sleep timer")];
 
 export interface ScreenApp {
   label: string;
@@ -30,7 +31,7 @@ const cardScale = (d: number) => (d === 0 ? 1.18 : 1 - Math.min(0.22, Math.abs(d
 
 function greeting() {
   const h = new Date().getHours();
-  return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening";
+  return h < 12 ? t("Good Morning") : h < 17 ? t("Good Afternoon") : t("Good Evening");
 }
 
 export class MockScreen {
@@ -71,10 +72,10 @@ export class MockScreen {
         this.overlay = null;
         break;
       case "recents":
-        this.overlay = { text: "Recent apps", until: now + 1600 };
+        this.overlay = { text: t("Recent apps"), until: now + 1600 };
         break;
       case "typed":
-        this.overlay = { text: `Search: ${e.text}`, until: now + 2200 };
+        this.overlay = { text: t("Search: {text}", { text: e.text }), until: now + 2200 };
         break;
       case "overlay":
         this.overlay = { text: e.text, until: now + 1600 };
@@ -180,7 +181,7 @@ export class MockScreen {
     g.fillText(`${greeting()}`, 640, 43);
     g.fillStyle = "rgba(255,255,255,0.55)";
     g.font = "400 20px Inter, sans-serif";
-    g.fillText("Hello, I wish you a wonderful day", 640, 122);
+    g.fillText(t("Hello, I wish you a wonderful day"), 640, 122);
 
     const order = [-4, 4, -3, 3, -2, 2, -1, 1, 0];
     for (const d of order) {
@@ -205,7 +206,7 @@ export class MockScreen {
       g.fillStyle = "#fff";
       g.textBaseline = "middle";
       g.font = `500 ${Math.round(20 * s)}px Outfit, Inter, sans-serif`;
-      g.fillText(app.label, x + w / 2, y + h / 2);
+      g.fillText(t(app.label), x + w / 2, y + h / 2);
       if (d === 0) {
         g.fillStyle = "rgba(255,255,255,0.8)";
         g.fillRect(x + w / 2 - 1, y, 2, h);
@@ -215,7 +216,7 @@ export class MockScreen {
     g.textBaseline = "top";
     g.fillStyle = "#fff";
     g.font = "400 31px Outfit, Inter, sans-serif";
-    g.fillText(this.apps[focus]?.label ?? "", 640, 547);
+    g.fillText(t(this.apps[focus]?.label ?? ""), 640, 547);
   }
 
   private drawApp(label: string, videoPlaying: boolean) {
@@ -235,7 +236,7 @@ export class MockScreen {
     g.textBaseline = "middle";
     g.fillStyle = "#fff";
     g.font = "300 77px Outfit, Inter, sans-serif";
-    g.fillText(label, 640, 360);
+    g.fillText(t(label), 640, 360);
   }
 
   private drawSettings() {
@@ -249,10 +250,10 @@ export class MockScreen {
     g.textBaseline = "top";
     g.fillStyle = "rgba(255,255,255,0.92)";
     g.font = "300 64px Outfit, Inter, sans-serif";
-    g.fillText("Settings", 110, 150);
+    g.fillText(t("Settings"), 110, 150);
     g.fillStyle = "rgba(255,255,255,0.5)";
     g.font = "400 24px Inter, sans-serif";
-    g.fillText("Family room", 112, 236);
+    g.fillText(t("Family room"), 112, 236);
 
     this.settings.forEach((item, i) => {
       const y = LIST_Y + i * (ROW_H + ROW_GAP);
@@ -270,7 +271,7 @@ export class MockScreen {
       g.textBaseline = "middle";
       g.fillStyle = on ? "#05060a" : "rgba(255,255,255,0.82)";
       g.font = `${on ? 500 : 400} 27px Inter, sans-serif`;
-      g.fillText(item, LIST_X + 80, y + ROW_H / 2);
+      g.fillText(t(item), LIST_X + 80, y + ROW_H / 2);
     });
   }
 
@@ -288,7 +289,7 @@ export class MockScreen {
     g.textBaseline = "top";
     g.fillStyle = "rgba(255,255,255,0.92)";
     g.font = "400 30px Outfit, Inter, sans-serif";
-    g.fillText("Control Center", x + 34, y + 30);
+    g.fillText(t("Control Center"), x + 34, y + 30);
     const tw = 124;
     const th = 130;
     CONTROL.forEach((label, i) => {
@@ -302,7 +303,7 @@ export class MockScreen {
       g.textBaseline = "middle";
       g.fillStyle = on ? "#05060a" : "rgba(255,255,255,0.85)";
       g.font = `${on ? 600 : 400} 21px Inter, sans-serif`;
-      g.fillText(label, tx + tw / 2, ty + th / 2);
+      g.fillText(t(label), tx + tw / 2, ty + th / 2);
     });
   }
 
@@ -316,7 +317,7 @@ export class MockScreen {
     g.textAlign = "center";
     g.textBaseline = "middle";
     g.fillStyle = "#fff";
-    g.fillText(text, 640, 720 - 58 - 22);
+    g.fillText(tm(text), 640, 720 - 58 - 22);
   }
 
   private drawVolume(v: number, muted: boolean) {
@@ -330,7 +331,7 @@ export class MockScreen {
     g.textBaseline = "middle";
     g.fillStyle = "#fff";
     g.font = "400 19px Inter, sans-serif";
-    g.fillText(muted ? "Muted" : "Volume", x + 18, y + 20);
+    g.fillText(muted ? t("Muted") : t("Volume"), x + 18, y + 20);
     g.fillStyle = "rgba(255,255,255,0.2)";
     roundRect(g, x + 110, y + 17, 130, 6, 3);
     g.fill();
@@ -382,7 +383,7 @@ export class MockScreen {
   /** The note the TV shows while someone can see its screen. */
   private drawNote() {
     const g = this.g;
-    const text = "Shiv can see this screen";
+    const text = t("{name} can see this screen", { name: "Shiv" });
     g.font = "500 18px Inter, sans-serif";
     const w = g.measureText(text).width + 62;
     const x = 640 - w / 2;

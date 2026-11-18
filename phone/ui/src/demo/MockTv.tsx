@@ -1,12 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { MOCK_APPS, MOCK_CONTROL, MOCK_SETTINGS, type MockEvent } from "../mock";
+import { t, tm } from "../i18n";
 
 const spring = { type: "spring", stiffness: 380, damping: 32 } as const;
 
 function greeting() {
   const h = new Date().getHours();
-  return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening";
+  return h < 12 ? t("Good Morning") : h < 17 ? t("Good Afternoon") : t("Good Evening");
 }
 
 /** The pretend TV of the demo: a small picture of the Family room Home that answers what the phone does. */
@@ -77,7 +78,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
           setApp(null);
           break;
         case "recents":
-          setOverlay("Recent apps");
+          setOverlay(t("Recent apps"));
           later("overlay", 1600, () => setOverlay(null));
           break;
         case "cursor":
@@ -99,7 +100,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
           later("volume", 1600, () => setVolume(null));
           break;
         case "typed":
-          setOverlay(`Search: ${m.text}`);
+          setOverlay(t("Search: {text}", { text: m.text }));
           later("overlay", 2200, () => setOverlay(null));
           break;
         case "sleep":
@@ -127,7 +128,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
             {greetName ? `, ${greetName}` : ""}
           </div>
           <div className="absolute inset-x-0 top-[17%] text-center text-white/55" style={{ fontSize: "1.6cqw" }}>
-            Hello, I wish you a wonderful day
+            {t("Hello, I wish you a wonderful day")}
           </div>
         </motion.div>
         <div className="absolute inset-x-0 top-[37%] h-[34%]">
@@ -143,7 +144,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
                 transition={spring}
               >
                 <div className="grid h-full place-items-center font-display font-medium text-white" style={{ fontSize: "1.55cqw" }}>
-                  {a.label}
+                  {t(a.label)}
                 </div>
                 {d === 0 && <div className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 bg-white/80 blur-[1px]" />}
               </motion.div>
@@ -151,7 +152,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
           })}
         </div>
         <div className="absolute inset-x-0 top-[76%] text-center font-display text-white" style={{ fontSize: "2.4cqw" }}>
-          {MOCK_APPS[focus]?.label}
+          {t(MOCK_APPS[focus]?.label ?? "")}
         </div>
 
         {/* An app in front */}
@@ -168,8 +169,8 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
             >
               {app === "Settings" ? (
                 <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #151a2b, #05060a)" }}>
-                  <div className="absolute top-[20.8%] left-[8.6%] font-display font-light text-white/90" style={{ fontSize: "5cqw" }}>Settings</div>
-                  <div className="absolute top-[32.8%] left-[8.75%] text-white/50" style={{ fontSize: "1.9cqw" }}>Family room</div>
+                  <div className="absolute top-[20.8%] left-[8.6%] font-display font-light text-white/90" style={{ fontSize: "5cqw" }}>{t("Settings")}</div>
+                  <div className="absolute top-[32.8%] left-[8.75%] text-white/50" style={{ fontSize: "1.9cqw" }}>{t("Family room")}</div>
                   <ul className="absolute top-[20.8%] left-1/2 w-[42.8%]">
                     {MOCK_SETTINGS.map((item, i) => (
                       <li
@@ -178,7 +179,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
                         style={{ height: "5.94cqw", marginBottom: "0.625cqw", fontSize: "2.1cqw" }}
                       >
                         <span className={`h-[2cqw] w-[2cqw] rounded-full border-2 ${i === menu ? "border-ink/60" : "border-white/45"}`} />
-                        {item}
+                        {t(item)}
                       </li>
                     ))}
                   </ul>
@@ -203,7 +204,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
               transition={spring}
             >
               <div className="font-display font-normal" style={{ fontSize: "2.3cqw" }}>
-                Control Center
+                {t("Control Center")}
               </div>
               <div className="mt-[2cqw] grid grid-cols-3 gap-[1.25cqw]">
                 {MOCK_CONTROL.map((label, i) => (
@@ -212,7 +213,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
                     className={`grid aspect-[0.95] place-items-center rounded-[1.9cqw] text-center transition-colors duration-200 ${i === control ? "bg-[#f2f4f8] font-semibold text-ink" : "bg-white/8 text-white/85"}`}
                     style={{ fontSize: "1.55cqw" }}
                   >
-                    {label}
+                    {t(label)}
                   </div>
                 ))}
               </div>
@@ -232,7 +233,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
               transition={spring}
             >
               <span className="h-[0.8cqw] w-[0.8cqw] rounded-full bg-[#ff4757]" />
-              Shiv can see this screen
+              {t("Shiv can see this screen")}
             </motion.div>
           )}
         </AnimatePresence>
@@ -246,7 +247,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
                 <div className="font-medium text-white">
                   {codeTitle} <span className="tabular tracking-[0.12em]">{codeText}</span>
                 </div>
-                <div className="text-white/55" style={{ fontSize: "1.25cqw" }}>Type it into Orbit on your phone</div>
+                <div className="text-white/55" style={{ fontSize: "1.25cqw" }}>{t("Type it into Orbit on your phone")}</div>
               </div>
             </motion.div>
           )}
@@ -256,7 +257,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
           {overlay && (
             <motion.div className="absolute inset-x-0 bottom-[8%] mx-auto w-fit rounded-full bg-black/60 px-[2cqw] py-[0.8cqw] text-white backdrop-blur" style={{ fontSize: "1.7cqw" }}
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              {overlay}
+              {tm(overlay)}
             </motion.div>
           )}
         </AnimatePresence>
@@ -265,7 +266,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
           {volume && (
             <motion.div key="vol" className="absolute right-[3%] bottom-[8%] flex items-center gap-[0.8cqw] rounded-full bg-black/60 px-[1.4cqw] py-[0.7cqw] text-white backdrop-blur" style={{ fontSize: "1.5cqw" }}
               initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
-              <span>{volume.muted ? "Muted" : "Volume"}</span>
+              <span>{volume.muted ? t("Muted") : t("Volume")}</span>
               <span className="h-[0.5cqw] w-[9cqw] overflow-hidden rounded-full bg-white/20">
                 <motion.span className="ribbon-line block h-full" animate={{ width: `${volume.muted ? 0 : volume.v}%` }} />
               </span>
@@ -297,14 +298,14 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
                 animate={{ scale: 1 }}
                 transition={spring}
               >
-                <div className="font-semibold" style={{ fontSize: "1.7cqw" }}>Allow USB debugging?</div>
-                <div className="mt-[0.6cqw] text-white/70">The computer's RSA key fingerprint is shown here.</div>
+                <div className="font-semibold" style={{ fontSize: "1.7cqw" }}>{t("Allow USB debugging?")}</div>
+                <div className="mt-[0.6cqw] text-white/70">{t("The computer's RSA key fingerprint is shown here.")}</div>
                 <div className="mt-[0.8cqw] flex items-center gap-[0.6cqw] rounded-[0.5cqw] px-[0.6cqw] py-[0.4cqw] ring-2 ring-[#74d1ff]/70">
-                  <span className="h-[1.3cqw] w-[1.3cqw] rounded-[0.25cqw] bg-[#74d1ff]" /> Always allow from this computer
+                  <span className="h-[1.3cqw] w-[1.3cqw] rounded-[0.25cqw] bg-[#74d1ff]" /> {t("Always allow from this computer")}
                 </div>
                 <div className="mt-[1cqw] flex justify-end gap-[0.8cqw]">
-                  <span className="px-[1cqw] py-[0.4cqw] text-white/70">Cancel</span>
-                  <span className="rounded-[0.5cqw] bg-white px-[1.2cqw] py-[0.4cqw] font-semibold text-black">Allow</span>
+                  <span className="px-[1cqw] py-[0.4cqw] text-white/70">{t("Cancel")}</span>
+                  <span className="rounded-[0.5cqw] bg-white px-[1.2cqw] py-[0.4cqw] font-semibold text-black">{t("Allow")}</span>
                 </div>
               </motion.div>
             </motion.div>
@@ -314,7 +315,7 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
         <AnimatePresence>
           {asleep && (
             <motion.div className="absolute inset-0 grid place-items-center bg-black text-white/40" style={{ fontSize: "1.8cqw" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              Sleeping
+              {t("Sleeping")}
             </motion.div>
           )}
         </AnimatePresence>
@@ -326,21 +327,21 @@ export function MockTv({ compact = false }: { compact?: boolean }) {
 /** Orbit Live TV on the pretend TV: a channel on air, its name and the programme, and the next ones under it. */
 function LiveTvPicture() {
   const guide = [
-    { at: "20:00", title: "Evening Raga", on: true },
-    { at: "21:00", title: "City News" },
-    { at: "21:30", title: "Monsoon Kitchen" },
+    { at: "20:00", title: t("Evening Raga"), on: true },
+    { at: "21:00", title: t("City News") },
+    { at: "21:30", title: t("Monsoon Kitchen") },
   ];
   return (
     <div className="absolute inset-0" style={{ background: "radial-gradient(70% 90% at 30% 40%, #5b2a8a 0%, #1c0b33 55%, #07040d 100%)" }}>
       <div className="absolute top-[7%] left-[5%] flex items-center gap-[1cqw]" style={{ fontSize: "1.5cqw" }}>
-        <span className="rounded-[0.5cqw] bg-[#ff4757] px-[0.8cqw] py-[0.2cqw] font-semibold tracking-[0.1em] text-white">LIVE</span>
-        <span className="text-white/75">101 · Orbit Live TV</span>
+        <span className="rounded-[0.5cqw] bg-[#ff4757] px-[0.8cqw] py-[0.2cqw] font-semibold tracking-[0.1em] text-white">{t("LIVE")}</span>
+        <span className="text-white/75">{t("101 · Orbit Live TV")}</span>
       </div>
       <div className="absolute top-[38%] left-[5%] font-display font-light text-white" style={{ fontSize: "5.4cqw" }}>
-        Evening Raga
+        {t("Evening Raga")}
       </div>
       <div className="absolute top-[52%] left-[5%] text-white/60" style={{ fontSize: "1.7cqw" }}>
-        Music · until 21:00
+        {t("Music · until 21:00")}
       </div>
       <div className="absolute inset-x-[5%] bottom-[8%] flex gap-[1.2cqw]" style={{ fontSize: "1.4cqw" }}>
         {guide.map((g) => (

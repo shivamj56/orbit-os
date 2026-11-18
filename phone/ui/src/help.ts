@@ -3,6 +3,7 @@
 // often there by the time the page has come in.
 import { useSyncExternalStore } from "react";
 import { bridge, tv, type Screen } from "./bridge";
+import { mark } from "./i18n";
 
 /** A picture of the TV's screen: `at` when the TV took it, `got` when it reached the page (both this phone's clock). */
 export interface Picture {
@@ -79,7 +80,7 @@ function ask() {
   const mine = ++asked;
   set({ since: Date.now(), error: null });
   tv.help(true).catch((e: Error) => {
-    if (view.on && mine === asked) set({ error: e.message || "Help did not start on the TV." });
+    if (view.on && mine === asked) set({ error: e.message || mark("Help did not start on the TV.") });
   });
 }
 

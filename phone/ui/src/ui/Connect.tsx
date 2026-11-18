@@ -8,6 +8,7 @@ import { setAccount, useWorld } from "../store";
 import { Press, spring } from "./kit";
 import { Chevron, Gear, Globe as GlobeIcon, Planet, Try, Tv, Wifi } from "./icons";
 import { openSettings } from "./panel";
+import { t, rich, tm } from "../i18n";
 
 const fade = {
   initial: { opacity: 0, y: 14, filter: "blur(6px)" },
@@ -49,9 +50,9 @@ export function Connect({ status }: { status: Status }) {
         </span>
         <span className="flex items-center gap-3">
           <span className="flex items-center gap-1.5 text-[12px] text-faint">
-            {linking ? <GlobeIcon size={14} /> : <Wifi size={14} />} {linking ? "From anywhere" : "Home Wi-Fi"}
+            {linking ? <GlobeIcon size={14} /> : <Wifi size={14} />} {linking ? t("From anywhere") : t("Home Wi-Fi")}
           </span>
-          <Press label="Settings" onPress={openSettings} className="glass h-10 w-10 shrink-0 rounded-full text-muted">
+          <Press label={t("Settings")} onPress={openSettings} className="glass h-10 w-10 shrink-0 rounded-full text-muted">
             <Gear size={18} />
           </Press>
         </span>
@@ -69,14 +70,14 @@ export function Connect({ status }: { status: Status }) {
             </motion.div>
           ) : state === "searching" ? (
             <motion.div key="searching" {...fade} className="text-center">
-              <h1 className="font-display text-[29px] leading-tight font-light tracking-[-0.015em]">Looking for your TV</h1>
-              <p className="mt-2 text-[14px] text-muted">{status.error || "Keep the phone on the same Wi-Fi as the TV."}</p>
+              <h1 className="font-display text-[29px] leading-tight font-light tracking-[-0.015em]">{t("Looking for your TV")}</h1>
+              <p className="mt-2 text-[14px] text-muted">{tm(status.error) || t("Keep the phone on the same Wi-Fi as the TV.")}</p>
               <Dots />
             </motion.div>
           ) : state === "found" ? (
             <motion.div key="found" {...fade}>
-              <h1 className="text-center font-display text-[29px] leading-tight font-light tracking-[-0.015em]">Found it</h1>
-              <p className="mt-2 text-center text-[14px] text-muted">Tap your TV to connect.</p>
+              <h1 className="text-center font-display text-[29px] leading-tight font-light tracking-[-0.015em]">{t("Found it")}</h1>
+              <p className="mt-2 text-center text-[14px] text-muted">{t("Tap your TV to connect.")}</p>
               <ul className="mt-5 space-y-2.5">
                 {(status.found ?? []).map((t) => (
                   <li key={t.address}>
@@ -91,16 +92,16 @@ export function Connect({ status }: { status: Status }) {
             </motion.div>
           ) : (
             <motion.div key="offline" {...fade} className="text-center">
-              <h1 className="font-display text-[29px] leading-tight font-light tracking-[-0.015em]">Can't reach the TV</h1>
+              <h1 className="font-display text-[29px] leading-tight font-light tracking-[-0.015em]">{t("Can't reach the TV")}</h1>
               <p className="mx-auto mt-2 max-w-[32ch] text-[14px] text-muted">
-                {status.error || "Is the TV on, and the phone on the home Wi-Fi?"}
+                {tm(status.error) || t("Is the TV on, and the phone on the home Wi-Fi?")}
               </p>
               <Press
-                label="Try again"
+                label={t("Try again")}
                 onPress={() => bridge.call("discover").catch(() => {})}
                 className="glass mx-auto mt-5 h-11 rounded-full px-6 text-[15px]"
               >
-                Try again
+                {t("Try again")}
               </Press>
             </motion.div>
           )}
@@ -123,13 +124,13 @@ export function Connect({ status }: { status: Status }) {
 function TryDemo() {
   return (
     <Press
-      label="Try Orbit without a TV"
+      label={t("Try Orbit without a TV")}
       onPress={() => setDemoMode(true)}
       feel="medium"
       className="mt-3 h-12 w-full rounded-full border border-cyan/25 bg-cyan/[0.06] text-[14.5px] text-[#cdebff]"
     >
       <span className="flex items-center gap-2.5">
-        <Try size={19} className="text-cyan" /> Try Orbit without a TV
+        <Try size={19} className="text-cyan" /> {t("Try Orbit without a TV")}
       </span>
     </Press>
   );
@@ -159,8 +160,8 @@ function SetupOffer() {
           <Planet size={22} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[15.5px]">Set up Orbit OS on a TV</span>
-          <span className="mt-0.5 block text-[13px] leading-snug text-faint">No Orbit TV here yet? This phone puts it on one, over the Wi-Fi.</span>
+          <span className="block text-[15.5px]">{t("Set up Orbit OS on a TV")}</span>
+          <span className="mt-0.5 block text-[13px] leading-snug text-faint">{t("No Orbit TV here yet? This phone puts it on one, over the Wi-Fi.")}</span>
         </span>
         <Chevron dir="right" size={18} className="shrink-0 text-faint" />
       </motion.button>
@@ -186,7 +187,7 @@ function Dots() {
 function TvRow({ tv }: { tv: TvRef }) {
   return (
     <Press
-      label={`Connect to ${tv.name}`}
+      label={t("Connect to {name}", { name: tv.name })}
       onPress={() => bridge.call("connect", { address: tv.address, port: tv.port }).catch(() => {})}
       className="glass w-full rounded-[22px] px-4 py-3.5"
     >
@@ -195,10 +196,10 @@ function TvRow({ tv }: { tv: TvRef }) {
           <Tv size={22} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[16px] font-medium">{tv.name === "TV" ? "Your TV" : tv.name}</span>
+          <span className="block truncate text-[16px] font-medium">{tv.name === "TV" ? t("Your TV") : tv.name}</span>
           <span className="tabular block text-[12.5px] text-faint">{tv.address}</span>
         </span>
-        <span className="text-[13px] text-cyan">Connect</span>
+        <span className="text-[13px] text-cyan">{t("Connect")}</span>
       </span>
     </Press>
   );
@@ -243,7 +244,7 @@ function CodeBoxes({ length, group, value, busy, onChange }: {
         value={value}
         inputMode="numeric"
         autoComplete="one-time-code"
-        aria-label={`${length}-digit code`}
+        aria-label={t("{length}-digit code", { length })}
         maxLength={length}
         className="absolute inset-0 opacity-0"
         onChange={(e) => {
@@ -262,7 +263,7 @@ function Pairing({ tv }: { tv: TvRef | null }) {
   const [busy, setBusy] = useState(false);
   const asked = useRef(false);
   const shake = useAnimationControls();
-  const ask = () => bridge.call("askCode").catch((e: BridgeError) => setError(e.message));
+  const ask = () => bridge.call("askCode").catch((e: BridgeError) => setError(tm(e.message)));
 
   useEffect(() => {
     // Nobody should have to find a menu on the TV: the code is asked for as soon as this shows.
@@ -280,7 +281,7 @@ function Pairing({ tv }: { tv: TvRef | null }) {
       haptic("success");
     } catch (e) {
       haptic("error");
-      setError((e as Error).message);
+      setError(tm((e as Error).message));
       setCode("");
       shake.start({ x: [0, -12, 11, -8, 6, -3, 0], transition: { duration: 0.46 } });
     } finally {
@@ -290,9 +291,9 @@ function Pairing({ tv }: { tv: TvRef | null }) {
 
   return (
     <div className="text-center">
-      <h1 className="font-display text-[28px] leading-tight font-light tracking-[-0.015em]">Enter the code on your TV</h1>
+      <h1 className="font-display text-[28px] leading-tight font-light tracking-[-0.015em]">{t("Enter the code on your TV")}</h1>
       <p className="mt-2 text-[14px] text-muted">
-        {tv && tv.name !== "TV" ? <>It is at the top of <span className="text-text">{tv.name}</span> now.</> : "It is at the top of the TV now."}
+        {tv && tv.name !== "TV" ? rich(t("It is at the top of {tv} now."), { tv: <span className="text-text">{tv.name}</span> }) : t("It is at the top of the TV now.")}
       </p>
       <motion.div animate={shake} className="mt-6">
         <CodeBoxes length={6} group={3} value={code} busy={busy} onChange={(v) => {
@@ -301,8 +302,8 @@ function Pairing({ tv }: { tv: TvRef | null }) {
         }} />
       </motion.div>
       <div className="mt-4 min-h-[22px] text-[13.5px] text-rose" role="alert">{error}</div>
-      <Press label="Show a new code on the TV" onPress={() => { setError(null); ask(); }} className="mx-auto mt-1 h-10 rounded-full px-4 text-[14px] text-cyan">
-        Show a new code on the TV
+      <Press label={t("Show a new code on the TV")} onPress={() => { setError(null); ask(); }} className="mx-auto mt-1 h-10 rounded-full px-4 text-[14px] text-cyan">
+        {t("Show a new code on the TV")}
       </Press>
     </div>
   );
@@ -322,7 +323,7 @@ function Anywhere({ onLink }: { onLink: () => void }) {
       haptic("success");
       if (!next.tvLinked) onLink();
     } catch (e) {
-      setError((e as Error).message || "Google sign-in did not finish.");
+      setError(tm((e as Error).message) || t("Google sign-in did not finish."));
     } finally {
       setBusy(false);
     }
@@ -331,32 +332,32 @@ function Anywhere({ onLink }: { onLink: () => void }) {
     <div className="glass rounded-[24px] p-4">
       <div className="flex items-center gap-2.5">
         <GlobeIcon size={19} className="text-gold" />
-        <p className="text-[15.5px]">Use from anywhere</p>
+        <p className="text-[15.5px]">{t("Use from anywhere")}</p>
       </div>
       {!account.signedIn ? (
         <>
           <p className="mt-1.5 text-[13px] leading-relaxed text-faint">
-            Sign in with the Google account that is on the TV. Works away from home, and when the Wi-Fi will not reach the TV.
+            {t("Sign in with the Google account that is on the TV. Works away from home, and when the Wi-Fi will not reach the TV.")}
           </p>
-          <Press label="Continue with Google" onPress={signIn} disabled={busy} feel="medium" className="mt-3.5 h-12 w-full rounded-full bg-text text-ink">
+          <Press label={t("Continue with Google")} onPress={signIn} disabled={busy} feel="medium" className="mt-3.5 h-12 w-full rounded-full bg-text text-ink">
             <span className="flex items-center gap-2.5 text-[15px] font-medium">
-              <GoogleMark /> {busy ? "Opening Google…" : "Continue with Google"}
+              <GoogleMark /> {busy ? t("Opening Google…") : t("Continue with Google")}
             </span>
           </Press>
         </>
       ) : !account.tvLinked ? (
         <>
           <p className="mt-1.5 text-[13px] leading-relaxed text-faint">
-            Signed in as <span className="text-muted">{account.email}</span>. Now link the TV once with the code it shows.
+            {rich(t("Signed in as {email}. Now link the TV once with the code it shows."), { email: <span className="text-muted">{account.email}</span> })}
           </p>
-          <Press label="Link your TV" onPress={onLink} feel="medium" className="mt-3.5 h-12 w-full rounded-full bg-text text-[15px] font-medium text-ink">
-            Link your TV
+          <Press label={t("Link your TV")} onPress={onLink} feel="medium" className="mt-3.5 h-12 w-full rounded-full bg-text text-[15px] font-medium text-ink">
+            {t("Link your TV")}
           </Press>
         </>
       ) : (
         <p className="mt-1.5 text-[13px] leading-relaxed text-faint">
-          {account.tvName || "Your TV"} is linked to <span className="text-muted">{account.email}</span>.{" "}
-          {account.tvOnline ? "Connecting…" : "It is asleep or off now: turn it on with its remote, and Orbit connects by itself."}
+          {rich(t("{tv} is linked to {email}."), { tv: account.tvName || t("Your TV"), email: <span className="text-muted">{account.email}</span> })}{" "}
+          {account.tvOnline ? t("Connecting…") : t("It is asleep or off now: turn it on with its remote, and Orbit connects by itself.")}
         </p>
       )}
       {error && <p className="mt-2 text-[13px] text-rose" role="alert">{error}</p>}
@@ -377,7 +378,7 @@ function LinkTv({ onBack }: { onBack: () => void }) {
       haptic("success");
     } catch (e) {
       haptic("error");
-      setError((e as Error).message);
+      setError(tm((e as Error).message));
       setCode("");
       shake.start({ x: [0, -12, 11, -8, 6, -3, 0], transition: { duration: 0.46 } });
     } finally {
@@ -386,9 +387,9 @@ function LinkTv({ onBack }: { onBack: () => void }) {
   };
   return (
     <div className="text-center">
-      <h1 className="font-display text-[28px] leading-tight font-light tracking-[-0.015em]">Link your TV</h1>
+      <h1 className="font-display text-[28px] leading-tight font-light tracking-[-0.015em]">{t("Link your TV")}</h1>
       <p className="mx-auto mt-2 max-w-[34ch] text-[14px] text-muted">
-        Go to Home on the TV: its link code shows at the top for two minutes. Type the eight digits here.
+        {t("Go to Home on the TV: its link code shows at the top for two minutes. Type the eight digits here.")}
       </p>
       <motion.div animate={shake} className="mt-6">
         <CodeBoxes length={8} group={4} value={code} busy={busy} onChange={(v) => {
@@ -397,10 +398,10 @@ function LinkTv({ onBack }: { onBack: () => void }) {
         }} />
       </motion.div>
       <div className="mt-4 min-h-[22px] text-[13.5px]" role="alert">
-        {busy ? <span className="text-muted">Linking…</span> : <span className="text-rose">{error}</span>}
+        {busy ? <span className="text-muted">{t("Linking…")}</span> : <span className="text-rose">{error}</span>}
       </div>
-      <Press label="Back" onPress={onBack} feel={null} className="mx-auto mt-1 h-10 rounded-full px-4 text-[14px] text-faint">
-        Back
+      <Press label={t("Back")} onPress={onBack} feel={null} className="mx-auto mt-1 h-10 rounded-full px-4 text-[14px] text-faint">
+        {t("Back")}
       </Press>
     </div>
   );
@@ -439,17 +440,17 @@ function ManualAddress() {
               onChange={(e) => setAddress(e.target.value)}
               placeholder="192.168.1.20"
               inputMode="decimal"
-              aria-label="The TV's address"
+              aria-label={t("The TV's address")}
               className="tabular min-w-0 flex-1 bg-transparent text-[16px] text-text placeholder:text-faint focus:outline-none"
             />
             <button type="submit" className="h-11 rounded-full bg-text px-5 text-[15px] font-medium text-ink">
-              Connect
+              {t("Connect")}
             </button>
           </motion.form>
         ) : (
           <motion.div key="link" {...fade} className="text-center">
             <button type="button" className="h-10 px-3 text-[13px] text-faint" onClick={() => setOpen(true)}>
-              Type the TV's address instead
+              {t("Type the TV's address instead")}
             </button>
           </motion.div>
         )}

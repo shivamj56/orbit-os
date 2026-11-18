@@ -172,6 +172,35 @@ void main() {
       expect(replies()[3], {'id': 9, 'ok': false, 'error': 'Choose your TV first.', 'status': 0});
     });
 
+    test('language: one language\'s texts from the app\'s assets, read only when asked; never a path', () async {
+      final asked = <String>[];
+      final withTexts = OrbitBridge(
+        remote: wifiOnly(link),
+        native: native,
+        icons: IconCache(directory: native.cacheDirectory),
+        loadAsset: (key) async {
+          asked.add(key);
+          if (key == 'assets/ui/locales/pt-BR.json') return '{"Try again":"Tentar de novo"}';
+          throw StateError('no $key');
+        },
+      )..attach((script) async => sent.add(messageOf(script)));
+      await withTexts.handle('{"id":21,"op":"language","args":{"code":"pt-BR"}}');
+      await withTexts.handle('{"id":22,"op":"language","args":{"code":"xx"}}');
+      await withTexts.handle('{"id":23,"op":"language","args":{"code":"../secrets"}}');
+      await withTexts.handle('{"id":24,"op":"language","args":{"code":"sr-Latn"}}');
+      expect(replies()[0], {
+        'id': 21,
+        'ok': true,
+        'data': {
+          'texts': {'Try again': 'Tentar de novo'},
+        },
+      });
+      expect(replies()[1], {'id': 22, 'ok': false, 'error': 'Orbit has no texts for that language yet.', 'status': 404});
+      expect(replies()[2], {'id': 23, 'ok': false, 'error': 'That is not a language.', 'status': 400});
+      expect(asked, ['assets/ui/locales/pt-BR.json', 'assets/ui/locales/xx.json', 'assets/ui/locales/sr-Latn.json']);
+      expect(OrbitBridge.phoneOps, contains('language'), reason: 'the demo is in the chosen language too');
+    });
+
     test('events wait for hello, go out after its reply, and then go straight through', () async {
       await link.start();
       bridge.pageStarted();

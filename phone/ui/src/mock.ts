@@ -3,6 +3,7 @@
 import type { Account, AppEntry, DriveBackup, Message, Status, TvState } from "./bridge";
 import { MockScreen } from "./mock-screen";
 import { createSetupMock } from "./mock-setup";
+import { mark } from "./i18n";
 
 export type MockEvent =
   | { type: "focus"; index: number }
@@ -28,32 +29,32 @@ export type MockEvent =
   | { type: "greetname"; name: string };
 
 /** The Control Center's tiles, two rows of three; the gear (the TV's full Settings) is the first, as on the TV. */
-export const MOCK_CONTROL = ["Settings", "Wi-Fi", "Bluetooth", "Picture", "Sound", "Sleep timer"];
+export const MOCK_CONTROL = [mark("Settings"), "Wi-Fi", "Bluetooth", mark("Picture"), mark("Sound"), mark("Sleep timer")];
 const CONTROL_SAYS: Record<string, string> = {
-  "Wi-Fi": "Wi-Fi: Home network, connected",
-  Bluetooth: "Bluetooth: on",
-  Picture: "Picture: Vivid",
-  Sound: "Sound: Standard",
-  "Sleep timer": "Sleep timer: in 30 minutes",
+  "Wi-Fi": mark("Wi-Fi: Home network, connected"),
+  Bluetooth: mark("Bluetooth: on"),
+  Picture: mark("Picture: Vivid"),
+  Sound: mark("Sound: Standard"),
+  "Sleep timer": mark("Sleep timer: in 30 minutes"),
 };
 
 /** The pretend TV's Settings list (its rows move with up and down, as on the TV). */
-export const MOCK_SETTINGS = ["Network & Internet", "Accounts & Sign In", "Apps", "Display & Sound", "Remotes & Accessories", "System"];
+export const MOCK_SETTINGS = [mark("Network & Internet"), mark("Accounts & Sign In"), mark("Apps"), mark("Display & Sound"), mark("Remotes & Accessories"), mark("System")];
 
 export const MOCK_APPS: (AppEntry & { tint: [string, string] })[] = [
   // Neutral names only: the demo is what store reviewers and screenshots see, so no other company's apps are on it.
-  { pkg: "demo.orbit.livetv", label: "Live TV", tint: ["#b86bff", "#2a0b52"] },
-  { pkg: "demo.orbit.movies", label: "Movies", tint: ["#ff5a4e", "#5a0f12"] },
-  { pkg: "demo.orbit.music", label: "Music", tint: ["#1ed7a0", "#063426"] },
-  { pkg: "demo.orbit.news", label: "News", tint: ["#1aa3ff", "#062a52"] },
-  { pkg: "demo.orbit.photos", label: "Photos", tint: ["#f2c14e", "#3d2a06"] },
-  { pkg: "demo.orbit.kids", label: "Kids", tint: ["#ff8ad8", "#4a0b3a"] },
-  { pkg: "demo.orbit.sports", label: "Sports", tint: ["#3e5bff", "#120a3d"] },
-  { pkg: "demo.orbit.games", label: "Games", tint: ["#8b3dff", "#22074d"] },
-  { pkg: "demo.orbit.apps", label: "Apps", tint: ["#34a853", "#0b2f19"] },
-  { pkg: "demo.orbit.browser", label: "Browser", tint: ["#9aa3b5", "#1b2030"] },
-  { pkg: "demo.orbit.share", label: "Screen share", tint: ["#74d1ff", "#0b2638"] },
-  { pkg: "demo.orbit.podcasts", label: "Podcasts", tint: ["#ff8800", "#3d1d00"] },
+  { pkg: "demo.orbit.livetv", label: mark("Live TV"), tint: ["#b86bff", "#2a0b52"] },
+  { pkg: "demo.orbit.movies", label: mark("Movies"), tint: ["#ff5a4e", "#5a0f12"] },
+  { pkg: "demo.orbit.music", label: mark("Music"), tint: ["#1ed7a0", "#063426"] },
+  { pkg: "demo.orbit.news", label: mark("News"), tint: ["#1aa3ff", "#062a52"] },
+  { pkg: "demo.orbit.photos", label: mark("Photos"), tint: ["#f2c14e", "#3d2a06"] },
+  { pkg: "demo.orbit.kids", label: mark("Kids"), tint: ["#ff8ad8", "#4a0b3a"] },
+  { pkg: "demo.orbit.sports", label: mark("Sports"), tint: ["#3e5bff", "#120a3d"] },
+  { pkg: "demo.orbit.games", label: mark("Games"), tint: ["#8b3dff", "#22074d"] },
+  { pkg: "demo.orbit.apps", label: mark("Apps"), tint: ["#34a853", "#0b2f19"] },
+  { pkg: "demo.orbit.browser", label: mark("Browser"), tint: ["#9aa3b5", "#1b2030"] },
+  { pkg: "demo.orbit.share", label: mark("Screen share"), tint: ["#74d1ff", "#0b2638"] },
+  { pkg: "demo.orbit.podcasts", label: mark("Podcasts"), tint: ["#ff8800", "#3d1d00"] },
 ];
 
 const TOKEN_KEY = "orbit-mock-token";

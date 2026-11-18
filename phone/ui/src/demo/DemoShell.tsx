@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { App } from "../App";
 import { Intro } from "../intro/Intro";
 import { MockTv } from "./MockTv";
+import { t, rich } from "../i18n";
 
 function useWide() {
   const query = "(min-width: 900px) and (min-height: 600px)";
@@ -39,6 +40,8 @@ function Phone({ children }: { children: React.ReactNode }) {
   );
 }
 
+const lit = (words: React.ReactNode) => <span className="text-white/90">{words}</span>;
+
 export function DemoShell() {
   const wide = useWide();
   // ?tv=0 starts with the pretend TV put away (a phone-sized look at the app alone).
@@ -54,7 +57,7 @@ export function DemoShell() {
               onClick={() => setTvShown(false)}
               className="absolute top-2 right-2 rounded-full bg-black/55 px-2.5 py-1 text-[11px] text-white/70 backdrop-blur"
             >
-              Hide TV
+              {t("Hide TV")}
             </button>
           </div>
         )}
@@ -73,14 +76,14 @@ export function DemoShell() {
       </Phone>
       <div className="w-full max-w-[660px]">
         <p className="mb-5 font-display text-[15px] font-light tracking-[0.02em] text-white/45">
-          <span className="ribbon-text font-normal">Orbit</span> · a demo with a pretend TV
+          <span className="ribbon-text font-normal">Orbit</span> · {t("a demo with a pretend TV")}
         </p>
         <MockTv />
         <ul className="mt-7 grid grid-cols-2 gap-x-8 gap-y-3 text-[14px] text-white/60">
-          <li><span className="text-white/90">Roll the globe</span>: the TV's focus steps, like a BlackBerry ball.</li>
-          <li><span className="text-white/90">Tap it</span>: OK. <span className="text-white/90">Hold it</span>: recent apps.</li>
-          <li><span className="text-white/90">Cursor</span>: glide to point, tap to click, two fingers to scroll.</li>
-          <li><span className="text-white/90">The code</span> shows at the top of the TV, here too.</li>
+          <li>{rich(t("<b>Roll the globe</b>: the TV's focus steps, like a BlackBerry ball."), { b: lit })}</li>
+          <li>{rich(t("<b>Tap it</b>: OK. <b>Hold it</b>: recent apps."), { b: lit })}</li>
+          <li>{rich(t("<b>Cursor</b>: glide to point, tap to click, two fingers to scroll."), { b: lit })}</li>
+          <li>{rich(t("<b>The code</b> shows at the top of the TV, here too."), { b: lit })}</li>
         </ul>
       </div>
     </div>

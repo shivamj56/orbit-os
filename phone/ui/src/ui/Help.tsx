@@ -7,6 +7,7 @@ import { closeHelp, useWorld } from "../store";
 import * as I from "./icons";
 import { Press, Toast, spring } from "./kit";
 import { DirectionTicks, KeyButton, VolumeGroup, volumeKeys } from "./Remote";
+import { t, tm } from "../i18n";
 
 /** No picture for this long (the TV sends one at least every 5 s): the TV is off, or help did not start. */
 const QUIET_MS = 10_000;
@@ -36,7 +37,7 @@ export function Help({ status }: { status: Status }) {
   }, []);
   const fail = useCallback((e: unknown) => {
     haptic("error");
-    say((e as Error).message || "The TV did not take that.");
+    say(tm((e as Error).message) || t("The TV did not take that."));
   }, [say]);
   const key = useCallback((k: Key) => tv.key(k).catch(fail), [fail]);
 
@@ -51,7 +52,7 @@ export function Help({ status }: { status: Status }) {
 
   const picture = help.picture;
   const quiet = now - Math.max(picture?.got ?? 0, help.since) > QUIET_MS;
-  const trouble = help.error ?? (quiet ? "The TV did not send its screen. Is it on?" : null);
+  const trouble = help.error ? tm(help.error) : quiet ? t("The TV did not send its screen. Is it on?") : null;
   const live = !!picture && !trouble;
   const name = state?.tv || status.tv?.name || "";
 
@@ -65,19 +66,19 @@ export function Help({ status }: { status: Status }) {
         variants={{ shown: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } } }}
       >
         <motion.header variants={rise} transition={spring} className="flex items-center gap-3">
-          <Press label="Back to the remote" onPress={closeHelp} className="glass h-11 w-11 shrink-0 rounded-full text-muted">
+          <Press label={t("Back to the remote")} onPress={closeHelp} className="glass h-11 w-11 shrink-0 rounded-full text-muted">
             <I.Chevron dir="left" size={20} />
           </Press>
           <div className="min-w-0">
-            <h1 className="truncate font-display text-[23px] leading-tight font-normal tracking-[-0.01em]">Help</h1>
+            <h1 className="truncate font-display text-[23px] leading-tight font-normal tracking-[-0.01em]">{t("Help")}</h1>
             <p className="mt-0.5 truncate text-[12.5px] text-muted">
-              {name && name !== "TV" ? `${name}'s screen` : "The TV's screen"}
-              {status.via === "cloud" ? ", from anywhere" : ""}
+              {name && name !== "TV" ? t("{name}'s screen", { name }) : t("The TV's screen")}
+              {status.via === "cloud" ? t(", from anywhere") : ""}
             </p>
           </div>
         </motion.header>
 
-        <motion.section variants={rise} transition={spring} className="mt-4" aria-label="The TV's screen">
+        <motion.section variants={rise} transition={spring} className="mt-4" aria-label={t("The TV's screen")}>
           <TvPicture
             picture={picture}
             trouble={trouble}
@@ -93,12 +94,12 @@ export function Help({ status }: { status: Status }) {
               <span className="tabular truncate">{caption(help, picture, trouble, now)}</span>
             </span>
             <span className={`shrink-0 text-[12px] text-faint transition-opacity duration-300 ${live ? "opacity-100" : "opacity-0"}`}>
-              Tap the picture to click
+              {t("Tap the picture to click")}
             </span>
           </div>
           <p className="mt-3 flex items-start gap-2 px-1 text-[12.5px] leading-snug text-faint">
             <I.Eye size={15} className="mt-px shrink-0" />
-            The TV shows a small note at the top while you can see its screen.
+            {t("The TV shows a small note at the top while you can see its screen.")}
           </p>
         </motion.section>
 
@@ -108,17 +109,17 @@ export function Help({ status }: { status: Status }) {
 
         <motion.div variants={rise} transition={spring}>
           <div className="mb-3 grid grid-cols-3 gap-3">
-            <KeyButton label="Back" onPress={() => key("back")}>
+            <KeyButton label={t("Back")} onPress={() => key("back")}>
               <I.Back size={24} />
             </KeyButton>
-            <KeyButton label="Home" onPress={() => key("home")}>
+            <KeyButton label={t("Home")} onPress={() => key("home")}>
               <I.Home size={24} />
             </KeyButton>
-            <KeyButton label="Settings" onPress={() => key("settings")}>
+            <KeyButton label={t("Settings")} onPress={() => key("settings")}>
               <I.Gear size={23} />
             </KeyButton>
           </div>
-          <nav className="glass flex items-center rounded-[26px] p-1.5" aria-label="Volume">
+          <nav className="glass flex items-center rounded-[26px] p-1.5" aria-label={t("Volume")}>
             <VolumeGroup state={state} {...volumeKeys(state, fail)} />
           </nav>
         </motion.div>
@@ -128,17 +129,17 @@ export function Help({ status }: { status: Status }) {
 }
 
 function caption(help: HelpView, picture: Picture | null, trouble: string | null, now: number) {
-  if (help.error) return "Help did not start";
-  if (!picture) return trouble ? "No picture from the TV" : "Waiting for the TV…";
-  return `Updated ${ago(now - picture.at)}`;
+  if (help.error) return t("Help did not start");
+  if (!picture) return trouble ? t("No picture from the TV") : t("Waiting for the TV…");
+  return t("Updated {ago}", { ago: ago(now - picture.at) });
 }
 
 function ago(ms: number) {
   const s = Math.max(0, Math.floor(ms / 1000));
-  if (s < 1) return "just now";
-  if (s < 60) return `${s}s ago`;
+  if (s < 1) return t("just now");
+  if (s < 60) return t("{s}s ago", { s });
   const m = Math.floor(s / 60);
-  return m < 60 ? `${m} min ago` : `${Math.floor(m / 60)} h ago`;
+  return m < 60 ? t("{m} min ago", { m }) : t("{h} h ago", { h: Math.floor(m / 60) });
 }
 
 function useNow(every: number) {
@@ -197,7 +198,7 @@ function TvPicture({
     <div
       ref={box}
       role="button"
-      aria-label="The TV's screen. Tap a spot to click it on the TV."
+      aria-label={t("The TV's screen. Tap a spot to click it on the TV.")}
       onClick={tap}
       className="relative aspect-video w-full overflow-hidden rounded-[22px] border border-white/8 bg-[#020307] shadow-[0_28px_60px_-30px_rgba(0,0,0,0.95)]"
     >
@@ -246,7 +247,7 @@ function Waiting() {
       />
       <span className="relative flex flex-col items-center gap-3">
         <Dots />
-        <span className="text-[13.5px] text-muted">Waiting for the TV…</span>
+        <span className="text-[13.5px] text-muted">{t("Waiting for the TV…")}</span>
       </span>
     </motion.div>
   );
@@ -279,8 +280,8 @@ function Trouble({ text, onRetry }: { text: string; onRetry: () => void }) {
     >
       <div>
         <p className="mx-auto max-w-[30ch] text-[14px] leading-snug text-text">{text}</p>
-        <Press label="Try again" onPress={onRetry} className="glass mx-auto mt-3.5 h-10 rounded-full px-5 text-[14px]">
-          Try again
+        <Press label={t("Try again")} onPress={onRetry} className="glass mx-auto mt-3.5 h-10 rounded-full px-5 text-[14px]">
+          {t("Try again")}
         </Press>
       </div>
     </motion.div>
@@ -317,10 +318,10 @@ function DPad({ onKey }: { onKey: (k: Key) => void }) {
     onKey(dir);
   };
   const arrows: { dir: Dir; label: string; spot: string }[] = [
-    { dir: "up", label: "Up", spot: "top-[2%] right-[30%] left-[30%] h-[29%]" },
-    { dir: "down", label: "Down", spot: "right-[30%] bottom-[2%] left-[30%] h-[29%]" },
-    { dir: "left", label: "Left", spot: "top-[30%] bottom-[30%] left-[2%] w-[29%]" },
-    { dir: "right", label: "Right", spot: "top-[30%] right-[2%] bottom-[30%] w-[29%]" },
+    { dir: "up", label: t("Up"), spot: "top-[2%] right-[30%] left-[30%] h-[29%]" },
+    { dir: "down", label: t("Down"), spot: "right-[30%] bottom-[2%] left-[30%] h-[29%]" },
+    { dir: "left", label: t("Left"), spot: "top-[30%] bottom-[30%] left-[2%] w-[29%]" },
+    { dir: "right", label: t("Right"), spot: "top-[30%] right-[2%] bottom-[30%] w-[29%]" },
   ];
   return (
     <div className="relative aspect-square h-full max-h-[min(60vw,236px)] max-w-full">

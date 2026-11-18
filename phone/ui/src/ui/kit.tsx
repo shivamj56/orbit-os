@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useDragControls, type PanInfo } from "framer-m
 import { useEffect, useRef, type ReactNode } from "react";
 import { haptic, type Haptic } from "../bridge";
 import { Close } from "./icons";
+import { t } from "../i18n";
 
 export const spring = { type: "spring", stiffness: 520, damping: 34, mass: 0.7 } as const;
 export const sheetSpring = { type: "spring", stiffness: 340, damping: 36, mass: 0.9 } as const;
@@ -136,7 +137,7 @@ export function Sheet({ open, onClose, title, children, tall }: SheetProps) {
               <div className="h-1.5 w-10 rounded-full bg-white/18" />
               <div className="mt-3 flex w-full items-center justify-between">
                 <h2 className="font-display text-[22px] font-normal tracking-[-0.01em]">{title}</h2>
-                <Press label="Close" onPress={onClose} feel={null} className="glass h-10 w-10 rounded-full text-muted">
+                <Press label={t("Close")} onPress={onClose} feel={null} className="glass h-10 w-10 rounded-full text-muted">
                   <Close size={18} />
                 </Press>
               </div>

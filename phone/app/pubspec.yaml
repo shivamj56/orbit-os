@@ -41,6 +41,8 @@ flutter:
   assets:
     # phone/ui/dist/index.html, copied by tool/sync_ui.sh (a placeholder until the real UI is built).
     - assets/ui/
+    # The page's translations, one JSON file per language (phone/SPEC.md, "Languages"), also copied by tool/sync_ui.sh.
+    - assets/ui/locales/
     # The TV-side install bundle (both launcher APKs and the two scripts), copied by tool/sync_setup.sh before a
     # build. Git-ignored (the APKs must not be committed); the directory is populated by that tool.
     - assets/setup/

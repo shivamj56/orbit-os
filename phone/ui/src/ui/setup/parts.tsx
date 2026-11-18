@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { haptic } from "../../bridge";
 import * as I from "../icons";
 import { spring } from "../kit";
+import { t } from "../../i18n";
 
 export const ease = [0.25, 1, 0.5, 1] as const;
 
@@ -45,7 +46,7 @@ export function StepBar({ step, total = 7, onBack }: { step: number; total?: num
       {onBack && (
         <button
           type="button"
-          aria-label="Back"
+          aria-label={t("Back")}
           onClick={() => {
             haptic("light");
             onBack();
@@ -59,7 +60,7 @@ export function StepBar({ step, total = 7, onBack }: { step: number; total?: num
         className="grid flex-1 gap-[5px]"
         style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }}
         role="progressbar"
-        aria-label="Setup steps"
+        aria-label={t("Setup steps")}
         aria-valuemin={0}
         aria-valuemax={total}
         aria-valuenow={step}
@@ -78,7 +79,7 @@ export function StepBar({ step, total = 7, onBack }: { step: number; total?: num
         ))}
       </div>
       <span className="tabular min-w-[34px] text-right text-[13px] text-dusk">
-        {step} of {total}
+        {t("{step} of {total}", { step, total })}
       </span>
     </Rise>
   );

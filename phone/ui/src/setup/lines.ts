@@ -6,6 +6,8 @@
 //   @orbit undo <line>
 //   @orbit done ok|fail [text]
 
+import { t, tm, tn } from "../i18n";
+
 export type StepState = "start" | "ok" | "skip" | "fail";
 
 export type OrbitLine =
@@ -113,27 +115,27 @@ interface RowSpec {
   main: string;
 }
 
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-
 function installWords(disableCount: number, run: Run): Record<string, StepWords> {
   // "2 could not be switched off" comes with a disable step that still went on.
   const missed = Number(/^(\d+) could not/.exec(run.steps.disable?.text ?? "")?.[1] ?? 0);
-  const apps = plural(disableCount, "app", "apps");
   return {
-    check: { doing: "Checking the TV", done: "Checked the TV", fail: "The TV did not pass the check" },
-    record: { doing: "Saving how to undo all of it", done: "Saved how to undo all of it", fail: "Could not save how to undo it" },
+    check: { doing: t("Checking the TV"), done: t("Checked the TV"), fail: t("The TV did not pass the check") },
+    record: { doing: t("Saving how to undo all of it"), done: t("Saved how to undo all of it"), fail: t("Could not save how to undo it") },
     disable: {
-      doing: `Switching off ${apps}`,
-      done: missed > 0 ? `Switched off ${disableCount - missed} of ${apps}` : `Switched off ${apps}`,
-      skip: "Nothing to switch off",
-      fail: "Could not switch the apps off",
+      doing: tn(disableCount, "Switching off {n} app", "Switching off {n} apps"),
+      done:
+        missed > 0
+          ? tn(disableCount, "Switched off {done} of {n} app", "Switched off {done} of {n} apps", { done: disableCount - missed })
+          : tn(disableCount, "Switched off {n} app", "Switched off {n} apps"),
+      skip: t("Nothing to switch off"),
+      fail: t("Could not switch the apps off"),
     },
-    home: { doing: "Installing Orbit Home", done: "Orbit Home is the home screen", skip: "Kept the TV's own home screen", fail: "Orbit Home did not install" },
-    helper: { doing: "Turning on the remote helper", done: "Turned on the remote helper", fail: "The remote helper did not turn on" },
-    grants: { doing: "Giving the helper what it needs", done: "Gave the helper what it needs", fail: "The helper did not get what it needs" },
-    live: { doing: "Installing Orbit Live TV", done: "Installed Orbit Live TV", skip: "Orbit Live TV is not part of the plan", fail: "Orbit Live TV did not install" },
-    name: { doing: "Adding your name", done: "Added your name", fail: "Your name did not reach the TV" },
-    pair: { doing: "Pairing this phone", done: "Paired this phone", fail: "This phone did not pair" },
+    home: { doing: t("Installing Orbit Home"), done: t("Orbit Home is the home screen"), skip: t("Kept the TV's own home screen"), fail: t("Orbit Home did not install") },
+    helper: { doing: t("Turning on the remote helper"), done: t("Turned on the remote helper"), fail: t("The remote helper did not turn on") },
+    grants: { doing: t("Giving the helper what it needs"), done: t("Gave the helper what it needs"), fail: t("The helper did not get what it needs") },
+    live: { doing: t("Installing Orbit Live TV"), done: t("Installed Orbit Live TV"), skip: t("Orbit Live TV is not part of the plan"), fail: t("Orbit Live TV did not install") },
+    name: { doing: t("Adding your name"), done: t("Added your name"), fail: t("Your name did not reach the TV") },
+    pair: { doing: t("Pairing this phone"), done: t("Paired this phone"), fail: t("This phone did not pair") },
   };
 }
 
@@ -151,17 +153,17 @@ function undoWords(run: Run): Record<string, StepWords> {
   // orbit-undo.sh logs "removed <package>" for each of Orbit's apps it takes off.
   const removed = run.log.some((l) => /^removed \S/.test(l.trim()));
   return {
-    home: { doing: "Bringing back the TV's own home screen", done: "The TV's own home screen is back", fail: "Orbit Home is still the home screen" },
+    home: { doing: t("Bringing back the TV's own home screen"), done: t("The TV's own home screen is back"), fail: t("Orbit Home is still the home screen") },
     enable: {
-      doing: "Switching the apps back on",
-      done: Number.isFinite(n) ? `Switched ${plural(n, "app", "apps")} back on` : "Switched the apps back on",
-      fail: "Some apps did not switch back on",
+      doing: t("Switching the apps back on"),
+      done: Number.isFinite(n) ? tn(n, "Switched {n} app back on", "Switched {n} apps back on") : t("Switched the apps back on"),
+      fail: t("Some apps did not switch back on"),
     },
-    helper: { doing: "Putting the TV's settings back", done: "Put the TV's settings back", fail: "The TV's settings did not all go back" },
+    helper: { doing: t("Putting the TV's settings back"), done: t("Put the TV's settings back"), fail: t("The TV's settings did not all go back") },
     apps: {
-      doing: "Taking Orbit's own apps away",
-      done: removed ? "Took Orbit's own apps away" : "No Orbit apps to take away",
-      fail: "Orbit's apps are still on the TV",
+      doing: t("Taking Orbit's own apps away"),
+      done: removed ? t("Took Orbit's own apps away") : t("No Orbit apps to take away"),
+      fail: t("Orbit's apps are still on the TV"),
     },
   };
 }
@@ -180,8 +182,8 @@ function switchWords(to: HomeChoice): Record<string, StepWords> {
   return {
     switch:
       to === "stock"
-        ? { doing: "Bringing back the TV's own home screen", done: "The TV's own home screen is Home", fail: "The TV's own home screen did not come back" }
-        : { doing: "Making Orbit Home the home screen", done: "Orbit Home is Home again", fail: "Orbit Home did not become Home" },
+        ? { doing: t("Bringing back the TV's own home screen"), done: t("The TV's own home screen is Home"), fail: t("The TV's own home screen did not come back") }
+        : { doing: t("Making Orbit Home the home screen"), done: t("Orbit Home is Home again"), fail: t("Orbit Home did not become Home") },
   };
 }
 
@@ -210,7 +212,9 @@ function rowsFrom(specs: RowSpec[], words: Record<string, StepWords>, run: Run):
     const failed = spec.ids.find((id) => run.steps[id]?.state === "fail");
     if (failed) {
       const text = run.steps[failed].text;
-      return { key: spec.key, text: w(failed).fail, state: "fail", detail: text && text !== w(failed).fail ? text : undefined };
+      // The script's own words show under ours, unless they say the same (in English, or once translated).
+      const same = !text || text === w(failed).fail || tm(text) === w(failed).fail;
+      return { key: spec.key, text: w(failed).fail, state: "fail", detail: same ? undefined : text };
     }
     const settled = states.every((s) => s === "ok" || s === "skip");
     if (settled) {
@@ -250,8 +254,8 @@ export function whatStopped(
   if (row) return { text: row.text, detail: row.detail ?? (run.done?.text && run.done.text !== row.text ? run.done.text : undefined) };
   if (run.done?.text) return { text: run.done.text };
   // A script from before `switch` answers with its usage line and stops.
-  if (kind === "switch" && run.log.some((l) => /\busage:/.test(l))) return { text: "This copy of Orbit Setup cannot switch the home screen" };
-  return { text: kind === "install" ? "The setup stopped before it finished" : kind === "undo" ? "Undo stopped before it finished" : "The switch stopped before it finished" };
+  if (kind === "switch" && run.log.some((l) => /\busage:/.test(l))) return { text: t("This copy of Orbit Setup cannot switch the home screen") };
+  return { text: kind === "install" ? t("The setup stopped before it finished") : kind === "undo" ? t("Undo stopped before it finished") : t("The switch stopped before it finished") };
 }
 
 /** A run that went well: its "done ok", and no step that failed. */

@@ -1,0 +1,5961 @@
+{
+  "about": "Every English text the Orbit phone app can show, made by tools/i18n/extract.cjs: do not edit by hand. Each language's translations are in phone/ui/public/locales/<code>.json, keyed by these texts. kind: button (keep it short), heading, spoken (read out by screen readers), field (a hint in a text box), message (from Flutter, the TV or its scripts), text. A text with \"one\" is a count: the key is its \"other\" form.",
+  "texts": [
+    {
+      "text": ", from anywhere",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "· the newest",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "\"Stays on\": it goes only together with an app that stays on.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "{apps}, and more",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "{apps}, never deleted",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "{date}, {time}",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "{greeting}, {name}",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "{group}: {off} of {apps} switched off. Open to change",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "{h} h ago",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "{language}, as on the phone",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "{length}-digit code",
+      "kind": "spoken",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "{m} min ago",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "{n} apps",
+      "one": "{n} app",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "{n} bytes",
+      "one": "{n} byte",
+      "kind": "text",
+      "where": [
+        "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "{name} can see this screen",
+      "kind": "text",
+      "where": [
+        "mock-screen.ts"
+      ]
+    },
+    {
+      "text": "{name}'s screen",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "{off} of {apps} switched off",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "{percent}%, {state}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "{s}s ago",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "{shown} is back as it was",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "{size} KB",
+      "kind": "text",
+      "where": [
+        "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "{size} MB",
+      "kind": "text",
+      "where": [
+        "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "{size}, in a hidden folder only Orbit can open",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "{step} of {total}",
+      "kind": "text",
+      "where": [
+        "ui/setup/parts.tsx"
+      ]
+    },
+    {
+      "text": "{tv} answers this phone from anywhere.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "{tv} goes back to the home screen it came with. Only the home screen changes: Orbit Home and Orbit Live TV stay on the TV, and you can come back to Orbit Home from here any time.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "{tv} is linked to {email}.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "{tv} is set up",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "{tv}. Nothing has changed on the TV yet.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "<b>Cursor</b>: glide to point, tap to click, two fingers to scroll.",
+      "kind": "text",
+      "where": [
+        "demo/DemoShell.tsx"
+      ]
+    },
+    {
+      "text": "<b>Roll the globe</b>: the TV's focus steps, like a BlackBerry ball.",
+      "kind": "text",
+      "where": [
+        "demo/DemoShell.tsx"
+      ]
+    },
+    {
+      "text": "<b>Stays on:</b> {list}.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "<b>Tap it</b>: OK. <b>Hold it</b>: recent apps.",
+      "kind": "text",
+      "where": [
+        "demo/DemoShell.tsx"
+      ]
+    },
+    {
+      "text": "<b>The code</b> shows at the top of the TV, here too.",
+      "kind": "text",
+      "where": [
+        "demo/DemoShell.tsx"
+      ]
+    },
+    {
+      "text": "101 · Orbit Live TV",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "2 apps",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "30 free Hindi channels with a guide",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "a demo with a pretend TV",
+      "kind": "text",
+      "where": [
+        "demo/DemoShell.tsx"
+      ]
+    },
+    {
+      "text": "A few things did not work. The rest of Orbit OS works, and setting it up again later tries them once more.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "A link",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "A pretend TV. Yours is left alone.",
+      "kind": "text",
+      "where": [
+        "demo/DemoFrame.tsx"
+      ]
+    },
+    {
+      "text": "About",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx",
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "about {n} minutes left",
+      "one": "about {n} minute left",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "about a minute left",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Account",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Accounts & Sign In",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Added your name",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Adding your name",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Ads and tracking",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "All kept on",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Allow",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Allow USB debugging?",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Also delete my TV backups from Google Drive",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Always allow from this computer",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Android 8 or later is needed",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Android keeps this switch on the TV itself. Do these steps with the remote; Orbit moves on as soon as it sees the change.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Android kept its own home screen",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Android kept its own home screen, so the TV was put back the way it was",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Android kept Orbit Home",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Android kept Orbit Home as the home screen",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Android TV OS build",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Android TV OS version",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Another TV was chosen meanwhile.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_link.dart"
+      ]
+    },
+    {
+      "text": "Apps",
+      "kind": "spoken",
+      "where": [
+        "mock.ts",
+        "ui/Remote.tsx",
+        "ui/Sheets.tsx",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Apps installed by the maker on its own",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Apps nobody here uses",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Asking Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Asking the TV…",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Back",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Help.tsx",
+        "ui/Remote.tsx",
+        "ui/setup/parts.tsx"
+      ]
+    },
+    {
+      "text": "Back 10 seconds",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Back a TV up at the end of Orbit Setup, or any time from Settings › This TV › Back up.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Back in <b>System › Developer options</b>, turn on <b>USB debugging</b>",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Back to the remote",
+      "kind": "spoken",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Back to your own TV.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Back up {shown}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Back up {tv}'s own setup",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Back up this TV's own setup",
+      "kind": "heading",
+      "where": [
+        "ui/Sheets.tsx",
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Back up to Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Background helpers that wake with the TV and do nothing useful on it.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Backups",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Backups in Google Drive",
+      "kind": "heading",
+      "where": [
+        "ui/Sheets.tsx",
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Backups of {tv}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Bluetooth: on",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Bringing back the TV's own home screen",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Browser",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Built-in apps that only take memory if you never open them.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Calendar storage",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Calendar sync",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Can't reach the TV",
+      "kind": "heading",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Cancel",
+      "kind": "button",
+      "where": [
+        "demo/MockTv.tsx",
+        "ui/Sheets.tsx",
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Casting",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Casting needs Chromecast built-in. Switched off, it frees about 24 MB of memory.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Change",
+      "kind": "button",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Change: {label}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Checked the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Checking the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Choose {email} in Google's sheet: the backups go to the Drive of the account Orbit is signed in with.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "Choose the TV to put back. When the backup was made it was at {address}.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Choose your TV first.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_link.dart"
+      ]
+    },
+    {
+      "text": "Chromecast built-in",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Chromecast built-in, for casting from a phone.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "City News",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "Close",
+      "kind": "button",
+      "where": [
+        "ui/kit.tsx",
+        "ui/setup/Backup.tsx",
+        "ui/setup/Install.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Close developer mode",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Backup.tsx",
+        "ui/setup/Install.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Connect",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Connect and try again",
+      "kind": "button",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Connect to {name}",
+      "kind": "spoken",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Connect to the TV first.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/setup_host.dart"
+      ]
+    },
+    {
+      "text": "connected",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Connected from anywhere",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Connected to {tv}",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Connected to the TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Connecting to {tv}",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Connecting to the TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Connecting…",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Continue",
+      "kind": "button",
+      "where": [
+        "ui/setup/Install.tsx",
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Continue when you are ready",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Continue with Google",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Sheets.tsx",
+        "ui/setup/Backup.tsx",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Continue with Google, then back up",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Control Center",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts"
+      ]
+    },
+    {
+      "text": "Could not save how to undo it",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Could not switch the apps off",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Cursor",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Delete",
+      "kind": "button",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Delete my account",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Delete my Orbit account",
+      "kind": "button",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Delete the backup of {date}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Delete this backup from your Google Drive? It cannot be brought back.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Delete your Orbit account",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Deleting cannot be undone.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Deleting your account",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Demo",
+      "kind": "text",
+      "where": [
+        "demo/DemoFrame.tsx"
+      ]
+    },
+    {
+      "text": "Demo mode is on: leave the demo",
+      "kind": "spoken",
+      "where": [
+        "demo/DemoFrame.tsx"
+      ]
+    },
+    {
+      "text": "Developer options",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Device name",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Display & Sound",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Do you cast videos from your phone to this TV?",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Do you play films or photos from a USB drive?",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Do you search by voice with the remote?",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Do you watch the TV maker's free channels?",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "done",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Done",
+      "kind": "button",
+      "where": [
+        "ui/setup/Account.tsx",
+        "ui/setup/Backup.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Down",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Each TV's backups, and putting a TV back from one.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Each TV's own setup, as Orbit saved it to the Google Drive of {email}.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Each TV's own setup, as Orbit saved it to your Google Drive.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Enter the code on your TV",
+      "kind": "heading",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Evening Raga",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "Every app on the TV, and which were switched on",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Every app Orbit switched off is on again, and the TV's own home screen is back.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "every streaming app",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Everything it switches off comes back with one tap",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Everything Orbit does, with a pretend TV inside the app. Your own TV is left alone.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Everything Orbit's cloud keeps for it: your TV's link and name, what the TV last said, commands on their way, and Help mode's pictures",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Family room",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts"
+      ]
+    },
+    {
+      "text": "Feel the steps",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Find a language",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Find an app",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Find your TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Finish",
+      "kind": "button",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Finish without the name",
+      "kind": "button",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Firebase did not sign you in. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/firebase_backend.dart"
+      ]
+    },
+    {
+      "text": "firmware updates",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Focus",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Forget this TV",
+      "kind": "button",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Forward 10 seconds",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Found {length} TVs",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Found it",
+      "kind": "heading",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Found on this Wi-Fi",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Found one TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "From anywhere",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Games",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Gave the helper what it needs",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Getting the backup ready",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Giving the helper what it needs",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Glide to point · tap to click · two fingers to scroll",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Go to Home on the TV: its link code shows at the top for two minutes. Type the eight digits here.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Good Afternoon",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Good Evening",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Good Morning",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Good night",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Good Night",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Google Assistant",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Google could not give Orbit access to your Drive. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "Google could not sign you in. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/remote.dart"
+      ]
+    },
+    {
+      "text": "Google did not accept Orbit's access to your Drive. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Google did not confirm it is you. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/account.dart"
+      ]
+    },
+    {
+      "text": "Google did not vouch for this account. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "Google Drive backups are not available in this build of Orbit.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "Google Drive did not answer in time. Is the internet on?",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Google Drive did not answer. Try again in a moment.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Google Drive did not answer. Try again.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "Google Drive did not take it",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Google Drive gave an answer Orbit could not read. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Google Drive is busy. Try again in a minute.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Google Drive is not available in this build of Orbit.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/remote.dart"
+      ]
+    },
+    {
+      "text": "Google Drive is not switched on for Orbit yet. The developer has to turn it on.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Google Drive said no ({status}). Try again in a moment.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Google Drive was never allowed for Orbit.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Google Drive was not allowed",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Google Drive was not allowed, so nothing was saved there. Orbit only asks for its own hidden folder in your Drive, which no other app can see.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "Google feedback reports",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Google gives Orbit your email, so there is nothing to type. You can also do it later in Settings.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Google may ask you to choose your account once more, to be sure it is you.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Google Play Games",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Google sign-in did not finish.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts",
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Google TV home screen",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Google TV home screen styling",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Google TV screensaver",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Google TV setup",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Google's assistant, which answers the remote's microphone button.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Google's sign-in was not accepted. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/firebase_backend.dart"
+      ]
+    },
+    {
+      "text": "Hello, I wish you a peaceful night",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Hello, I wish you a relaxing evening",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Hello, I wish you a wonderful day",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Help",
+      "kind": "heading",
+      "where": [
+        "ui/Help.tsx",
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Help did not start",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Help did not start on the TV.",
+      "kind": "text",
+      "where": [
+        "help.ts"
+      ]
+    },
+    {
+      "text": "Help is off, or the first picture is not ready yet.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "Help starts when Orbit is on the screen.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/help_mode.dart"
+      ]
+    },
+    {
+      "text": "Help: see the TV's screen",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Here's the plan",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Hide TV",
+      "kind": "button",
+      "where": [
+        "demo/DemoFrame.tsx",
+        "demo/DemoShell.tsx"
+      ]
+    },
+    {
+      "text": "Home",
+      "kind": "spoken",
+      "where": [
+        "ui/Help.tsx",
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Home screen",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "home Wi-Fi",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Home Wi-Fi",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "How deleting works",
+      "kind": "button",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "How the globe works",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "How the TV was before Orbit OS, as a small file in your own Google Drive.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "How the TV was before Orbit OS, kept in your own Google Drive, so it can always be put back, even from a new phone.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "How this TV was before Orbit OS, so it can always be put back. This backup uses {size} of your Google Drive.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "If the TV asks whether this phone may connect, allow it. It is Android's own question; a TV that was told to always allow this phone does not ask.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Install",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Installed Orbit Live TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Installing Orbit Home",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Installing Orbit Live TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Into the search box that is open on the TV.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Is the TV on, and the phone on the home Wi-Fi?",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "It goes to the Google Drive of {email}.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "It is asleep or off now: turn it on with its remote, and Orbit connects by itself.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "It is at the top of {tv} now.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "It is at the top of the TV now.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "It's on",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "just now",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Keep",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Keep a copy in Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Keep all",
+      "kind": "button",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Keep it",
+      "kind": "button",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Keep my account",
+      "kind": "button",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Keep the phone on the same Wi-Fi as the TV.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Keep the TV on and this app open.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Kept the TV's own home screen",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Keyboard",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Kids",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Language",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Leave",
+      "kind": "text",
+      "where": [
+        "demo/DemoFrame.tsx"
+      ]
+    },
+    {
+      "text": "Leave the demo",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Left",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "less than a minute left",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Let me look first",
+      "kind": "button",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Link the TV once with the code it shows at the top of Home.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Link your TV",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "linked",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Linking…",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "LIVE",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "Live TV",
+      "kind": "text",
+      "where": [
+        "mock.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Live TV is the first tile on Home",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Look again",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Looking for it",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Looking for what Orbit changed on this TV.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Looking for your TV",
+      "kind": "heading",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Looking on this Wi-Fi",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Make it yours",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Making Orbit Home {tv}'s home screen",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Making Orbit Home the home screen",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Mi Channel promotions",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Mi Connect (Xiaomi phone to TV)",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Monsoon Kitchen",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "More",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Move to <b>Allow</b> and press OK on the remote",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Movies",
+      "kind": "text",
+      "where": [
+        "mock.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Moving on",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Music",
+      "kind": "text",
+      "where": [
+        "mock.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Music · until 21:00",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "Mute",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Muted",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts"
+      ]
+    },
+    {
+      "text": "Nearly all of it is back",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Network & Internet",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "News",
+      "kind": "text",
+      "where": [
+        "mock.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Next",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "No app by that name.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "No backups yet",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "No computer and no code. This phone does the work over the Wi-Fi, in about five minutes.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "No Developer options? Open System › About and press OK seven times on Android TV OS build.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "No internet on the phone.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart",
+        "app/lib/tv/remote.dart"
+      ]
+    },
+    {
+      "text": "No internet on the phone. The TV is unlinked when it is back.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart"
+      ]
+    },
+    {
+      "text": "No internet on the phone. Try again when it is back.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart",
+        "app/lib/cloud/firebase_backend.dart"
+      ]
+    },
+    {
+      "text": "No internet on this phone",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "No internet on this phone. Try again when it is back.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart",
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "No Orbit apps to take away",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "No Orbit TV here yet? This phone puts it on one, over the Wi-Fi.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "No picture from the TV",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "No rooting, no firmware change: only Android's own settings",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "No TV found on this Wi-Fi yet.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_link.dart"
+      ]
+    },
+    {
+      "text": "No TV found yet",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "No TV yet",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "No, switch it off",
+      "kind": "button",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "No, switch them off",
+      "kind": "button",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Nobody answered on the TV.",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts"
+      ]
+    },
+    {
+      "text": "Nobody pressed Allow in time. Try again, and press Allow when the TV asks.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "Not answered",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "not answering now",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Not listed?",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Not now",
+      "kind": "button",
+      "where": [
+        "ui/setup/Backup.tsx",
+        "ui/setup/Setup.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Not the same as Undo",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Not yet. Check that USB debugging is on, then press It's on again.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "Nothing answered on the TV's port 5555.",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts"
+      ]
+    },
+    {
+      "text": "Nothing chosen yet. Open it to pick",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Nothing is broken: {tv} still has its own home screen.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Nothing is broken: the TV still has its own home screen.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Nothing on the TV can open that link.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "Nothing on this TV needs switching off.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Nothing playing",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Nothing to switch off",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Nothing you watch stops working. Every item is listed before anything changes.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Now playing",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Off",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "On the Orbit OS site's issue page.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "On the TV now",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "On the TV: Settings › Network & Internet, then your Wi-Fi",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "On this TV that is {apps}.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "On your home Wi-Fi",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "On your TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "On your TV · {place}",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "On your TV: {title}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "One thing did not work. The rest of Orbit OS works, and setting it up again later tries it once more.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "One thing stays for now: while Orbit's remote helper is on, the Home button on the TV's own remote still opens Orbit Home.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "One try left.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "Only Home changes. Every app stays as it is now, and you can switch back any time.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Only Home changes. Orbit Home stays on the TV for when you want it back.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Only http and https links can be opened.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "Open {label}",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Open <b>Settings › System › About</b>",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Open <b>Settings › System › Developer options</b>",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Open a link",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Open the remote",
+      "kind": "button",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Opening {app}",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Opening Google",
+      "kind": "button",
+      "where": [
+        "ui/setup/Backup.tsx",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Opening Google…",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Opening the backup",
+      "kind": "button",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Opening the link on the TV",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Orbit {version} · made by {name}",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Orbit can put it back now",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit can read the TV for the backup now",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit can set it up now",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit can switch the home screen now",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit cannot reach the TV. Check that it is on, on this Wi-Fi, and that USB debugging is on.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "Orbit changes the TV's home screen over the Wi-Fi it is on. Join this phone to the TV's Wi-Fi, then open Settings again.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Orbit could not look on this Wi-Fi.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts",
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit could not put everything back yet.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Orbit could not read the TV.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit could not read the TV's list of apps. Try again.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "Orbit does not speak that language yet.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Orbit has no record of what it changed on this TV, so a backup could not say how the TV was. A TV set up with Orbit Setup has one.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit has no texts for that language yet.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "Orbit Home and Orbit Live TV come off the TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Home becomes {tv}'s home screen again, with your greeting and Live TV first. The TV's own home screen stays on the TV, ready for another switch.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Home becomes the home screen once more.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Home did not become Home",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Orbit Home did not install",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/lines.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home did not install; the TV keeps its own home screen",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home did not start",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home did not start; the TV keeps its own home screen",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home is Home again",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts",
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Home is missing",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home is not on this TV",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home is still the home screen",
+      "kind": "message",
+      "where": [
+        "setup/lines.ts",
+        "setup/orbit-undo.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home is the home screen",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Orbit Home on the TV: a curved row of apps under a greeting",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Home was not sent to the TV",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit is closing.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/help_mode.dart"
+      ]
+    },
+    {
+      "text": "Orbit is connected to the TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit is looking on this Wi-Fi",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Orbit is showing its demo. Leave the demo to use your TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "Orbit keeps backups in the Google Drive of the account it is signed in with.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Live TV brings 30 free channels of its own.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Orbit Live TV did not install",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/lines.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Live TV is missing",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Live TV is not part of the plan",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Orbit Live TV was not sent to the TV",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit moves on by itself when the TV is ready",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Orbit needs the same door it used to set the TV up. Do this with the remote; Orbit moves on as soon as it sees the change.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit never changes Android itself, so this small file is all it takes to put the TV back.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit no longer has an account for {email}, and this phone is signed out.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Orbit no longer has your account, and this phone is signed out.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Orbit only opens its own pages.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "Orbit OS is on {tv}, and this phone is its remote, at home or away.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Orbit OS is on {tv}, and this phone is its remote.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Orbit OS is on it",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit OS is on the TV.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Orbit OS is on your TV, and this phone is its remote, at home or away.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Orbit OS is on your TV, and this phone is its remote.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Orbit put back what it could. What did not go back is below.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Orbit puts back what it changed on this TV, from the backup of {date} in your Google Drive:",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Orbit puts back what it changed on this TV:",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Orbit puts the TV back over the Wi-Fi it is on. Join this phone to the TV's Wi-Fi, then open Undo again from Settings.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Setup is not available in this build.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "Orbit was not allowed into Google Drive, so nothing changed there. Orbit only asks for its own hidden folder.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Orbit's apps are still on the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Pair this phone with the TV first.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_link.dart"
+      ]
+    },
+    {
+      "text": "Paired this phone",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Pairing this phone",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Partner setup",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "PatchWall promoted rows",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Pause",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Paused",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Phone's volume buttons",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Photos",
+      "kind": "text",
+      "where": [
+        "mock.ts",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Picture",
+      "kind": "text",
+      "where": [
+        "mock-screen.ts",
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Picture: Vivid",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Play",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Playing",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Podcasts",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Pointer speed",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Press Allow on the TV",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Previous",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Previous question",
+      "kind": "button",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Privacy policy",
+      "kind": "button",
+      "where": [
+        "ui/Sheets.tsx",
+        "ui/setup/Account.tsx",
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Put {tv} back with the backup of {date}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Put back {tv}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Put back this TV",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Put back what changed",
+      "kind": "button",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Put Orbit OS on a TV from this phone.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Put Orbit OS on your TV",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Put the TV's settings back",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Put this TV back",
+      "kind": "button",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Putting {name} back",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "putting it back",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Putting the TV's settings back",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Question {n} of {total}",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Questions",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Read the TV",
+      "kind": "button",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Reading the TV",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Reading this phone's record",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Recent",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Recent apps",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts",
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Recommended",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Recommended, once Orbit has read the TV.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Recommended. It shuts the door Orbit used.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Recommended. Orbit keeps working; this shuts the door the setup used.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Remotes & Accessories",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Removes Orbit entirely: what it switched off comes back on, the TV's own home screen and settings come back, and Orbit's apps come off.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Replaced by Orbit Home. Switched back on by Undo.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Report a problem",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Required",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Right",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Roll to move · tap for OK · hold for recent apps",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Saved how to undo all of it",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Saved in your Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Saving how to undo all of it",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Saving to Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Screen share",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Search after sending",
+      "kind": "button",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Search, a name, or a link",
+      "kind": "field",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Search: {text}",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts"
+      ]
+    },
+    {
+      "text": "See the plan",
+      "kind": "button",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Select <b>Android TV OS build</b> and press OK seven times",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Send",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Send a link.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "sending Orbit Setup",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "sending Orbit to the TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "sending the record",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Sending your name",
+      "kind": "button",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Sent to the TV",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "set up",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Set up {tv}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Set up my TV",
+      "kind": "button",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Set up Orbit OS on a TV",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Set up this TV",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Setting up {name}",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Settings",
+      "kind": "button",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts",
+        "mock.ts",
+        "ui/Connect.tsx",
+        "ui/Help.tsx",
+        "ui/Remote.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Settings › System",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Settings did not open.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "Setup",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Setup steps",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/parts.tsx"
+      ]
+    },
+    {
+      "text": "Setup stopped",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Seven presses of OK",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Shiv can see this screen",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "Show a new code on the TV",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Show TV",
+      "kind": "button",
+      "where": [
+        "demo/DemoFrame.tsx"
+      ]
+    },
+    {
+      "text": "Sign in with Google first",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Sign in with Google first.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart",
+        "app/lib/cloud/firebase_backend.dart",
+        "app/lib/tv/remote.dart",
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Sign in with Google first. Orbit keeps the backups in that account's own Google Drive.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/remote.dart",
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Sign in with Google to see them",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Sign in with the Google account that is on the TV, and Orbit reaches it away from home too.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Sign in with the Google account that is on the TV. Works away from home, and when the Wi-Fi will not reach the TV.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Sign out",
+      "kind": "button",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Sign-in was closed before an account was chosen.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "Sign-in was interrupted. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "Signed in as {email}",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Signed in as {email}.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Signed in as {email}. Deleting cannot be undone.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Signed in as {email}. Now link the TV once with the code it shows.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Signing in is not available on this phone right now.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/remote.dart"
+      ]
+    },
+    {
+      "text": "Skip the intro",
+      "kind": "button",
+      "where": [
+        "intro/Intro.tsx"
+      ]
+    },
+    {
+      "text": "Sleep",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Sleep now",
+      "kind": "button",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Sleep timer",
+      "kind": "text",
+      "where": [
+        "mock-screen.ts",
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Sleep timer: in 30 minutes",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Sleeping",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "Some apps did not switch back on",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Some apps were already switched off; Put back what changed switches them on again.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Something answered at {address}, but it is not the TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_link.dart"
+      ]
+    },
+    {
+      "text": "Something went wrong in Orbit.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "Something went wrong on the TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart",
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "Something went wrong.",
+      "kind": "text",
+      "where": [
+        "bridge.ts"
+      ]
+    },
+    {
+      "text": "Sound",
+      "kind": "text",
+      "where": [
+        "mock-screen.ts",
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Sound: Standard",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Sports",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Start setup",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "starting",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Stay awake",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Stays on",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Switch all off",
+      "kind": "button",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Switch off",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Switch off {label}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Switch off ads, tracking and promoted rows?",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Switched {n} apps back on",
+      "one": "Switched {n} app back on",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Switched off {done} of {n} apps",
+      "one": "Switched off {done} of {n} app",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Switched off {n} apps",
+      "one": "Switched off {n} app",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Switched the apps back on",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "switching",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Switching {tv} to its own home screen",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Switching needs the home Wi-Fi",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Switching off {n} apps",
+      "one": "Switching off {n} app",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Switching the apps back on",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Switching the home screen",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "System",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "System image updater for developers",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Takes Orbit off the TV entirely: the apps Orbit switched off come back on, the TV's settings go back, and Orbit's own apps come off.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Taking Orbit's own apps away",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Tap the picture to click",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Tap your TV to connect.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Text for the TV",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "That app cannot be opened on the TV.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "That app did not open.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "That app has no picture.",
+      "kind": "message",
+      "where": [
+        "mock.ts",
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "That backup could not be read",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "That backup could not be read.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "That backup is no longer in your Google Drive.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart",
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "That code is not on the TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart",
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "That does not look like the TV's address. Type it like 192.168.1.7.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/request.dart"
+      ]
+    },
+    {
+      "text": "That file is not an Orbit backup.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart",
+        "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "That is another Google account. Choose the one Orbit is signed in with.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/firebase_backend.dart"
+      ]
+    },
+    {
+      "text": "That is more text than the TV takes.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "That is more than the TV takes.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "That is not a file Orbit can install.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/setup_host.dart"
+      ]
+    },
+    {
+      "text": "That is not a language.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "That is not an address. It is four numbers with dots, like 192.168.1.20.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "That is not an app.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart",
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "That is not an Orbit backup.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "That is not the code on the TV.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "That is not the code on the TV. {tries} tries left.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "That is not the code on the TV. One try left.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "That language file is broken.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "That TV does not know this phone.",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts"
+      ]
+    },
+    {
+      "text": "That's everything",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "The {n} apps Orbit switched off come back on",
+      "one": "The app Orbit switched off comes back on",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "The account and everything Orbit's cloud kept for it are gone",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "The account was not deleted",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "The backup has no record of what Orbit changed.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "The backup is larger than Orbit allows.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "The cloud did not take that. Sign in again, then try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart"
+      ]
+    },
+    {
+      "text": "The cloud did not take that. Sign in again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart"
+      ]
+    },
+    {
+      "text": "The cloud did not take that. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart"
+      ]
+    },
+    {
+      "text": "The computer's RSA key fingerprint is shown here.",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "The computer's RSA key fingerprint is:",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "The connection to the TV closed before the setup finished. Nothing is broken.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "The connection to the TV closed before the switch finished. The TV still has a home screen.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The connection to the TV closed before Undo finished.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "The connection to the TV closed.",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "The connection to the TV is closed.",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts"
+      ]
+    },
+    {
+      "text": "The debugging connection failed: {e}",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart",
+        "app/lib/setup/setup_host.dart"
+      ]
+    },
+    {
+      "text": "The debugging connection is closed.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The files in Orbit's own hidden folder of your Drive. Without them a lost record cannot be brought back.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "The helper did not get what it needs",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The maker's channels",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "The name could not be handed over",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "The new home screen and the remote helper",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "The phone could not be paired",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "The phone could not sign the debugging token.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/setup_host.dart"
+      ]
+    },
+    {
+      "text": "The phone has no debugging key.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/setup_host.dart"
+      ]
+    },
+    {
+      "text": "The phone is not on Wi-Fi.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_link.dart"
+      ]
+    },
+    {
+      "text": "The phone ticks with every move of the TV's focus.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "The phone's language",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "The plan",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "The pretend TV",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "The record of everything Orbit changed",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "The remote helper did not turn on",
+      "kind": "message",
+      "where": [
+        "setup/lines.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "the remote's buttons",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "The remote's Settings button opens the Control Center",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "The setup stopped before it finished",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The stock home screen",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "The switch stopped",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The switch stopped before it finished",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The text box on the TV did not take the text.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "the TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The TV",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/remote.dart",
+        "app/lib/tv/tv_link.dart",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "The TV answered {status}.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV closed the debugging connection.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV could not do that right now.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV could not do that.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV did not answer its debugging connection in time.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV did not answer like a debugging connection.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV did not answer.",
+      "kind": "message",
+      "where": [
+        "bridge.ts",
+        "mock-setup.ts"
+      ]
+    },
+    {
+      "text": "The TV did not answer. Is it on?",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart"
+      ]
+    },
+    {
+      "text": "The TV did not change the volume.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV did not get a Yes in time. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV did not go to sleep.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV did not open the connection.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "The TV did not open the connection. Try again.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "The TV did not pass the check",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The TV did not send a pairing key Orbit can use.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_link.dart"
+      ]
+    },
+    {
+      "text": "The TV did not send a picture.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart",
+        "app/lib/tv/remote.dart"
+      ]
+    },
+    {
+      "text": "The TV did not send its screen. Is it on?",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "The TV did not take that.",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx",
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "The TV did not take the key.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV did not take the name. Try again, or finish without it.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "The TV did not understand that.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV does not answer.",
+      "kind": "message",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "The TV does not have that.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV does not take that request.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV goes back to the home screen it came with. Only the home screen changes: Orbit Home and Orbit Live TV stay on the TV, and you can come back to Orbit Home from here any time.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The TV goes to standby. Its remote turns it back on.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "The TV has no recent apps row.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV is asking whether this phone may set it up. It is Android's own question, and it is asked only once.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "The TV is busy. Try again.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV is closing the door.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV is not answering on its debugging connection.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV is not answering on its debugging connection. Is it on?",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/setup_host.dart"
+      ]
+    },
+    {
+      "text": "The TV is not online. Is it on?",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/remote.dart"
+      ]
+    },
+    {
+      "text": "The TV is on, and on the same Wi-Fi as this phone",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "The TV maker's own free channels app.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "The TV no longer knows this phone. Pair it again.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_link.dart"
+      ]
+    },
+    {
+      "text": "The TV offers only Wireless debugging, which Orbit cannot use yet.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV opens it, in the app it belongs to or in a browser.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "The TV refused.",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts"
+      ]
+    },
+    {
+      "text": "The TV said Cancel. Try again and choose Allow.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "The TV said no.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV said: {why}",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "The TV sent an answer Orbit cannot read.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/cloud_tv.dart",
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV sent more than Orbit takes.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart",
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV shows a small note at the top while you can see its screen.",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "The TV shows it now, and starts on it. Orbit Home stays on the TV for when you want it again.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The TV shows Orbit Home now, and starts on it.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The TV still has a home screen: the one it had before.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The TV wants that as JSON.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV wants TLS.",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts"
+      ]
+    },
+    {
+      "text": "The TV was told not to allow this phone.",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV would not take the file: {text}",
+      "kind": "message",
+      "where": [
+        "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV's address",
+      "kind": "spoken",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "The TV's model and Android version, and the date",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "The TV's model, Android {version}, and the date",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "The TV's music player",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "The TV's own gallery and video player do that. Nothing else needs them.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "The TV's own gallery and video player, for films and photos on a USB drive.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "The TV's own home screen comes back",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "The TV's own home screen did not come back",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The TV's own home screen is back",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts",
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The TV's own home screen is Home",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The TV's own home screen, accessibility and screensaver settings",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "The TV's photo gallery",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "The TV's remote is in your hand",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "The TV's screen",
+      "kind": "spoken",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "The TV's screen. Tap a spot to click it on the TV.",
+      "kind": "spoken",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "The TV's settings did not all go back",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The TV's settings go back as they were",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "The TV's USB debugging has to be on for this. The next screen shows how.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "The TV's video player",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "There is no pairing code on the TV now. Ask the TV for one.",
+      "kind": "message",
+      "where": [
+        "mock.ts",
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "There is no record of the TV's own home screen",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "There is no record of the TV's own home screen, so Orbit Home stays Home",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "There is no record of what Orbit changed on this TV.",
+      "kind": "text",
+      "where": [
+        "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "There is no record of what Orbit Setup changed on this TV",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-undo.sh"
+      ]
+    },
+    {
+      "text": "There is nothing here.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "There is nothing to back up yet",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "There were no TV backups in your Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "This backup has no record of what Orbit changed.",
+      "kind": "text",
+      "where": [
+        "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "This backup uses {size} of your Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "This backup was made by a newer Orbit. Update Orbit, then try again.",
+      "kind": "text",
+      "where": [
+        "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "This copy of Orbit Setup cannot switch the home screen",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "This Google account is turned off in Orbit's Firebase.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/firebase_backend.dart"
+      ]
+    },
+    {
+      "text": "This one",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "This phone could not show Google's sheet. Is a Google account added in its Settings?",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "This phone could not show Google's sign-in. Is a Google account added in its Settings?",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/google_identity.dart"
+      ]
+    },
+    {
+      "text": "This phone did not pair",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "This phone does not have the TV's list of apps yet, so Orbit reads it from the TV first. The TV's USB debugging has to be on; the next screen shows how.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "This phone does not have the TV's list of apps. Orbit reads it from the TV over the home Wi-Fi: join this phone to the TV's Wi-Fi, then open Back up again.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "This phone has no record of setting this TV up. Orbit uses the record the TV keeps of what changed.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "This phone is not paired with the TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart",
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "This phone's pairing with the TV on the home Wi-Fi (Settings › Forget this TV removes it)",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "this TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "This TV",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "This TV cannot be put to sleep from here.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "This TV has no pointer.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "This TV only offers Wireless debugging, which Orbit Setup does not support yet.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "This TV takes the arrows from the phone from Android 13 on.",
+      "kind": "message",
+      "where": [
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "This TV's Android is too old for Orbit OS",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Through Google, from anywhere",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Tick <b>Always allow</b>, so Orbit can put things back later without asking again",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Too many tries. Wait a moment and try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "Too many wrong codes. Ask the TV for a new one.",
+      "kind": "message",
+      "where": [
+        "mock.ts",
+        "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "Took Orbit's own apps away",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Touchpad: glide to point, tap to click",
+      "kind": "spoken",
+      "where": [
+        "globe/Globe.tsx"
+      ]
+    },
+    {
+      "text": "Trackball: roll to move, tap for OK",
+      "kind": "spoken",
+      "where": [
+        "globe/Globe.tsx"
+      ]
+    },
+    {
+      "text": "Translations are new. Something wrong in yours? Tell us on the Orbit OS site's issue page.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Try again",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Help.tsx",
+        "ui/setup/Account.tsx",
+        "ui/setup/Backup.tsx",
+        "ui/setup/Install.tsx",
+        "ui/setup/Setup.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Try Orbit without a TV",
+      "kind": "spoken",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Turn on <b>USB debugging</b>",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Turn on developer mode",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Turn on USB debugging",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Turn the TV on and check it uses the same Wi-Fi. A TV on a cable can still be found if it is on the same router.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Turn the TV up and down while Orbit is open.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Turned on the remote helper",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Turning on the remote helper",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "TV asleep",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "TV controls",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "TV going for repair? Use Undo everything first.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "TV not linked",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "TV online",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Type it into Orbit on your phone",
+      "kind": "text",
+      "where": [
+        "demo/MockTv.tsx"
+      ]
+    },
+    {
+      "text": "Type on the TV",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Type the TV's address",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Type the TV's address instead",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Typed address",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Undo",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Undo everything",
+      "kind": "button",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Undo everything on this TV",
+      "kind": "button",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Undo it all later from Orbit › Settings › This TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Undo needs the home Wi-Fi",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Undo Orbit OS",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Undo Orbit OS on {tv}",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Undo Orbit OS on this TV",
+      "kind": "heading",
+      "where": [
+        "ui/Sheets.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Undo stopped",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Undo stopped before it finished",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Unlink the TV",
+      "kind": "spoken",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Unlink TV",
+      "kind": "button",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Unlinking…",
+      "kind": "button",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Unmute",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Up",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Updated {ago}",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Usage reports, surveys and promoted rows. Nothing you watch needs them.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "USB debugging",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "USB debugging is on",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "USB playback",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Use from anywhere",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Use it",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Use Orbit Home",
+      "kind": "text",
+      "where": [
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Use Orbit Home again",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx",
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Use the TV's own home screen",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx",
+        "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Voice search",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Voice search keeps Google's assistant on. It answers the remote's microphone button.",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Volume",
+      "kind": "spoken",
+      "where": [
+        "demo/MockTv.tsx",
+        "mock-screen.ts",
+        "ui/Help.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Volume down",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Volume up",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "Waiting for Allow on the TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Waiting for developer mode",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Waiting for the TV…",
+      "kind": "text",
+      "where": [
+        "ui/Help.tsx"
+      ]
+    },
+    {
+      "text": "Waiting for USB debugging",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "What is deleted",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "What is playing",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
+      "text": "What it keeps",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "What Orbit keeps, where, and how to delete it.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "What should the TV call you?",
+      "kind": "field",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "What stays",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "What stopped",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx",
+        "ui/setup/Switch.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Where the backup was made",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Which TV is {tv}?",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Wi-Fi: Home network, connected",
+      "kind": "text",
+      "where": [
+        "mock.ts"
+      ]
+    },
+    {
+      "text": "Wireless debugging",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Woken at every start",
+      "kind": "heading",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi analytics",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi device reports",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi legal pop-ups",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi manual and help",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi media explorer",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi promoted tab",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi scene modes",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi surveys",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi tool house",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi TV manager",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi TV+",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi usage statistics",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Xiaomi web content",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Yes, keep casting",
+      "kind": "button",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Yes, keep them",
+      "kind": "button",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Yes, keep voice",
+      "kind": "button",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Yes, switch them off",
+      "kind": "button",
+      "where": [
+        "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "You are now {n} steps away from being a developer.",
+      "one": "You are now {n} step away from being a developer.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "You are now a developer!",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "You choose on the next screen",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "You said you don't cast from a phone",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "You said you don't play from a USB drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "You said you don't search by voice",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "You said you don't watch them",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Your account",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Your answer switched these off",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Your answers",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Your answers, before anything changes on the TV:",
+      "kind": "text",
+      "where": [
+        "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Your Google account, and everything else in your Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Your Google Drive is full",
+      "kind": "text",
+      "where": [
+        "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "Your Google Drive is full, so the backup was not saved. Free up some space in Google Drive (or add storage), then try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/cloud/drive.dart"
+      ]
+    },
+    {
+      "text": "Your name",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Your name and account",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Your name did not reach the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Your name stays on your TV",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Your Orbit account is deleted",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Your Orbit account: the sign-in Orbit keeps for this Google account",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "your TV",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "Your TV",
+      "kind": "heading",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Remote.tsx",
+        "ui/setup/Choices.tsx",
+        "ui/setup/Install.tsx",
+        "ui/setup/Setup.tsx",
+        "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Your TV backups in Google Drive are deleted",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Your TV backups in Google Drive are deleted ({n})",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Your TV backups stay in your Google Drive",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Your TV greets you by name, and your account lets this phone reach the TV from anywhere.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Your TV is ready",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Your TV still has Orbit OS and works on the home Wi-Fi as before",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Your TV: Orbit OS stays on it and keeps working on the home Wi-Fi. It is no longer reachable from anywhere.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "YouTube Music",
+      "kind": "text",
+      "where": [
+        "setup/catalog.json"
+      ]
+    }
+  ]
+}
