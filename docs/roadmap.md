@@ -54,6 +54,16 @@ from the TV and picks the matching entry, or the closest one with only the safe 
 - [ ] Build signed APKs on GitHub for every release, with checksums.
 - [ ] A short demo video and screenshots of every screen.
 
+## Asked by people who use Orbit
+
+- [ ] Try Orbit on the TV for 15 minutes before setting it up: nothing switched off, the TV's own home stays the
+  default, and Orbit closes by itself when the time is up.
+- [ ] Brazilian Portuguese for the phone app and the TV ([#3](https://github.com/shivamj56/orbit-os/issues/3)).
+- [ ] More than one home-screen layout, and your own wallpaper ([#3](https://github.com/shivamj56/orbit-os/issues/3)).
+- [x] The phone finds the TV again when the router gives it a new address
+  ([#3](https://github.com/shivamj56/orbit-os/issues/3)).
+- [x] A step-by-step guide to the phone remote, in English and Portuguese ([docs/guides](guides/phone-remote.md)).
+
 ## 5. Launch
 
 GitHub Trending has no application form: it lists the repositories that gain the most stars in a day or a week.

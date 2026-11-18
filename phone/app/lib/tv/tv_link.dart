@@ -25,6 +25,7 @@ class LinkTimings {
     this.afterAction = const Duration(milliseconds: 200),
     this.quietSearch = const Duration(seconds: 60),
     this.adoptWindow = const Duration(seconds: 30),
+    this.relocate = const Duration(seconds: 15),
   });
 
   /// GET /api/state while connected and on screen.
@@ -47,6 +48,10 @@ class LinkTimings {
 
   /// How long `setupAdopt` keeps checking GET /api/state while Orbit Home starts (phone/SPEC.md, `setupAdopt`).
   final Duration adoptWindow;
+
+  /// While a paired TV is offline and on screen, a discovery run this often looks for it at another address: a router
+  /// can give the TV a new address (DHCP, often after a restart), and the saved one then never answers again.
+  final Duration relocate;
 }
 
 /// The phone's link to one TV: finding it, pairing, the token, the state machine of phone/SPEC.md's status
@@ -102,6 +107,7 @@ class TvLink {
 
   Timer? _pollTimer;
   Timer? _retryTimer;
+  Timer? _relocateTimer;
   Timer? _searchTimer;
   Timer? _codeTimer;
   bool _polling = false;
@@ -543,6 +549,41 @@ class TvLink {
     }
   }
 
+  /// Offline with a paired TV: the router may have given the TV another address. One discovery run, then each TV seen
+  /// at another address is asked for its state with the token. Only the TV that gave the token accepts it, so the one
+  /// that answers ok is ours: the link moves there and keeps the name, the token and the pointer port.
+  Future<void> _relocate() async {
+    final tv = _tv;
+    final token = _token;
+    if (_disposed || tv == null || token == null || _state != LinkState.offline) return;
+    final epoch = _epoch;
+    bool stale() => _disposed || epoch != _epoch || token != _token || _state != LinkState.offline;
+    final result = await _discover(scan: !_quietSearch);
+    if (stale()) return;
+    for (final found in result.found) {
+      if (found.address == tv.address && found.port == tv.port) continue;
+      Object? answer;
+      try {
+        answer = await _client.getJson(found.address, found.port, '/api/state', token: token);
+      } on TvHttpException {
+        continue; // another TV (401: not our token) or something that is not a TV
+      } on TvUnreachableException {
+        continue;
+      }
+      if (stale()) return;
+      if (answer is! Map || answer['ok'] != true) continue;
+      final moved = SavedTv(name: tv.name, address: found.address, port: found.port, udp: tv.udp);
+      debugPrint('orbit: ${tv.name} moved from ${tv.address}:${tv.port} to ${moved.address}:${moved.port}');
+      _epoch++;
+      _stopLinkTimers();
+      _tv = moved;
+      _save(() => _store.saveTv(moved));
+      _applyTvState(answer);
+      _set(LinkState.connected);
+      return;
+    }
+  }
+
   Future<DiscoveryResult> _discover({bool scan = true}) {
     final running = _discovering;
     if (running != null) return running;
@@ -731,6 +772,15 @@ class TvLink {
       _retryTimer?.cancel();
       _retryTimer = null;
     }
+    if (_foreground && _state == LinkState.offline && tv != null && _token != null) {
+      _relocateTimer ??= Timer(timings.relocate, () {
+        _relocateTimer = null;
+        if (_state == LinkState.offline && _foreground) unawaited(_relocate());
+      });
+    } else {
+      _relocateTimer?.cancel();
+      _relocateTimer = null;
+    }
     if (_foreground && _helloSeen && tv == null && _state == LinkState.searching && _discovering == null) {
       final delay = _quietSearch
           ? timings.quietSearch
@@ -750,6 +800,8 @@ class TvLink {
     _pollTimer = null;
     _retryTimer?.cancel();
     _retryTimer = null;
+    _relocateTimer?.cancel();
+    _relocateTimer = null;
     _pollAgain = false;
   }
 

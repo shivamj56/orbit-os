@@ -91,6 +91,9 @@ The website has plain guides with the ADB commands and the safe list Orbit uses:
 [turn on USB debugging](https://orbit-os-tv.vercel.app/guides/turn-on-usb-debugging-google-tv.html) ·
 [हिंदी में](https://orbit-os-tv.vercel.app/guides/android-tv-ads-band-kaise-kare.html)
 
+New to the phone remote? [The Orbit phone remote, step by step](docs/guides/phone-remote.md) ·
+[em português](docs/guides/phone-remote.pt-BR.md)
+
 ## How it works
 
 Orbit OS is two apps on the TV, one on the phone, and the script that sets a TV up. Nothing in the TV's firmware

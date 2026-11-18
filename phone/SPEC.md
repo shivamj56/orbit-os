@@ -75,6 +75,9 @@ Flutter sends a fresh status event whenever any of it changes.
 
 HTTP errors come back as `ok:false` with the TV's `error` text and `status`. A 401 means the token is no longer
 known: drop it and go to `needsPairing`. A network failure → `offline` (retry every 3 s while the app is in front).
+While offline with a token, a discovery run every 15 s also looks for the TV at another address (a router can give
+the TV a new one after a restart): each TV found elsewhere is asked GET /api/state with the token, and the one that
+accepts it (only the TV that gave the token does) becomes the saved TV's new address, keeping its name and token.
 
 ## The TV's door (HTTP, port 8090, home Wi-Fi only)
 

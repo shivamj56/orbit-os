@@ -20,6 +20,7 @@ const LinkTimings fastTimings = LinkTimings(
   codeShown: Duration(seconds: 2),
   searchAgain: [Duration(milliseconds: 150)],
   afterAction: Duration(milliseconds: 10),
+  relocate: Duration(milliseconds: 200),
 );
 
 /// An mDNS that "sees" [tvs] at once.

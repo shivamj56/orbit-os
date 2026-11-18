@@ -157,6 +157,53 @@ void main() {
     expect(link.status.error, isNull);
   });
 
+  test('offline because the router gave the TV a new address: found there, token kept (issue #3)', () async {
+    final nsd = FakeNsd();
+    open(nsd: nsd);
+    await pairWithMock();
+    final token = store.token;
+    expect(token, isNotNull);
+    // The same TV now answers at another address (here: another port); the saved one never answers again.
+    final moved = await MockTv.start();
+    moved.tokens.addAll(tv.tokens);
+    tv.unreachable = true;
+    nsd.tvs = [FoundTv(name: 'Family room', address: '127.0.0.1', port: moved.port, named: true)];
+    try {
+      await eventually(
+        () => link.status.state == LinkState.connected && link.status.tv?.port == moved.port,
+        what: 'connected at the new address',
+      );
+      await link.saved;
+      expect(store.tv?.port, moved.port);
+      expect(store.token, token);
+      expect(link.status.tv?.name, 'Family room');
+      expect(link.status.error, isNull);
+    } finally {
+      await moved.close();
+    }
+  });
+
+  test('offline: a TV that does not know the token is never taken over', () async {
+    final nsd = FakeNsd();
+    open(nsd: nsd);
+    await pairWithMock();
+    final stranger = await MockTv.start(); // another TV in the house, never paired with this phone
+    stranger.name = 'Bedroom';
+    tv.unreachable = true;
+    nsd.tvs = [FoundTv(name: 'Bedroom', address: '127.0.0.1', port: stranger.port, named: true)];
+    try {
+      await eventually(() => link.status.state == LinkState.offline, what: 'offline');
+      await eventually(() => nsd.runs >= 2, what: 'looked for the TV twice');
+      expect(link.status.state, LinkState.offline);
+      expect(link.status.tv?.port, tv.port);
+      expect(store.tv?.port, tv.port);
+      expect(store.token, isNotNull);
+      expect(stranger.tokens, isEmpty);
+    } finally {
+      await stranger.close();
+    }
+  });
+
   test('a saved TV and token connect at start, before any hello', () async {
     open();
     await pairWithMock();
