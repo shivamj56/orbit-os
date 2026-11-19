@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK откроет %1$s</string>
+    <string name="guide_watch_now">OK, чтобы смотреть сейчас</string>
+    <string name="guide_connecting">Подключение…</string>
+    <string name="guide_slow">Всё ещё подключаемся, канал сейчас работает медленно</string>
+    <string name="guide_off_air_now">Сейчас не в эфире.  ▲ ▼ другой канал</string>
+    <string name="guide_offline">ТВ не в сети. Проверьте Wi-Fi</string>
+    <string name="guide_paused">Пауза.  OK или ▶ вернёт прямой эфир</string>
+    <string name="guide_back_again">Нажмите НАЗАД ещё раз, чтобы перейти на главный экран</string>
+    <string name="guide_keys">▲ ▼  Каналы      OK  Все каналы</string>
+    <string name="guide_free_channels">Бесплатные каналы на хинди</string>
+    <string name="channel_opens_in">Откроется в %1$s  ›</string>
+    <string name="channel_off_air">Сейчас не в эфире</string>
+    <string name="channel_maybe_off_air">Возможно, не в эфире</string>
+    <string name="no_channel">Канала %1$s нет</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK opent %1$s</string>
+    <string name="guide_watch_now">OK om nu te kijken</string>
+    <string name="guide_connecting">Verbinden…</string>
+    <string name="guide_slow">Nog aan het verbinden, de zender is nu traag</string>
+    <string name="guide_off_air_now">Nu niet in de lucht.  ▲ ▼ andere zender</string>
+    <string name="guide_offline">De tv is niet online. Controleer het wifi-netwerk</string>
+    <string name="guide_paused">Gepauzeerd.  OK of ▶ gaat terug naar live</string>
+    <string name="guide_back_again">Druk nogmaals op TERUG om naar Home te gaan</string>
+    <string name="guide_keys">▲ ▼  Zenders      OK  Alle zenders</string>
+    <string name="guide_free_channels">Gratis Hindi-zenders</string>
+    <string name="channel_opens_in">Opent in %1$s  ›</string>
+    <string name="channel_off_air">Nu niet in de lucht</string>
+    <string name="channel_maybe_off_air">Misschien niet in de lucht</string>
+    <string name="no_channel">Er is geen zender %1$s</string>
+</resources>

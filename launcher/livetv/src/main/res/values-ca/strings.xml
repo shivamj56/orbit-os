@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK obre %1$s</string>
+    <string name="guide_watch_now">OK per veure-ho ara</string>
+    <string name="guide_connecting">Connectant…</string>
+    <string name="guide_slow">Encara connectant; el canal va lent ara mateix</string>
+    <string name="guide_off_air_now">Sense emissió ara.  ▲ ▼ un altre canal</string>
+    <string name="guide_offline">La TV no té connexió. Revisa la Wi-Fi</string>
+    <string name="guide_paused">En pausa.  OK o ▶ torna al directe</string>
+    <string name="guide_back_again">Prem ENRERE un altre cop per anar a Inici</string>
+    <string name="guide_keys">▲ ▼  Canals      OK  Tots els canals</string>
+    <string name="guide_free_channels">Canals gratuïts en hindi</string>
+    <string name="channel_opens_in">S’obre a %1$s  ›</string>
+    <string name="channel_off_air">Sense emissió ara</string>
+    <string name="channel_maybe_off_air">Pot ser que no emeti</string>
+    <string name="no_channel">No existeix el canal %1$s</string>
+</resources>

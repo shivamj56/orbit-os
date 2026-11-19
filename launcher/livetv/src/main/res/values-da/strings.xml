@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK åbner %1$s</string>
+    <string name="guide_watch_now">OK for at se nu</string>
+    <string name="guide_connecting">Opretter forbindelse…</string>
+    <string name="guide_slow">Opretter stadig forbindelse, kanalen er langsom lige nu</string>
+    <string name="guide_off_air_now">Sender ikke lige nu.  ▲ ▼ en anden kanal</string>
+    <string name="guide_offline">Tv\'et er ikke online. Tjek Wi-Fi</string>
+    <string name="guide_paused">På pause.  OK eller ▶ går tilbage til live</string>
+    <string name="guide_back_again">Tryk på TILBAGE igen for at gå til Hjem</string>
+    <string name="guide_keys">▲ ▼  Kanaler      OK  Alle kanaler</string>
+    <string name="guide_free_channels">Gratis hindikanaler</string>
+    <string name="channel_opens_in">Åbner i %1$s  ›</string>
+    <string name="channel_off_air">Sender ikke lige nu</string>
+    <string name="channel_maybe_off_air">Sender måske ikke</string>
+    <string name="no_channel">Der er ingen kanal %1$s</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">Az OK megnyitja: %1$s</string>
+    <string name="guide_watch_now">OK a megtekintéshez most</string>
+    <string name="guide_connecting">Csatlakozás…</string>
+    <string name="guide_slow">Még csatlakozik, a csatorna most lassú</string>
+    <string name="guide_off_air_now">Most nem sugároz.  ▲ ▼ másik csatorna</string>
+    <string name="guide_offline">A tévé nincs online. Ellenőrizd a Wi-Fi-t</string>
+    <string name="guide_paused">Szüneteltetve.  Az OK vagy a ▶ visszatér az élőhöz</string>
+    <string name="guide_back_again">Nyomd meg újra a VISSZA gombot a kezdőképernyőhöz</string>
+    <string name="guide_keys">▲ ▼  Csatornák      OK  Összes csatorna</string>
+    <string name="guide_free_channels">Ingyenes hindi csatornák</string>
+    <string name="channel_opens_in">Megnyílik itt: %1$s  ›</string>
+    <string name="channel_off_air">Most nem sugároz</string>
+    <string name="channel_maybe_off_air">Lehet, hogy nem sugároz</string>
+    <string name="no_channel">Nincs %1$s csatorna</string>
+</resources>

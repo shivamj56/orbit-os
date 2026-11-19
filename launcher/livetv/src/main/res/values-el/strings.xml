@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">Το OK ανοίγει: %1$s</string>
+    <string name="guide_watch_now">OK για παρακολούθηση τώρα</string>
+    <string name="guide_connecting">Σύνδεση…</string>
+    <string name="guide_slow">Εξακολουθεί η σύνδεση, το κανάλι είναι αργό αυτήν τη στιγμή</string>
+    <string name="guide_off_air_now">Δεν μεταδίδεται αυτήν τη στιγμή.  ▲ ▼ άλλο κανάλι</string>
+    <string name="guide_offline">Η τηλεόραση δεν είναι online. Ελέγξτε το Wi-Fi</string>
+    <string name="guide_paused">Σε παύση.  Το OK ή το ▶ επιστρέφει στη ζωντανή μετάδοση</string>
+    <string name="guide_back_again">Πατήστε ξανά ΠΙΣΩ για να πάτε στην αρχική</string>
+    <string name="guide_keys">▲ ▼  Κανάλια      OK  Όλα τα κανάλια</string>
+    <string name="guide_free_channels">Δωρεάν κανάλια Χίντι</string>
+    <string name="channel_opens_in">Ανοίγει στο: %1$s  ›</string>
+    <string name="channel_off_air">Δεν μεταδίδεται αυτήν τη στιγμή</string>
+    <string name="channel_maybe_off_air">Ίσως δεν μεταδίδεται</string>
+    <string name="no_channel">Δεν υπάρχει κανάλι %1$s</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK avab: %1$s</string>
+    <string name="guide_watch_now">OK vaatamiseks praegu</string>
+    <string name="guide_connecting">Ühendamine…</string>
+    <string name="guide_slow">Ühendab endiselt, kanal on praegu aeglane</string>
+    <string name="guide_off_air_now">Praegu eetris ei ole.  ▲ ▼ teine kanal</string>
+    <string name="guide_offline">Teler ei ole võrgus. Kontrolli Wi-Fi-d</string>
+    <string name="guide_paused">Peatatud.  OK või ▶ läheb tagasi otseülekandesse</string>
+    <string name="guide_back_again">Avalehele minekuks vajuta uuesti TAGASI</string>
+    <string name="guide_keys">▲ ▼  Kanalid      OK  Kõik kanalid</string>
+    <string name="guide_free_channels">Tasuta hindi kanalid</string>
+    <string name="channel_opens_in">Avaneb: %1$s  ›</string>
+    <string name="channel_off_air">Praegu eetris ei ole</string>
+    <string name="channel_maybe_off_air">Võib-olla pole eetris</string>
+    <string name="no_channel">Kanalit %1$s ei ole</string>
+</resources>

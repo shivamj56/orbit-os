@@ -86,13 +86,16 @@ export function Sheet({ open, onClose, title, children, tall }: SheetProps) {
   const drag = useDragControls();
   const close = useRef(onClose);
   close.current = onClose;
+  // The title can change while the sheet is open (Settings › Language, or a new language): that is not a new sheet.
+  const named = useRef(title);
+  named.current = title;
   useEffect(() => {
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === "Escape" && close.current();
     window.addEventListener("keydown", esc);
     // The phone's Back closes the sheet, not the app: the sheet is one step of history while it is open.
     let popped = false;
-    history.pushState({ orbitSheet: title }, "");
+    history.pushState({ orbitSheet: named.current }, "");
     const pop = () => {
       popped = true;
       close.current();
@@ -104,7 +107,7 @@ export function Sheet({ open, onClose, title, children, tall }: SheetProps) {
       // Closed from the page: its step comes off the history again.
       if (!popped) history.back();
     };
-  }, [open, title]);
+  }, [open]);
   return (
     <AnimatePresence>
       {open && (

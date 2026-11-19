@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK відкриє %1$s</string>
+    <string name="guide_watch_now">OK, щоб дивитися зараз</string>
+    <string name="guide_connecting">Підключення…</string>
+    <string name="guide_slow">Ще підключаємося, канал зараз працює повільно</string>
+    <string name="guide_off_air_now">Зараз не в ефірі.  ▲ ▼ інший канал</string>
+    <string name="guide_offline">ТВ не в мережі. Перевірте Wi-Fi</string>
+    <string name="guide_paused">Пауза.  OK або ▶ поверне прямий ефір</string>
+    <string name="guide_back_again">Натисніть НАЗАД ще раз, щоб перейти на головний екран</string>
+    <string name="guide_keys">▲ ▼  Канали      OK  Усі канали</string>
+    <string name="guide_free_channels">Безкоштовні канали гінді</string>
+    <string name="channel_opens_in">Відкриється в %1$s  ›</string>
+    <string name="channel_off_air">Зараз не в ефірі</string>
+    <string name="channel_maybe_off_air">Можливо, не в ефірі</string>
+    <string name="no_channel">Каналу %1$s немає</string>
+</resources>

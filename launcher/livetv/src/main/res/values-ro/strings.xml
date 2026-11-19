@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK deschide %1$s</string>
+    <string name="guide_watch_now">OK ca să te uiți acum</string>
+    <string name="guide_connecting">Se conectează…</string>
+    <string name="guide_slow">Încă se conectează, canalul e lent acum</string>
+    <string name="guide_off_air_now">Nu se difuzează acum.  ▲ ▼ alt canal</string>
+    <string name="guide_offline">Televizorul nu este online. Verifică Wi-Fi</string>
+    <string name="guide_paused">Pe pauză.  OK sau ▶ revine la live</string>
+    <string name="guide_back_again">Apasă din nou ÎNAPOI ca să mergi la Pornire</string>
+    <string name="guide_keys">▲ ▼  Canale      OK  Toate canalele</string>
+    <string name="guide_free_channels">Canale gratuite în hindi</string>
+    <string name="channel_opens_in">Se deschide în %1$s  ›</string>
+    <string name="channel_off_air">Nu se difuzează acum</string>
+    <string name="channel_maybe_off_air">Poate nu se difuzează</string>
+    <string name="no_channel">Nu există canalul %1$s</string>
+</resources>

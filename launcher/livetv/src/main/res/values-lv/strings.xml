@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK atver: %1$s</string>
+    <string name="guide_watch_now">OK, lai skatītos tagad</string>
+    <string name="guide_connecting">Savieno…</string>
+    <string name="guide_slow">Joprojām savieno, kanāls pašlaik ir lēns</string>
+    <string name="guide_off_air_now">Pašlaik nepārraida.  ▲ ▼ cits kanāls</string>
+    <string name="guide_offline">Televizors nav tiešsaistē. Pārbaudiet Wi-Fi</string>
+    <string name="guide_paused">Apturēts.  OK vai ▶ atgriežas tiešraidē</string>
+    <string name="guide_back_again">Vēlreiz nospiediet ATPAKAĻ, lai pārietu uz sākuma ekrānu</string>
+    <string name="guide_keys">▲ ▼  Kanāli      OK  Visi kanāli</string>
+    <string name="guide_free_channels">Bezmaksas hindi kanāli</string>
+    <string name="channel_opens_in">Atveras: %1$s  ›</string>
+    <string name="channel_off_air">Pašlaik nepārraida</string>
+    <string name="channel_maybe_off_air">Iespējams, nepārraida</string>
+    <string name="no_channel">Kanāla %1$s nav</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK abre %1$s</string>
+    <string name="guide_watch_now">OK para ver agora</string>
+    <string name="guide_connecting">Conectando…</string>
+    <string name="guide_slow">Aínda conectando; a canle vai lenta agora mesmo</string>
+    <string name="guide_off_air_now">Sen emisión agora.  ▲ ▼ outra canle</string>
+    <string name="guide_offline">A TV non ten conexión. Comproba a Wi-Fi</string>
+    <string name="guide_paused">En pausa.  OK ou ▶ volve ao directo</string>
+    <string name="guide_back_again">Preme ATRÁS outra vez para ir a Inicio</string>
+    <string name="guide_keys">▲ ▼  Canles      OK  Todas as canles</string>
+    <string name="guide_free_channels">Canles gratuítas en hindi</string>
+    <string name="channel_opens_in">Ábrese en %1$s  ›</string>
+    <string name="channel_off_air">Sen emisión agora</string>
+    <string name="channel_maybe_off_air">Pode que non estea a emitir</string>
+    <string name="no_channel">Non existe a canle %1$s</string>
+</resources>

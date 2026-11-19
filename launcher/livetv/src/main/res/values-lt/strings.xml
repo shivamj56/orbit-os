@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK atidaro: %1$s</string>
+    <string name="guide_watch_now">OK, kad žiūrėtumėte dabar</string>
+    <string name="guide_connecting">Jungiamasi…</string>
+    <string name="guide_slow">Vis dar jungiamasi, kanalas dabar lėtas</string>
+    <string name="guide_off_air_now">Šiuo metu netransliuojama.  ▲ ▼ kitas kanalas</string>
+    <string name="guide_offline">Televizorius neprisijungęs. Patikrinkite „Wi-Fi“</string>
+    <string name="guide_paused">Pristabdyta.  OK arba ▶ grįžta į tiesioginę transliaciją</string>
+    <string name="guide_back_again">Dar kartą paspauskite ATGAL, kad grįžtumėte į pagrindinį ekraną</string>
+    <string name="guide_keys">▲ ▼  Kanalai      OK  Visi kanalai</string>
+    <string name="guide_free_channels">Nemokami hindi kanalai</string>
+    <string name="channel_opens_in">Atsidaro: %1$s  ›</string>
+    <string name="channel_off_air">Šiuo metu netransliuojama</string>
+    <string name="channel_maybe_off_air">Gali būti, kad netransliuojama</string>
+    <string name="no_channel">Kanalo %1$s nėra</string>
+</resources>

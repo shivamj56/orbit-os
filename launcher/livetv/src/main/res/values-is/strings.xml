@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK opnar %1$s</string>
+    <string name="guide_watch_now">OK til að horfa núna</string>
+    <string name="guide_connecting">Tengist…</string>
+    <string name="guide_slow">Er enn að tengjast, rásin er hæg núna</string>
+    <string name="guide_off_air_now">Ekki í útsendingu núna.  ▲ ▼ önnur rás</string>
+    <string name="guide_offline">Sjónvarpið er ekki á netinu. Athugaðu Wi-Fi</string>
+    <string name="guide_paused">Í bið.  OK eða ▶ fer aftur í beina útsendingu</string>
+    <string name="guide_back_again">Ýttu aftur á TIL BAKA til að fara Heim</string>
+    <string name="guide_keys">▲ ▼  Rásir      OK  Allar rásir</string>
+    <string name="guide_free_channels">Ókeypis hindí-rásir</string>
+    <string name="channel_opens_in">Opnast í %1$s  ›</string>
+    <string name="channel_off_air">Ekki í útsendingu núna</string>
+    <string name="channel_maybe_off_air">Gæti verið úr útsendingu</string>
+    <string name="no_channel">Engin rás er til með númerið %1$s</string>
+</resources>

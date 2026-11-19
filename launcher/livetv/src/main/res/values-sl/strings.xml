@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK odpre: %1$s</string>
+    <string name="guide_watch_now">OK za ogled zdaj</string>
+    <string name="guide_connecting">Povezovanje …</string>
+    <string name="guide_slow">Še vedno se povezuje, kanal je zdaj počasen</string>
+    <string name="guide_off_air_now">Zdaj ne oddaja.  ▲ ▼ drug kanal</string>
+    <string name="guide_offline">Televizor ni na spletu. Preverite Wi-Fi</string>
+    <string name="guide_paused">Zaustavljeno.  OK ali ▶ se vrne v živo</string>
+    <string name="guide_back_again">Znova pritisnite NAZAJ za vrnitev domov</string>
+    <string name="guide_keys">▲ ▼  Kanali      OK  Vsi kanali</string>
+    <string name="guide_free_channels">Brezplačni hindijski kanali</string>
+    <string name="channel_opens_in">Odpre se v: %1$s  ›</string>
+    <string name="channel_off_air">Zdaj ne oddaja</string>
+    <string name="channel_maybe_off_air">Morda ne oddaja</string>
+    <string name="no_channel">Kanala %1$s ni</string>
+</resources>

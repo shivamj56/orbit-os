@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK адкрые %1$s</string>
+    <string name="guide_watch_now">OK, каб глядзець зараз</string>
+    <string name="guide_connecting">Падключэнне…</string>
+    <string name="guide_slow">Яшчэ падключаемся, канал зараз працуе павольна</string>
+    <string name="guide_off_air_now">Зараз не ў эфіры.  ▲ ▼ іншы канал</string>
+    <string name="guide_offline">Тэлевізар не ў сетцы. Праверце Wi-Fi</string>
+    <string name="guide_paused">Паўза.  OK або ▶ вернецца ў прамы эфір</string>
+    <string name="guide_back_again">Націсніце НАЗАД яшчэ раз, каб перайсці на галоўны экран</string>
+    <string name="guide_keys">▲ ▼  Каналы      OK  Усе каналы</string>
+    <string name="guide_free_channels">Бясплатныя каналы на хіндзі</string>
+    <string name="channel_opens_in">Адкрыецца ў %1$s  ›</string>
+    <string name="channel_off_air">Зараз не ў эфіры</string>
+    <string name="channel_maybe_off_air">Магчыма, не ў эфіры</string>
+    <string name="no_channel">Канала %1$s няма</string>
+</resources>

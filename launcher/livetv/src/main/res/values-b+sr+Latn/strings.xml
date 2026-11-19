@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK otvara %1$s</string>
+    <string name="guide_watch_now">OK da gledate odmah</string>
+    <string name="guide_connecting">Povezivanje…</string>
+    <string name="guide_slow">I dalje se povezuje, kanal je trenutno spor</string>
+    <string name="guide_off_air_now">Trenutno nije u etru.  ▲ ▼ drugi kanal</string>
+    <string name="guide_offline">TV nije na mreži. Proverite Wi-Fi</string>
+    <string name="guide_paused">Pauzirano.  OK ili ▶ vraća uživo</string>
+    <string name="guide_back_again">Pritisnite NAZAD još jednom da biste otišli na početni ekran</string>
+    <string name="guide_keys">▲ ▼  Kanali      OK  Svi kanali</string>
+    <string name="guide_free_channels">Besplatni kanali na hindi jeziku</string>
+    <string name="channel_opens_in">Otvara se u %1$s  ›</string>
+    <string name="channel_off_air">Trenutno nije u etru</string>
+    <string name="channel_maybe_off_air">Možda nije u etru</string>
+    <string name="no_channel">Ne postoji kanal %1$s</string>
+</resources>

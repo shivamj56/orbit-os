@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK maak %1$s oop</string>
+    <string name="guide_watch_now">OK om nou te kyk</string>
+    <string name="guide_connecting">Koppel tans…</string>
+    <string name="guide_slow">Koppel nog, die kanaal is nou stadig</string>
+    <string name="guide_off_air_now">Nou nie op die lug nie.  ▲ ▼ ’n ander kanaal</string>
+    <string name="guide_offline">Die TV is nie aanlyn nie. Kontroleer die Wi-Fi</string>
+    <string name="guide_paused">Gepouseer.  OK of ▶ gaan terug na regstreeks</string>
+    <string name="guide_back_again">Druk weer TERUG om Tuis toe te gaan</string>
+    <string name="guide_keys">▲ ▼  Kanale      OK  Alle kanale</string>
+    <string name="guide_free_channels">Gratis Hindi-kanale</string>
+    <string name="channel_opens_in">Maak oop in %1$s  ›</string>
+    <string name="channel_off_air">Nou nie op die lug nie</string>
+    <string name="channel_maybe_off_air">Dalk nie op die lug nie</string>
+    <string name="no_channel">Daar is geen kanaal %1$s nie</string>
+</resources>

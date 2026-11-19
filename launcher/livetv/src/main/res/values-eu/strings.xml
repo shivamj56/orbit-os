@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK botoiak %1$s irekitzen du</string>
+    <string name="guide_watch_now">OK orain ikusteko</string>
+    <string name="guide_connecting">Konektatzen…</string>
+    <string name="guide_slow">Oraindik konektatzen, kanala motel dago une honetan</string>
+    <string name="guide_off_air_now">Ez dago emisiorik orain.  ▲ ▼ beste kanal bat</string>
+    <string name="guide_offline">Telebista ez dago lineean. Egiaztatu Wi-Fi sarea</string>
+    <string name="guide_paused">Pausatuta.  OK edo ▶ zuzenekora itzultzen da</string>
+    <string name="guide_back_again">Sakatu ATZERA berriro Hasierara joateko</string>
+    <string name="guide_keys">▲ ▼  Kanalak      OK  Kanal guztiak</string>
+    <string name="guide_free_channels">Hindi kanal doakoak</string>
+    <string name="channel_opens_in">%1$s aplikazioan irekitzen da  ›</string>
+    <string name="channel_off_air">Ez dago emisiorik orain</string>
+    <string name="channel_maybe_off_air">Baliteke emisiorik ez egotea</string>
+    <string name="no_channel">Ez dago %1$s kanalik</string>
+</resources>

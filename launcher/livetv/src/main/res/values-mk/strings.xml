@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK отвора %1$s</string>
+    <string name="guide_watch_now">OK за да гледаш сега</string>
+    <string name="guide_connecting">Се поврзува…</string>
+    <string name="guide_slow">Сè уште се поврзува, каналот е бавен во моментов</string>
+    <string name="guide_off_air_now">Моментално не е во живо.  ▲ ▼ друг канал</string>
+    <string name="guide_offline">Телевизорот не е на мрежа. Провери го Wi-Fi</string>
+    <string name="guide_paused">На пауза.  OK или ▶ те враќа во живо</string>
+    <string name="guide_back_again">Притисни НАЗАД уште еднаш за да одиш на почетната</string>
+    <string name="guide_keys">▲ ▼  Канали      OK  Сите канали</string>
+    <string name="guide_free_channels">Бесплатни канали на хинди</string>
+    <string name="channel_opens_in">Се отвора во %1$s  ›</string>
+    <string name="channel_off_air">Моментално не е во живо</string>
+    <string name="channel_maybe_off_air">Можеби не е во живо</string>
+    <string name="no_channel">Нема канал %1$s</string>
+</resources>

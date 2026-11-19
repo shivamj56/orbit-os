@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK avaa: %1$s</string>
+    <string name="guide_watch_now">OK katsoaksesi nyt</string>
+    <string name="guide_connecting">Yhdistetään…</string>
+    <string name="guide_slow">Yhdistetään yhä, kanava on nyt hidas</string>
+    <string name="guide_off_air_now">Ei lähetystä juuri nyt.  ▲ ▼ toinen kanava</string>
+    <string name="guide_offline">TV ei ole verkossa. Tarkista Wi-Fi</string>
+    <string name="guide_paused">Keskeytetty.  OK tai ▶ palaa suoraan lähetykseen</string>
+    <string name="guide_back_again">Paina TAKAISIN uudelleen päästäksesi aloitusnäyttöön</string>
+    <string name="guide_keys">▲ ▼  Kanavat      OK  Kaikki kanavat</string>
+    <string name="guide_free_channels">Ilmaiset hindinkieliset kanavat</string>
+    <string name="channel_opens_in">Avautuu: %1$s  ›</string>
+    <string name="channel_off_air">Ei lähetystä juuri nyt</string>
+    <string name="channel_maybe_off_air">Ei välttämättä lähetystä</string>
+    <string name="no_channel">Kanavaa %1$s ei ole</string>
+</resources>

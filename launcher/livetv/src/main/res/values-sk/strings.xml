@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK otvorí: %1$s</string>
+    <string name="guide_watch_now">OK na sledovanie teraz</string>
+    <string name="guide_connecting">Pripája sa…</string>
+    <string name="guide_slow">Stále sa pripája, kanál je teraz pomalý</string>
+    <string name="guide_off_air_now">Teraz sa nevysiela.  ▲ ▼ iný kanál</string>
+    <string name="guide_offline">Televízor nie je online. Skontrolujte Wi-Fi</string>
+    <string name="guide_paused">Pozastavené.  OK alebo ▶ sa vráti na vysielanie naživo</string>
+    <string name="guide_back_again">Opätovným stlačením SPÄŤ prejdete domov</string>
+    <string name="guide_keys">▲ ▼  Kanály      OK  Všetky kanály</string>
+    <string name="guide_free_channels">Bezplatné hindské kanály</string>
+    <string name="channel_opens_in">Otvorí sa v: %1$s  ›</string>
+    <string name="channel_off_air">Teraz sa nevysiela</string>
+    <string name="channel_maybe_off_air">Možno sa nevysiela</string>
+    <string name="no_channel">Kanál %1$s neexistuje</string>
+</resources>

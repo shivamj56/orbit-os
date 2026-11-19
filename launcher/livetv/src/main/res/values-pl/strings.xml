@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK otwiera: %1$s</string>
+    <string name="guide_watch_now">OK, aby oglądać teraz</string>
+    <string name="guide_connecting">Łączenie…</string>
+    <string name="guide_slow">Nadal się łączy, kanał jest teraz wolny</string>
+    <string name="guide_off_air_now">Teraz nie nadaje.  ▲ ▼ inny kanał</string>
+    <string name="guide_offline">Telewizor nie ma połączenia z internetem. Sprawdź Wi-Fi</string>
+    <string name="guide_paused">Wstrzymano.  OK lub ▶ wraca do transmisji na żywo</string>
+    <string name="guide_back_again">Naciśnij WSTECZ jeszcze raz, aby wrócić do ekranu głównego</string>
+    <string name="guide_keys">▲ ▼  Kanały      OK  Wszystkie kanały</string>
+    <string name="guide_free_channels">Bezpłatne kanały hindi</string>
+    <string name="channel_opens_in">Otwiera się w: %1$s  ›</string>
+    <string name="channel_off_air">Teraz nie nadaje</string>
+    <string name="channel_maybe_off_air">Może nie nadawać</string>
+    <string name="no_channel">Nie ma kanału %1$s</string>
+</resources>

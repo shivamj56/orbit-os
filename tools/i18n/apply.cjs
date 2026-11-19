@@ -121,7 +121,7 @@ if (mode === "--phone") {
   const xml =
     '<?xml version="1.0" encoding="utf-8"?>\n' +
     "<!-- Languages the launcher is translated into: every language Orbit speaks (phone/ui/src/i18n/languages.ts),\n" +
-    "     written by tools/i18n/apply.cjs --locales. Android 13+ lets the launcher have its own language (set it with\n" +
+    "     written by tools/i18n/apply.cjs (locales). Android 13+ lets the launcher have its own language (set it with\n" +
     '     "cmd locale set-app-locales", see the README), since TVs rarely offer every language system-wide. -->\n' +
     '<locale-config xmlns:android="http://schemas.android.com/apk/res/android">\n' +
     tags.map((t) => `    <locale android:name="${t}" />`).join("\n") +

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK hap: %1$s</string>
+    <string name="guide_watch_now">OK për ta parë tani</string>
+    <string name="guide_connecting">Po lidhet…</string>
+    <string name="guide_slow">Ende po lidhet, kanali është i ngadaltë tani</string>
+    <string name="guide_off_air_now">Nuk transmetohet tani.  ▲ ▼ kanal tjetër</string>
+    <string name="guide_offline">Televizori nuk është në linjë. Kontrolloni Wi-Fi</string>
+    <string name="guide_paused">Në pauzë.  OK ose ▶ kthehet te drejtpërdrejti</string>
+    <string name="guide_back_again">Shtypni përsëri PRAPA për të shkuar te kryefaqja</string>
+    <string name="guide_keys">▲ ▼  Kanalet      OK  Të gjitha kanalet</string>
+    <string name="guide_free_channels">Kanale falas në hindisht</string>
+    <string name="channel_opens_in">Hapet në: %1$s  ›</string>
+    <string name="channel_off_air">Nuk transmetohet tani</string>
+    <string name="channel_maybe_off_air">Mund të mos transmetohet</string>
+    <string name="no_channel">Nuk ka kanal %1$s</string>
+</resources>
