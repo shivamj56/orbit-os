@@ -243,6 +243,41 @@ final class Words {
         }
     }
 
+    /** A language's table, and its PATTERNS as matchers: most fixed words first, so a short one never takes a closer one's text. */
+    private static void use(Map<String, Object> read) {
+        table = read;
+        List<Matcher> compiled = new ArrayList<>();
+        List<String> keys = new ArrayList<>();
+        List<String> ordered = new ArrayList<>();
+        Collections.addAll(ordered, PATTERNS);
+        Collections.sort(ordered, (a, b) -> VALUE.matcher(b).replaceAll("").length() - VALUE.matcher(a).replaceAll("").length());
+        for (String key : ordered) {
+            if (!read.containsKey(key)) continue;
+            StringBuilder re = new StringBuilder("^");
+            int at = 0;
+            Matcher m = VALUE.matcher(key);
+            while (m.find()) {
+                re.append(Pattern.quote(key.substring(at, m.start()))).append("(.+?)");
+                at = m.end();
+            }
+            re.append(Pattern.quote(key.substring(at))).append("$");
+            compiled.add(Pattern.compile(re.toString(), Pattern.DOTALL).matcher(""));
+            keys.add(key);
+        }
+        patterns = compiled;
+        patternKeys = keys;
+    }
+
+    /** For tests on the JVM: a language's table without the app's assets or Android's plural rules. */
+    static synchronized void useForTest(Locale l, Map<String, Object> read) {
+        Locale.setDefault(l);
+        loadedFor = codeFor(l);
+        locale = l;
+        SEEN.clear();
+        plural = null;
+        use(read);
+    }
+
     /** Loads the translations once per language; English (or a language without a file) needs none. */
     private static void refresh() {
         Locale now = Locale.getDefault();
@@ -278,29 +313,8 @@ final class Words {
                     read.put(key, forms);
                 } else read.put(key, String.valueOf(v));
             }
-            table = read;
+            use(read);
             plural = PluralRules.forLocale(locale);
-            List<Matcher> compiled = new ArrayList<>();
-            List<String> keys = new ArrayList<>();
-            List<String> ordered = new ArrayList<>();
-            Collections.addAll(ordered, PATTERNS);
-            // Most fixed words first, so a short pattern never takes a longer, closer one's text.
-            Collections.sort(ordered, (a, b) -> VALUE.matcher(b).replaceAll("").length() - VALUE.matcher(a).replaceAll("").length());
-            for (String key : ordered) {
-                if (!read.containsKey(key)) continue;
-                StringBuilder re = new StringBuilder("^");
-                int at = 0;
-                Matcher m = VALUE.matcher(key);
-                while (m.find()) {
-                    re.append(Pattern.quote(key.substring(at, m.start()))).append("(.+?)");
-                    at = m.end();
-                }
-                re.append(Pattern.quote(key.substring(at))).append("$");
-                compiled.add(Pattern.compile(re.toString(), Pattern.DOTALL).matcher(""));
-                keys.add(key);
-            }
-            patterns = compiled;
-            patternKeys = keys;
         } catch (Exception e) {
             // No file for this language (or a broken one): Orbit's words stay English.
             table = Collections.emptyMap();
