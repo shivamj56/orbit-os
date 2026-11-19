@@ -366,7 +366,7 @@ function BackupRow({ b, newest, f }: { b: DriveBackup; newest: boolean; f: Flow 
           <span className="block text-[15px] text-snow">{when(b.at)}</span>
           <span className="tabular mt-0.5 block text-[12.5px] text-mist">
             {sizeText(b.size)}
-            {newest ? t(" · the newest") : ""}
+            {newest ? " " + t("· the newest") : ""}
           </span>
         </span>
       </div>

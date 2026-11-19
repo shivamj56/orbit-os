@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- Finding the TV's _orbit._tcp advert: the nsd plugin holds Wi-Fi's multicast lock while it looks. -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <!-- The screen is drawn in portrait, but a landscape-only device (a Chromebook) can still run it: not a requirement.
+         Wi-Fi stays required, since the nsd plugin takes the Wi-Fi multicast lock to find the TV. -->
+    <uses-feature android:name="android.hardware.screen.portrait" android:required="false" />
 
     <application
         android:name="${applicationName}"

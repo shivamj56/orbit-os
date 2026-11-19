@@ -164,3 +164,25 @@ describe.each(files)("public/locales/%s", (file) => {
 it("ready.ts lists exactly the languages that have a file in public/locales", () => {
   expect([...READY_CODES].sort()).toEqual(files.map((f) => f.replace(/\.json$/, "")).sort());
 });
+
+// tools/i18n/extract.cjs folds runs of spaces into one when it writes source.json, and the translation files are keyed
+// by what it writes. A text written in the code with two spaces ("Roll to move  ·  tap for OK", Orbit 1.5.1) is then
+// never found, and stays English in every language. Spacing belongs in CSS, not in the text.
+const code = import.meta.glob<string>(["../**/*.ts", "../**/*.tsx", "!../**/*.test.ts", "!../**/*.test.tsx"], { eager: true, query: "?raw", import: "default" });
+
+it("writes every translated text in the code exactly as the translation files key it (single spaces, no edge spaces)", () => {
+  const literal = String.raw`"((?:[^"\\\n]|\\.)*)"`;
+  const calls = [new RegExp(String.raw`\b(?:t|mark)\(\s*${literal}`, "g"), new RegExp(String.raw`\btn\([^,()]+,\s*${literal}\s*,\s*${literal}`, "g")];
+  const wrong: string[] = [];
+  for (const [file, text] of Object.entries(code)) {
+    for (const re of calls) {
+      for (const m of text.matchAll(re)) {
+        for (const s of m.slice(1).filter((x): x is string => x !== undefined)) {
+          if (s !== s.replace(/\s+/g, " ").trim()) wrong.push(`${file}: ${JSON.stringify(s)}`);
+        }
+      }
+    }
+  }
+  expect(Object.keys(code).length).toBeGreaterThan(20);
+  expect(wrong).toEqual([]);
+});

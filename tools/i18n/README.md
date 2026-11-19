@@ -29,6 +29,10 @@ language's plural forms (`"one"`, `"few"`, `"other"`…).
 1. Write the text in `t("…")`.
    - A count is `tn(n, "{n} app", "{n} apps")`.
    - Data shown later is `mark("…")` (on the TV, `Words.mark`).
+   - On the phone, use single spaces and no space at either end: write `" " + t("· the newest")`, not `t(" · the newest")`.
+     `extract.cjs` folds spaces, so the translation files key the folded text; a text written any other way is never
+     found and stays English in every language (Orbit 1.5.1's remote hint). `i18n.test.ts` checks this. The TV
+     extractor keeps spaces as written, because the TV draws them.
 2. Run `node tools/i18n/extract.cjs` for the phone, and `node tools/i18n/extract-tv.cjs` for the TV. They rewrite
    `phone/ui/i18n/source.json` and `launcher/i18n/source.json`, the lists of every English text.
    - `--check` fails while a list is out of date, for CI.

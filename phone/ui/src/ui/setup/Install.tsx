@@ -211,7 +211,7 @@ export function Failed() {
             : name === "your TV"
               ? t("Nothing is broken: the TV still has its own home screen.")
               : t("Nothing is broken: {tv} still has its own home screen.", { tv: name })}
-          {!f.runError && switchedOff > 0 ? t(" Some apps were already switched off; Put back what changed switches them on again.") : ""}
+          {!f.runError && switchedOff > 0 ? " " + t("Some apps were already switched off; Put back what changed switches them on again.") : ""}
         </Lead>
       </Rise>
       <Rise className="mt-5">

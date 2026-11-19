@@ -107,7 +107,7 @@ export function Remote({ status }: { status: Status }) {
         </div>
       </div>
       <p className={`-mt-1 mb-3 text-center text-[12px] text-faint transition-opacity duration-300 ${touching ? "opacity-0" : "opacity-100"}`}>
-        {mode === "focus" ? t("Roll to move  ·  tap for OK  ·  hold for recent apps") : t("Glide to point  ·  tap to click  ·  two fingers to scroll")}
+        {mode === "focus" ? t("Roll to move · tap for OK · hold for recent apps") : t("Glide to point · tap to click · two fingers to scroll")}
       </p>
 
       <div className="mb-4 grid grid-cols-3 gap-3">

@@ -35,7 +35,7 @@ import {
 import { t } from "../i18n";
 
 /** The app's own version, for the backups it makes (phone/app/pubspec.yaml). */
-export const APP_VERSION = "1.5.1";
+export const APP_VERSION = "1.5.2";
 
 export type SetupStep =
   | "welcome"
