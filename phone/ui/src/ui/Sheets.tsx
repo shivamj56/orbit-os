@@ -9,7 +9,7 @@ import { patchTv, setAccount, updateSettings, useWorld } from "../store";
 import { ORBIT_HOMES } from "../setup/plan";
 import * as I from "./icons";
 import { Press, Sheet, spring } from "./kit";
-import { chooseLanguage, LANGUAGES, rich, systemLanguage, t, tm, useLanguage, type Language } from "../i18n";
+import { chooseLanguage, READY, rich, systemLanguage, t, tm, useLanguage, type Language } from "../i18n";
 
 // ---- app pictures, kept for the whole run ----
 
@@ -364,7 +364,7 @@ function LanguagePicker({ onDone }: { onDone: () => void }) {
   }, [language.code]);
   const sorted = useMemo(() => {
     const order = new Intl.Collator(language.code);
-    return [...LANGUAGES].sort((a, b) => order.compare(local(a), local(b)));
+    return [...READY].sort((a, b) => order.compare(local(a), local(b)));
   }, [language.code, local]);
   const q = query.trim().toLocaleLowerCase();
   const shown = q ? sorted.filter((l) => [l.name, l.english, local(l), l.code].some((s) => s.toLocaleLowerCase().includes(q))) : sorted;

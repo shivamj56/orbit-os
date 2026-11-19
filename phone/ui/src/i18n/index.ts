@@ -7,9 +7,9 @@
 //   tm(error.message)                       a message from Flutter, the TV or its scripts, translated where it shows
 //   rich(t("Open <b>Settings</b>"), { b })  a text with marked-up parts
 import { createElement, Fragment, useSyncExternalStore, type ReactNode } from "react";
-import { ENGLISH, LANGUAGES, languageFor, type Language } from "./languages";
+import { ENGLISH, LANGUAGES, READY, languageFor, type Language } from "./languages";
 
-export { LANGUAGES, languageFor, type Language } from "./languages";
+export { LANGUAGES, READY, languageFor, type Language } from "./languages";
 
 /** A count's forms by the language's plural category ("one", "few", "other"...). */
 export type Forms = Partial<Record<Intl.LDMLPluralRule, string>>;
@@ -186,13 +186,13 @@ function compile(catalog: Catalog): Pattern[] {
 export function systemLanguage(tags: readonly string[] = typeof navigator !== "undefined" ? navigator.languages ?? [navigator.language] : []): Language {
   for (const tag of tags) {
     const found = tag && languageFor(tag);
-    if (found) return found;
+    if (found && READY.includes(found)) return found;
   }
   return ENGLISH;
 }
 
 function resolve(c: Choice): Language {
-  return c === "system" ? systemLanguage() : (LANGUAGES.find((l) => l.code === c) ?? systemLanguage());
+  return c === "system" ? systemLanguage() : (READY.find((l) => l.code === c) ?? systemLanguage());
 }
 
 /** Puts a language on screen: its texts (fetched by the loader), its plural rules, its direction. */

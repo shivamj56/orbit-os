@@ -566,7 +566,9 @@ in demo mode too. In a browser the page opens a new tab instead.
 
 ## Languages (Orbit 1.5.0)
 
-The app and Orbit Home speak every language Android offers (about 80). The list is `phone/ui/src/i18n/languages.ts`.
+Orbit is being translated into every language Android offers (about 80, listed in `phone/ui/src/i18n/languages.ts`).
+`src/i18n/ready.ts` lists the ones the phone app has texts for: only those (and English) are offered, and a phone in
+another language sees English until its texts come.
 How texts are written, translated and checked is in `tools/i18n/README.md`.
 
 **Which language.**

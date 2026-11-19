@@ -60,7 +60,8 @@ from the TV and picks the matching entry, or the closest one with only the safe 
   default, and Orbit closes by itself when the time is up ([phone/SPEC.md](../phone/SPEC.md), "Trying Orbit before
   setting it up").
 - [x] Brazilian Portuguese for the phone app and the TV ([#3](https://github.com/shivamj56/orbit-os/issues/3)), and
-  every other language Android offers: about 80 ([tools/i18n](../tools/i18n/README.md)).
+  47 more languages ([tools/i18n](../tools/i18n/README.md)).
+- [ ] The rest of the languages Android offers, about 30 more: Spanish, Japanese, Korean, Bengali, Persian, Urdu…
 - [ ] Native speakers to check the translations, most of which were first made with an AI model.
 - [ ] More than one home-screen layout, and your own wallpaper ([#3](https://github.com/shivamj56/orbit-os/issues/3)).
 - [x] The phone finds the TV again when the router gives it a new address

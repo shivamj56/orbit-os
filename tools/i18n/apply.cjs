@@ -65,7 +65,24 @@ const pickCodes = (rest, dir) => {
   return lang.LANGUAGES.map((l) => l.code).filter((c) => found.has(c));
 };
 
-if (mode === "--phone") {
+/** phone/ui/src/i18n/ready.ts: the languages the phone app has texts for (Settings › Language offers only these). */
+function writeReady() {
+  const codes = fs
+    .readdirSync(path.join(repo, "phone/ui/public/locales"))
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => f.replace(/\.json$/, ""))
+    .sort();
+  const ts =
+    "// Written by tools/i18n/apply.cjs: the languages whose texts are in public/locales. Settings › Language offers\n" +
+    "// only these (and English); i18n.test.ts checks the list against the files.\n" +
+    `export const READY_CODES: readonly string[] = ${JSON.stringify(codes)};\n`;
+  fs.writeFileSync(path.join(repo, "phone/ui/src/i18n/ready.ts"), ts);
+}
+
+if (mode === "--ready") {
+  writeReady();
+  console.log("ready.ts written");
+} else if (mode === "--phone") {
   const dir = args[1];
   const list = new Map(JSON.parse(fs.readFileSync(path.join(dir, "phone.json"), "utf8")).map((e) => [e.id, e]));
   for (const code of pickCodes(args.slice(2), dir)) {
@@ -93,6 +110,7 @@ if (mode === "--phone") {
     const n = mergeStrings(xml, tvEntries, job.plural);
     console.log(`${code.padEnd(7)} phone +${added} (${Object.keys(texts).length})  launcher strings +${n}`);
   }
+  writeReady();
 } else if (mode === "--tv") {
   const dir = args[1];
   const list = new Map(JSON.parse(fs.readFileSync(path.join(dir, "texts.json"), "utf8")).map((e) => [e.id, e]));
@@ -120,10 +138,12 @@ if (mode === "--phone") {
   // Android 13+ lists these as the launcher's own languages; Hebrew and Indonesian keep Android's old names, which
   // its resource folders use (values-iw, values-in).
   const legacy = { he: "iw", id: "in" };
-  const tags = lang.LANGUAGES.map((l) => legacy[l.code] ?? l.code);
+  // Only the languages Orbit Home has its own words for (assets/words/<code>.json), and English.
+  const words = path.join(repo, "launcher/app/src/main/assets/words");
+  const tags = lang.LANGUAGES.filter((l) => l.code === "en" || fs.existsSync(path.join(words, `${l.code}.json`))).map((l) => legacy[l.code] ?? l.code);
   const xml =
     '<?xml version="1.0" encoding="utf-8"?>\n' +
-    "<!-- Languages the launcher is translated into: every language Orbit speaks (phone/ui/src/i18n/languages.ts),\n" +
+    "<!-- Languages the launcher is translated into (those with assets/words/<code>.json, from phone/ui/src/i18n/languages.ts),\n" +
     "     written by tools/i18n/apply.cjs (locales). Android 13+ lets the launcher have its own language (set it with\n" +
     '     "cmd locale set-app-locales", see the README), since TVs rarely offer every language system-wide. -->\n' +
     '<locale-config xmlns:android="http://schemas.android.com/apk/res/android">\n' +

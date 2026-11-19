@@ -1,7 +1,8 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
-import { LANGUAGES, languageFor, list, num, rich, systemLanguage, t, tm, tn, useCatalogForTest, type Catalog } from "./index";
+import { LANGUAGES, READY, languageFor, list, num, rich, systemLanguage, t, tm, tn, useCatalogForTest, type Catalog } from "./index";
+import { READY_CODES } from "./ready";
 
 afterEach(() => useCatalogForTest("en", {}));
 
@@ -43,9 +44,11 @@ describe("languageFor: the tag a phone gives, to the language Orbit has", () => 
     expect(languageFor("../hi")).toBeNull();
   });
 
-  it("the phone's first language Orbit speaks wins; English when none", () => {
+  it("the phone's first language Orbit has texts for wins; English when none", () => {
     expect(systemLanguage(["gsw-CH", "de-CH", "en"]).code).toBe("de");
     expect(systemLanguage(["tlh"]).code).toBe("en");
+    const missing = LANGUAGES.find((l) => !READY.includes(l));
+    if (missing) expect(systemLanguage([missing.code]).code).toBe("en");
   });
 
   it("every language has a file name, its own name, and right-to-left only where it should", () => {
@@ -156,4 +159,8 @@ describe.each(files)("public/locales/%s", (file) => {
     }
     expect(wrong).toEqual([]);
   });
+});
+
+it("ready.ts lists exactly the languages that have a file in public/locales", () => {
+  expect([...READY_CODES].sort()).toEqual(files.map((f) => f.replace(/\.json$/, "")).sort());
 });

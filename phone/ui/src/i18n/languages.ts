@@ -1,3 +1,5 @@
+import { READY_CODES } from "./ready";
+
 // Every language Orbit speaks: the languages Android itself offers, each named in its own words. The TV side keeps the
 // same list in launcher/app/src/main/res/xml/locales_config.xml (with Android's resource names: he is iw, id is in).
 
@@ -97,6 +99,10 @@ export const LANGUAGES: readonly Language[] = [
   { code: "zh-TW", name: "繁體中文（台灣）", english: "Chinese (Taiwan)" },
   { code: "zu", name: "isiZulu", english: "Zulu" },
 ];
+
+/** The languages whose texts this build has (public/locales, listed in ready.ts), plus English: Settings › Language
+ * offers only these, and a phone in another language sees English until its texts come. */
+export const READY: readonly Language[] = LANGUAGES.filter((l) => l.code === "en" || READY_CODES.includes(l.code));
 
 const BY_CODE = new Map(LANGUAGES.map((l) => [l.code.toLowerCase(), l]));
 

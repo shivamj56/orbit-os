@@ -81,8 +81,9 @@ If Orbit is useful to you, a ⭐ on this repository helps other TV owners and de
 
 ### In your language
 
-The phone app and Orbit Home speak every language Android offers, about 80, from Afrikaans to Zulu: Hindi and the
-other Indian languages, Brazilian Portuguese, Arabic and Urdu (right to left), Chinese, Japanese and the rest.
+Orbit is being translated into every language Android offers, about 80. The phone app already speaks 48 of them and
+Orbit Home 53: Hindi, Marathi, Nepali, Tamil, Telugu, Brazilian Portuguese, Arabic (right to left), Chinese, Russian,
+French, German, Indonesian, Thai, Vietnamese and more. The rest are on the way.
 - The app follows your phone's language; Settings › Language picks another.
 - The TV follows its own language.
 - The translations are new, and help from native speakers is welcome:
