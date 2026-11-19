@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">Tekan OK untuk membuka %1$s</string>
+    <string name="guide_watch_now">Tekan OK untuk menonton sekarang</string>
+    <string name="guide_connecting">Menyambung…</string>
+    <string name="guide_slow">Masih menyambung, saluran ini perlahan sekarang</string>
+    <string name="guide_off_air_now">Tidak bersiaran sekarang.  ▲ ▼ saluran lain</string>
+    <string name="guide_offline">TV tidak dalam talian. Semak Wi-Fi</string>
+    <string name="guide_paused">Dijeda.  OK atau ▶ kembali ke siaran langsung</string>
+    <string name="guide_back_again">Tekan KEMBALI sekali lagi untuk ke Skrin utama</string>
+    <string name="guide_keys">▲ ▼  Saluran      OK  Semua saluran</string>
+    <string name="guide_free_channels">Saluran Hindi percuma</string>
+    <string name="channel_opens_in">Dibuka dalam %1$s  ›</string>
+    <string name="channel_off_air">Tidak bersiaran sekarang</string>
+    <string name="channel_maybe_off_air">Mungkin tidak bersiaran</string>
+    <string name="no_channel">Tiada saluran %1$s</string>
+</resources>

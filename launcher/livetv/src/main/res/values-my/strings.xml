@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">%1$s ကို ဖွင့်ရန် OK ကို နှိပ်ပါ</string>
+    <string name="guide_watch_now">ယခု ကြည့်ရန် OK ကို နှိပ်ပါ</string>
+    <string name="guide_connecting">ချိတ်ဆက်နေသည်…</string>
+    <string name="guide_slow">ချိတ်ဆက်နေဆဲ၊ ယခု ချန်နယ် နှေးနေသည်</string>
+    <string name="guide_off_air_now">ယခု ထုတ်လွှင့်မနေပါ။  ▲ ▼ အခြားချန်နယ်</string>
+    <string name="guide_offline">တီဗွီ အွန်လိုင်း မဟုတ်ပါ။ Wi-Fi ကို စစ်ဆေးပါ</string>
+    <string name="guide_paused">ခဏရပ်ထားသည်။  OK သို့မဟုတ် ▶ ဖြင့် တိုက်ရိုက်သို့ ပြန်သွားပါ</string>
+    <string name="guide_back_again">ပင်မစာမျက်နှာသို့ သွားရန် နောက်သို့ ခလုတ်ကို ထပ်နှိပ်ပါ</string>
+    <string name="guide_keys">▲ ▼  ချန်နယ်များ      OK  ချန်နယ်အားလုံး</string>
+    <string name="guide_free_channels">အခမဲ့ ဟိန္ဒီ ချန်နယ်များ</string>
+    <string name="channel_opens_in">%1$s တွင် ဖွင့်မည်  ›</string>
+    <string name="channel_off_air">ယခု ထုတ်လွှင့်မနေပါ</string>
+    <string name="channel_maybe_off_air">ထုတ်လွှင့်မနေခြင်း ဖြစ်နိုင်သည်</string>
+    <string name="no_channel">ချန်နယ် %1$s မရှိပါ</string>
+</resources>

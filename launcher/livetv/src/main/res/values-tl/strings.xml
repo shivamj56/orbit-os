@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK para buksan ang %1$s</string>
+    <string name="guide_watch_now">OK para manood ngayon</string>
+    <string name="guide_connecting">Kumokonekta…</string>
+    <string name="guide_slow">Kumokonekta pa, mabagal ang channel ngayon</string>
+    <string name="guide_off_air_now">Hindi naka-ere ngayon.  ▲ ▼ ibang channel</string>
+    <string name="guide_offline">Hindi online ang TV. Tingnan ang Wi-Fi</string>
+    <string name="guide_paused">Naka-pause.  OK o ▶ para bumalik sa live</string>
+    <string name="guide_back_again">Pindutin ulit ang BUMALIK para pumunta sa Home</string>
+    <string name="guide_keys">▲ ▼  Mga channel      OK  Lahat ng channel</string>
+    <string name="guide_free_channels">Mga libreng Hindi channel</string>
+    <string name="channel_opens_in">Bubukas sa %1$s  ›</string>
+    <string name="channel_off_air">Hindi naka-ere ngayon</string>
+    <string name="channel_maybe_off_air">Baka hindi naka-ere</string>
+    <string name="no_channel">Walang channel %1$s</string>
+</resources>

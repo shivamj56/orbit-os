@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">Bonyeza OK ili ufungue %1$s</string>
+    <string name="guide_watch_now">Bonyeza OK ili utazame sasa</string>
+    <string name="guide_connecting">Inaunganisha…</string>
+    <string name="guide_slow">Bado inaunganisha, chaneli iko polepole kwa sasa</string>
+    <string name="guide_off_air_now">Haipeperushwi hewani kwa sasa.  ▲ ▼ chaneli nyingine</string>
+    <string name="guide_offline">TV haiko mtandaoni. Angalia Wi-Fi</string>
+    <string name="guide_paused">Imesitishwa.  OK au ▶ hurudi mubashara</string>
+    <string name="guide_back_again">Bonyeza NYUMA tena ili uende kwenye Skrini ya kwanza</string>
+    <string name="guide_keys">▲ ▼  Chaneli      OK  Chaneli zote</string>
+    <string name="guide_free_channels">Chaneli za Kihindi bila malipo</string>
+    <string name="channel_opens_in">Hufunguka kwenye %1$s  ›</string>
+    <string name="channel_off_air">Haipeperushwi kwa sasa</string>
+    <string name="channel_maybe_off_air">Huenda haipeperushwi</string>
+    <string name="no_channel">Hakuna chaneli %1$s</string>
+</resources>

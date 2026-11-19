@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">กด OK เพื่อเปิด %1$s</string>
+    <string name="guide_watch_now">กด OK เพื่อดูเลย</string>
+    <string name="guide_connecting">กำลังเชื่อมต่อ…</string>
+    <string name="guide_slow">ยังเชื่อมต่ออยู่ ตอนนี้ช่องนี้ช้า</string>
+    <string name="guide_off_air_now">ช่องนี้ไม่ได้ออกอากาศตอนนี้  ▲ ▼ ช่องอื่น</string>
+    <string name="guide_offline">ทีวีไม่ได้ออนไลน์ ตรวจสอบ Wi-Fi</string>
+    <string name="guide_paused">หยุดชั่วคราว  กด OK หรือ ▶ เพื่อกลับไปดูสด</string>
+    <string name="guide_back_again">กดปุ่มกลับอีกครั้งเพื่อไปที่หน้าหลัก</string>
+    <string name="guide_keys">▲ ▼  ช่อง      OK  ทุกช่อง</string>
+    <string name="guide_free_channels">ช่องภาษาฮินดีฟรี</string>
+    <string name="channel_opens_in">เปิดใน %1$s  ›</string>
+    <string name="channel_off_air">ไม่ได้ออกอากาศตอนนี้</string>
+    <string name="channel_maybe_off_air">อาจไม่ได้ออกอากาศ</string>
+    <string name="no_channel">ไม่มีช่อง %1$s</string>
+</resources>

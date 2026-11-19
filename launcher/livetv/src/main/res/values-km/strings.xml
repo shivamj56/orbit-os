@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">ចុច OK ដើម្បីបើក %1$s</string>
+    <string name="guide_watch_now">ចុច OK ដើម្បីមើលឥឡូវនេះ</string>
+    <string name="guide_connecting">កំពុងភ្ជាប់…</string>
+    <string name="guide_slow">នៅតែកំពុងភ្ជាប់ ប៉ុស្តិ៍នេះយឺតនៅពេលនេះ</string>
+    <string name="guide_off_air_now">មិនកំពុងផ្សាយនៅពេលនេះទេ។  ▲ ▼ ប៉ុស្តិ៍ផ្សេង</string>
+    <string name="guide_offline">ទូរទស្សន៍មិនមានអ៊ីនធឺណិតទេ។ សូមពិនិត្យ Wi-Fi</string>
+    <string name="guide_paused">បានផ្អាក។  OK ឬ ▶ ដើម្បីត្រឡប់ទៅការផ្សាយផ្ទាល់</string>
+    <string name="guide_back_again">ចុចប៊ូតុងថយក្រោយម្ដងទៀត ដើម្បីទៅទំព័រដើម</string>
+    <string name="guide_keys">▲ ▼  ប៉ុស្តិ៍      OK  ប៉ុស្តិ៍ទាំងអស់</string>
+    <string name="guide_free_channels">ប៉ុស្តិ៍ភាសាហិណ្ឌីឥតគិតថ្លៃ</string>
+    <string name="channel_opens_in">បើកក្នុង %1$s  ›</string>
+    <string name="channel_off_air">មិនកំពុងផ្សាយនៅពេលនេះទេ</string>
+    <string name="channel_maybe_off_air">ប្រហែលជាមិនកំពុងផ្សាយ</string>
+    <string name="no_channel">គ្មានប៉ុស្តិ៍ %1$s ទេ</string>
+</resources>

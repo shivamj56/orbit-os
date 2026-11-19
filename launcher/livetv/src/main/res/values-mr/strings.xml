@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK दाबल्यावर %1$s उघडेल</string>
+    <string name="guide_watch_now">आत्ता पाहण्यासाठी OK दाबा</string>
+    <string name="guide_connecting">कनेक्ट करत आहे…</string>
+    <string name="guide_slow">अजूनही कनेक्ट करत आहे, चॅनल सध्या धीमे आहे</string>
+    <string name="guide_off_air_now">सध्या प्रसारण सुरू नाही.  ▲ ▼ दुसरे चॅनल</string>
+    <string name="guide_offline">टीव्ही ऑनलाइन नाही. Wi-Fi तपासा</string>
+    <string name="guide_paused">थांबवले आहे.  OK किंवा ▶ ने पुन्हा लाइव्ह पाहा</string>
+    <string name="guide_back_again">होमवर जाण्यासाठी “मागे जा” पुन्हा दाबा</string>
+    <string name="guide_keys">▲ ▼  चॅनल      OK  सर्व चॅनल</string>
+    <string name="guide_free_channels">मोफत हिंदी चॅनल</string>
+    <string name="channel_opens_in">%1$s मध्ये उघडते  ›</string>
+    <string name="channel_off_air">सध्या प्रसारण बंद आहे</string>
+    <string name="channel_maybe_off_air">कदाचित प्रसारण बंद आहे</string>
+    <string name="no_channel">चॅनल %1$s अस्तित्वात नाही</string>
+</resources>

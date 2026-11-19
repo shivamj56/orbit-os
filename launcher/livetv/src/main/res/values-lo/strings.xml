@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">ກົດ OK ເພື່ອເປີດ %1$s</string>
+    <string name="guide_watch_now">ກົດ OK ເພື່ອເບິ່ງດຽວນີ້</string>
+    <string name="guide_connecting">ກຳລັງເຊື່ອມຕໍ່…</string>
+    <string name="guide_slow">ຍັງເຊື່ອມຕໍ່ຢູ່, ຕອນນີ້ຊ່ອງນີ້ຊ້າ</string>
+    <string name="guide_off_air_now">ຕອນນີ້ບໍ່ໄດ້ອອກອາກາດ.  ▲ ▼ ຊ່ອງອື່ນ</string>
+    <string name="guide_offline">ໂທລະທັດບໍ່ໄດ້ອອນລາຍ. ກວດເບິ່ງ Wi-Fi</string>
+    <string name="guide_paused">ຢຸດຊົ່ວຄາວ.  OK ຫຼື ▶ ເພື່ອກັບໄປເບິ່ງສົດ</string>
+    <string name="guide_back_again">ກົດປຸ່ມກັບຄືນອີກຄັ້ງເພື່ອໄປໜ້າຫຼັກ</string>
+    <string name="guide_keys">▲ ▼  ຊ່ອງ      OK  ທຸກຊ່ອງ</string>
+    <string name="guide_free_channels">ຊ່ອງພາສາຮິນດີຟຣີ</string>
+    <string name="channel_opens_in">ເປີດໃນ %1$s  ›</string>
+    <string name="channel_off_air">ຕອນນີ້ບໍ່ໄດ້ອອກອາກາດ</string>
+    <string name="channel_maybe_off_air">ອາດບໍ່ໄດ້ອອກອາກາດ</string>
+    <string name="no_channel">ບໍ່ມີຊ່ອງ %1$s</string>
+</resources>

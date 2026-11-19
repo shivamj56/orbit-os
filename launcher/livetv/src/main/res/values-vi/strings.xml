@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">Nhấn OK để mở %1$s</string>
+    <string name="guide_watch_now">Nhấn OK để xem ngay</string>
+    <string name="guide_connecting">Đang kết nối…</string>
+    <string name="guide_slow">Vẫn đang kết nối, kênh đang chậm</string>
+    <string name="guide_off_air_now">Hiện không phát sóng.  ▲ ▼ kênh khác</string>
+    <string name="guide_offline">TV không có mạng. Hãy kiểm tra Wi-Fi</string>
+    <string name="guide_paused">Đã tạm dừng.  OK hoặc ▶ để quay lại trực tiếp</string>
+    <string name="guide_back_again">Nhấn QUAY LẠI lần nữa để về Màn hình chính</string>
+    <string name="guide_keys">▲ ▼  Kênh      OK  Tất cả kênh</string>
+    <string name="guide_free_channels">Kênh tiếng Hindi miễn phí</string>
+    <string name="channel_opens_in">Mở trong %1$s  ›</string>
+    <string name="channel_off_air">Hiện không phát sóng</string>
+    <string name="channel_maybe_off_air">Có thể đang ngừng phát sóng</string>
+    <string name="no_channel">Không có kênh %1$s</string>
+</resources>

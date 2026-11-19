@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK थिच्दा %1$s खुल्छ</string>
+    <string name="guide_watch_now">अहिले हेर्न OK थिच्नुहोस्</string>
+    <string name="guide_connecting">कनेक्ट गर्दै…</string>
+    <string name="guide_slow">अझै कनेक्ट गर्दै, च्यानल अहिले ढिलो छ</string>
+    <string name="guide_off_air_now">अहिले प्रसारण भइरहेको छैन।  ▲ ▼ अर्को च्यानल</string>
+    <string name="guide_offline">टिभी अनलाइन छैन। Wi-Fi जाँच गर्नुहोस्</string>
+    <string name="guide_paused">रोकिएको छ।  OK वा ▶ थिचेर फेरि लाइभ हेर्नुहोस्</string>
+    <string name="guide_back_again">होममा जान फेरि “पछाडि” थिच्नुहोस्</string>
+    <string name="guide_keys">▲ ▼  च्यानल      OK  सबै च्यानल</string>
+    <string name="guide_free_channels">निःशुल्क हिन्दी च्यानल</string>
+    <string name="channel_opens_in">%1$s मा खुल्छ  ›</string>
+    <string name="channel_off_air">अहिले प्रसारण बन्द छ</string>
+    <string name="channel_maybe_off_air">प्रसारण बन्द हुन सक्छ</string>
+    <string name="no_channel">च्यानल %1$s छैन</string>
+</resources>
