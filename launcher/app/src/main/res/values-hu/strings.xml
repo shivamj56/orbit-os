@@ -148,4 +148,10 @@
         <item quantity="one">%1$d alkalmazás</item>
         <item quantity="other">%1$d alkalmazás</item>
     </plurals>
+    <string name="trial_pill">Orbit kipróbálása · %1$s van hátra</string>
+    <string name="trial_pill_hint">A Home visszavisz a tévédhez</string>
+    <string name="trial_end_title">Ez volt az Orbit OS</string>
+    <string name="trial_end_body">A tévéd most visszatér a saját kezdőképernyőjére. Az Orbit nem változtatott rajta semmit: az Orbit Home csak alkalmazásként marad, amíg te nem választasz.</string>
+    <string name="trial_end_next">Az Orbit megtartásához válaszd az Orbit OS beállítása lehetőséget a telefonod Orbit alkalmazásában. Az eltávolításhoz ott az Orbit eltávolítása lehetőséget válaszd.</string>
+    <string name="trial_end_leaving">Vissza a tévédhez %1$d mp múlva. Az azonnali ugráshoz nyomd meg az OK gombot.</string>
 </resources>

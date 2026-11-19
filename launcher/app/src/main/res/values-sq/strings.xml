@@ -148,4 +148,10 @@
         <item quantity="one">%1$d aplikacion</item>
         <item quantity="other">%1$d aplikacione</item>
     </plurals>
+    <string name="trial_pill">Po provohet Orbit · mbeten %1$s</string>
+    <string name="trial_pill_hint">Kreu të kthen te televizori yt</string>
+    <string name="trial_end_title">Ky ishte Orbit OS</string>
+    <string name="trial_end_body">Televizori yt tani kthehet te ekrani i vet bazë. Orbit nuk ndryshoi asgjë në të: Orbit Home mbetet vetëm si aplikacion derisa të zgjedhësh.</string>
+    <string name="trial_end_next">Për ta mbajtur Orbit, zgjidh Konfiguro Orbit OS në aplikacionin Orbit në telefon. Për ta hequr, zgjidh aty Hiq Orbit.</string>
+    <string name="trial_end_leaving">Kthehesh te televizori yt për %1$d s. Shtyp OK për të shkuar tani.</string>
 </resources>

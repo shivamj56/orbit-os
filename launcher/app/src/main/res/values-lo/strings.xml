@@ -147,4 +147,10 @@
     <plurals name="library_app_count">
         <item quantity="other">%1$d ແອັບ</item>
     </plurals>
+    <string name="trial_pill">ກຳລັງລອງໃຊ້ Orbit · ເຫຼືອ %1$s</string>
+    <string name="trial_pill_hint">ປຸ່ມໜ້າຫຼັກຈະພາທ່ານກັບໄປທີ່ໂທລະທັດ</string>
+    <string name="trial_end_title">ນັ້ນແມ່ນ Orbit OS</string>
+    <string name="trial_end_body">ໂທລະທັດຂອງທ່ານຈະກັບຄືນສູ່ໜ້າຈໍຫຼັກຂອງມັນເອງຕອນນີ້. Orbit ບໍ່ໄດ້ປ່ຽນແປງຫຍັງເທິງມັນ: Orbit Home ຈະຢູ່ເປັນແອັບເທົ່ານັ້ນຈົນກວ່າທ່ານຈະເລືອກ.</string>
+    <string name="trial_end_next">ຖ້າຕ້ອງການເກັບ Orbit ໄວ້, ເລືອກຕັ້ງຄ່າ Orbit OS ໃນແອັບ Orbit ເທິງໂທລະສັບ. ຖ້າຕ້ອງການເອົາອອກ, ເລືອກເອົາ Orbit ອອກຢູ່ບ່ອນນັ້ນ.</string>
+    <string name="trial_end_leaving">ກັບໄປທີ່ໂທລະທັດໃນ %1$d ວິນາທີ. ກົດ OK ເພື່ອໄປດຽວນີ້.</string>
 </resources>

@@ -151,4 +151,10 @@
     <string name="clock_format_12">12 小时制</string>
     <string name="clock_format_24">24 小时制</string>
     <string name="good_forenoon">上午好</string>
+    <string name="trial_pill">正在试用 Orbit · 剩余 %1$s</string>
+    <string name="trial_pill_hint">按主屏幕键即可回到您的电视</string>
+    <string name="trial_end_title">这就是 Orbit OS</string>
+    <string name="trial_end_body">您的电视现在会回到自己的主屏幕。Orbit 没有改动电视上的任何内容：在您做出选择之前，Orbit Home 只会作为应用保留。</string>
+    <string name="trial_end_next">要保留 Orbit，请在手机上的 Orbit 应用中选择“设置 Orbit OS”。要移除，请在那里选择“移除 Orbit”。</string>
+    <string name="trial_end_leaving">%1$d 秒后返回您的电视。按 OK 立即返回。</string>
 </resources>

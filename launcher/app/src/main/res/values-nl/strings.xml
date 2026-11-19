@@ -149,4 +149,10 @@
     <string name="race_countdown_minutes">%1$d min</string>
     <string name="race_countdown_hours">%1$du %2$dm</string>
     <string name="race_countdown_days">%1$dd %2$du</string>
+    <string name="trial_pill">Orbit proberen · %1$s over</string>
+    <string name="trial_pill_hint">Home brengt je terug naar je tv</string>
+    <string name="trial_end_title">Dat was Orbit OS</string>
+    <string name="trial_end_body">Je tv gaat nu terug naar het eigen startscherm. Orbit heeft niets gewijzigd: Orbit Home blijft alleen als app staan tot jij kiest.</string>
+    <string name="trial_end_next">Wil je Orbit houden? Kies dan Orbit OS instellen in de Orbit-app op je telefoon. Wil je het verwijderen? Kies daar Orbit verwijderen.</string>
+    <string name="trial_end_leaving">Over %1$d s terug naar je tv. Druk op OK om nu te gaan.</string>
 </resources>

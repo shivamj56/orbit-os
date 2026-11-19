@@ -149,4 +149,10 @@
         <item quantity="one">%1$d апликација</item>
         <item quantity="other">%1$d апликација</item>
     </plurals>
+    <string name="trial_pill">Пробате Orbit · преостало %1$s</string>
+    <string name="trial_pill_hint">Почетни екран вас враћа на телевизор</string>
+    <string name="trial_end_title">То је био Orbit OS</string>
+    <string name="trial_end_body">Ваш телевизор се сада враћа на свој почетни екран. Orbit на њему ништа није променио: Orbit Home остаје само као апликација док не одлучите.</string>
+    <string name="trial_end_next">Да задржите Orbit, у апликацији Orbit на телефону изаберите Подеси Orbit OS. Да га уклоните, тамо изаберите Уклони Orbit.</string>
+    <string name="trial_end_leaving">Повратак на телевизор за %1$d с. Притисните OK да идете одмах.</string>
 </resources>

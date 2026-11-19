@@ -148,4 +148,10 @@
         <item quantity="one">%1$d приложение</item>
         <item quantity="other">%1$d приложения</item>
     </plurals>
+    <string name="trial_pill">Проба на Orbit · остава %1$s</string>
+    <string name="trial_pill_hint">Home те връща към телевизора</string>
+    <string name="trial_end_title">Това беше Orbit OS</string>
+    <string name="trial_end_body">Телевизорът ти се връща на собствения си начален екран. Orbit нищо не е променил по него: Orbit Home остава само като приложение, докато не избереш.</string>
+    <string name="trial_end_next">За да запазиш Orbit, избери „Настрой Orbit OS“ в приложението Orbit на телефона си. За да го премахнеш, избери там „Премахни Orbit“.</string>
+    <string name="trial_end_leaving">Обратно към телевизора след %1$d с. Натисни OK, за да отидеш сега.</string>
 </resources>

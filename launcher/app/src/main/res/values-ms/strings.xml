@@ -147,4 +147,10 @@
     <plurals name="library_app_count">
         <item quantity="other">%1$d apl</item>
     </plurals>
+    <string name="trial_pill">Mencuba Orbit · %1$s lagi</string>
+    <string name="trial_pill_hint">Skrin Utama membawa anda kembali ke TV</string>
+    <string name="trial_end_title">Itulah Orbit OS</string>
+    <string name="trial_end_body">TV anda kini kembali ke skrin utamanya sendiri. Orbit tidak mengubah apa-apa padanya: Orbit Home hanya kekal sebagai apl sehingga anda memilih.</string>
+    <string name="trial_end_next">Untuk mengekalkan Orbit, pilih Sediakan Orbit OS dalam apl Orbit pada telefon anda. Untuk menanggalkannya, pilih Alih keluar Orbit di situ.</string>
+    <string name="trial_end_leaving">Kembali ke TV anda dalam %1$d s. Tekan OK untuk pergi sekarang.</string>
 </resources>

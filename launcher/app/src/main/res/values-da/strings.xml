@@ -148,4 +148,10 @@
     <string name="race_sprint_short">SPRINT</string>
     <string name="race_qualifying_short">QUALI</string>
     <string name="race_race_short">RACE</string>
+    <string name="trial_pill">Prøver Orbit · %1$s tilbage</string>
+    <string name="trial_pill_hint">Home går tilbage til dit tv</string>
+    <string name="trial_end_title">Det var Orbit OS</string>
+    <string name="trial_end_body">Dit tv vender nu tilbage til sin egen startskærm. Orbit har ikke ændret noget på det: Orbit Home bliver kun som app, indtil du vælger.</string>
+    <string name="trial_end_next">Vil du beholde Orbit, så vælg Konfigurer Orbit OS i Orbit-appen på din telefon. Vil du fjerne det, så vælg Fjern Orbit dér.</string>
+    <string name="trial_end_leaving">Tilbage til dit tv om %1$d s. Tryk på OK for at gå nu.</string>
 </resources>

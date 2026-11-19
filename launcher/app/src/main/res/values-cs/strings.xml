@@ -150,4 +150,10 @@
     <string name="race_countdown_minutes">%1$d min</string>
     <string name="race_countdown_hours">%1$d h %2$d min</string>
     <string name="race_countdown_days">%1$d d %2$d h</string>
+    <string name="trial_pill">Zkouška Orbit · zbývá %1$s</string>
+    <string name="trial_pill_hint">Tlačítko Home vás vrátí k televizi</string>
+    <string name="trial_end_title">To byl Orbit OS</string>
+    <string name="trial_end_body">Vaše televize se nyní vrací na svou vlastní domovskou obrazovku. Orbit na ní nic nezměnil: Orbit Home zůstává jen jako aplikace, dokud nerozhodnete.</string>
+    <string name="trial_end_next">Chcete-li Orbit ponechat, zvolte v aplikaci Orbit v telefonu Nastavit Orbit OS. Chcete-li ho odebrat, zvolte tam Odebrat Orbit.</string>
+    <string name="trial_end_leaving">Zpět k vaší televizi za %1$d s. Stisknutím OK přejdete hned.</string>
 </resources>

@@ -148,4 +148,10 @@
         <item quantity="one">%1$d యాప్</item>
         <item quantity="other">%1$d యాప్‌లు</item>
     </plurals>
+    <string name="trial_pill">Orbit ను ప్రయత్నిస్తోంది · %1$s మిగిలింది</string>
+    <string name="trial_pill_hint">హోమ్ మిమ్మల్ని మీ టీవీకి తిరిగి తీసుకెళ్తుంది</string>
+    <string name="trial_end_title">అదే Orbit OS</string>
+    <string name="trial_end_body">మీ టీవీ ఇప్పుడు దాని సొంత హోమ్ స్క్రీన్‌కు తిరిగి వెళ్తుంది. Orbit దానిలో ఏమీ మార్చలేదు: మీరు ఎంచుకునే వరకు Orbit Home యాప్‌గా మాత్రమే ఉంటుంది.</string>
+    <string name="trial_end_next">Orbit ను ఉంచుకోవడానికి, ఫోన్‌లోని Orbit యాప్‌లో Orbit OS ను సెటప్ చేయి ఎంచుకోండి. తొలగించడానికి, అక్కడ Orbit ను తొలగించు ఎంచుకోండి.</string>
+    <string name="trial_end_leaving">%1$d సెకన్లలో మీ టీవీకి తిరిగి వెళ్తారు. ఇప్పుడే వెళ్లడానికి OK నొక్కండి.</string>
 </resources>

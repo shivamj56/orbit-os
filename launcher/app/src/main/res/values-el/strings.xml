@@ -148,4 +148,10 @@
         <item quantity="one">%1$d εφαρμογή</item>
         <item quantity="other">%1$d εφαρμογές</item>
     </plurals>
+    <string name="trial_pill">Δοκιμή του Orbit · απομένουν %1$s</string>
+    <string name="trial_pill_hint">Το Home σάς γυρίζει στην τηλεόρασή σας</string>
+    <string name="trial_end_title">Αυτό ήταν το Orbit OS</string>
+    <string name="trial_end_body">Η τηλεόρασή σας επιστρέφει τώρα στη δική της αρχική οθόνη. Το Orbit δεν άλλαξε τίποτα σε αυτήν: το Orbit Home μένει μόνο ως εφαρμογή μέχρι να επιλέξετε.</string>
+    <string name="trial_end_next">Για να κρατήσετε το Orbit, επιλέξτε Ρύθμιση του Orbit OS στην εφαρμογή Orbit στο τηλέφωνό σας. Για να το καταργήσετε, επιλέξτε εκεί Κατάργηση του Orbit.</string>
+    <string name="trial_end_leaving">Επιστροφή στην τηλεόρασή σας σε %1$d δ. Πατήστε OK για να πάτε τώρα.</string>
 </resources>

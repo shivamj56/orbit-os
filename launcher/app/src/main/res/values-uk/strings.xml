@@ -155,4 +155,10 @@
     <string name="clock_format_24">24-годинний</string>
     <string name="good_forenoon">Гарного дня</string>
     <string name="dock_opacity_label">Прозорість панелі доку</string>
+    <string name="trial_pill">Пробуємо Orbit · залишилося %1$s</string>
+    <string name="trial_pill_hint">Кнопка «Головний екран» поверне вас до телевізора</string>
+    <string name="trial_end_title">Це був Orbit OS</string>
+    <string name="trial_end_body">Тепер телевізор повернеться на свій головний екран. Orbit нічого на ньому не змінював: Orbit Home залишається лише як застосунок, доки ви не вирішите.</string>
+    <string name="trial_end_next">Щоб залишити Orbit, виберіть «Налаштувати Orbit OS» у застосунку Orbit на телефоні. Щоб прибрати, виберіть там «Прибрати Orbit».</string>
+    <string name="trial_end_leaving">Повернення до телевізора через %1$d с. Натисніть OK, щоб повернутися зараз.</string>
 </resources>

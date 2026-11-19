@@ -149,4 +149,10 @@
     <string name="race_countdown_minutes">%1$d min</string>
     <string name="race_countdown_hours">%1$d t %2$d min</string>
     <string name="race_countdown_days">%1$d pv %2$d t</string>
+    <string name="trial_pill">Orbit-kokeilu · %1$s jäljellä</string>
+    <string name="trial_pill_hint">Home-painike palauttaa sinut TV:hen</string>
+    <string name="trial_end_title">Se oli Orbit OS</string>
+    <string name="trial_end_body">TV palaa nyt omalle aloitusnäytölleen. Orbit ei muuttanut siinä mitään: Orbit Home jää vain sovellukseksi, kunnes valitset.</string>
+    <string name="trial_end_next">Jos haluat pitää Orbitin, valitse puhelimen Orbit-sovelluksessa Ota Orbit OS käyttöön. Jos haluat poistaa sen, valitse siellä Poista Orbit.</string>
+    <string name="trial_end_leaving">Takaisin TV:hen %1$d s kuluttua. Palaa heti painamalla OK.</string>
 </resources>

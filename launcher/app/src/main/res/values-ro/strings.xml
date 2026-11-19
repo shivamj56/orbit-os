@@ -149,4 +149,10 @@
         <item quantity="one">%1$d aplicație</item>
         <item quantity="other">%1$d de aplicații</item>
     </plurals>
+    <string name="trial_pill">Încerci Orbit · mai sunt %1$s</string>
+    <string name="trial_pill_hint">Pornire te readuce la televizorul tău</string>
+    <string name="trial_end_title">Asta a fost Orbit OS</string>
+    <string name="trial_end_body">Televizorul tău revine acum la propriul ecran de pornire. Orbit nu a schimbat nimic pe el: Orbit Home rămâne doar ca aplicație până alegi tu.</string>
+    <string name="trial_end_next">Ca să păstrezi Orbit, alege Configurează Orbit OS în aplicația Orbit de pe telefon. Ca să-l scoți, alege acolo Elimină Orbit.</string>
+    <string name="trial_end_leaving">Revii la televizor în %1$d s. Apasă OK ca să pleci acum.</string>
 </resources>

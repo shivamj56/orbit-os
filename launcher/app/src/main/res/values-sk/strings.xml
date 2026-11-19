@@ -150,4 +150,10 @@
         <item quantity="one">%1$d aplikácia</item>
         <item quantity="other">%1$d aplikácií</item>
     </plurals>
+    <string name="trial_pill">Skúšate Orbit · zostáva %1$s</string>
+    <string name="trial_pill_hint">Tlačidlo Domov vás vráti k televízoru</string>
+    <string name="trial_end_title">To bol Orbit OS</string>
+    <string name="trial_end_body">Váš televízor sa teraz vráti na vlastnú domovskú obrazovku. Orbit na ňom nič nezmenil: Orbit Home zostane len ako aplikácia, kým sa nerozhodnete.</string>
+    <string name="trial_end_next">Ak chcete Orbit ponechať, vyberte Nastaviť Orbit OS v aplikácii Orbit v telefóne. Ak ho chcete odstrániť, vyberte tam Odstrániť Orbit.</string>
+    <string name="trial_end_leaving">Návrat k televízoru o %1$d s. Stlačením OK sa vrátite hneď.</string>
 </resources>

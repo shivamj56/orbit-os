@@ -150,4 +150,10 @@
     <string name="race_countdown_hours">%1$d Std. %2$d Min.</string>
     <string name="race_countdown_days">%1$d T. %2$d Std.</string>
     <string name="last_opened">Zuletzt geöffnet %1$s</string>
+    <string name="trial_pill">Orbit wird ausprobiert · noch %1$s</string>
+    <string name="trial_pill_hint">Home führt zurück zu deinem Fernseher</string>
+    <string name="trial_end_title">Das war Orbit OS</string>
+    <string name="trial_end_body">Dein Fernseher kehrt jetzt zu seinem eigenen Startbildschirm zurück. Orbit hat nichts daran verändert: Orbit Home bleibt nur als App, bis du dich entscheidest.</string>
+    <string name="trial_end_next">Um Orbit zu behalten, wähle in der Orbit-App auf deinem Smartphone „Orbit OS einrichten“. Zum Entfernen wähle dort „Orbit entfernen“.</string>
+    <string name="trial_end_leaving">Zurück zu deinem Fernseher in %1$d s. Drück OK, um sofort zu wechseln.</string>
 </resources>

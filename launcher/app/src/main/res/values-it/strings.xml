@@ -148,4 +148,10 @@
     <string name="clock_format_system">Sistema</string>
     <string name="clock_format_12">12 ore</string>
     <string name="clock_format_24">24 ore</string>
+    <string name="trial_pill">Prova di Orbit · %1$s rimanenti</string>
+    <string name="trial_pill_hint">Home ti riporta alla TV</string>
+    <string name="trial_end_title">Questo era Orbit OS</string>
+    <string name="trial_end_body">La TV torna ora alla sua schermata Home. Orbit non ha cambiato nulla: Orbit Home resta solo come app finché non scegli.</string>
+    <string name="trial_end_next">Per tenere Orbit, scegli Configura Orbit OS nell’app Orbit sul telefono. Per rimuoverlo, scegli lì Rimuovi Orbit.</string>
+    <string name="trial_end_leaving">Torni alla TV tra %1$d s. Premi OK per andare subito.</string>
 </resources>

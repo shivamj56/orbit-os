@@ -149,4 +149,10 @@
     <string name="race_countdown_hours">%1$d č %2$d min</string>
     <string name="race_countdown_days">%1$d d %2$d č</string>
     <string name="last_opened">Poslednji put otvoreno: %1$s</string>
+    <string name="trial_pill">Probate Orbit · preostalo %1$s</string>
+    <string name="trial_pill_hint">Početni ekran vas vraća na televizor</string>
+    <string name="trial_end_title">To je bio Orbit OS</string>
+    <string name="trial_end_body">Vaš televizor se sada vraća na svoj početni ekran. Orbit na njemu ništa nije promenio: Orbit Home ostaje samo kao aplikacija dok ne odlučite.</string>
+    <string name="trial_end_next">Da zadržite Orbit, u aplikaciji Orbit na telefonu izaberite Podesi Orbit OS. Da ga uklonite, tamo izaberite Ukloni Orbit.</string>
+    <string name="trial_end_leaving">Povratak na televizor za %1$d s. Pritisnite OK da idete odmah.</string>
 </resources>

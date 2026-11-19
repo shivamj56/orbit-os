@@ -149,4 +149,10 @@
     <string name="clock_format_system">Sistema</string>
     <string name="clock_format_12">12 hores</string>
     <string name="clock_format_24">24 hores</string>
+    <string name="trial_pill">Probando Orbit · %1$s que queda</string>
+    <string name="trial_pill_hint">Home vuelve a la to TV</string>
+    <string name="trial_end_title">Eso foi Orbit OS</string>
+    <string name="trial_end_body">Agora la to TV vuelve a la so pantalla d’aniciu. Orbit nun camudó nada nella: Orbit Home namás queda como aplicación hasta que escueyas.</string>
+    <string name="trial_end_next">Pa caltener Orbit, escueye Configurar Orbit OS na aplicación Orbit del to teléfonu. Pa quitalu, escueye ellí Desaniciar Orbit.</string>
+    <string name="trial_end_leaving">Vuelves a la to TV en %1$d s. Primi OK pa dir agora.</string>
 </resources>

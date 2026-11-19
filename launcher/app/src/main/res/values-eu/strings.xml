@@ -148,4 +148,10 @@
         <item quantity="one">%1$d aplikazio</item>
         <item quantity="other">%1$d aplikazio</item>
     </plurals>
+    <string name="trial_pill">Orbit probatzen · %1$s geratzen dira</string>
+    <string name="trial_pill_hint">Home sakatuta zure telebistara itzultzen zara</string>
+    <string name="trial_end_title">Hori izan da Orbit OS</string>
+    <string name="trial_end_body">Zure telebista bere hasierako pantailara itzuliko da orain. Orbitek ez du ezer aldatu bertan: Orbit Home aplikazio gisa soilik geratzen da, zuk aukeratu arte.</string>
+    <string name="trial_end_next">Orbit mantentzeko, aukeratu Konfiguratu Orbit OS telefonoko Orbit aplikazioan. Kentzeko, aukeratu bertan Kendu Orbit.</string>
+    <string name="trial_end_leaving">Zure telebistara itzultzen: %1$d s. Sakatu OK orain joateko.</string>
 </resources>

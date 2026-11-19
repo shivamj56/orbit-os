@@ -150,4 +150,10 @@
         <item quantity="two">%1$d aplikaciji</item>
         <item quantity="other">%1$d aplikacij</item>
     </plurals>
+    <string name="trial_pill">Preizkus Orbit · še %1$s</string>
+    <string name="trial_pill_hint">Domov vas vrne na televizor</string>
+    <string name="trial_end_title">To je bil Orbit OS</string>
+    <string name="trial_end_body">Vaš televizor se zdaj vrne na svoj domači zaslon. Orbit na njem ni nič spremenil: Orbit Home ostane le kot aplikacija, dokler ne izberete.</string>
+    <string name="trial_end_next">Če želite obdržati Orbit, v aplikaciji Orbit v telefonu izberite Nastavi Orbit OS. Če ga želite odstraniti, tam izberite Odstrani Orbit.</string>
+    <string name="trial_end_leaving">Nazaj na televizor čez %1$d s. Pritisnite OK, če želite iti zdaj.</string>
 </resources>

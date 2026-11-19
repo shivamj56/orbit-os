@@ -150,4 +150,10 @@
     <string name="race_countdown_hours">%1$d godz. %2$d min</string>
     <string name="race_countdown_days">%1$d d %2$d godz.</string>
     <string name="last_opened">Ostatnio otwarto: %1$s</string>
+    <string name="trial_pill">Wypróbowanie Orbit · zostało %1$s</string>
+    <string name="trial_pill_hint">Przycisk ekranu głównego zabierze Cię z powrotem do telewizora</string>
+    <string name="trial_end_title">To był Orbit OS</string>
+    <string name="trial_end_body">Telewizor wraca teraz na swój własny ekran główny. Orbit niczego na nim nie zmienił: Orbit Home zostaje tylko jako aplikacja, dopóki nie zdecydujesz.</string>
+    <string name="trial_end_next">Aby zachować Orbit, wybierz Skonfiguruj Orbit OS w aplikacji Orbit na telefonie. Aby go usunąć, wybierz tam Usuń Orbit.</string>
+    <string name="trial_end_leaving">Powrót do telewizora za %1$d s. Naciśnij OK, aby wrócić teraz.</string>
 </resources>

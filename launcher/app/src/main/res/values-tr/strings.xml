@@ -148,4 +148,10 @@
     <string name="race_countdown_hours">%1$d sa %2$d dk</string>
     <string name="race_countdown_days">%1$d g %2$d sa</string>
     <string name="last_opened">Son açılış: %1$s</string>
+    <string name="trial_pill">Orbit deneniyor · %1$s kaldı</string>
+    <string name="trial_pill_hint">Ana ekran düğmesi sizi TV’nize geri götürür</string>
+    <string name="trial_end_title">Orbit OS buydu</string>
+    <string name="trial_end_body">TV’niz şimdi kendi ana ekranına dönüyor. Orbit üzerinde hiçbir şeyi değiştirmedi: Orbit Home, siz seçene kadar yalnızca uygulama olarak kalır.</string>
+    <string name="trial_end_next">Orbit’i tutmak için telefonunuzdaki Orbit uygulamasında Orbit OS’i kur’u seçin. Kaldırmak için orada Orbit’i kaldır’ı seçin.</string>
+    <string name="trial_end_leaving">%1$d sn sonra TV’nize dönülüyor. Şimdi gitmek için OK’e basın.</string>
 </resources>

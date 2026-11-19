@@ -149,4 +149,10 @@
         <item quantity="zero">%1$d lietotņu</item>
         <item quantity="other">%1$d lietotnes</item>
     </plurals>
+    <string name="trial_pill">Orbit izmēģinājums · atlicis %1$s</string>
+    <string name="trial_pill_hint">Home atgriež jūs televizorā</string>
+    <string name="trial_end_title">Tas bija Orbit OS</string>
+    <string name="trial_end_body">Jūsu televizors tagad atgriežas savā sākuma ekrānā. Orbit tajā neko nemainīja: Orbit Home paliek tikai kā lietotne, līdz jūs izvēlēsieties.</string>
+    <string name="trial_end_next">Lai paturētu Orbit, tālruņa Orbit lietotnē izvēlieties Iestatīt Orbit OS. Lai to noņemtu, tur izvēlieties Noņemt Orbit.</string>
+    <string name="trial_end_leaving">Atpakaļ uz televizoru pēc %1$d s. Nospiediet OK, lai atgrieztos tūlīt.</string>
 </resources>

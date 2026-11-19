@@ -148,4 +148,10 @@
         <item quantity="one">%1$d ॲप</item>
         <item quantity="other">%1$d ॲप्स</item>
     </plurals>
+    <string name="trial_pill">Orbit वापरून पाहत आहे · %1$s बाकी</string>
+    <string name="trial_pill_hint">होम दाबल्यावर तुम्ही तुमच्या टीव्हीवर परत जाता</string>
+    <string name="trial_end_title">हा होता Orbit OS</string>
+    <string name="trial_end_body">तुमचा टीव्ही आता स्वतःच्या होम स्क्रीनवर परत जातो. Orbit ने त्यात काहीही बदलले नाही: तुम्ही निवडेपर्यंत Orbit Home फक्त अ‍ॅप म्हणून राहतो.</string>
+    <string name="trial_end_next">Orbit ठेवायचे असल्यास फोनवरील Orbit अ‍ॅपमध्ये Orbit OS सेट अप करा निवडा. काढायचे असल्यास तिथे Orbit काढून टाका निवडा.</string>
+    <string name="trial_end_leaving">%1$d से मध्ये तुमच्या टीव्हीवर परत. आता जाण्यासाठी OK दाबा.</string>
 </resources>

@@ -148,4 +148,10 @@
     <string name="race_countdown_hours">%1$d ชม. %2$d นาที</string>
     <string name="race_countdown_days">%1$d วัน %2$d ชม.</string>
     <string name="last_opened">เปิดล่าสุด %1$s</string>
+    <string name="trial_pill">กำลังลองใช้ Orbit · เหลือ %1$s</string>
+    <string name="trial_pill_hint">ปุ่มหน้าหลักจะพาคุณกลับไปที่ทีวี</string>
+    <string name="trial_end_title">นั่นคือ Orbit OS</string>
+    <string name="trial_end_body">ตอนนี้ทีวีของคุณกลับไปที่หน้าจอหลักของตัวเอง Orbit ไม่ได้เปลี่ยนแปลงสิ่งใดบนทีวี Orbit Home จะยังอยู่เป็นแอปจนกว่าคุณจะเลือก</string>
+    <string name="trial_end_next">หากต้องการใช้ Orbit ต่อ ให้เลือกตั้งค่า Orbit OS ในแอป Orbit บนโทรศัพท์ หากต้องการนำออก ให้เลือกนำ Orbit ออกที่นั่น</string>
+    <string name="trial_end_leaving">กลับไปที่ทีวีใน %1$d วินาที กด OK เพื่อไปตอนนี้</string>
 </resources>

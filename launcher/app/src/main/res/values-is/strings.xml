@@ -148,4 +148,10 @@
         <item quantity="one">%1$d forrit</item>
         <item quantity="other">%1$d forrit</item>
     </plurals>
+    <string name="trial_pill">Orbit prufa · %1$s eftir</string>
+    <string name="trial_pill_hint">Home fer með þig aftur í sjónvarpið</string>
+    <string name="trial_end_title">Þetta var Orbit OS</string>
+    <string name="trial_end_body">Sjónvarpið þitt fer nú aftur á sinn eigin upphafsskjá. Orbit breytti engu á því: Orbit Home verður aðeins sem forrit þar til þú velur.</string>
+    <string name="trial_end_next">Til að halda Orbit skaltu velja Setja upp Orbit OS í Orbit forritinu í símanum þínum. Til að fjarlægja það skaltu velja Fjarlægja Orbit þar.</string>
+    <string name="trial_end_leaving">Aftur í sjónvarpið eftir %1$d sek. Ýttu á OK til að fara núna.</string>
 </resources>

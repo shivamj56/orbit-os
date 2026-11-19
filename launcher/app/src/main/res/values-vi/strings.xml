@@ -149,4 +149,10 @@
     <string name="race_sprint_short">SPRINT</string>
     <string name="race_qualifying_short">QUALI</string>
     <string name="race_race_short">ĐUA CHÍNH</string>
+    <string name="trial_pill">Đang dùng thử Orbit · còn %1$s</string>
+    <string name="trial_pill_hint">Nút Màn hình chính đưa bạn về TV</string>
+    <string name="trial_end_title">Đó là Orbit OS</string>
+    <string name="trial_end_body">TV của bạn giờ quay lại màn hình chính riêng. Orbit không thay đổi gì trên đó: Orbit Home chỉ ở lại dưới dạng ứng dụng cho đến khi bạn chọn.</string>
+    <string name="trial_end_next">Để giữ Orbit, hãy chọn Thiết lập Orbit OS trong ứng dụng Orbit trên điện thoại. Để gỡ, hãy chọn Gỡ Orbit tại đó.</string>
+    <string name="trial_end_leaving">Quay lại TV sau %1$d giây. Nhấn OK để đi ngay.</string>
 </resources>

@@ -148,4 +148,10 @@
         <item quantity="one">%1$d ஆப்</item>
         <item quantity="other">%1$d ஆப்ஸ்</item>
     </plurals>
+    <string name="trial_pill">Orbit ஐ முயல்கிறது · %1$s மீதம்</string>
+    <string name="trial_pill_hint">முகப்பு உங்களை டிவிக்குத் திரும்ப அழைத்துச் செல்லும்</string>
+    <string name="trial_end_title">அதுதான் Orbit OS</string>
+    <string name="trial_end_body">உங்கள் டிவி இப்போது தனது சொந்த முகப்புத் திரைக்குத் திரும்புகிறது. Orbit அதில் எதையும் மாற்றவில்லை: நீங்கள் தேர்வுசெய்யும் வரை Orbit Home ஆப்ஸாக மட்டுமே இருக்கும்.</string>
+    <string name="trial_end_next">Orbit ஐ வைத்திருக்க, ஃபோனில் உள்ள Orbit ஆப்ஸில் Orbit OS ஐ அமை என்பதைத் தேர்ந்தெடுங்கள். அகற்ற, அங்கே Orbit ஐ அகற்று என்பதைத் தேர்ந்தெடுங்கள்.</string>
+    <string name="trial_end_leaving">%1$d விநாடியில் உங்கள் டிவிக்குத் திரும்பும். இப்போதே செல்ல OK ஐ அழுத்துங்கள்.</string>
 </resources>

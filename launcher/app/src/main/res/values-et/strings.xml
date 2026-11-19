@@ -148,4 +148,10 @@
         <item quantity="one">%1$d rakendus</item>
         <item quantity="other">%1$d rakendust</item>
     </plurals>
+    <string name="trial_pill">Orbiti proovimine · jäänud %1$s</string>
+    <string name="trial_pill_hint">Nupp Home viib sind tagasi teleri juurde</string>
+    <string name="trial_end_title">See oli Orbit OS</string>
+    <string name="trial_end_body">Sinu teler läheb nüüd tagasi oma avalehele. Orbit ei muutnud seal midagi: Orbit Home jääb vaid rakendusena, kuni sa valid.</string>
+    <string name="trial_end_next">Orbiti alles hoidmiseks vali telefonis Orbiti rakenduses Seadista Orbit OS. Eemaldamiseks vali seal Eemalda Orbit.</string>
+    <string name="trial_end_leaving">Tagasi teleri juurde %1$d s pärast. Vajuta kohe minekuks OK.</string>
 </resources>

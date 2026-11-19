@@ -148,4 +148,10 @@
         <item quantity="one">%1$d toepassing</item>
         <item quantity="other">%1$d toepassings</item>
     </plurals>
+    <string name="trial_pill">Orbit word probeer · %1$s oor</string>
+    <string name="trial_pill_hint">Home gaan terug na jou TV</string>
+    <string name="trial_end_title">Dit was Orbit OS</string>
+    <string name="trial_end_body">Jou TV gaan nou terug na sy eie tuisskerm. Orbit het niks daarop verander nie: Orbit Home bly net as \'n toepassing totdat jy kies.</string>
+    <string name="trial_end_next">Om Orbit te hou, kies Stel Orbit OS op in die Orbit-toepassing op jou foon. Om dit af te haal, kies Verwyder Orbit daar.</string>
+    <string name="trial_end_leaving">Terug na jou TV oor %1$d s. Druk OK om nou te gaan.</string>
 </resources>

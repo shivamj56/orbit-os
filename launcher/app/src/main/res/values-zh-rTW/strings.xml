@@ -147,4 +147,10 @@
     <string name="race_countdown_minutes">%1$d 分鐘</string>
     <string name="race_countdown_hours">%1$d 小時 %2$d 分</string>
     <string name="race_countdown_days">%1$d 天 %2$d 小時</string>
+    <string name="trial_pill">正在試用 Orbit · 剩餘 %1$s</string>
+    <string name="trial_pill_hint">按主畫面鍵即可回到你的電視</string>
+    <string name="trial_end_title">這就是 Orbit OS</string>
+    <string name="trial_end_body">你的電視現在會回到自己的主畫面。Orbit 沒有變更電視上的任何項目：在你做出選擇之前，Orbit Home 只會以應用程式的形式保留。</string>
+    <string name="trial_end_next">要保留 Orbit，請在手機的 Orbit 應用程式中選擇「設定 Orbit OS」。要移除，請在那裡選擇「移除 Orbit」。</string>
+    <string name="trial_end_leaving">%1$d 秒後返回你的電視。按 OK 即可立即返回。</string>
 </resources>

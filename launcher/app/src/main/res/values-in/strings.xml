@@ -148,4 +148,10 @@
     <string name="race_countdown_minutes">%1$d mnt</string>
     <string name="race_countdown_hours">%1$d j %2$d mnt</string>
     <string name="race_countdown_days">%1$d h %2$d j</string>
+    <string name="trial_pill">Mencoba Orbit · %1$s tersisa</string>
+    <string name="trial_pill_hint">Home membawa Anda kembali ke TV</string>
+    <string name="trial_end_title">Itu tadi Orbit OS</string>
+    <string name="trial_end_body">TV Anda kini kembali ke layar utamanya sendiri. Orbit tidak mengubah apa pun di TV: Orbit Home hanya tetap sebagai aplikasi sampai Anda memilih.</string>
+    <string name="trial_end_next">Untuk mempertahankan Orbit, pilih Siapkan Orbit OS di aplikasi Orbit di ponsel Anda. Untuk menghapusnya, pilih Hapus Orbit di sana.</string>
+    <string name="trial_end_leaving">Kembali ke TV Anda dalam %1$d dtk. Tekan OK untuk pergi sekarang.</string>
 </resources>

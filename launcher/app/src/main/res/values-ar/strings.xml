@@ -152,4 +152,10 @@
     <string name="race_countdown_hours">%1$d س %2$d د</string>
     <string name="race_countdown_days">%1$d ي %2$d س</string>
     <string name="last_opened">آخر فتح: %1$s</string>
+    <string name="trial_pill">تجربة Orbit · المتبقي %1$s</string>
+    <string name="trial_pill_hint">يعود زر Home إلى تلفزيونك</string>
+    <string name="trial_end_title">كان هذا Orbit OS</string>
+    <string name="trial_end_body">يعود تلفزيونك الآن إلى شاشته الرئيسية الخاصة. لم يغيّر Orbit أي شيء عليه: يبقى Orbit Home كتطبيق فقط إلى أن تختار.</string>
+    <string name="trial_end_next">للإبقاء على Orbit، اختر إعداد Orbit OS في تطبيق Orbit على هاتفك. ولإزالته، اختر إزالة Orbit هناك.</string>
+    <string name="trial_end_leaving">العودة إلى تلفزيونك خلال %1$d ث. اضغط OK للانتقال الآن.</string>
 </resources>

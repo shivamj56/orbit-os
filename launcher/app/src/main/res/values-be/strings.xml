@@ -150,4 +150,10 @@
         <item quantity="one">%1$d праграма</item>
         <item quantity="other">%1$d праграмы</item>
     </plurals>
+    <string name="trial_pill">Проба Orbit · засталося %1$s</string>
+    <string name="trial_pill_hint">Home вяртае на ваш тэлевізар</string>
+    <string name="trial_end_title">Гэта быў Orbit OS</string>
+    <string name="trial_end_body">Цяпер ваш тэлевізар вяртаецца на свой галоўны экран. Orbit нічога на ім не змяніў: Orbit Home застаецца толькі як праграма, пакуль вы не абярэце.</string>
+    <string name="trial_end_next">Каб захаваць Orbit, абярыце «Наладзіць Orbit OS» у праграме Orbit на тэлефоне. Каб выдаліць, абярыце там «Выдаліць Orbit».</string>
+    <string name="trial_end_leaving">Вяртанне да вашага тэлевізара праз %1$d с. Націсніце OK, каб перайсці зараз.</string>
 </resources>

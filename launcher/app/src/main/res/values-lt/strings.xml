@@ -150,4 +150,10 @@
         <item quantity="one">%1$d programa</item>
         <item quantity="other">%1$d programų</item>
     </plurals>
+    <string name="trial_pill">Orbit bandymas · liko %1$s</string>
+    <string name="trial_pill_hint">Home grąžina į jūsų televizorių</string>
+    <string name="trial_end_title">Tai buvo Orbit OS</string>
+    <string name="trial_end_body">Jūsų televizorius dabar grįžta į savo pagrindinį ekraną. Orbit nieko jame nepakeitė: Orbit Home lieka tik kaip programa, kol pasirinksite.</string>
+    <string name="trial_end_next">Norėdami pasilikti Orbit, telefone esančioje Orbit programoje pasirinkite „Nustatyti Orbit OS“. Norėdami pašalinti – ten pasirinkite „Pašalinti Orbit“.</string>
+    <string name="trial_end_leaving">Grįžtama į jūsų televizorių po %1$d s. Paspauskite OK, kad grįžtumėte dabar.</string>
 </resources>
