@@ -144,5 +144,7 @@
     <string name="clock_format_system">Sistem</string>
     <string name="clock_format_12">12 jam</string>
     <string name="clock_format_24">24 jam</string>
-    <string name="library_app_count">%1$d apl</string>
+    <plurals name="library_app_count">
+        <item quantity="other">%1$d apl</item>
+    </plurals>
 </resources>

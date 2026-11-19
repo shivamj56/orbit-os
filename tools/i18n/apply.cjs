@@ -85,7 +85,10 @@ if (mode === "--phone") {
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, sortedJson(texts));
     // launcher strings.xml
-    const tvEntries = job.tv.filter((e) => got[e.id] !== undefined).map((e) => [e.id.slice(2), got[e.id]]);
+    // A language with only "other" answers a count with a plain text; Android still needs it as <plurals>.
+    const tvEntries = job.tv
+      .filter((e) => got[e.id] !== undefined)
+      .map((e) => [e.id.slice(2), e.plural && typeof got[e.id] === "string" ? { other: got[e.id] } : got[e.id]]);
     const xml = path.join(repo, "launcher/app/src/main/res", `values-${l.android[0]}`, "strings.xml");
     const n = mergeStrings(xml, tvEntries, job.plural);
     console.log(`${code.padEnd(7)} phone +${added} (${Object.keys(texts).length})  launcher strings +${n}`);
