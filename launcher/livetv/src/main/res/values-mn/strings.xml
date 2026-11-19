@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK нь %1$s-ийг нээнэ</string>
+    <string name="guide_watch_now">Одоо үзэхийн тулд OK дарна уу</string>
+    <string name="guide_connecting">Холбогдож байна…</string>
+    <string name="guide_slow">Холбогдсоор байна, суваг одоо удаан байна</string>
+    <string name="guide_off_air_now">Одоо нэвтрүүлэггүй байна.  ▲ ▼ өөр суваг</string>
+    <string name="guide_offline">Зурагт онлайн биш байна. Wi-Fi-аа шалгана уу</string>
+    <string name="guide_paused">Түр зогссон.  OK эсвэл ▶ шууд нэвтрүүлэг рүү буцаана</string>
+    <string name="guide_back_again">Нүүр рүү очихын тулд БУЦАХ товчийг дахин дарна уу</string>
+    <string name="guide_keys">▲ ▼  Сувгууд      OK  Бүх суваг</string>
+    <string name="guide_free_channels">Үнэгүй хинди сувгууд</string>
+    <string name="channel_opens_in">%1$s дотор нээгдэнэ  ›</string>
+    <string name="channel_off_air">Одоо нэвтрүүлэггүй байна</string>
+    <string name="channel_maybe_off_air">Нэвтрүүлэггүй байж магадгүй</string>
+    <string name="no_channel">%1$s суваг байхгүй</string>
+</resources>

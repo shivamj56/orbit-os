@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK %1$sን ይከፍታል</string>
+    <string name="guide_watch_now">አሁን ለመመልከት OK</string>
+    <string name="guide_connecting">በመገናኘት ላይ…</string>
+    <string name="guide_slow">አሁንም በመገናኘት ላይ ነው፣ ጣቢያው አሁን ዝግተኛ ነው</string>
+    <string name="guide_off_air_now">አሁን በስርጭት ላይ አይደለም።  ▲ ▼ ሌላ ጣቢያ</string>
+    <string name="guide_offline">ቴሌቪዥኑ መስመር ላይ አይደለም። Wi-Fiን ያረጋግጡ</string>
+    <string name="guide_paused">ቆሟል።  OK ወይም ▶ ወደ ቀጥታ ይመልሳል</string>
+    <string name="guide_back_again">ወደ መነሻ ለመሄድ ተመለስን እንደገና ይጫኑ</string>
+    <string name="guide_keys">▲ ▼  ጣቢያዎች      OK  ሁሉም ጣቢያዎች</string>
+    <string name="guide_free_channels">ነጻ የሕንድ ጣቢያዎች</string>
+    <string name="channel_opens_in">በ%1$s ይከፈታል  ›</string>
+    <string name="channel_off_air">አሁን በስርጭት ላይ አይደለም</string>
+    <string name="channel_maybe_off_air">በስርጭት ላይ ላይሆን ይችላል</string>
+    <string name="no_channel">ጣቢያ %1$s የለም</string>
+</resources>

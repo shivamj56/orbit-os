@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK %1$s ачат</string>
+    <string name="guide_watch_now">Азыр көрүү үчүн OK басыңыз</string>
+    <string name="guide_connecting">Туташууда…</string>
+    <string name="guide_slow">Дагы эле туташууда, канал азыр жай</string>
+    <string name="guide_off_air_now">Азыр эфирде жок.  ▲ ▼ башка канал</string>
+    <string name="guide_offline">Телевизор интернетте эмес. Wi-Fi тармагын текшериңиз</string>
+    <string name="guide_paused">Токтотулду.  OK же ▶ түз эфирге кайтарат</string>
+    <string name="guide_back_again">Башкы экранга өтүү үчүн АРТКА баскычын дагы бир жолу басыңыз</string>
+    <string name="guide_keys">▲ ▼  Каналдар      OK  Бардык каналдар</string>
+    <string name="guide_free_channels">Акысыз хинди каналдары</string>
+    <string name="channel_opens_in">%1$s ичинде ачылат  ›</string>
+    <string name="channel_off_air">Азыр эфирде жок</string>
+    <string name="channel_maybe_off_air">Эфирде болбошу мүмкүн</string>
+    <string name="no_channel">%1$s каналы жок</string>
+</resources>

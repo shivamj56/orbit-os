@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OKで%1$sを開く</string>
+    <string name="guide_watch_now">OKで今すぐ視聴</string>
+    <string name="guide_connecting">接続しています…</string>
+    <string name="guide_slow">まだ接続中です。今はチャンネルの反応が遅いようです</string>
+    <string name="guide_off_air_now">現在放送していません。  ▲ ▼ で別のチャンネルへ</string>
+    <string name="guide_offline">テレビがオンラインではありません。Wi-Fi を確認してください</string>
+    <string name="guide_paused">一時停止中。  OK または ▶ でライブに戻ります</string>
+    <string name="guide_back_again">もう一度「戻る」を押すとホームに戻ります</string>
+    <string name="guide_keys">▲ ▼  チャンネル      OK  すべてのチャンネル</string>
+    <string name="guide_free_channels">無料のヒンディー語チャンネル</string>
+    <string name="channel_opens_in">%1$sで開く  ›</string>
+    <string name="channel_off_air">現在放送していません</string>
+    <string name="channel_maybe_off_air">放送していない可能性があります</string>
+    <string name="no_channel">チャンネル %1$s はありません</string>
+</resources>

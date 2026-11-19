@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK يفتح %1$s</string>
+    <string name="guide_watch_now">OK للمشاهدة الآن</string>
+    <string name="guide_connecting">جارٍ الاتصال…</string>
+    <string name="guide_slow">ما زال الاتصال جاريًا، القناة بطيئة الآن</string>
+    <string name="guide_off_air_now">لا يوجد بث الآن.  ▲ ▼ قناة أخرى</string>
+    <string name="guide_offline">التلفزيون غير متصل بالإنترنت. تحقق من شبكة Wi-Fi</string>
+    <string name="guide_paused">متوقف مؤقتًا.  OK أو ▶ للعودة إلى البث المباشر</string>
+    <string name="guide_back_again">اضغط رجوع مرة أخرى للانتقال إلى الشاشة الرئيسية</string>
+    <string name="guide_keys">▲ ▼  القنوات      OK  كل القنوات</string>
+    <string name="guide_free_channels">قنوات هندية مجانية</string>
+    <string name="channel_opens_in">يُفتح في %1$s  ›</string>
+    <string name="channel_off_air">لا يوجد بث الآن</string>
+    <string name="channel_maybe_off_air">قد لا يوجد بث</string>
+    <string name="no_channel">لا توجد قناة %1$s</string>
+</resources>

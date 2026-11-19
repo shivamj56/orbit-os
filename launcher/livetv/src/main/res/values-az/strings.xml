@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK, %1$s tətbiqini açır</string>
+    <string name="guide_watch_now">İndi izləmək üçün OK</string>
+    <string name="guide_connecting">Qoşulur…</string>
+    <string name="guide_slow">Hələ qoşulur, kanal indi yavaşdır</string>
+    <string name="guide_off_air_now">İndi efirdə deyil.  ▲ ▼ başqa kanal</string>
+    <string name="guide_offline">TV onlayn deyil. Wi-Fi-ı yoxlayın</string>
+    <string name="guide_paused">Dayandırıldı.  OK və ya ▶ canlı yayıma qaytarır</string>
+    <string name="guide_back_again">Əsas ekrana keçmək üçün GERİ düyməsini yenidən basın</string>
+    <string name="guide_keys">▲ ▼  Kanallar      OK  Bütün kanallar</string>
+    <string name="guide_free_channels">Pulsuz hind kanalları</string>
+    <string name="channel_opens_in">%1$s tətbiqində açılır  ›</string>
+    <string name="channel_off_air">İndi efirdə deyil</string>
+    <string name="channel_maybe_off_air">Efirdə olmaya bilər</string>
+    <string name="no_channel">%1$s nömrəli kanal yoxdur</string>
+</resources>

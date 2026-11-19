@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK برنامهٔ %1$s را باز می‌کند</string>
+    <string name="guide_watch_now">OK برای تماشا</string>
+    <string name="guide_connecting">در حال اتصال…</string>
+    <string name="guide_slow">هنوز در حال اتصال است، کانال فعلاً کند است</string>
+    <string name="guide_off_air_now">اکنون پخش نمی‌شود.  ▲ ▼ کانال دیگر</string>
+    <string name="guide_offline">تلویزیون آنلاین نیست. Wi-Fi را بررسی کنید</string>
+    <string name="guide_paused">متوقف شد.  OK یا ▶ به پخش زنده برمی‌گردد</string>
+    <string name="guide_back_again">برای رفتن به صفحهٔ اصلی دوباره برگشت را بزنید</string>
+    <string name="guide_keys">▲ ▼  کانال‌ها      OK  همهٔ کانال‌ها</string>
+    <string name="guide_free_channels">کانال‌های رایگان هندی</string>
+    <string name="channel_opens_in">در %1$s باز می‌شود  ›</string>
+    <string name="channel_off_air">اکنون پخش نمی‌شود</string>
+    <string name="channel_maybe_off_air">شاید پخش نشود</string>
+    <string name="no_channel">کانال %1$s وجود ندارد</string>
+</resources>

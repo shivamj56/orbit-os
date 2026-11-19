@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK അമർത്തിയാൽ %1$s തുറക്കും</string>
+    <string name="guide_watch_now">ഇപ്പോൾ കാണാൻ OK</string>
+    <string name="guide_connecting">കണക്‌റ്റ് ചെയ്യുന്നു…</string>
+    <string name="guide_slow">ഇപ്പോഴും കണക്‌റ്റ് ചെയ്യുന്നു, ചാനൽ ഇപ്പോൾ മന്ദഗതിയിലാണ്</string>
+    <string name="guide_off_air_now">ഇപ്പോൾ സംപ്രേഷണത്തിലില്ല.  ▲ ▼ മറ്റൊരു ചാനൽ</string>
+    <string name="guide_offline">ടിവി ഓൺലൈനിൽ അല്ല. Wi-Fi പരിശോധിക്കുക</string>
+    <string name="guide_paused">താൽക്കാലികമായി നിർത്തി.  OK അല്ലെങ്കിൽ ▶ ലൈവിലേക്ക് മടങ്ങും</string>
+    <string name="guide_back_again">ഹോമിലേക്ക് പോകാൻ വീണ്ടും പിന്നോട്ട് അമർത്തുക</string>
+    <string name="guide_keys">▲ ▼  ചാനലുകൾ      OK  എല്ലാ ചാനലുകളും</string>
+    <string name="guide_free_channels">സൗജന്യ ഹിന്ദി ചാനലുകൾ</string>
+    <string name="channel_opens_in">%1$s-ൽ തുറക്കും  ›</string>
+    <string name="channel_off_air">ഇപ്പോൾ സംപ്രേഷണത്തിലില്ല</string>
+    <string name="channel_maybe_off_air">സംപ്രേഷണത്തിൽ ഇല്ലായിരിക്കാം</string>
+    <string name="no_channel">%1$s എന്ന ചാനൽ ഇല്ല</string>
+</resources>

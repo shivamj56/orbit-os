@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK %1$s ilovasini ochadi</string>
+    <string name="guide_watch_now">Hozir ko‘rish uchun OK bosing</string>
+    <string name="guide_connecting">Ulanmoqda…</string>
+    <string name="guide_slow">Hali ulanmoqda, kanal hozir sekin</string>
+    <string name="guide_off_air_now">Hozir efirda emas.  ▲ ▼ boshqa kanal</string>
+    <string name="guide_offline">Televizor internetga ulanmagan. Wi-Fi’ni tekshiring</string>
+    <string name="guide_paused">To‘xtatildi.  OK yoki ▶ jonli efirga qaytaradi</string>
+    <string name="guide_back_again">Bosh ekranga o‘tish uchun ORQAGA tugmasini yana bir marta bosing</string>
+    <string name="guide_keys">▲ ▼  Kanallar      OK  Barcha kanallar</string>
+    <string name="guide_free_channels">Bepul hind tilidagi kanallar</string>
+    <string name="channel_opens_in">%1$s ichida ochiladi  ›</string>
+    <string name="channel_off_air">Hozir efirda emas</string>
+    <string name="channel_maybe_off_air">Efirda bo‘lmasligi mumkin</string>
+    <string name="no_channel">%1$s kanali yo‘q</string>
+</resources>

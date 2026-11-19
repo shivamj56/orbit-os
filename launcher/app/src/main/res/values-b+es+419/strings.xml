@@ -144,4 +144,15 @@
     <string name="race_countdown_hours">%1$dh %2$dm</string>
     <string name="race_countdown_days">%1$dd %2$dh</string>
     <string name="last_opened">Última apertura: %1$s</string>
+    <string name="festival_halloween_greeting">Feliz Halloween</string>
+    <string name="game_live">En vivo</string>
+    <string name="clock_format_system">Sistema</string>
+    <string name="clock_format_12">12 horas</string>
+    <string name="clock_format_24">24 horas</string>
+    <string name="trial_pill">Probando Orbit · quedan %1$s</string>
+    <string name="trial_pill_hint">Inicio vuelve a tu TV</string>
+    <string name="trial_end_title">Eso era Orbit OS</string>
+    <string name="trial_end_body">Tu TV vuelve ahora a su propia pantalla de inicio. Orbit no cambió nada en ella: Orbit Home solo se queda como app hasta que decidas.</string>
+    <string name="trial_end_next">Para quedarte con Orbit, elige Configurar Orbit OS en la app Orbit de tu celular. Para quitarlo, elige Quitar Orbit allí.</string>
+    <string name="trial_end_leaving">Volverás a tu TV en %1$d s. Presiona OK para ir ya.</string>
 </resources>

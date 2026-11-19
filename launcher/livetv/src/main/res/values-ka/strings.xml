@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK გახსნის: %1$s</string>
+    <string name="guide_watch_now">OK ახლავე სანახავად</string>
+    <string name="guide_connecting">ვუკავშირდებით…</string>
+    <string name="guide_slow">ჯერ კიდევ ვუკავშირდებით, არხი ახლა ნელია</string>
+    <string name="guide_off_air_now">ახლა ეთერში არ არის.  ▲ ▼ სხვა არხი</string>
+    <string name="guide_offline">ტელევიზორი ონლაინ არ არის. შეამოწმეთ Wi-Fi</string>
+    <string name="guide_paused">პაუზაზეა.  OK ან ▶ პირდაპირ ეთერს დააბრუნებს</string>
+    <string name="guide_back_again">მთავარზე გასასვლელად კიდევ ერთხელ დააჭირეთ უკან</string>
+    <string name="guide_keys">▲ ▼  არხები      OK  ყველა არხი</string>
+    <string name="guide_free_channels">უფასო ჰინდი არხები</string>
+    <string name="channel_opens_in">იხსნება: %1$s  ›</string>
+    <string name="channel_off_air">ახლა ეთერში არ არის</string>
+    <string name="channel_maybe_off_air">შესაძლოა ეთერში არ იყოს</string>
+    <string name="no_channel">არხი %1$s არ არსებობს</string>
+</resources>

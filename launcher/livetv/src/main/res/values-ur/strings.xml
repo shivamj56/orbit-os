@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK سے %1$s کھلتا ہے</string>
+    <string name="guide_watch_now">ابھی دیکھنے کے لیے OK</string>
+    <string name="guide_connecting">جڑ رہا ہے…</string>
+    <string name="guide_slow">ابھی جڑ رہا ہے، چینل اس وقت سست ہے</string>
+    <string name="guide_off_air_now">ابھی نشر نہیں ہو رہا۔  ▲ ▼ دوسرا چینل</string>
+    <string name="guide_offline">ٹی وی آن لائن نہیں ہے۔ Wi-Fi چیک کریں</string>
+    <string name="guide_paused">روک دیا گیا۔  OK یا ▶ سے لائیو پر واپس</string>
+    <string name="guide_back_again">ہوم پر جانے کے لیے پیچھے کا بٹن دوبارہ دبائیں</string>
+    <string name="guide_keys">▲ ▼  چینلز      OK  تمام چینلز</string>
+    <string name="guide_free_channels">مفت ہندی چینلز</string>
+    <string name="channel_opens_in">%1$s میں کھلتا ہے  ›</string>
+    <string name="channel_off_air">ابھی نشر نہیں ہو رہا</string>
+    <string name="channel_maybe_off_air">شاید نشر نہ ہو رہا ہو</string>
+    <string name="no_channel">چینل %1$s موجود نہیں</string>
+</resources>

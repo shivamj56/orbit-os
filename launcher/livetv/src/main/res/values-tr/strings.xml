@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK, %1$s uygulamasını açar</string>
+    <string name="guide_watch_now">Şimdi izlemek için OK</string>
+    <string name="guide_connecting">Bağlanıyor…</string>
+    <string name="guide_slow">Hâlâ bağlanıyor, kanal şu an yavaş</string>
+    <string name="guide_off_air_now">Şu an yayında değil.  ▲ ▼ başka kanal</string>
+    <string name="guide_offline">TV çevrimiçi değil. Wi-Fi’yi kontrol edin</string>
+    <string name="guide_paused">Duraklatıldı.  OK veya ▶ canlı yayına döner</string>
+    <string name="guide_back_again">Ana ekrana gitmek için GERİ’ye tekrar basın</string>
+    <string name="guide_keys">▲ ▼  Kanallar      OK  Tüm kanallar</string>
+    <string name="guide_free_channels">Ücretsiz Hintçe kanallar</string>
+    <string name="channel_opens_in">%1$s içinde açılır  ›</string>
+    <string name="channel_off_air">Şu an yayında değil</string>
+    <string name="channel_maybe_off_air">Yayında olmayabilir</string>
+    <string name="no_channel">%1$s numaralı kanal yok</string>
+</resources>

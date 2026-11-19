@@ -1,3 +1,3 @@
 // Written by tools/i18n/apply.cjs: the languages whose texts are in public/locales. Settings › Language offers
 // only these (and English); i18n.test.ts checks the list against the files.
-export const READY_CODES: readonly string[] = ["af","ar","ast","be","bg","bs","cs","da","de","el","et","eu","fi","fr","fr-CA","hi","hr","hu","id","is","it","lo","lt","lv","mk","mr","ms","nb","ne","nl","pl","pt-BR","ro","ru","sk","sl","sq","sr","sr-Latn","sv","ta","te","th","tr","uk","vi","zh-CN","zh-TW"];
+export const READY_CODES: readonly string[] = ["af","am","ar","as","ast","az","be","bg","bn","bs","ca","cs","da","de","el","es","es-419","et","eu","fa","fi","fil","fr","fr-CA","gl","gu","he","hi","hr","hu","hy","id","is","it","ja","ka","kk","km","kn","ko","ky","lo","lt","lv","mk","ml","mn","mr","ms","my","nb","ne","nl","or","pa","pl","pt-BR","pt-PT","ro","ru","si","sk","sl","sq","sr","sr-Latn","sv","sw","ta","te","th","tr","uk","ur","uz","vi","zh-CN","zh-HK","zh-TW","zu"];

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK টিপিলে %1$s খোল খাব</string>
+    <string name="guide_watch_now">এতিয়া চাবলৈ OK</string>
+    <string name="guide_connecting">সংযোগ কৰি আছে…</string>
+    <string name="guide_slow">এতিয়াও সংযোগ কৰি আছে, চেনেলটো এতিয়া লেহেমীয়া</string>
+    <string name="guide_off_air_now">এতিয়া সম্প্ৰচাৰত নাই।  ▲ ▼ আন চেনেল</string>
+    <string name="guide_offline">টিভি অনলাইনত নাই। Wi-Fi পৰীক্ষা কৰক</string>
+    <string name="guide_paused">বিৰতি দিয়া হৈছে।  OK বা ▶ টিপিলে লাইভলৈ উভতিব</string>
+    <string name="guide_back_again">হোমলৈ যাবলৈ আকৌ উভতি যাওক টিপক</string>
+    <string name="guide_keys">▲ ▼  চেনেল      OK  সকলো চেনেল</string>
+    <string name="guide_free_channels">বিনামূলীয়া হিন্দী চেনেল</string>
+    <string name="channel_opens_in">%1$sত খোল খাব  ›</string>
+    <string name="channel_off_air">এতিয়া সম্প্ৰচাৰত নাই</string>
+    <string name="channel_maybe_off_air">সম্প্ৰচাৰত নাথাকিবও পাৰে</string>
+    <string name="no_channel">%1$s নামৰ কোনো চেনেল নাই</string>
+</resources>

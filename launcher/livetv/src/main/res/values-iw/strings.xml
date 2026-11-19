@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK פותח את %1$s</string>
+    <string name="guide_watch_now">OK לצפייה עכשיו</string>
+    <string name="guide_connecting">מתחבר…</string>
+    <string name="guide_slow">עדיין מתחבר, הערוץ איטי כרגע</string>
+    <string name="guide_off_air_now">לא משודר כרגע.  ▲ ▼ ערוץ אחר</string>
+    <string name="guide_offline">הטלוויזיה לא מחוברת לאינטרנט. בדקו את ה-Wi-Fi</string>
+    <string name="guide_paused">מושהה.  OK או ▶ חוזרים לשידור חי</string>
+    <string name="guide_back_again">לחצו שוב על חזרה כדי לעבור לדף הבית</string>
+    <string name="guide_keys">▲ ▼  ערוצים      OK  כל הערוצים</string>
+    <string name="guide_free_channels">ערוצים הודיים בחינם</string>
+    <string name="channel_opens_in">נפתח ב-%1$s  ›</string>
+    <string name="channel_off_air">לא משודר כרגע</string>
+    <string name="channel_maybe_off_air">ייתכן שלא משודר</string>
+    <string name="no_channel">אין ערוץ %1$s</string>
+</resources>

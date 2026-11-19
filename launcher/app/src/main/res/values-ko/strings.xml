@@ -150,4 +150,11 @@
     <string name="clock_format_system">시스템</string>
     <string name="clock_format_12">12시간</string>
     <string name="clock_format_24">24시간</string>
+    <string name="good_forenoon">좋은 오전이에요</string>
+    <string name="trial_pill">Orbit 체험 중 · %1$s 남음</string>
+    <string name="trial_pill_hint">홈이 내 TV로 돌아가요</string>
+    <string name="trial_end_title">이것이 Orbit OS예요</string>
+    <string name="trial_end_body">이제 TV가 원래의 홈 화면으로 돌아가요. Orbit은 TV에서 아무것도 바꾸지 않았어요. Orbit Home은 직접 선택하기 전까지 앱으로만 남아 있어요.</string>
+    <string name="trial_end_next">Orbit을 계속 쓰려면 휴대전화의 Orbit 앱에서 Orbit OS 설정을 선택하세요. 제거하려면 같은 곳에서 Orbit 제거를 선택하세요.</string>
+    <string name="trial_end_leaving">%1$d초 후 내 TV로 돌아가요. 지금 가려면 OK를 누르세요.</string>
 </resources>

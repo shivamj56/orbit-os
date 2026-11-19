@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">I-OK ivula i-%1$s</string>
+    <string name="guide_watch_now">I-OK ukubuka manje</string>
+    <string name="guide_connecting">Iyaxhuma…</string>
+    <string name="guide_slow">Isaxhuma, isiteshi sinensayo njengamanje</string>
+    <string name="guide_off_air_now">Asisakhiphi manje.  ▲ ▼ esinye isiteshi</string>
+    <string name="guide_offline">Ithivi alikho ku-inthanethi. Hlola i-Wi-Fi</string>
+    <string name="guide_paused">Kumisiwe.  I-OK noma ▶ ibuyela bukhoma</string>
+    <string name="guide_back_again">Cindezela Emuva futhi ukuze uye Ekhaya</string>
+    <string name="guide_keys">▲ ▼  Iziteshi      OK  Zonke iziteshi</string>
+    <string name="guide_free_channels">Iziteshi zesiHindi zamahhala</string>
+    <string name="channel_opens_in">Ivulela ku-%1$s  ›</string>
+    <string name="channel_off_air">Asikho emoyeni manje</string>
+    <string name="channel_maybe_off_air">Kungenzeka asikho emoyeni</string>
+    <string name="no_channel">Asikho isiteshi esithi %1$s</string>
+</resources>

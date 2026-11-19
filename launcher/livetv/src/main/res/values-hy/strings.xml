@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK-ը կբացի %1$s-ը</string>
+    <string name="guide_watch_now">OK՝ հիմա դիտելու համար</string>
+    <string name="guide_connecting">Միանում է…</string>
+    <string name="guide_slow">Դեռ միանում է, ալիքը հիմա դանդաղ է</string>
+    <string name="guide_off_air_now">Հիմա եթերում չէ։  ▲ ▼ մեկ այլ ալիք</string>
+    <string name="guide_offline">Հեռուստացույցը առցանց չէ։ Ստուգեք Wi-Fi-ը</string>
+    <string name="guide_paused">Դադարեցված է։  OK կամ ▶ կվերադարձնի ուղիղ եթեր</string>
+    <string name="guide_back_again">Գլխավոր վերադառնալու համար նորից սեղմեք Հետ</string>
+    <string name="guide_keys">▲ ▼  Ալիքներ      OK  Բոլոր ալիքները</string>
+    <string name="guide_free_channels">Անվճար հինդի ալիքներ</string>
+    <string name="channel_opens_in">Կբացվի %1$s-ում  ›</string>
+    <string name="channel_off_air">Հիմա եթերում չէ</string>
+    <string name="channel_maybe_off_air">Հնարավոր է՝ եթերում չէ</string>
+    <string name="no_channel">%1$s ալիք չկա</string>
+</resources>

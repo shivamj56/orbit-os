@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK ඔබන්න, %1$s විවෘත වේ</string>
+    <string name="guide_watch_now">දැන් නැරඹීමට OK</string>
+    <string name="guide_connecting">සම්බන්ධ වෙමින්…</string>
+    <string name="guide_slow">තවමත් සම්බන්ධ වෙමින්, නාලිකාව දැන් මන්දගාමීයි</string>
+    <string name="guide_off_air_now">දැන් විකාශය නැත.  ▲ ▼ වෙනත් නාලිකාවක්</string>
+    <string name="guide_offline">ටීවී එක අන්තර්ජාලයට සම්බන්ධ නැත. Wi-Fi පරීක්ෂා කරන්න</string>
+    <string name="guide_paused">විරාම කර ඇත.  OK හෝ ▶ ඔබන්න, සජීවී විකාශයට යයි</string>
+    <string name="guide_back_again">මුල් පිටුවට යාමට නැවත ආපසු ඔබන්න</string>
+    <string name="guide_keys">▲ ▼  නාලිකා      OK  සියලු නාලිකා</string>
+    <string name="guide_free_channels">නොමිලේ හින්දි නාලිකා</string>
+    <string name="channel_opens_in">%1$s හි විවෘත වේ  ›</string>
+    <string name="channel_off_air">දැන් විකාශය නැත</string>
+    <string name="channel_maybe_off_air">විකාශය නොවිය හැක</string>
+    <string name="no_channel">%1$s නමින් නාලිකාවක් නැත</string>
+</resources>

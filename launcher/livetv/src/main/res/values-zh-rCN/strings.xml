@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">按 OK 打开%1$s</string>
+    <string name="guide_watch_now">按 OK 立即观看</string>
+    <string name="guide_connecting">正在连接…</string>
+    <string name="guide_slow">仍在连接，当前频道较慢</string>
+    <string name="guide_off_air_now">当前未播出。  ▲ ▼ 切换频道</string>
+    <string name="guide_offline">电视未联网，请检查 Wi-Fi</string>
+    <string name="guide_paused">已暂停。  按 OK 或 ▶ 返回直播</string>
+    <string name="guide_back_again">再按一次“返回”键即可回到主屏幕</string>
+    <string name="guide_keys">▲ ▼  频道      OK  全部频道</string>
+    <string name="guide_free_channels">免费印地语频道</string>
+    <string name="channel_opens_in">在%1$s中打开  ›</string>
+    <string name="channel_off_air">当前未播出</string>
+    <string name="channel_maybe_off_air">可能未播出</string>
+    <string name="no_channel">没有 %1$s 频道</string>
+</resources>

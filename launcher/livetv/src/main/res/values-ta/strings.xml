@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK அழுத்தினால் %1$s திறக்கும்</string>
+    <string name="guide_watch_now">இப்போது பார்க்க OK</string>
+    <string name="guide_connecting">இணைக்கிறது…</string>
+    <string name="guide_slow">இன்னும் இணைக்கிறது, சேனல் இப்போது மெதுவாக உள்ளது</string>
+    <string name="guide_off_air_now">இப்போது ஒளிபரப்பில் இல்லை.  ▲ ▼ வேறு சேனல்</string>
+    <string name="guide_offline">டிவி ஆன்லைனில் இல்லை. Wi-Fi-ஐச் சரிபார்க்கவும்</string>
+    <string name="guide_paused">இடைநிறுத்தப்பட்டது.  OK அல்லது ▶ நேரலைக்குத் திரும்பும்</string>
+    <string name="guide_back_again">முகப்புக்குச் செல்ல மீண்டும் பின்செல் அழுத்தவும்</string>
+    <string name="guide_keys">▲ ▼  சேனல்கள்      OK  அனைத்து சேனல்கள்</string>
+    <string name="guide_free_channels">இலவச இந்தி சேனல்கள்</string>
+    <string name="channel_opens_in">%1$s-இல் திறக்கும்  ›</string>
+    <string name="channel_off_air">இப்போது ஒளிபரப்பில் இல்லை</string>
+    <string name="channel_maybe_off_air">ஒளிபரப்பில் இல்லாமல் இருக்கலாம்</string>
+    <string name="no_channel">%1$s என்ற சேனல் இல்லை</string>
+</resources>

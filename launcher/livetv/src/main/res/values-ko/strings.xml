@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_paid_opens">OK를 누르면 %1$s이(가) 열려요</string>
+    <string name="guide_watch_now">OK를 눌러 지금 시청</string>
+    <string name="guide_connecting">연결 중…</string>
+    <string name="guide_slow">아직 연결 중이에요. 지금 채널이 느려요</string>
+    <string name="guide_off_air_now">지금은 방송 중이 아니에요.  ▲ ▼ 다른 채널</string>
+    <string name="guide_offline">TV가 온라인이 아니에요. Wi-Fi를 확인하세요</string>
+    <string name="guide_paused">일시중지됨.  OK 또는 ▶를 누르면 라이브로 돌아가요</string>
+    <string name="guide_back_again">뒤로를 한 번 더 누르면 홈으로 가요</string>
+    <string name="guide_keys">▲ ▼  채널      OK  전체 채널</string>
+    <string name="guide_free_channels">무료 힌디어 채널</string>
+    <string name="channel_opens_in">%1$s에서 열기  ›</string>
+    <string name="channel_off_air">지금은 방송 중이 아니에요</string>
+    <string name="channel_maybe_off_air">방송 중이 아닐 수 있어요</string>
+    <string name="no_channel">%1$s번 채널이 없어요</string>
+</resources>
