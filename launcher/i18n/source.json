@@ -1081,6 +1081,13 @@
       ]
     },
     {
+      "text": "Open the app",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
       "text": "Opens a search for this title on the phone",
       "kind": "tv",
       "where": [
@@ -1279,6 +1286,13 @@
       ]
     },
     {
+      "text": "Scenes",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
       "text": "Screensaver",
       "kind": "tv",
       "where": [
@@ -1329,6 +1343,13 @@
     },
     {
       "text": "Signal",
+      "kind": "tv",
+      "where": [
+        "ControlCenter.java"
+      ]
+    },
+    {
+      "text": "Sleep · {n} min",
       "kind": "tv",
       "where": [
         "ControlCenter.java"
@@ -1501,6 +1522,7 @@
       "text": "Subtitles {size}",
       "kind": "tv",
       "where": [
+        "ControlCenter.java",
         "Words.java PATTERNS"
       ]
     },

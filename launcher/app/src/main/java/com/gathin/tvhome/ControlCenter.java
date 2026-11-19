@@ -1159,7 +1159,7 @@ final class ControlCenter extends View {
         }
         drawIcon(c, m.icon, m.tcx, m.tcy, 28f, on ? m.color : 0xFFFFFFFF, a);
         String text = m.label;
-        if ("sleep".equals(m.id) && on) text = "Sleep · " + Math.max(1L, (service.ccSleepLeftMs() + 59_999L) / 60_000L) + " min";
+        if ("sleep".equals(m.id) && on) text = Words.t("Sleep · {n} min", "n", Math.max(1L, (service.ccSleepLeftMs() + 59_999L) / 60_000L));
         label.setTextAlign(Paint.Align.CENTER);
         drawText(c, text, m.tcx, m.y + m.h + 25f, label, a);
         label.setTextAlign(Paint.Align.LEFT);
@@ -1290,7 +1290,7 @@ final class ControlCenter extends View {
     }
 
     private void scenes(Canvas c, Mod m, float a) {
-        drawText(c, "SCENES", m.x + 20f, m.y + 26f, caps, a);
+        drawText(c, Words.t("Scenes").toUpperCase(Locale.getDefault()), m.x + 20f, m.y + 26f, caps, a);
         for (int i = 0; i < SCENES.length; i++) {
             float x = m.x + 16f + i * 180f, y = m.y + 40f;
             boolean on = scene == i;
@@ -1711,7 +1711,7 @@ final class ControlCenter extends View {
                 d = new Detail(kind, R.drawable.cc_note, accentA != 0 ? accentA : 0xFFFF3B30, npTitle,
                         npApp.isEmpty() ? Words.mark("Nothing is playing") : npApp + (remainingMs() > 0 ? " · ends " + clockOf(System.currentTimeMillis() + remainingMs()) : ""), from);
                 if (mediaPkg != null) {
-                    Item openApp = new Item(ACTION, R.drawable.cc_tv, "Open " + (npApp.isEmpty() ? "the app" : npApp), Words.mark("Back to it, full screen"));
+                    Item openApp = new Item(ACTION, R.drawable.cc_tv, (npApp.isEmpty() ? Words.mark("Open the app") : "Open " + npApp), Words.mark("Back to it, full screen"));
                     openApp.act = this::openPlayingApp;
                     d.items.add(openApp);
                 }
@@ -1760,7 +1760,7 @@ final class ControlCenter extends View {
                 Item size = cycle(R.drawable.cc_eye, Words.mark("Subtitle size"), null, sizes, zi);
                 size.act = () -> {
                     service.ccSetCaptionScale(scales[size.index]);
-                    toast("Subtitles " + sizes[size.index].toLowerCase(Locale.ROOT), R.drawable.cc_eye);
+                    toast(Words.t("Subtitles {size}", "size", Words.t(sizes[size.index]).toLowerCase(Locale.getDefault())), R.drawable.cc_eye);
                 };
                 d.items.add(size);
                 return d;
