@@ -570,6 +570,7 @@
   "The {n} apps Orbit switched off come back on": "{n} แอปที่ Orbit ปิดใช้ไว้จะกลับมาเปิด",
   "The account and everything Orbit's cloud kept for it are gone": "บัญชีและทุกอย่างที่คลาวด์ของ Orbit เก็บไว้ให้บัญชีนั้นถูกลบแล้ว",
   "The account was not deleted": "บัญชียังไม่ถูกลบ",
+  "The app Orbit switched off comes back on": "1 แอปที่ Orbit ปิดใช้ไว้จะกลับมาเปิด",
   "The backup has no record of what Orbit changed.": "ข้อมูลสำรองไม่มีบันทึกว่า Orbit เปลี่ยนอะไรไปบ้าง",
   "The backup is larger than Orbit allows.": "ข้อมูลสำรองมีขนาดใหญ่เกินกว่าที่ Orbit อนุญาต",
   "The cloud did not take that. Sign in again, then try again.": "คลาวด์ไม่รับคำขอนี้ ลงชื่อเข้าใช้อีกครั้ง แล้วลองใหม่",

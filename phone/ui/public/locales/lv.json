@@ -597,11 +597,12 @@
   "That's everything": "Tas ir viss",
   "The {n} apps Orbit switched off come back on": {
     "zero": "Orbit izslēgtās {n} lietotņu atkal tiek ieslēgtas",
-    "one": "Orbit izslēgtā lietotne atkal tiek ieslēgta",
+    "one": "{n} Orbit izslēgtā lietotne atkal tiek ieslēgta",
     "other": "Orbit izslēgtās {n} lietotnes atkal tiek ieslēgtas"
   },
   "The account and everything Orbit's cloud kept for it are gone": "Konts un viss, ko Orbit mākonis tam glabāja, ir izdzēsts",
   "The account was not deleted": "Konts netika izdzēsts",
+  "The app Orbit switched off comes back on": "Orbit izslēgtā lietotne atkal tiek ieslēgta",
   "The backup has no record of what Orbit changed.": "Dublējumā nav ieraksta par to, ko Orbit mainīja.",
   "The backup is larger than Orbit allows.": "Dublējums ir lielāks, nekā Orbit atļauj.",
   "The cloud did not take that. Sign in again, then try again.": "Mākonis to nepieņēma. Pierakstieties vēlreiz un mēģiniet vēlreiz.",

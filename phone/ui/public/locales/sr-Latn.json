@@ -596,12 +596,13 @@
   "That TV does not know this phone.": "Taj televizor ne poznaje ovaj telefon.",
   "That's everything": "To je sve",
   "The {n} apps Orbit switched off come back on": {
-    "one": "Aplikacija koju je Orbit isključio ponovo se uključuje",
+    "one": "{n} aplikacija koju je Orbit isključio ponovo se uključuje",
     "few": "{n} aplikacije koje je Orbit isključio ponovo se uključuju",
     "other": "{n} aplikacija koje je Orbit isključio ponovo se uključuje"
   },
   "The account and everything Orbit's cloud kept for it are gone": "Nalog i sve što je Orbit oblak čuvao za njega su obrisani",
   "The account was not deleted": "Nalog nije obrisan",
+  "The app Orbit switched off comes back on": "Aplikacija koju je Orbit isključio ponovo se uključuje",
   "The backup has no record of what Orbit changed.": "Rezervna kopija nema zapis o tome šta je Orbit promenio.",
   "The backup is larger than Orbit allows.": "Rezervna kopija je veća nego što Orbit dozvoljava.",
   "The cloud did not take that. Sign in again, then try again.": "Oblak to nije prihvatio. Prijavite se ponovo, pa pokušajte ponovo.",

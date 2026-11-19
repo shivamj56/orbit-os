@@ -603,13 +603,14 @@
   "That TV does not know this phone.": "Цей телевізор не знає цей телефон.",
   "That's everything": "Це все",
   "The {n} apps Orbit switched off come back on": {
-    "one": "Додаток, який вимкнув Orbit, знову ввімкнеться",
+    "one": "{n} додаток, який вимкнув Orbit, знову ввімкнеться",
     "few": "{n} додатки, які вимкнув Orbit, знову ввімкнуться",
     "many": "{n} додатків, які вимкнув Orbit, знову ввімкнуться",
     "other": "{n} додатка, які вимкнув Orbit, знову ввімкнуться"
   },
   "The account and everything Orbit's cloud kept for it are gone": "Обліковий запис і все, що хмара Orbit зберігала для нього, видалено",
   "The account was not deleted": "Обліковий запис не видалено",
+  "The app Orbit switched off comes back on": "Додаток, який вимкнув Orbit, знову ввімкнеться",
   "The backup has no record of what Orbit changed.": "У копії немає запису про те, що змінив Orbit.",
   "The backup is larger than Orbit allows.": "Копія більша, ніж дозволено в Orbit.",
   "The cloud did not take that. Sign in again, then try again.": "Хмара не прийняла дані. Увійдіть знову й повторіть спробу.",

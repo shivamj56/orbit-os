@@ -570,6 +570,7 @@
   "The {n} apps Orbit switched off come back on": "Orbit 停用的 {n} 个应用将重新启用",
   "The account and everything Orbit's cloud kept for it are gone": "账号以及 Orbit 云端为其保存的所有内容均已删除",
   "The account was not deleted": "账号未删除",
+  "The app Orbit switched off comes back on": "Orbit 停用的 1 个应用将重新启用",
   "The backup has no record of what Orbit changed.": "该备份中没有 Orbit 所做更改的记录。",
   "The backup is larger than Orbit allows.": "该备份超出了 Orbit 允许的大小。",
   "The cloud did not take that. Sign in again, then try again.": "云端未接受该请求。请重新登录，然后重试。",

@@ -594,6 +594,7 @@
   },
   "The account and everything Orbit's cloud kept for it are gone": "Профилът и всичко, което облакът на Orbit пазеше за него, са изтрити",
   "The account was not deleted": "Профилът не беше изтрит",
+  "The app Orbit switched off comes back on": "Приложението, което Orbit изключи, се включва отново",
   "The backup has no record of what Orbit changed.": "Резервното копие няма запис какво е променил Orbit.",
   "The backup is larger than Orbit allows.": "Резервното копие е по-голямо, отколкото Orbit позволява.",
   "The cloud did not take that. Sign in again, then try again.": "Облакът не го прие. Влезте отново и опитайте пак.",

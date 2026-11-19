@@ -589,11 +589,12 @@
   "That TV does not know this phone.": "Þetta sjónvarp þekkir ekki þennan síma.",
   "That's everything": "Þetta er allt",
   "The {n} apps Orbit switched off come back on": {
-    "one": "Kveikt er aftur á forritinu sem Orbit slökkti á",
+    "one": "Kveikt er aftur á {n} forriti sem Orbit slökkti á",
     "other": "Kveikt er aftur á {n} forritum sem Orbit slökkti á"
   },
   "The account and everything Orbit's cloud kept for it are gone": "Reikningnum og öllu sem skýið hjá Orbit geymdi fyrir hann hefur verið eytt",
   "The account was not deleted": "Reikningnum var ekki eytt",
+  "The app Orbit switched off comes back on": "Kveikt er aftur á forritinu sem Orbit slökkti á",
   "The backup has no record of what Orbit changed.": "Afritið hefur enga skrá yfir það sem Orbit breytti.",
   "The backup is larger than Orbit allows.": "Afritið er stærra en Orbit leyfir.",
   "The cloud did not take that. Sign in again, then try again.": "Skýið tók ekki við því. Skráðu þig inn aftur og reyndu svo aftur.",

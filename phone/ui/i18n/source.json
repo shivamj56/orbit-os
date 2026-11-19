@@ -4087,7 +4087,7 @@
     },
     {
       "text": "The {n} apps Orbit switched off come back on",
-      "one": "The app Orbit switched off comes back on",
+      "one": "The {n} app Orbit switched off comes back on",
       "kind": "text",
       "where": [
         "ui/setup/Undo.tsx"
@@ -4105,6 +4105,13 @@
       "kind": "text",
       "where": [
         "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "The app Orbit switched off comes back on",
+      "kind": "text",
+      "where": [
+        "ui/setup/Undo.tsx"
       ]
     },
     {

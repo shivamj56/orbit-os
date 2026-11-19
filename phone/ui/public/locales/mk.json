@@ -589,11 +589,12 @@
   "That TV does not know this phone.": "Тој телевизор не го познава овој телефон.",
   "That's everything": "Тоа е сè",
   "The {n} apps Orbit switched off come back on": {
-    "one": "Апликацијата што Orbit ја исклучил се вклучува повторно",
+    "one": "{n} апликација што Orbit ја исклучи повторно се вклучува",
     "other": "{n} апликации што Orbit ги исклучил се вклучуваат повторно"
   },
   "The account and everything Orbit's cloud kept for it are gone": "Сметката и сè што облакот на Orbit го чувал за неа се избришани",
   "The account was not deleted": "Сметката не беше избришана",
+  "The app Orbit switched off comes back on": "Апликацијата што Orbit ја исклучил се вклучува повторно",
   "The backup has no record of what Orbit changed.": "Резервната копија нема запис што променил Orbit.",
   "The backup is larger than Orbit allows.": "Резервната копија е поголема отколку што Orbit дозволува.",
   "The cloud did not take that. Sign in again, then try again.": "Облакот не го прифати тоа. Најавете се повторно, па обидете се пак.",

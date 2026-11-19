@@ -594,6 +594,7 @@
   },
   "The account and everything Orbit's cloud kept for it are gone": "Tili ja kaikki, mitä Orbitin pilvi sille säilytti, on poistettu",
   "The account was not deleted": "Tiliä ei poistettu",
+  "The app Orbit switched off comes back on": "Orbitin käytöstä poistama sovellus otetaan takaisin käyttöön",
   "The backup has no record of what Orbit changed.": "Varmuuskopiossa ei ole tietoa siitä, mitä Orbit muutti.",
   "The backup is larger than Orbit allows.": "Varmuuskopio on suurempi kuin Orbit sallii.",
   "The cloud did not take that. Sign in again, then try again.": "Pilvi ei ottanut sitä vastaan. Kirjaudu uudelleen sisään ja yritä sitten uudelleen.",

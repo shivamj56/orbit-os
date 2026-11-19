@@ -604,12 +604,13 @@
   "That's everything": "To je vse",
   "The {n} apps Orbit switched off come back on": {
     "few": "{n} aplikacije, ki jih je Orbit izklopil, se spet vklopijo",
-    "one": "Aplikacija, ki jo je Orbit izklopil, se spet vklopi",
+    "one": "{n} aplikacija, ki jo je Orbit izklopil, se spet vklopi",
     "other": "{n} aplikacij, ki jih je Orbit izklopil, se spet vklopi",
     "two": "{n} aplikaciji, ki ju je Orbit izklopil, se spet vklopita"
   },
   "The account and everything Orbit's cloud kept for it are gone": "Račun in vse, kar je Orbitov oblak hranil zanj, je izbrisano",
   "The account was not deleted": "Račun ni bil izbrisan",
+  "The app Orbit switched off comes back on": "Aplikacija, ki jo je Orbit izklopil, se spet vklopi",
   "The backup has no record of what Orbit changed.": "Varnostna kopija nima zapisa o tem, kaj je spremenil Orbit.",
   "The backup is larger than Orbit allows.": "Varnostna kopija je večja, kot dovoljuje Orbit.",
   "The cloud did not take that. Sign in again, then try again.": "Oblak tega ni sprejel. Prijavite se znova in poskusite še enkrat.",

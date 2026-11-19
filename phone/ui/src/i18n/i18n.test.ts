@@ -126,6 +126,15 @@ describe.each(files)("public/locales/%s", (file) => {
     expect(LANGUAGES.some((l) => l.code === code)).toBe(true);
   });
 
+  it("writes the number in every plural form that is not the number 1 alone (Russian \"one\" is also 21, 31...)", () => {
+    const rules = new Intl.PluralRules(code);
+    const wide = (form: string) => Array.from({ length: 198 }, (_, i) => i + 2).some((n) => rules.select(n) === form);
+    const wrong = Object.entries(catalog)
+      .filter(([key, value]) => english.get(key)?.one && typeof value === "object")
+      .flatMap(([key, value]) => Object.entries(value as Record<string, string>).filter(([form, text]) => form !== "other" && wide(form) && !text.includes("{n}")).map(([form]) => `${key} [${form}]`));
+    expect(wrong).toEqual([]);
+  });
+
   it("keeps every {value} and <tag> of the English, and every plural form", () => {
     const wrong: string[] = [];
     for (const [key, value] of Object.entries(catalog)) {

@@ -594,6 +594,7 @@
   },
   "The account and everything Orbit's cloud kept for it are gone": "Konto ja kõik, mida Orbiti pilv sellele hoidis, on kustutatud",
   "The account was not deleted": "Kontot ei kustutatud",
+  "The app Orbit switched off comes back on": "Orbiti välja lülitatud rakendus lülitub tagasi sisse",
   "The backup has no record of what Orbit changed.": "Varukoopias pole kirjet selle kohta, mida Orbit muutis.",
   "The backup is larger than Orbit allows.": "Varukoopia on suurem, kui Orbit lubab.",
   "The cloud did not take that. Sign in again, then try again.": "Pilv ei võtnud seda vastu. Logi uuesti sisse ja proovi siis uuesti.",

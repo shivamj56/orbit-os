@@ -59,7 +59,16 @@ for (const code of codes) {
       // A count's forms keep {n}/%d except where the language spells the one out ("one app"); the rest must match.
       const want = marks(plural ? (form === "one" && plural.one ? plural.one : plural.other) : english.text);
       const have = marks(String(text));
-      const loose = plural && form !== "other";
+      // "one" may spell the number out ("one app") only where it means 1 alone: in Russian it is also 21, 31, 101...
+      const alone = (() => {
+        try {
+          const rules = new Intl.PluralRules(code);
+          return ![...Array(200).keys()].slice(2).some((n) => rules.select(n) === form);
+        } catch {
+          return false;
+        }
+      })();
+      const loose = plural && form !== "other" && alone;
       const missing = want.filter((m) => !have.includes(m) && !(loose && /^(\{n\}|%(\d+\$)?d)$/.test(m)));
       const extra = have.filter((m) => !want.includes(m) && !(plural && /^(\{n\}|%(\d+\$)?d)$/.test(m)));
       if (missing.length || extra.length) problems.push(`${id}${plural ? ` ${form}` : ""} marks differ: want ${want.join(" ") || "none"}, has ${have.join(" ") || "none"}`);

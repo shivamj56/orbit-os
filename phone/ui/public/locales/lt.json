@@ -603,13 +603,14 @@
   "That TV does not know this phone.": "Tas televizorius nepažįsta šio telefono.",
   "That's everything": "Tai viskas",
   "The {n} apps Orbit switched off come back on": {
-    "one": "Orbit išjungta programa vėl įjungiama",
+    "one": "{n} Orbit išjungta programa vėl įjungiama",
     "few": "Orbit išjungtos {n} programos vėl įjungiamos",
     "many": "Orbit išjungtos {n} programos vėl įjungiamos",
     "other": "Orbit išjungtos {n} programų vėl įjungiamos"
   },
   "The account and everything Orbit's cloud kept for it are gone": "Paskyra ir viskas, ką Orbit debesis jai saugojo, ištrinta",
   "The account was not deleted": "Paskyra nebuvo ištrinta",
+  "The app Orbit switched off comes back on": "Orbit išjungta programa vėl įjungiama",
   "The backup has no record of what Orbit changed.": "Atsarginėje kopijoje nėra įrašo, ką Orbit pakeitė.",
   "The backup is larger than Orbit allows.": "Atsarginė kopija didesnė, nei leidžia Orbit.",
   "The cloud did not take that. Sign in again, then try again.": "Debesis to nepriėmė. Prisijunkite iš naujo, tada bandykite dar kartą.",

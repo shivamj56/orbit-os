@@ -603,13 +603,14 @@
   "That TV does not know this phone.": "Этот телевизор не знает этот телефон.",
   "That's everything": "Это всё",
   "The {n} apps Orbit switched off come back on": {
-    "one": "Приложение, которое отключил Orbit, снова включится",
+    "one": "{n} приложение, которое отключил Orbit, снова включится",
     "few": "{n} приложения, которые отключил Orbit, снова включатся",
     "many": "{n} приложений, которые отключил Orbit, снова включатся",
     "other": "{n} приложения, которые отключил Orbit, снова включатся"
   },
   "The account and everything Orbit's cloud kept for it are gone": "Аккаунт и всё, что облако Orbit хранило для него, удалены",
   "The account was not deleted": "Аккаунт не удалён",
+  "The app Orbit switched off comes back on": "Приложение, которое отключил Orbit, снова включится",
   "The backup has no record of what Orbit changed.": "В копии нет записи о том, что изменил Orbit.",
   "The backup is larger than Orbit allows.": "Копия больше, чем разрешено в Orbit.",
   "The cloud did not take that. Sign in again, then try again.": "Облако не приняло данные. Войдите снова и повторите попытку.",

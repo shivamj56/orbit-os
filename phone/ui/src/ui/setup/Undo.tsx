@@ -79,7 +79,13 @@ export function UndoConfirm() {
           <Rise className="mt-5">
             <Card className="flex flex-col gap-3 p-4">
               {home && <ComesBack>{t("The TV's own home screen comes back")}</ComesBack>}
-              {apps > 0 && <ComesBack>{tn(apps, "The app Orbit switched off comes back on", "The {n} apps Orbit switched off come back on")}</ComesBack>}
+              {apps > 0 && (
+                <ComesBack>
+                  {apps === 1
+                    ? t("The app Orbit switched off comes back on")
+                    : tn(apps, "The {n} app Orbit switched off comes back on", "The {n} apps Orbit switched off come back on")}
+                </ComesBack>
+              )}
               {settings && <ComesBack>{t("The TV's settings go back as they were")}</ComesBack>}
               {removes && <ComesBack>{t("Orbit Home and Orbit Live TV come off the TV")}</ComesBack>}
             </Card>
