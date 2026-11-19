@@ -113,6 +113,15 @@
             </intent-filter>
         </activity>
 
+        <!-- The end of a trial from the phone (TrialMode): what comes next, then the TV's own home screen. -->
+        <activity
+            android:name=".TrialEndActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.TvHome" />
+
         <activity
             android:name=".LauncherSettingsActivity"
             android:exported="false"

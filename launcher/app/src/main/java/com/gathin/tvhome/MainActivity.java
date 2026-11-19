@@ -326,6 +326,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * reach Home after onPause, when that key opened another app, and must not start the clock over the app.
      */
     private boolean resumed;
+    /** A trial from the phone (TrialMode): how long is left, at Home's foot, while it is on. */
+    private TrialMode.Pill trialPill;
+    /** onCreate gave the screen to TrialEndActivity before Home was built: onDestroy has nothing of Home's to undo. */
+    private boolean leftForTrial;
     /** Rebuild the tiles on the way back to Home only when apps changed meanwhile (TileRefresh). */
     private final TileRefresh tileRefresh = new TileRefresh();
     /** PackageManager's change counter at the last rebuild, to catch a package broadcast that never arrived. */
@@ -478,6 +482,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // A trial from the phone that is over: say so and give the TV back, without building Home at all.
+        TrialMode.State trial = TrialMode.read(this, getIntent());
+        if (trial == TrialMode.State.OVER) {
+            leftForTrial = true;
+            startActivity(new Intent(this, TrialEndActivity.class));
+            finish();
+            return;
+        }
         // First of all: the film's decoder takes longer to come up than the whole of Home.
         if (getResources().getBoolean(R.bool.gallery_home) && getResources().getBoolean(R.bool.boot_intro)
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -996,6 +1008,39 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (savedInstanceState == null && !openLauncherSettingsIfAsked(getIntent()) && !openLibraryIfAsked(getIntent())) {
             openInputsIfAsked(getIntent());
         }
+        // A trial from the phone: how long is left, over everything else at Home's foot.
+        if (trial == TrialMode.State.ON) trialPill = new TrialMode.Pill(this, root, this::trialOver);
+    }
+
+    /**
+     * A trial from the phone (TrialMode), for an intent Home got while it was up: the phone may have ended it, or
+     * a setup may have made it Home for good. True when the trial is over and Home is going.
+     */
+    private boolean handleTrial(Intent intent) {
+        TrialMode.State trial = TrialMode.read(this, intent);
+        if (trial == TrialMode.State.OVER) {
+            trialOver();
+            return true;
+        }
+        if (trial == TrialMode.State.ON && trialPill == null) {
+            trialPill = new TrialMode.Pill(this, root, this::trialOver);
+            if (resumed) trialPill.resume();
+        } else if (trial == TrialMode.State.NONE && trialPill != null) {
+            trialPill.remove();
+            trialPill = null;
+        }
+        return false;
+    }
+
+    /** The trial's time is up, or the phone ended it: say what comes next, give the TV back, and close. */
+    private void trialOver() {
+        TrialMode.markOver(this);
+        if (trialPill != null) {
+            trialPill.remove();
+            trialPill = null;
+        }
+        startActivity(new Intent(this, TrialEndActivity.class));
+        finish();
     }
 
     /** gallery_home: the gallery in place of the grid and the header. The adapter still loads the apps. */
@@ -1165,6 +1210,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (handleTrial(intent)) return;
         if (openLauncherSettingsIfAsked(intent)) return;
         if (openLibraryIfAsked(intent)) return;
         if (openInputsIfAsked(intent)) return;
@@ -1217,6 +1263,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             recreate();
             return;
         }
+        if (trialPill != null) trialPill.resume();
         restartIdleClock();
         if (gallery != null) {
             AppOpening opening = HomeKeyService.opening();
@@ -1430,6 +1477,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onPause() {
         super.onPause();
         resumed = false;
+        if (trialPill != null) trialPill.pause();
         if (gallery != null) gallery.onPaused();
         if (bootIntro != null) bootIntro.onHomePaused();
         // No UP reaches a paused Home, so a vendor-key hold it saw go down would still open its app later.
@@ -1510,6 +1558,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // A trial that was over before Home was built: none of what follows was set up.
+        if (leftForTrial) return;
+        if (trialPill != null) trialPill.pause();
         RemoteKeys.release(this);
         cancelHoldOk();
         handler.removeCallbacks(wifiLabelLater);

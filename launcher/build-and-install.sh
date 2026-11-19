@@ -144,10 +144,11 @@ esac
 # With STOCK_LAUNCHER=none the stock launcher stays Home (stock_home_redirect): a MAIN+HOME start would
 # make this launcher the home process until a restart, and Android then blocks the stock launcher's
 # remote-button launches (BAL_BLOCK, #1274). The component alone still proves the activity comes up.
+# SET_UP: an Orbit Home that was only being tried from the phone (TrialMode) stays, and stops counting down.
 if [ "$STOCK_LAUNCHER" = none ]; then
-  START_CMD='am start -W -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity'
+  START_CMD='am start -W -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity --ez dev.shiv.orbit.home.extra.SET_UP true'
 else
-  START_CMD='am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity'
+  START_CMD='am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity --ez dev.shiv.orbit.home.extra.SET_UP true'
 fi
 START_OUT=$("$PY" -I ../tools/tv.py "$START_CMD")
 echo "$START_OUT"

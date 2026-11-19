@@ -56,8 +56,9 @@ from the TV and picks the matching entry, or the closest one with only the safe 
 
 ## Asked by people who use Orbit
 
-- [ ] Try Orbit on the TV for 15 minutes before setting it up: nothing switched off, the TV's own home stays the
-  default, and Orbit closes by itself when the time is up.
+- [x] Try Orbit on the TV for 15 minutes before setting it up: nothing switched off, the TV's own home stays the
+  default, and Orbit closes by itself when the time is up ([phone/SPEC.md](../phone/SPEC.md), "Trying Orbit before
+  setting it up").
 - [ ] Brazilian Portuguese for the phone app and the TV ([#3](https://github.com/shivamj56/orbit-os/issues/3)).
 - [ ] More than one home-screen layout, and your own wallpaper ([#3](https://github.com/shivamj56/orbit-os/issues/3)).
 - [x] The phone finds the TV again when the router gives it a new address

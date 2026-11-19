@@ -192,6 +192,54 @@ export function switchRows(run: Run, to: HomeChoice): Row[] {
   return rowsFrom(SWITCH_ROWS, switchWords(to), run);
 }
 
+// ---- trying Orbit for 15 minutes (orbit-setup.sh trial, and orbit-undo.sh to take it off again) ----
+
+const TRIAL_WORDS: Record<string, StepWords> = {
+  check: { doing: "Checking the TV", done: "Checked the TV", fail: "The TV did not pass the check" },
+  record: { doing: "Noting how to take Orbit off again", done: "Noted how to take Orbit off again", fail: "Could not note how to take Orbit off" },
+  install: { doing: "Installing Orbit Home, as an app", done: "Installed Orbit Home, as an app", fail: "Orbit Home did not install" },
+  keep: { doing: "Keeping the TV's own home screen", done: "The TV's own home screen stays Home", fail: "The TV would not keep its own home screen" },
+  open: { doing: "Opening Orbit Home on the TV", done: "Orbit Home is on the TV now", fail: "Orbit Home did not open" },
+};
+
+const TRIAL_ROWS: RowSpec[] = [
+  { key: "check", ids: ["check", "record"], main: "check" },
+  { key: "install", ids: ["install"], main: "install" },
+  { key: "keep", ids: ["keep"], main: "keep" },
+  { key: "open", ids: ["open"], main: "open" },
+];
+
+/** The trial's list, from what `orbit-setup.sh trial` has said so far. */
+export function trialRows(run: Run): Row[] {
+  return rowsFrom(TRIAL_ROWS, TRIAL_WORDS, run);
+}
+
+function untrialWords(run: Run): Record<string, StepWords> {
+  const removed = run.log.some((l) => /^removed \S/.test(l.trim()));
+  // orbit-undo.sh's own steps; after a trial only the home screen and Orbit Home itself are on the record.
+  const home = { doing: "Keeping the TV's own home screen", done: "The TV's own home screen is Home", fail: "Orbit Home is still the home screen" };
+  return {
+    home,
+    enable: home,
+    helper: home,
+    apps: {
+      doing: "Taking Orbit Home off the TV",
+      done: removed ? "Took Orbit Home off the TV" : "Orbit Home was already off the TV",
+      fail: "Orbit Home is still on the TV",
+    },
+  };
+}
+
+const UNTRIAL_ROWS: RowSpec[] = [
+  { key: "home", ids: ["home", "enable", "helper"], main: "home" },
+  { key: "apps", ids: ["apps"], main: "apps" },
+];
+
+/** Taking Orbit off again after a trial: orbit-undo.sh's run, in the trial's words. */
+export function untrialRows(run: Run): Row[] {
+  return rowsFrom(UNTRIAL_ROWS, untrialWords(run), run);
+}
+
 /** "some_step" said by a script this page does not know yet: shown as the script names it. */
 function wordsFor(id: string, run: Run): StepWords {
   const said = run.steps[id]?.text || id.replace(/[_-]+/g, " ");
@@ -241,17 +289,34 @@ export function undoRows(run: Run): Row[] {
 /** The plain words for the step that stopped a run (or the run's own last word). */
 export function whatStopped(
   run: Run,
-  kind: "install" | "undo" | "switch",
+  kind: "install" | "undo" | "switch" | "trial" | "untrial",
   disableCount = 0,
   to: HomeChoice = "stock",
 ): { text: string; detail?: string } {
-  const rows = kind === "install" ? installRows(run, disableCount) : kind === "undo" ? undoRows(run) : switchRows(run, to);
+  const rows =
+    kind === "install"
+      ? installRows(run, disableCount)
+      : kind === "undo"
+        ? undoRows(run)
+        : kind === "trial"
+          ? trialRows(run)
+          : kind === "untrial"
+            ? untrialRows(run)
+            : switchRows(run, to);
   const row = rows.find((r) => r.state === "fail");
   if (row) return { text: row.text, detail: row.detail ?? (run.done?.text && run.done.text !== row.text ? run.done.text : undefined) };
   if (run.done?.text) return { text: run.done.text };
   // A script from before `switch` answers with its usage line and stops.
   if (kind === "switch" && run.log.some((l) => /\busage:/.test(l))) return { text: "This copy of Orbit Setup cannot switch the home screen" };
-  return { text: kind === "install" ? "The setup stopped before it finished" : kind === "undo" ? "Undo stopped before it finished" : "The switch stopped before it finished" };
+  if (kind === "trial" && run.log.some((l) => /\busage:/.test(l))) return { text: "This copy of Orbit Setup cannot run a trial" };
+  const stopped: Record<typeof kind, string> = {
+    install: "The setup stopped before it finished",
+    undo: "Undo stopped before it finished",
+    switch: "The switch stopped before it finished",
+    trial: "The trial stopped before it started",
+    untrial: "Taking Orbit off stopped before it finished",
+  };
+  return { text: stopped[kind] };
 }
 
 /** A run that went well: its "done ok", and no step that failed. */

@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 
 import '../app/demo_store.dart';
+import '../app/review_prompt.dart';
 import '../cloud/drive.dart';
 import '../native/native_host.dart';
 import '../setup/setup_host.dart';
@@ -31,6 +32,7 @@ class OrbitBridge {
     SetupHost? setup,
     this.drive,
     this.demoStore,
+    this.review,
   }) : setup = setup ?? const _NoSetup() {
     _events = EventQueue(_send);
     remote.onStatus = (status) => _events.push('status', status.toJson());
@@ -57,6 +59,10 @@ class OrbitBridge {
 
   /// Where demo mode is kept between starts of the app (phone/SPEC.md, "Demo mode").
   final DemoStore? demoStore;
+
+  /// Google Play's review sheet, asked for once after a trial (phone/SPEC.md, "Asking for a review"); null in a build
+  /// without.
+  final ReviewPrompt? review;
 
   /// The page shows the opening intro's first frame (`intro` op): the screen's own copy of the mark can go.
   void Function()? onIntro;
@@ -280,6 +286,9 @@ class OrbitBridge {
       case 'intro':
         onIntro?.call();
         return null;
+      case 'askReview':
+        // After a trial of a real TV only: in demo mode this op is refused above, like every op about a TV.
+        return {'asked': await review?.ask() ?? false};
       case 'openUrl':
         final url = a.text('url', max: 512).trim();
         if (!isPublicLink(url)) throw const OpError(400, 'Orbit only opens its own pages.');

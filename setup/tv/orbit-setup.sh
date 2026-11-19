@@ -10,6 +10,10 @@
 #   sh /data/local/tmp/orbit/orbit-setup.sh switch stock  the TV's own home screen is Home again; Orbit Home, its helper
 #                                                         and everything else stay
 #   sh /data/local/tmp/orbit/orbit-setup.sh switch orbit  Orbit Home is Home again, and the stock home screen goes off
+#   sh /data/local/tmp/orbit/orbit-setup.sh trial 900     a look before setting up: Orbit Home installed as an ordinary
+#                                                         app and started for that many seconds, the TV's own home
+#                                                         screen still Home, nothing switched off or turned on;
+#                                                         orbit-undo.sh takes it away again
 #
 # It reads plan.txt, disable.txt, name.txt, token.txt, phone.txt and the two APKs from /data/local/tmp/orbit. Lines
 # starting "@orbit" are for the phone; the rest is log. Every change goes into undo.txt (and out as "@orbit undo"),
@@ -36,6 +40,10 @@ URI=content://$PKG.theme
 OLD_URI=content://$OLD_PKG.theme
 UNDO=$D/undo.txt
 HOME_ACT=$PKG/$CLS.MainActivity
+# Orbit Home's extras for a trial (TrialMode.java). A start of the setup itself says SET_UP, which ends a trial for good.
+TRIAL_SECONDS=dev.shiv.orbit.home.extra.TRIAL_SECONDS
+TRIAL_ID=dev.shiv.orbit.home.extra.TRIAL_ID
+SET_UP=dev.shiv.orbit.home.extra.SET_UP
 HELPER=$PKG/$CLS.HomeKeyService
 LISTENER=$PKG/$CLS.GuardRevival
 DREAM=$PKG/$CLS.ClockDream
@@ -174,7 +182,7 @@ restart_home() {
   s=$(setting secure enabled_accessibility_services)
   a=$(setting secure accessibility_enabled)
   am force-stop $PKG </dev/null
-  am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n $HOME_ACT </dev/null >/dev/null 2>&1
+  am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n $HOME_ACT --ez $SET_UP true </dev/null >/dev/null 2>&1
   case "$s" in *"$PKG/"*)
     settings put secure enabled_accessibility_services "" </dev/null
     settings put secure accessibility_enabled 0 </dev/null
@@ -197,9 +205,9 @@ give_back_home() {
 }
 
 # Orbit Home started on its own, before the stock home screen is touched, as launcher/build-and-install.sh does:
-# "Status: ok" means the activity really came up.
+# "Status: ok" means the activity really came up. SET_UP tells an Orbit Home that was only being tried that it stays.
 start_orbit_home() {
-  out=$(am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n $HOME_ACT </dev/null 2>&1 | tr -d '\r')
+  out=$(am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n $HOME_ACT --ez $SET_UP true </dev/null 2>&1 | tr -d '\r')
   case "$out" in *"Status: ok"*) ;; *) return 1 ;; esac
   case "$out" in *Error*) return 1 ;; esac
   return 0
@@ -362,6 +370,102 @@ switch_orbit() {
   esac
 }
 
+# A trial that cannot go on takes Orbit Home off again, when Orbit Setup put it there, and a record the trial began
+# goes with it: the TV is as it was.
+trial_takeback() {
+  if grep -qxF "uninstall $PKG" "$UNDO" 2>/dev/null && has $PKG; then
+    case "$(home_now)" in $PKG/*) echo "kept $PKG: it is the home screen" ;; *)
+      out=$(pm uninstall $PKG </dev/null 2>&1 | tr -d '\r')
+      case "$out" in *Success*) echo "removed $PKG" ;; *) echo "could not remove $PKG: $out" ;; esac ;;
+    esac
+  fi
+  [ "$fresh" = 1 ] && ! has $PKG && rm -f "$UNDO"
+}
+
+# A look at Orbit Home before setting it up (phone/SPEC.md, "Trying Orbit before setting it up"). Orbit Home goes on as
+# an ordinary app and starts with a time limit ($1 seconds, 60 to 3600; 900 when not given); at the end it opens the
+# TV's own home screen and closes. Nothing is switched off, no helper, permission or setting is turned on, and the TV's
+# own home screen stays Home: when installing a second home app would make Android ask which one to use, the one it
+# had is made Home again, and if Android will not keep it Orbit Home goes again. The record gets only the TV's home
+# screen and the install, so orbit-undo.sh takes Orbit Home away, and a setup afterwards keeps the record.
+cmd_trial() {
+  secs=$(echo "$1" | tr -dc '0-9')
+  [ -n "$secs" ] || secs=900
+  [ ${#secs} -gt 4 ] && secs=3600
+  [ "$secs" -lt 60 ] && secs=60
+  [ "$secs" -gt 3600 ] && secs=3600
+  fresh=0; [ -s "$UNDO" ] || fresh=1
+  [ -f "$UNDO" ] && while IFS= read -r line; do [ -n "$line" ] && say undo "$line"; done < "$UNDO"
+
+  # Nothing is written before the checks pass, so a TV that is refused keeps no trace of the try.
+  step check start
+  sdk=$(getprop ro.build.version.sdk | tr -dc '0-9')
+  if [ "${sdk:-0}" -lt 26 ]; then step check fail "Android 8 or later is needed"; stop_fail "This TV's Android is too old for Orbit OS"; fi
+  [ -s "$D/orbit-home.apk" ] || { step check fail "Orbit Home is missing"; stop_fail "Orbit Home was not sent to the TV"; }
+  now=$(home_now)
+  case "$now $(setting secure enabled_accessibility_services)" in
+    *"$PKG/"*|*"$OLD_PKG/"*) step check fail "Orbit OS is already set up on this TV"; stop_fail "Orbit OS is already set up on this TV" ;;
+  esac
+  if grep -Eq '^(enable|a11y|a11y_on|setting) ' "$UNDO" 2>/dev/null; then
+    step check fail "Orbit Setup changed this TV before"
+    stop_fail "Orbit Setup changed this TV before: finish setting it up, or use Undo first"
+  fi
+  if has $OLD_PKG || { has $PKG && ! grep -qxF "uninstall $PKG" "$UNDO"; }; then
+    step check fail "Orbit Home is already on this TV"; stop_fail "Orbit Home is already on this TV"
+  fi
+  step check ok
+  say progress 10
+
+  step record start
+  touch "$UNDO" || { step record fail "Orbit cannot write to $D"; stop_fail "Orbit cannot write to $D"; }
+  case "$now" in
+    ''|android/*|*/*ResolverActivity) ;;
+    *) grep -q '^home ' "$UNDO" || remember "home $now" ;;
+  esac
+  step record ok
+  say progress 15
+
+  step install start
+  if ! install_apk "$D/orbit-home.apk" $PKG; then
+    trial_takeback
+    step install fail "Orbit Home did not install"; stop_fail "Orbit Home did not install, so nothing on the TV changed"
+  fi
+  step install ok
+  say progress 70
+
+  # Android may now ask which home screen to use (two apps can be Home), or even take the new one.
+  step keep start
+  case "$now" in
+    ''|android/*|*/*ResolverActivity) ;;
+    *)
+      if [ "$(home_now | cut -d/ -f1)" != "${now%%/*}" ]; then
+        cmd package set-home-activity --user 0 "$now" </dev/null >/dev/null 2>&1
+        echo "made $now Home again"
+      fi
+      if [ "$(home_now | cut -d/ -f1)" != "${now%%/*}" ]; then
+        trial_takeback
+        step keep fail "The TV would not keep its own home screen"
+        stop_fail "The TV would not keep its own home screen next to Orbit Home, so Orbit Home was taken off again"
+      fi ;;
+  esac
+  step keep ok
+  say progress 80
+
+  step open start
+  am force-stop $PKG </dev/null
+  out=$(am start -W -n $HOME_ACT --es $TRIAL_ID "$(date +%s)" --ei $TRIAL_SECONDS "$secs" </dev/null 2>&1 | tr -d '\r')
+  case "$out" in *"Status: ok"*) ;; *) out="Error: $out" ;; esac
+  case "$out" in *Error*)
+    trial_takeback
+    step open fail "Orbit Home did not open"; stop_fail "Orbit Home did not open, so it was taken off again" ;;
+  esac
+  step open ok
+  # The APK is large: it does not stay behind.
+  rm -f "$D/orbit-home.apk"
+  say progress 100
+  say done ok
+}
+
 case "$1" in
   install) cmd_install ;;
   name) cmd_name ;;
@@ -371,5 +475,6 @@ case "$1" in
       orbit) switch_orbit ;;
       *) echo "usage: sh $0 switch stock|orbit" >&2; exit 2 ;;
     esac ;;
-  *) echo "usage: sh $0 install|name|switch stock|switch orbit" >&2; exit 2 ;;
+  trial) cmd_trial "$2" ;;
+  *) echo "usage: sh $0 install|name|switch stock|switch orbit|trial [seconds]" >&2; exit 2 ;;
 esac

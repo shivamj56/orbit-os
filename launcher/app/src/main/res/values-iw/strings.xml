@@ -151,4 +151,10 @@
     <string name="clock_format_system">מערכת</string>
     <string name="clock_format_12">12 שעות</string>
     <string name="clock_format_24">24 שעות</string>
+    <string name="trial_pill">מנסים את Orbit · נותרו %1$s</string>
+    <string name="trial_pill_hint">כפתור הבית מחזיר לטלוויזיה שלך</string>
+    <string name="trial_end_title">זה היה Orbit OS</string>
+    <string name="trial_end_body">הטלוויזיה חוזרת עכשיו למסך הבית שלה. Orbit לא שינה בה דבר: Orbit Home נשאר בה רק כאפליקציה עד שתחליטו.</string>
+    <string name="trial_end_next">כדי להשאיר את Orbit, בחרו Set up Orbit OS באפליקציית Orbit בטלפון. כדי להסיר אותו, בחרו שם Remove Orbit.</string>
+    <string name="trial_end_leaving">חזרה לטלוויזיה בעוד %1$d שניות. לחצו OK כדי לחזור עכשיו.</string>
 </resources>

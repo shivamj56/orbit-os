@@ -62,10 +62,12 @@ interface PretendTv {
   adb: boolean;
   name: string;
   token: string | null;
+  /** Orbit Home is on the TV only for a trial: an ordinary app, its door shut. */
+  trial?: boolean;
 }
 
 function fresh(): PretendTv {
-  return { installed: [...KEPT, ...SWITCHED_OFF], disabled: [], home: STOCK_HOME, undo: [], a11y: "", allowed: false, adb: false, name: "", token: null };
+  return { installed: [...KEPT, ...SWITCHED_OFF], disabled: [], home: STOCK_HOME, undo: [], a11y: "", allowed: false, adb: false, name: "", token: null, trial: false };
 }
 
 /** The TV as the demo has always shown it: Orbit OS on it, set up on 8 November. */
@@ -133,7 +135,7 @@ export function createSetupMock(hooks: Hooks): SetupMock {
   const reply = (id: number, data: unknown, ms = 60) => id && later(ms, () => hooks.deliver({ id, ok: true, data }));
   const fail = (id: number, error: string, extra: { status?: number; reason?: string } = {}, ms = 60) =>
     id && later(ms, () => hooks.deliver({ id, ok: false, error, ...extra }));
-  const orbitOn = () => tv.installed.includes(ORBIT_HOME) && !tv.disabled.includes(ORBIT_HOME);
+  const orbitOn = () => tv.installed.includes(ORBIT_HOME) && !tv.disabled.includes(ORBIT_HOME) && !tv.trial;
   const enabled = () => tv.installed.filter((p) => !tv.disabled.includes(p));
   const text = (path: string) => files.get(`${DIR}/${path}`) ?? "";
   const names = (path: string) =>
@@ -258,7 +260,11 @@ export function createSetupMock(hooks: Hooks): SetupMock {
       say("@orbit progress 50");
       say("Status: ok", 900);
       list.filter((p) => LATE.test(p)).forEach((p) => switchOff(p, 140));
-      act(() => (tv.home = ORBIT_HOME_ACTIVITY), 300);
+      act(() => {
+        tv.home = ORBIT_HOME_ACTIVITY;
+        // A trial's Orbit Home stays, now as Home.
+        tv.trial = false;
+      }, 300);
       say("@orbit step home ok", 200);
       say("@orbit progress 60");
 
@@ -319,6 +325,64 @@ export function createSetupMock(hooks: Hooks): SetupMock {
       assets.delete("orbit-home.apk");
       assets.delete("orbit-live.apk");
     });
+    say("@orbit progress 100", 100);
+    say("@orbit done ok", 100);
+    return { lines, code: () => code };
+  };
+
+  // ---- the pretend orbit-setup.sh trial ----
+
+  const trial = (cmdLine: string): { lines: Line[]; code: () => number } => {
+    const lines: Line[] = [];
+    let code = 0;
+    const say = (line: string, wait = 40) => lines.push({ wait, line });
+    const act = (f: () => void, wait = 0) => lines.push({ wait, act: f });
+    const remember = (line: string) =>
+      lines.push({
+        wait: 30,
+        act: () => {
+          if (!tv.undo.includes(line)) tv.undo.push(line);
+        },
+        line: `@orbit undo ${line}`,
+      });
+    const refuse = (why: string) => {
+      say(`@orbit step check fail ${why}`, 500);
+      say(`@orbit done fail ${why}`, 200);
+      code = 1;
+      return { lines, code: () => code };
+    };
+    for (const l of tv.undo) say(`@orbit undo ${l}`, 10);
+    say("@orbit step check start", 300);
+    if (!assets.has("orbit-home.apk")) return refuse("Orbit Home is missing");
+    if (tv.home.startsWith(`${ORBIT_HOME}/`) || tv.a11y.includes(`${ORBIT_HOME}/`)) return refuse("Orbit OS is already set up on this TV");
+    if (tv.undo.some((l) => /^(enable|a11y|a11y_on|setting) /.test(l))) return refuse("Orbit Setup changed this TV before");
+    if (tv.installed.includes(ORBIT_HOME) && !tv.undo.includes(`uninstall ${ORBIT_HOME}`)) return refuse("Orbit Home is already on this TV");
+    say("@orbit step check ok", 600);
+    say("@orbit progress 10");
+    say("@orbit step record start", 200);
+    if (!tv.undo.some((l) => l.startsWith("home "))) remember(`home ${tv.home}`);
+    say("@orbit step record ok", 300);
+    say("@orbit progress 15");
+    say("@orbit step install start", 200);
+    if (!tv.installed.includes(ORBIT_HOME)) remember(`uninstall ${ORBIT_HOME}`);
+    act(() => {
+      if (!tv.installed.includes(ORBIT_HOME)) tv.installed.push(ORBIT_HOME);
+      tv.trial = true;
+    }, 1600);
+    say("@orbit step install ok", 100);
+    say("@orbit progress 70");
+    say("@orbit step keep start", 200);
+    say("@orbit step keep ok", 500);
+    say("@orbit progress 80");
+    say("@orbit step open start", 200);
+    const secs = Math.max(60, Math.min(3600, Number(/trial (\d+)/.exec(cmdLine)?.[1] ?? 900)));
+    act(() => {
+      hooks.show({ type: "open", label: "Orbit Home" });
+      // Orbit Home's own clock: at the end the TV's own home screen comes back, phone or no phone.
+      later(secs * 1000, () => tv.trial && hooks.show({ type: "home" }));
+    }, 700);
+    say("@orbit step open ok", 100);
+    act(() => assets.delete("orbit-home.apk"));
     say("@orbit progress 100", 100);
     say("@orbit done ok", 100);
     return { lines, code: () => code };
@@ -389,6 +453,7 @@ export function createSetupMock(hooks: Hooks): SetupMock {
       tv.undo = [];
       tv.name = "";
       tv.token = null;
+      tv.trial = false;
       hooks.show({ type: "greetname", name: "" });
       if (!orbitOn()) hooks.gone();
     });
@@ -456,6 +521,11 @@ export function createSetupMock(hooks: Hooks): SetupMock {
         else if (cmd.startsWith("cmd package resolve-activity"))
           reply(id, { out: `priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true\n${tv.home}\n` }, 200);
         else if (cmd.startsWith(`cat ${DIR}/undo.txt`)) reply(id, { out: tv.undo.map((l) => `${l}\n`).join("") });
+        else if (cmd.startsWith(`am start -n ${ORBIT_HOME_ACTIVITY}`)) {
+          // A trial: "End the trial now" (the TV's own home comes back), or "Show Orbit on the TV again".
+          if (tv.trial && tv.installed.includes(ORBIT_HOME)) hooks.show(cmd.includes("TRIAL_END") ? { type: "home" } : { type: "open", label: "Orbit Home" });
+          reply(id, { out: "Starting: Intent { }\n" });
+        }
         else if (cmd === "settings put global adb_enabled 0") {
           // Developer mode goes, and the connection with it: the phone hears an error, as it would from the TV.
           tv.adb = false;
@@ -491,7 +561,15 @@ export function createSetupMock(hooks: Hooks): SetupMock {
       case "setupRun": {
         if (needsConnection(id)) return true;
         const cmd = String(args.cmd ?? "");
-        const job = cmd.endsWith("orbit-setup.sh install") ? install() : cmd.endsWith("orbit-setup.sh name") ? name() : cmd.endsWith("orbit-undo.sh") ? undo() : null;
+        const job = cmd.endsWith("orbit-setup.sh install")
+          ? install()
+          : cmd.endsWith("orbit-setup.sh name")
+            ? name()
+            : cmd.endsWith("orbit-undo.sh")
+              ? undo()
+              : /orbit-setup\.sh trial( \d+)?$/.test(cmd)
+                ? trial(cmd)
+                : null;
         if (!job) play(id, [{ wait: 50, line: `sh: ${cmd}: not found` }], () => 127);
         else play(id, job.lines, job.code);
         return true;

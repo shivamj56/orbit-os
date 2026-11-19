@@ -55,13 +55,30 @@ export type SetupStep =
   | "switched"
   | "backup"
   | "backups"
-  | "account";
+  | "account"
+  | "trying"
+  | "tried"
+  | "removing"
+  | "removed";
 
 /**
  * What the flow is for: putting Orbit OS on a TV, undoing it, switching the TV's home screen from Settings, backing up
- * the TV's own setup to Google Drive, or the list of those backups (from which Undo can start).
+ * the TV's own setup to Google Drive, or the list of those backups (from which Undo can start); or trying Orbit on a TV
+ * for 15 minutes before setting it up.
  */
-export type FlowMode = "install" | "undo" | "switch" | "backup" | "backups" | "account";
+export type FlowMode = "install" | "undo" | "switch" | "backup" | "backups" | "account" | "trial";
+
+/** A trial of Orbit on the chosen TV (phone/SPEC.md, "Trying Orbit before setting it up"). */
+export interface TrialState {
+  /** starting: the TV's script runs; on: the time runs; failed: it did not start; over: the time is up. */
+  state: "idle" | "starting" | "on" | "failed" | "over";
+  /** When the TV gives itself back, in this phone's clock (ms since 1970). */
+  endsAt: number;
+  /** The record the trial's run said (the TV's home screen and Orbit Home's install), for taking Orbit off again. */
+  undo: string[];
+  /** What the connection is for once Allow is pressed again: the trial itself, or taking Orbit off. */
+  next: "start" | "remove";
+}
 
 /** Settings › "Delete my Orbit account": what was asked for, and how it went. */
 export interface AccountDeletion {
@@ -188,9 +205,11 @@ export interface Flow {
   /** The TV was chosen on Find (Back from Developer mode goes there). */
   viaFind: boolean;
   account: AccountDeletion;
+  trial: TrialState;
 }
 
 const freshBackup = (): BackupState => ({ state: "idle", text: null, bytes: 0, readTv: false, saved: null, error: null });
+const freshTrial = (): TrialState => ({ state: "idle", endsAt: 0, undo: [], next: "start" });
 
 function initial(): Flow {
   return {
@@ -232,6 +251,7 @@ function initial(): Flow {
     fromBackup: null,
     viaFind: false,
     account: { state: "idle", backups: true, email: null, error: null, removed: null },
+    trial: freshTrial(),
   };
 }
 
@@ -323,6 +343,7 @@ const FIRST: Record<FlowMode, SetupStep> = {
   backup: "backup",
   backups: "backups",
   account: "account",
+  trial: "welcome",
 };
 
 /**
@@ -363,6 +384,7 @@ export function closeSetup() {
 
 function stopJobs() {
   adopting = null;
+  window.clearInterval(trialTimer);
   scanJob++;
   probeJob++;
   window.clearTimeout(probeTimer);
@@ -384,6 +406,8 @@ function go(step: SetupStep, dir: 1 | -1 = 1) {
   if (step === "installing") runInstall();
   if (step === "undoing") runUndo();
   if (step === "switching") runSwitch();
+  if (step === "trying" && (flow.trial.state === "idle" || flow.trial.state === "failed")) runTrial();
+  if (step === "removing") runUntrial();
   if (step === "ready" && flow.backup.state === "idle") prepareBackup();
   if (step === "backups" && flow.backups.state !== "done") loadBackups();
 }
@@ -450,6 +474,14 @@ export function back(): boolean {
       if (flow.account.state === "deleting") return true;
       closeSetup();
       return false;
+    case "trying":
+      // A trial that did not start leaves; one under way stays, as the TV is mid-way or Orbit is on it.
+      if (flow.trial.state !== "failed") return true;
+      closeSetup();
+      return false;
+    case "removed":
+      finishUntrial();
+      return false;
     default:
       // Installing, undoing and the name come after the TV changed: there is no way back from them.
       return true;
@@ -460,6 +492,7 @@ export function back(): boolean {
 
 export function start() {
   haptic("medium");
+  set({ mode: "install", trial: freshTrial() });
   go("find");
 }
 
@@ -697,6 +730,7 @@ async function loadRecord() {
 
 export function continueFromAllow() {
   if (flow.conn.state !== "connected") return;
+  if (flow.mode === "trial") return go(flow.trial.next === "remove" ? "removing" : "trying");
   if (flow.mode === "undo") return go("undoing");
   if (flow.mode === "switch") return go("switching");
   if (flow.mode === "backup") return readForBackup();
@@ -848,6 +882,8 @@ async function runInstall() {
     return;
   }
   haptic("success");
+  // A trial of this TV becomes this setup: nothing to offer about it any more.
+  forgetTrial(tv.address);
   // On by itself when every step went well; a step with trouble waits for Continue, so it is read.
   const trouble = installRows(flow.run, flow.disableCount).some((r) => r.state === "fail");
   if (!trouble) moveOnTimer = window.setTimeout(() => flow.step === "installing" && go("you"), 1400);
@@ -1060,6 +1096,7 @@ async function readTvRecord(): Promise<string[]> {
 /** The step bar of Find, Developer mode and Allow: "2 of 7" in setup; "1 of 2" for the rest, "1 of 3" with Find. */
 export function stepCount(f: Pick<Flow, "mode" | "viaFind" | "fromBackup">, screen: "find" | "devmode" | "allow"): { step: number; total: number } {
   if (f.mode === "install") return { step: screen === "find" ? 1 : screen === "devmode" ? 2 : 3, total: 7 };
+  if (f.mode === "trial") return { step: screen === "find" ? 1 : screen === "devmode" ? 2 : 3, total: 4 };
   const order = f.viaFind || f.fromBackup || screen === "find" ? ["find", "devmode", "allow"] : ["devmode", "allow"];
   return { step: order.indexOf(screen) + 1, total: order.length };
 }
@@ -1373,4 +1410,280 @@ export async function deleteAccount(email: string | null) {
     haptic("error");
     set({ account: { ...flow.account, state: "failed", error: driveTrouble(e) } });
   }
+}
+
+// ---- trying Orbit for 15 minutes (phone/SPEC.md, "Trying Orbit before setting it up") ----
+
+/** How long a trial lasts. The TV keeps to it on its own clock too (TrialMode.java), so it ends without the phone. */
+export const TRIAL_SECONDS = 15 * 60;
+const HOME_ACTIVITY = "dev.shiv.orbit.home/com.gathin.tvhome.MainActivity";
+
+/** "14:59": the minutes and seconds left, rounded up as the TV's own pill shows them (TrialMode.clock). */
+export function trialClock(ms: number): string {
+  const s = Math.ceil(Math.max(0, ms) / 1000);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+const TRIAL_END = "dev.shiv.orbit.home.extra.TRIAL_END";
+
+/** A trial this phone started that nobody has finished (set Orbit up after it, or taken it off), across starts. */
+export interface PendingTrial {
+  tv: { name: string; address: string; model: string | null };
+  endsAt: number;
+  undo: string[];
+}
+
+/** The demo's pretend TV keeps its own, so a pretend trial is never offered for a real TV. */
+const trialKey = () => (bridge.demo ? "orbit-trial-demo" : "orbit-trial");
+
+/** The trial nobody finished, if any: Welcome offers the choice again. */
+export function pendingTrial(): PendingTrial | null {
+  try {
+    const kept = JSON.parse(localStorage.getItem(trialKey()) || "null");
+    if (!kept || typeof kept.tv?.address !== "string" || typeof kept.endsAt !== "number") return null;
+    return {
+      tv: { name: String(kept.tv.name || "TV"), address: kept.tv.address, model: typeof kept.tv.model === "string" ? kept.tv.model : null },
+      endsAt: kept.endsAt,
+      undo: Array.isArray(kept.undo) ? kept.undo.filter((l: unknown): l is string => typeof l === "string") : [],
+    };
+  } catch {
+    return null;
+  }
+}
+
+function keepTrial() {
+  const tv = flow.tv;
+  if (!tv) return;
+  try {
+    localStorage.setItem(trialKey(), JSON.stringify({ tv: { name: tv.name, address: tv.address, model: tv.model }, endsAt: flow.trial.endsAt, undo: flow.trial.undo }));
+  } catch {
+    /* a private window: kept while the app is open */
+  }
+}
+
+/** The trial on the TV at `address` is finished: set up, or taken off. */
+function forgetTrial(address: string) {
+  try {
+    if (pendingTrial()?.tv.address === address) localStorage.removeItem(trialKey());
+  } catch {
+    /* nothing kept */
+  }
+}
+
+/** The connection Allow opened is still there (it can close while the phone sleeps through a trial). */
+async function connectionAlive(): Promise<boolean> {
+  if (flow.conn.state !== "connected") return false;
+  try {
+    await setupTv.shell("echo orbit", 6000);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Welcome's "Try it on the TV for 15 minutes first": the same way in as setup (Find, Developer mode, Allow). */
+export function tryFirst() {
+  haptic("medium");
+  set({ mode: "trial", trial: freshTrial() });
+  go("find");
+}
+
+let trialTimer = 0;
+
+/** Once a second while the time runs: the end comes even when no screen is looking. */
+function watchTrial() {
+  window.clearInterval(trialTimer);
+  if (flow.trial.state !== "on") return;
+  trialTimer = window.setInterval(() => {
+    if (!flow.open || flow.mode !== "trial" || flow.trial.state !== "on") {
+      window.clearInterval(trialTimer);
+      return;
+    }
+    if (Date.now() >= flow.trial.endsAt) trialOver();
+  }, 1000);
+}
+
+/**
+ * The trial itself: Orbit Home and the script go to the TV, and `orbit-setup.sh trial` installs Orbit Home as an
+ * ordinary app and opens it for TRIAL_SECONDS. Nothing is switched off and the TV's own home screen stays Home.
+ */
+async function runTrial() {
+  if (running) return;
+  running = true;
+  set({ run: freshRun(), runStarted: Date.now(), runError: null, pushed: 0, trial: { ...flow.trial, state: "starting", next: "start" } });
+  const stop = listenLines();
+  try {
+    await setupTv.shell(`mkdir -p ${TV_DIR}`);
+    await setupTv.pushAsset("orbit-setup.sh", `${TV_DIR}/orbit-setup.sh`);
+    set({ pushed: 0.1 });
+    await setupTv.pushAsset("orbit-home.apk", `${TV_DIR}/orbit-home.apk`);
+    set({ pushed: 1 });
+    const { exit } = await setupTv.run(`sh ${TV_DIR}/orbit-setup.sh trial ${TRIAL_SECONDS}`);
+    if (flow.run.exit === null && typeof exit === "number") set({ run: { ...flow.run, exit } });
+  } catch (e) {
+    set({ runError: (e as Error).message || "The connection to the TV closed." });
+  } finally {
+    stop();
+    running = false;
+  }
+  if (!flow.open || flow.mode !== "trial") return;
+  const undo = mergeUndo(flow.run.undo);
+  if (flow.runError || !runWentWell(flow.run)) {
+    haptic("error");
+    set({ trial: { ...flow.trial, state: "failed", undo } });
+    return;
+  }
+  haptic("success");
+  set({ trial: { state: "on", endsAt: Date.now() + TRIAL_SECONDS * 1000, undo, next: "start" } });
+  keepTrial();
+  watchTrial();
+}
+
+/** "Try again" after a trial that did not start: over a new connection when the last one closed. */
+export function tryTrialAgain() {
+  haptic("medium");
+  if (flow.runError || flow.conn.state !== "connected") {
+    set({ conn: { state: "idle", error: null, props: flow.conn.props }, runError: null, trial: { ...flow.trial, state: "idle", next: "start" } });
+    go("devmode");
+    return;
+  }
+  set({ trial: { ...flow.trial, state: "idle" } });
+  runTrial();
+}
+
+/** "Show Orbit on the TV again" while the time runs (Home on the TV's remote put it behind): it opens with the time
+ *  it has left. */
+export async function showTrialAgain() {
+  haptic("light");
+  await setupTv.shell(`am start -n ${HOME_ACTIVITY}`, 8000).catch(() => {});
+}
+
+/** "End the trial now": the TV says what comes next and goes back to its own home screen. */
+export function endTrialNow() {
+  haptic("medium");
+  if (flow.conn.state === "connected") setupTv.shell(`am start -n ${HOME_ACTIVITY} --ez ${TRIAL_END} true`, 8000).catch(() => {});
+  trialOver();
+}
+
+function trialOver() {
+  window.clearInterval(trialTimer);
+  if (flow.trial.state !== "on") return;
+  set({ trial: { ...flow.trial, state: "over", endsAt: Math.min(flow.trial.endsAt, Date.now()) } });
+  keepTrial();
+  haptic("medium");
+  go("tried");
+  askForReview();
+}
+
+/**
+ * Google Play's own review sheet, right after a trial and once in the app's life (phone/SPEC.md, "Asking for a
+ * review"): Flutter remembers that it asked, and Google decides whether the sheet shows at all. Nothing is asked
+ * before it, and nothing waits on it.
+ */
+function askForReview() {
+  window.setTimeout(() => {
+    bridge.call("askReview", {}, 20_000).catch(() => {});
+  }, 900);
+}
+
+/** After the time is up: "Set up Orbit OS", the usual setup from the TV's reading on, over the same connection. */
+export async function setUpAfterTrial() {
+  if (flow.continuing) return;
+  haptic("medium");
+  set({ continuing: true });
+  const alive = await connectionAlive();
+  if (!flow.open) return;
+  set({ mode: "install", continuing: false });
+  if (alive) {
+    if (!flow.recordLoaded) loadRecord();
+    // Reads the TV's apps first (the button waits), then the questions.
+    continueFromAllow();
+  } else {
+    set({ conn: { state: "idle", error: null, props: flow.conn.props } });
+    go("devmode");
+  }
+}
+
+/** After the time is up: "Remove Orbit from the TV". */
+export function removeTrial() {
+  haptic("medium");
+  set({ trial: { ...flow.trial, next: "remove" } });
+  go("removing");
+}
+
+/** Takes Orbit Home off again with orbit-undo.sh and the trial's own record (the TV's home screen stays Home). */
+async function runUntrial() {
+  if (running) return;
+  running = true;
+  set({ run: freshRun(), runStarted: Date.now(), runError: null, pushed: 0 });
+  if (!(await connectionAlive())) {
+    running = false;
+    // Developer mode and Allow once more; Continue there comes back here.
+    set({ conn: { state: "idle", error: null, props: flow.conn.props } });
+    go("devmode");
+    return;
+  }
+  const stop = listenLines();
+  try {
+    let onTv: string[] = [];
+    try {
+      onTv = await readTvRecord();
+    } catch {
+      onTv = [];
+    }
+    const lines = mergeUndo(onTv, flow.trial.undo);
+    await setupTv.shell(`mkdir -p ${TV_DIR}`);
+    await setupTv.pushAsset("orbit-undo.sh", `${TV_DIR}/orbit-undo.sh`);
+    set({ pushed: 0.5 });
+    if (lines.length > onTv.length) await setupTv.pushText(lines.map((l) => `${l}\n`).join(""), `${TV_DIR}/undo.txt`);
+    set({ pushed: 1 });
+    const { exit } = await setupTv.run(`sh ${TV_DIR}/orbit-undo.sh`);
+    if (flow.run.exit === null && typeof exit === "number") set({ run: { ...flow.run, exit } });
+  } catch (e) {
+    set({ runError: (e as Error).message || "The connection to the TV closed." });
+  } finally {
+    stop();
+    running = false;
+  }
+  if (!flow.open) return;
+  const ok = !flow.runError && runWentWell(flow.run);
+  if (ok && flow.tv) forgetTrial(flow.tv.address);
+  haptic(ok ? "success" : "error");
+  go("removed");
+}
+
+/** "Try again" after taking Orbit off stopped. */
+export function untrialAgain() {
+  haptic("medium");
+  if (flow.runError || flow.conn.state !== "connected") {
+    set({ conn: { ...flow.conn, state: "idle" }, runError: null });
+    go("devmode");
+    return;
+  }
+  go("removing", -1);
+}
+
+/** Done after taking Orbit off (developer mode closes when asked), or Close after a run that stopped. */
+export async function finishUntrial() {
+  if (flow.closing) return;
+  set({ closing: true });
+  const ok = !flow.runError && runWentWell(flow.run);
+  if (ok) await shutTheDoor();
+  else await setupTv.close().catch(() => {});
+  closeSetup();
+}
+
+/** Welcome's card for a trial nobody finished: straight to where it stands (the time running, or the choice). */
+export function resumeTrial(pending: PendingTrial) {
+  haptic("medium");
+  const over = Date.now() >= pending.endsAt;
+  set({
+    mode: "trial",
+    tv: { name: pending.tv.name, address: pending.tv.address, model: pending.tv.model, orbit: false },
+    trial: { state: over ? "over" : "on", endsAt: pending.endsAt, undo: pending.undo, next: "start" },
+    viaFind: false,
+  });
+  go(over ? "tried" : "trying");
+  watchTrial();
+  // A trial that ended while the app was closed: its one ask comes now.
+  if (over) askForReview();
 }

@@ -20,6 +20,7 @@ import '../tv/tv_link.dart';
 import '../tv/tv_store.dart';
 import 'demo_store.dart';
 import 'orbit_screen.dart';
+import 'review_prompt.dart';
 import 'theme.dart';
 
 /// Orbit: the link to the TV, the bridge to the page, and the one screen. No Material: the page is the interface.
@@ -64,6 +65,7 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
       setup: PlatformSetupHost(),
       drive: _drive,
       demoStore: widget.demoStore,
+      review: OnceReviewPrompt(),
     );
     // A start in demo mode leaves the real TV alone from the first moment: its saved TV is not even read yet.
     if (widget.demo) _remote.setDemo(true);
