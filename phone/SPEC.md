@@ -72,6 +72,7 @@ Flutter sends a fresh status event whenever any of it changes.
 | haptic | `{"kind":"tick"\|"light"\|"medium"\|"heavy"\|"success"\|"error"}` | HapticFeedback (selectionClick / light / medium / heavy; success = medium, error = heavy twice) | – (id 0 allowed) |
 | keepAwake | `{"on":true}` | wakelock while the app is in front | `{}` |
 | settings | `{"volumeKeys":true}` | the phone's volume keys turn the TV up/down (default true) | `{}` |
+| askReview | – | Google Play's own review sheet, at most once in the app's life ("Asking for a review" below); refused in demo mode | `{"asked":bool}` |
 
 HTTP errors come back as `ok:false` with the TV's `error` text and `status`. A 401 means the token is no longer
 known: drop it and go to `needsPairing`. A network failure → `offline` (retry every 3 s while the app is in front).
@@ -266,11 +267,13 @@ The page pushes into `/data/local/tmp/orbit/`: both APKs, the script, and
   typed during setup. `phone.txt`: the phone's name for the TV's list of phones.
 
 Then `setupRun` `sh /data/local/tmp/orbit/orbit-setup.sh install`. Later, `… name` sends only a new `name.txt`,
-`… switch stock` and `… switch orbit` change the home screen (below), and `orbit-undo.sh` puts everything back from
-`undo.txt`. Lines starting `@orbit` are for the page, the rest is log:
+`… switch stock` and `… switch orbit` change the home screen (below), `… trial 900` puts Orbit Home on for a look
+("Trying Orbit before setting it up"), and `orbit-undo.sh` puts everything back from `undo.txt`. Lines starting
+`@orbit` are for the page, the rest is log:
 
     @orbit step <id> start|ok|skip|fail [text]   install's ids in order: check record disable home helper grants live
-                                                name pair; the switch commands use the one id switch
+                                                name pair; the switch commands use the one id switch; the trial's
+                                                are check record install keep open
     @orbit progress <0-100>
     @orbit undo <line>                          the undo record, one line at a time (the page saves all of them)
     @orbit done ok|fail [text]
@@ -446,6 +449,71 @@ lacks (the switch reads `home` from it), and `setupRun` `sh /data/local/tmp/orbi
 page reads `@orbit step switch …` and `@orbit done …` (`lines.ts`, `switchRows`); a script from before `switch` answers
 with its usage line, and the page says so. After a switch that went well the phone's record notes `home` and any
 record lines the switch said. Over the cloud the screen says the home Wi-Fi is needed.
+
+## Trying Orbit before setting it up (after Orbit 1.4.0)
+
+Welcome's "Try it on the TV for 15 minutes first" puts Orbit Home on the TV for a look, and the TV goes back to its
+own home screen by itself when the time is up ("try it before you trust it"). Setup mode `trial` takes the same way in
+as setup (Find, Developer mode, Allow; the step bar counts 4), then:
+
+1. `mkdir -p`, push the bundled `orbit-setup.sh` and `orbit-home.apk`, and `setupRun`
+   `sh /data/local/tmp/orbit/orbit-setup.sh trial 900`. The page reads the steps `check record install keep open`
+   (`lines.ts`, `trialRows`).
+2. While the time runs, the phone counts down (`TRIAL_SECONDS`, 15 minutes, on the phone's clock) and offers "Show
+   Orbit on the TV again" (`am start -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity`, which opens with the time
+   it has left) and "End the trial now" (the same start with `--ez dev.shiv.orbit.home.extra.TRIAL_END true`).
+3. When the time is up: "Set up Orbit OS" (the usual setup from reading the TV on, over the same connection or after
+   Developer mode and Allow once more; the trial's record stays the TV's record), "Remove Orbit from the TV", or "Not
+   now". Google Play's review sheet is asked for here, once ("Asking for a review").
+4. Remove runs `orbit-undo.sh` with the TV's own `undo.txt` (the phone pushes the trial's lines when the TV lacks
+   them): the record's `home` is made Home (it already is), and Orbit Home comes off.
+
+A trial nobody finished is kept in the page's localStorage (`orbit-trial`; `orbit-trial-demo` for the pretend TV), with
+its TV, its end and its record. Welcome then shows a "Your trial" card that goes back to the countdown or to the
+choice. A setup that went well on that TV, or a removal, forgets it.
+
+The script's `trial [seconds]` (60 to 3600; 900 when not given) changes nothing but the install:
+
+- It refuses a TV where Orbit is Home or its helper is on ("Orbit OS is already set up on this TV"), whose record holds
+  a setup's lines (`enable`, `a11y`, `a11y_on`, `setting`), or that has Orbit Home under either id put there another
+  way. An Orbit Home a trial installed (the record says `uninstall dev.shiv.orbit.home`) may be tried again. Nothing is
+  written before these checks pass.
+- It records the TV's Home (`home <component>`, unless one is recorded already) and installs Orbit Home with
+  `pm install -r -g`, recording `uninstall dev.shiv.orbit.home` when it was not there. Nothing is switched off, and no
+  helper, permission grant, notification listener, screensaver or setting is touched.
+- `keep`: installing a second app that can be Home makes some TVs ask which home screen to use (Android 9 and earlier
+  drop an "always" choice when the set of home apps changes). When `resolve-activity` no longer names the home screen
+  it named before the install, that one is made Home again with `cmd package set-home-activity`. If Android still
+  does not keep it, Orbit Home comes off again and the trial fails.
+- `open`: `am start -W -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity --es dev.shiv.orbit.home.extra.TRIAL_ID
+  <now> --ei dev.shiv.orbit.home.extra.TRIAL_SECONDS <seconds>`, without the HOME category: Orbit Home opens as an
+  app and the TV's own home screen stays Home. If it does not start, Orbit Home comes off again.
+- A trial that fails takes back what it did: Orbit Home comes off again when the trial put it there, and a record the
+  trial began goes too.
+
+On the TV (`launcher/…/TrialMode.java`), Orbit Home keeps the trial in its own preferences: its id, its length and its
+end on the TV's clock (a clock set back cannot stretch it). While it is on, a pill at the foot of Home says "Trying
+Orbit · 14:59 left" and that Home goes back to the TV; the remote's Home button opens the TV's own home screen, as it
+is still Home. When the time is up, or the phone ends it, `TrialEndActivity` says what comes next for ten seconds (OK
+or Back skip it), then opens the TV's own home screen. Opened again from the TV's list of apps after that, Orbit Home
+only says so again. A start with the same `TRIAL_ID` (Android restarting the app) does not start the trial over.
+
+The setup's own starts of Orbit Home (`start_orbit_home` and `restart_home` in `orbit-setup.sh`, and
+`launcher/build-and-install.sh`) pass `--ez dev.shiv.orbit.home.extra.SET_UP true`, which ends a trial for good. So
+does Orbit Home being the TV's Home, however it became Home.
+
+## Asking for a review (after Orbit 1.4.0)
+
+When a trial's time is up (or it is ended early), the page asks Flutter once for Google Play's own review sheet: op
+`askReview` → `{"asked":bool}` (`lib/app/review_prompt.dart`, the in_app_review plugin). Flutter keeps a file in app
+storage (`orbit-review-asked`) once it has asked, written before the sheet shows, so the app asks at most once in its
+life. Without Google Play on the phone it asks nothing and keeps its one ask. In demo mode the op is refused, like
+every op about a TV.
+
+Google decides whether the sheet shows at all: it keeps a quota per person, and shows nothing for an install that did
+not come from Play. The person can close it, and the app is never told whether they rated. Play's rules also forbid
+asking anything before the sheet ("Do you like Orbit?") or making a rating a condition of anything. So the page asks no
+question of its own around it, waits for nothing, and the choice after a trial is the same whatever happened.
 
 ## Demo mode (Orbit 1.4.0)
 

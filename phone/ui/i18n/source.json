@@ -186,6 +186,20 @@
       ]
     },
     {
+      "text": "{tv} is back on its own home screen. Orbit Home stays on it as an app until you choose.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "{tv} is just as it was before the trial. You can try Orbit again, or set it up, from this app any time.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
       "text": "{tv} is linked to {email}.",
       "kind": "text",
       "where": [
@@ -706,6 +720,13 @@
       ]
     },
     {
+      "text": "Choose what happens next",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
       "text": "Choose your TV first.",
       "kind": "message",
       "where": [
@@ -741,6 +762,7 @@
         "ui/setup/Backup.tsx",
         "ui/setup/Install.tsx",
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
       ]
     },
@@ -751,6 +773,7 @@
         "ui/setup/Backup.tsx",
         "ui/setup/Install.tsx",
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
       ]
     },
@@ -869,6 +892,13 @@
       "where": [
         "demo/MockTv.tsx",
         "mock-screen.ts"
+      ]
+    },
+    {
+      "text": "Could not note how to take Orbit off",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
       ]
     },
     {
@@ -1025,6 +1055,7 @@
         "ui/setup/Account.tsx",
         "ui/setup/Backup.tsx",
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
       ]
     },
@@ -1054,6 +1085,13 @@
       "kind": "text",
       "where": [
         "ui/setup/Backup.tsx"
+      ]
+    },
+    {
+      "text": "End the trial now",
+      "kind": "button",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -1687,6 +1725,13 @@
       ]
     },
     {
+      "text": "Installed Orbit Home, as an app",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
       "text": "Installed Orbit Live TV",
       "kind": "text",
       "where": [
@@ -1695,6 +1740,13 @@
     },
     {
       "text": "Installing Orbit Home",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Installing Orbit Home, as an app",
       "kind": "text",
       "where": [
         "setup/lines.ts"
@@ -1719,6 +1771,13 @@
       "kind": "text",
       "where": [
         "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "It goes back to its own home screen at {ends}.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
       ]
     },
     {
@@ -1752,6 +1811,13 @@
     {
       "text": "It's on",
       "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Its time is up. Set it up, or take it off again.",
+      "kind": "text",
       "where": [
         "ui/setup/Setup.tsx"
       ]
@@ -1811,7 +1877,22 @@
       "where": [
         "ui/setup/Install.tsx",
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Keep the TV on and this app open. Nothing on the TV is switched off.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Keeping the TV's own home screen",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
       ]
     },
     {
@@ -1854,6 +1935,13 @@
       "kind": "text",
       "where": [
         "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "left",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -1932,6 +2020,13 @@
       "kind": "button",
       "where": [
         "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Look around with the TV's own remote. When the time is up, the TV goes back to its own home screen by itself.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -2264,6 +2359,7 @@
         "ui/setup/Backup.tsx",
         "ui/setup/Setup.tsx",
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
       ]
     },
@@ -2279,6 +2375,13 @@
       "kind": "text",
       "where": [
         "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "Noted how to take Orbit off again",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
       ]
     },
     {
@@ -2317,6 +2420,13 @@
       ]
     },
     {
+      "text": "Nothing on the TV is switched off, and none of its settings changed.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
       "text": "Nothing on this TV needs switching off.",
       "kind": "text",
       "where": [
@@ -2342,6 +2452,13 @@
       "kind": "text",
       "where": [
         "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "Noting how to take Orbit off again",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
       ]
     },
     {
@@ -2515,6 +2632,13 @@
       ]
     },
     {
+      "text": "Opening Orbit Home on the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
       "text": "Opening the backup",
       "kind": "button",
       "where": [
@@ -2557,7 +2681,21 @@
       ]
     },
     {
+      "text": "Orbit can start the trial now",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
       "text": "Orbit can switch the home screen now",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit can take Orbit Home off now",
       "kind": "text",
       "where": [
         "ui/setup/Setup.tsx"
@@ -2649,6 +2787,20 @@
       ]
     },
     {
+      "text": "Orbit Home becomes the home screen, the apps you choose are switched off, and this phone becomes the remote. Undo puts it all back.",
+      "kind": "button",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Home comes off the TV, and the TV is just as it was.",
+      "kind": "button",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
       "text": "Orbit Home did not become Home",
       "kind": "text",
       "where": [
@@ -2665,10 +2817,32 @@
       ]
     },
     {
+      "text": "Orbit Home did not install, so nothing on the TV changed",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
       "text": "Orbit Home did not install; the TV keeps its own home screen",
       "kind": "message",
       "where": [
         "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home did not open",
+      "kind": "message",
+      "where": [
+        "setup/lines.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home did not open, so it was taken off again",
+      "kind": "message",
+      "where": [
         "setup/orbit-setup.sh"
       ]
     },
@@ -2683,6 +2857,14 @@
       "text": "Orbit Home did not start; the TV keeps its own home screen",
       "kind": "message",
       "where": [
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Home is already on this TV",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
         "setup/orbit-setup.sh"
       ]
     },
@@ -2711,6 +2893,20 @@
       ]
     },
     {
+      "text": "Orbit Home is on the TV now",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Orbit Home is still on the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
       "text": "Orbit Home is still the home screen",
       "kind": "message",
       "where": [
@@ -2730,6 +2926,13 @@
       "kind": "spoken",
       "where": [
         "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Home was already off the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
       ]
     },
     {
@@ -2759,6 +2962,34 @@
       "kind": "text",
       "where": [
         "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Orbit is off the TV",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Orbit is on {tv}",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Orbit is on {tv} for a try.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Orbit is on your TV",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -2855,6 +3086,14 @@
       ]
     },
     {
+      "text": "Orbit OS is already set up on this TV",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
       "text": "Orbit OS is on {tv}, and this phone is its remote, at home or away.",
       "kind": "text",
       "where": [
@@ -2922,6 +3161,21 @@
       "kind": "text",
       "where": [
         "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Orbit Setup changed this TV before",
+      "kind": "message",
+      "where": [
+        "mock-setup.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "Orbit Setup changed this TV before: finish setting it up, or use Undo first",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
       ]
     },
     {
@@ -3062,6 +3316,13 @@
       ]
     },
     {
+      "text": "Press Home on the TV's remote to go back to the TV's own home screen at any time.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
       "text": "Previous",
       "kind": "spoken",
       "where": [
@@ -3155,6 +3416,13 @@
       ]
     },
     {
+      "text": "Putting Orbit on {tv}",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
       "text": "Putting the TV's settings back",
       "kind": "text",
       "where": [
@@ -3186,7 +3454,8 @@
       "text": "Reading the TV",
       "kind": "button",
       "where": [
-        "ui/setup/Setup.tsx"
+        "ui/setup/Setup.tsx",
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -3231,6 +3500,7 @@
       "kind": "text",
       "where": [
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
       ]
     },
@@ -3246,6 +3516,20 @@
       "kind": "text",
       "where": [
         "mock.ts"
+      ]
+    },
+    {
+      "text": "Remove Orbit",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Remove Orbit from the TV",
+      "kind": "button",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -3355,6 +3639,13 @@
       ]
     },
     {
+      "text": "See the trial",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
       "text": "Select <b>Android TV OS build</b> and press OK seven times",
       "kind": "text",
       "where": [
@@ -3376,10 +3667,18 @@
       ]
     },
     {
+      "text": "sending Orbit Home",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
       "text": "sending Orbit Setup",
       "kind": "text",
       "where": [
-        "ui/setup/Switch.tsx"
+        "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -3429,6 +3728,13 @@
       "kind": "button",
       "where": [
         "ui/setup/Choices.tsx"
+      ]
+    },
+    {
+      "text": "Set up Orbit OS",
+      "kind": "button",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -3520,6 +3826,13 @@
       "kind": "button",
       "where": [
         "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Show Orbit on the TV again",
+      "kind": "button",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -3751,7 +4064,8 @@
       "text": "starting",
       "kind": "text",
       "where": [
-        "ui/setup/Install.tsx"
+        "ui/setup/Install.tsx",
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -3889,6 +4203,41 @@
       "kind": "text",
       "where": [
         "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "Taking Orbit Home off the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "taking Orbit off",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Taking Orbit off {tv}",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Taking Orbit off stopped",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Taking Orbit off stopped before it finished",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
       ]
     },
     {
@@ -4164,6 +4513,13 @@
       ]
     },
     {
+      "text": "The connection to the TV closed before Orbit was off. The TV still has its own home screen.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
       "text": "The connection to the TV closed before the setup finished. Nothing is broken.",
       "kind": "text",
       "where": [
@@ -4175,6 +4531,13 @@
       "kind": "text",
       "where": [
         "ui/setup/Switch.tsx"
+      ]
+    },
+    {
+      "text": "The connection to the TV closed before the trial started.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -4371,10 +4734,32 @@
       ]
     },
     {
+      "text": "The trial did not start",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "The trial is over",
+      "kind": "heading",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "The trial stopped before it started",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
       "text": "the TV",
       "kind": "text",
       "where": [
-        "ui/setup/Switch.tsx"
+        "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -4579,10 +4964,24 @@
       ]
     },
     {
+      "text": "The TV is asking whether this phone may put Orbit on it for a try. It is Android's own question, and it is asked only once.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
       "text": "The TV is asking whether this phone may set it up. It is Android's own question, and it is asked only once.",
       "kind": "text",
       "where": [
         "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "The TV is back on its own home screen. Orbit Home stays on it as an app until you choose.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -4597,6 +4996,20 @@
       "kind": "message",
       "where": [
         "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV is just as it was before the trial. You can try Orbit again, or set it up, from this app any time.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "The TV is just as it was before.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -4682,6 +5095,7 @@
       "where": [
         "ui/setup/Install.tsx",
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
       ]
     },
@@ -4730,6 +5144,13 @@
       ]
     },
     {
+      "text": "The TV still has its own home screen.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
       "text": "The TV wants that as JSON.",
       "kind": "message",
       "where": [
@@ -4748,6 +5169,21 @@
       "kind": "message",
       "where": [
         "app/lib/setup/adb.dart"
+      ]
+    },
+    {
+      "text": "The TV would not keep its own home screen",
+      "kind": "message",
+      "where": [
+        "setup/lines.ts",
+        "setup/orbit-setup.sh"
+      ]
+    },
+    {
+      "text": "The TV would not keep its own home screen next to Orbit Home, so Orbit Home was taken off again",
+      "kind": "message",
+      "where": [
+        "setup/orbit-setup.sh"
       ]
     },
     {
@@ -4823,6 +5259,13 @@
     },
     {
       "text": "The TV's own home screen is Home",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The TV's own home screen stays Home",
       "kind": "text",
       "where": [
         "setup/lines.ts"
@@ -4969,6 +5412,13 @@
       "kind": "text",
       "where": [
         "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "This copy of Orbit Setup cannot run a trial",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
       ]
     },
     {
@@ -5129,6 +5579,13 @@
       ]
     },
     {
+      "text": "Took Orbit Home off the TV",
+      "kind": "text",
+      "where": [
+        "setup/lines.ts"
+      ]
+    },
+    {
       "text": "Took Orbit's own apps away",
       "kind": "text",
       "where": [
@@ -5167,7 +5624,36 @@
         "ui/setup/Install.tsx",
         "ui/setup/Setup.tsx",
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "Try it on the TV for 15 minutes first",
+      "kind": "button",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Try Orbit",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "Try Orbit on {tv}",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Try Orbit on this TV",
+      "kind": "spoken",
+      "where": [
+        "ui/setup/Setup.tsx"
       ]
     },
     {
@@ -5591,7 +6077,15 @@
       "where": [
         "ui/setup/Install.tsx",
         "ui/setup/Switch.tsx",
+        "ui/setup/Trial.tsx",
         "ui/setup/Undo.tsx"
+      ]
+    },
+    {
+      "text": "When the time is up, you choose here: set Orbit up, or take it off again.",
+      "kind": "text",
+      "where": [
+        "ui/setup/Trial.tsx"
       ]
     },
     {
@@ -5887,6 +6381,13 @@
       "kind": "text",
       "where": [
         "ui/setup/Account.tsx"
+      ]
+    },
+    {
+      "text": "Your trial",
+      "kind": "text",
+      "where": [
+        "ui/setup/Setup.tsx"
       ]
     },
     {

@@ -10,13 +10,17 @@ import {
   continueFromAllow,
   itsOn,
   modelName,
+  pendingTrial,
   rescan,
+  resumeTrial,
   retryConnect,
   start,
   stepCount,
+  tryFirst,
   tvName,
   useSetup,
   type Flow,
+  type PendingTrial,
   type SetupStep,
   type SetupTv,
 } from "../../setup/flow";
@@ -27,9 +31,10 @@ import { BackupScreen, BackupsScreen } from "./Backup";
 import { Failed, Installing, Ready, You } from "./Install";
 import { PlanScreen, Questions } from "./Choices";
 import { SwitchConfirm, Switched, Switching } from "./Switch";
+import { Removed, Removing, Tried, Trying } from "./Trial";
 import { UndoConfirm, Undone, Undoing } from "./Undo";
-import { Brand, Card, DoneMark, Lead, NumberedStep, Primary, Rise, Screen, SectionLabel, Spinner, StepBar, TextButton, Title, Trouble, ease } from "./parts";
-import { t, rich, tm, mark, tn } from "../../i18n";
+import { Brand, Card, DoneMark, Lead, NumberedStep, Primary, Quiet, Rise, Screen, SectionLabel, Spinner, StepBar, TextButton, Title, Trouble, ease } from "./parts";
+import { currentLanguage, t, rich, tm, mark, tn } from "../../i18n";
 
 /** A TV menu's own words, in bold. */
 const strong = (words: React.ReactNode) => <b className="font-semibold text-snow">{words}</b>;
@@ -54,6 +59,10 @@ const SCREENS: Record<SetupStep, ComponentType> = {
   backup: BackupScreen,
   backups: BackupsScreen,
   account: AccountScreen,
+  trying: Trying,
+  tried: Tried,
+  removing: Removing,
+  removed: Removed,
 };
 
 const slide = {
@@ -82,6 +91,8 @@ export function Setup() {
 // ---- 1. welcome ----
 
 function Welcome() {
+  // A trial this phone started that nobody finished: its choice comes first.
+  const [pending] = useState(pendingTrial);
   return (
     <Screen label="Orbit Setup" top={28}>
       <div
@@ -99,6 +110,7 @@ function Welcome() {
         </Title>
         <p className="text-[16px] leading-[1.5] text-mist">{t("No computer and no code. This phone does the work over the Wi-Fi, in about five minutes.")}</p>
       </Rise>
+      {pending && <PendingTrialCard pending={pending} />}
       <Rise className="relative mt-6">
         <Card className="flex flex-col gap-3.5 p-[18px]">
           <Need icon={<I.Wifi size={22} className="text-cyan" />}>{t("The TV is on, and on the same Wi-Fi as this phone")}</Need>
@@ -110,9 +122,31 @@ function Welcome() {
       </Rise>
       <Rise className="relative mt-auto flex flex-col items-stretch gap-2 pt-6">
         <Primary onPress={start}>{t("Start setup")}</Primary>
+        <Quiet onPress={tryFirst}>
+          <I.Try size={20} className="text-cyan" />
+          {t("Try it on the TV for 15 minutes first")}
+        </Quiet>
         <TextButton onPress={closeSetup}>{t("Not now")}</TextButton>
       </Rise>
     </Screen>
+  );
+}
+
+/** A trial this phone started and nobody finished: back to it (the time left, or the choice when it is over). */
+function PendingTrialCard({ pending }: { pending: PendingTrial }) {
+  const over = Date.now() >= pending.endsAt;
+  const ends = new Date(pending.endsAt).toLocaleTimeString(`${currentLanguage().code}-u-nu-latn`, { hour: "numeric", minute: "2-digit" });
+  return (
+    <Rise className="relative mt-6">
+      <Card className="flex flex-col gap-3 p-[18px]">
+        <SectionLabel>{t("Your trial")}</SectionLabel>
+        <p className="text-[15px] leading-snug text-snow">{t("Orbit is on {tv} for a try.", { tv: pending.tv.name })}</p>
+        <p className="text-[13.5px] leading-snug text-mist">
+          {over ? t("Its time is up. Set it up, or take it off again.") : t("It goes back to its own home screen at {ends}.", { ends })}
+        </p>
+        <Quiet onPress={() => resumeTrial(pending)}>{over ? t("Choose what happens next") : t("See the trial")}</Quiet>
+      </Card>
+    </Rise>
   );
 }
 
@@ -302,8 +336,8 @@ function Find() {
                   type="button"
                   aria-label={
                     tv.name === "TV"
-                      ? from ? t("Put back this TV") : t("Set up this TV")
-                      : from ? t("Put back {tv}", { tv: tv.name }) : t("Set up {tv}", { tv: tv.name })
+                      ? from ? t("Put back this TV") : f.mode === "trial" ? t("Try Orbit on this TV") : t("Set up this TV")
+                      : from ? t("Put back {tv}", { tv: tv.name }) : f.mode === "trial" ? t("Try Orbit on {tv}", { tv: tv.name }) : t("Set up {tv}", { tv: tv.name })
                   }
                   whileTap={{ scale: 0.95 }}
                   onClick={() => chooseTv(tv)}
@@ -391,7 +425,7 @@ function NotListed() {
 // ---- 3. developer mode ----
 
 /** Once more after a setup: Developer options are already there, only USB debugging needs turning on. */
-const isAgain = (f: Flow) => f.mode !== "install" || !!f.tv?.orbit;
+const isAgain = (f: Flow) => (f.mode !== "install" && f.mode !== "trial") || !!f.tv?.orbit;
 
 function DevMode() {
   const f = useSetup();
@@ -575,6 +609,7 @@ const ALLOWED: Record<Flow["mode"], string> = {
   backup: mark("Orbit can read the TV for the backup now"),
   backups: mark("Orbit can put it back now"),
   account: mark("Orbit is connected to the TV"),
+  trial: mark("Orbit can start the trial now"),
 };
 
 function Allow() {
@@ -591,7 +626,9 @@ function Allow() {
         <Lead>
           {f.mode === "install"
             ? t("The TV is asking whether this phone may set it up. It is Android's own question, and it is asked only once.")
-            : t("If the TV asks whether this phone may connect, allow it. It is Android's own question; a TV that was told to always allow this phone does not ask.")}
+            : f.mode === "trial" && f.trial.next === "start"
+              ? t("The TV is asking whether this phone may put Orbit on it for a try. It is Android's own question, and it is asked only once.")
+              : t("If the TV asks whether this phone may connect, allow it. It is Android's own question; a TV that was told to always allow this phone does not ask.")}
         </Lead>
       </Rise>
       <Rise className="mt-5">
@@ -611,7 +648,9 @@ function Allow() {
                   <span className="truncate text-[15px] font-semibold">
                     {name === "your TV" && !model ? t("Connected to the TV") : t("Connected to {tv}", { tv: name === "your TV" ? model! : name })}
                   </span>
-                  <span className="text-[13px] text-mist">{t(ALLOWED[f.mode])}</span>
+                  <span className="text-[13px] text-mist">
+                    {f.mode === "trial" && f.trial.next === "remove" ? t("Orbit can take Orbit Home off now") : t(ALLOWED[f.mode])}
+                  </span>
                 </div>
               </div>
               {f.read.state === "failed" && !f.continuing && <Trouble title={f.read.error ? tm(f.read.error) : t("Orbit could not read the TV.")} />}

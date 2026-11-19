@@ -35,6 +35,8 @@ const files = [];
 })(src);
 
 const isClassy = (s) => /(^|\s)(-?[a-z]+-\[|[a-z0-9]+:[a-z-]|px-|py-|mt-|mb-|ml-|mr-|mx-|my-|text-|bg-|rounded|flex|grid|h-|w-|gap-|items-|justify-|border|shadow|font-|leading-|tracking-|opacity-|absolute|relative|inset-|z-|overflow|transition|duration-|ease-|scale-|shrink|grow|hidden|block|inline)/.test(s);
+// Internal error words that never reach the screen.
+const NOT_SHOWN_WORDS = new Set(["no packages", "shader", "link"]);
 const BRANDS = new Set(["Orbit", "Orbit OS", "Orbit Home", "Orbit Live TV", "Orbit Setup", "Google", "Google Drive", "Google TV", "Android TV", "Wi-Fi", "OK"]);
 const hasWords = (s) => /\p{L}{2,}/u.test(s);
 const sentence = (s) => hasWords(s) && !isClassy(s) && (/\s/.test(s.trim()) || /^\p{Lu}/u.test(s) || /[.!?…]$/.test(s));
@@ -78,7 +80,7 @@ for (const file of files) {
     if (covered(node)) return true;
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
       const s = node.text;
-      if (!hasWords(s) || isClassy(s) || BRANDS.has(s.trim())) return false;
+      if (!hasWords(s) || isClassy(s) || BRANDS.has(s.trim()) || NOT_SHOWN_WORDS.has(s)) return false;
       if (values.has(s) && !shown) {
         report.values.push(`${where(node)}  ${literal(s)}`);
         return false;

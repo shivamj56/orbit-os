@@ -158,4 +158,12 @@
     <string name="clock_format_system">System</string>
     <string name="clock_format_12">12-hour</string>
     <string name="clock_format_24">24-hour</string>
+    <!-- Trying Orbit from the phone (TrialMode): the pill at the foot of Home while the time runs, and the screen when
+         it is up. "Set up Orbit OS" and "Remove Orbit" are the phone app's buttons. -->
+    <string name="trial_pill">Trying Orbit · %1$s left</string>
+    <string name="trial_pill_hint">Home goes back to your TV</string>
+    <string name="trial_end_title">That was Orbit OS</string>
+    <string name="trial_end_body">Your TV goes back to its own home screen now. Orbit changed nothing on it: Orbit Home only stays as an app until you choose.</string>
+    <string name="trial_end_next">To keep Orbit, choose Set up Orbit OS in the Orbit app on your phone. To take it off, choose Remove Orbit there.</string>
+    <string name="trial_end_leaving">Back to your TV in %1$d s. Press OK to go now.</string>
 </resources>

@@ -74,6 +74,7 @@ If Orbit is useful to you, a ⭐ on this repository helps other TV owners and de
 | Feature | What it does |
 |---|---|
 | **Orbit Setup** | Finds the TV on the Wi-Fi, shows how to turn on its developer options, asks a few plain questions, shows the whole plan, then sets the TV up. Undo puts everything back. |
+| **Try it first** | 15 minutes of Orbit Home on your own TV before setting anything up: nothing is switched off, the TV's own home screen stays its home screen, and the TV goes back to it by itself. Then set Orbit up, or take it off with one tap. |
 | **Remote** | A globe-shaped touchpad that moves a pointer on the TV, the D-pad, volume, sleep, and a keyboard that types straight into the TV's search boxes. |
 | **From anywhere** | Pair once on the Wi-Fi with the code on the TV; link with Google sign-in and an 8-digit code, and the remote works away from home through the cloud. |
 | **Help mode** | See the TV's screen on the phone, menus and apps, and tap it to press buttons for family at home. The TV shows who is watching, and help ends by itself. |
@@ -118,7 +119,8 @@ changes.
   on the TV, sends the two TV apps and the setup script, and runs that one script, `setup/tv/orbit-setup.sh`, in the
   TV's own shell. The script writes down how the TV was before it changes anything and adds every change to an undo
   record as it makes it; `setup/tv/orbit-undo.sh` reads that record to put the TV back. It switches apps off and
-  never uninstalls a factory app.
+  never uninstalls a factory app. Its `trial` command installs only Orbit Home, as an app, for a 15-minute look
+  (`TrialMode.java` on the TV counts it down), and the same undo takes it off.
 - **Orbit Home** (`launcher/app`, Java) is the home screen, with a helper service that takes the remote's keys, draws
   the Control Center and the Island over other apps, and opens the door the phone talks to: HTTP on port 8090 and the
   pointer on UDP 8091, answered on the home network only.

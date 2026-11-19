@@ -91,8 +91,9 @@ if ($LASTEXITCODE -ne 0 -or "$out" -match 'Error') { throw 'could not set the ne
 # in the batch a failed start only prints an Error line and the stock launcher would be disabled anyway.
 # With -StockLauncher none the stock launcher stays Home (stock_home_redirect): a MAIN+HOME start would make this
 # launcher the home process until a restart, and Android then blocks the stock launcher's button launches (#1274).
-$startCmd = if ($StockLauncher -eq 'none') { 'am start -W -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity' }
-            else { 'am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity' }
+# SET_UP: an Orbit Home that was only being tried from the phone (TrialMode) stays, and stops counting down.
+$startCmd = if ($StockLauncher -eq 'none') { 'am start -W -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity --ez dev.shiv.orbit.home.extra.SET_UP true' }
+            else { 'am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n dev.shiv.orbit.home/com.gathin.tvhome.MainActivity --ez dev.shiv.orbit.home.extra.SET_UP true' }
 $start = (& $py -I ..\tools\tv.py $startCmd) -join "`n"
 Write-Host $start
 if ($LASTEXITCODE -ne 0 -or $start -notmatch 'Status: ok' -or $start -match '(?m)^Error') { throw "the new launcher did not start (see above); $StockLauncher was left enabled" }

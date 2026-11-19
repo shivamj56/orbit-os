@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../app/demo_store.dart';
+import '../app/review_prompt.dart';
 import '../cloud/drive.dart';
 import '../native/native_host.dart';
 import '../setup/setup_host.dart';
@@ -33,6 +34,7 @@ class OrbitBridge {
     SetupHost? setup,
     this.drive,
     this.demoStore,
+    this.review,
     Future<String> Function(String key)? loadAsset,
   })  : setup = setup ?? const _NoSetup(),
         _loadAsset = loadAsset ?? rootBundle.loadString {
@@ -61,6 +63,10 @@ class OrbitBridge {
 
   /// Where demo mode is kept between starts of the app (phone/SPEC.md, "Demo mode").
   final DemoStore? demoStore;
+
+  /// Google Play's review sheet, asked for once after a trial (phone/SPEC.md, "Asking for a review"); null in a build
+  /// without.
+  final ReviewPrompt? review;
 
   /// Reads one of the app's assets: the page's translations live in assets/ui/locales/ (phone/SPEC.md, "Languages").
   final Future<String> Function(String key) _loadAsset;
@@ -290,6 +296,9 @@ class OrbitBridge {
       case 'intro':
         onIntro?.call();
         return null;
+      case 'askReview':
+        // After a trial of a real TV only: in demo mode this op is refused above, like every op about a TV.
+        return {'asked': await review?.ask() ?? false};
       case 'language':
         return {'texts': await _languageTexts(a.text('code', max: 24).trim())};
       case 'openUrl':

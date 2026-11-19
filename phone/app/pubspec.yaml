@@ -19,6 +19,9 @@ dependencies:
   # The TV's door: plain HTTP/1.1 on the home Wi-Fi.
   google_sign_in: ^7.2.0
   http: ^1.6.0
+  # Google Play's own review sheet, asked for once in the app's life, after a trial (phone/SPEC.md, "Asking for a
+  # review").
+  in_app_review: ^2.0.12
   # Finding the TV's `_orbit._tcp` advert (Android NsdManager; the plugin holds the multicast lock itself).
   nsd: ^5.0.1
   # Orbit Setup keeps one record per TV in app support storage.

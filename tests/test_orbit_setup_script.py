@@ -34,6 +34,11 @@ OLD_HOME_PKG = "com.gathin.tvhome"
 OLD_LIVE_PKG = "com.gathin.livetv"
 OLD_HOME = OLD_HOME_PKG + "/.MainActivity"
 OLD_LOOK = '{"greeting_name": "Asha", "dock_glass": true}\n'
+# Orbit Home's extras (TrialMode.java), and what `resolve-activity` says while Android asks which home screen to use.
+TRIAL_SECONDS = "dev.shiv.orbit.home.extra.TRIAL_SECONDS"
+TRIAL_ID = "dev.shiv.orbit.home.extra.TRIAL_ID"
+SET_UP = "dev.shiv.orbit.home.extra.SET_UP"
+CHOOSER = "android/com.android.internal.app.ResolverActivity"
 
 FAKES = {
     "pm": r'''#!/bin/sh
@@ -64,6 +69,10 @@ case "$1" in
     for f; do :; done; case "$f" in *orbit-home.apk) p=dev.shiv.orbit.home ;; *orbit-live.apk) p=dev.shiv.orbit.live ;; esac
     [ -f "$S/fail-install" ] && { echo "Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE]"; exit 1; }
     grep -qx "$p" "$S/installed" || echo "$p" >> "$S/installed"
+    # A TV whose Home was an "always" choice asks again once a second home app arrives (Android 9 and earlier).
+    if [ "$p" = dev.shiv.orbit.home ] && [ -f "$S/chooser-on-install" ] && ! grep -q '^android/' "$S/home"; then
+      cp "$S/home" "$S/home-before"; echo android/com.android.internal.app.ResolverActivity > "$S/home"
+    fi
     echo "Success" ;;
   uninstall)
     grep -qx "$2" "$S/installed" || { echo "Failure [DELETE_FAILED_INTERNAL_ERROR]"; exit 1; }
@@ -71,6 +80,8 @@ case "$1" in
     grep -vx "$2" "$S/installed" > "$S/i.tmp"; mv "$S/i.tmp" "$S/installed"
     # Android takes the app's own files in Android/data with it.
     case "$2" in dev.shiv.orbit.home) rm -rf "$S/provider" ;; com.gathin.tvhome) rm -rf "$S/old-provider" ;; esac
+    # With the second home app gone, the question goes too.
+    if [ "$2" = dev.shiv.orbit.home ] && grep -q '^android/' "$S/home" && [ -f "$S/home-before" ]; then mv "$S/home-before" "$S/home"; fi
     echo "Success" ;;
   grant) echo "$2 $3" >> "$S/grants" ;;
 esac
@@ -82,7 +93,8 @@ case "$1 $2" in
   "package resolve-activity")
     h=$(cat "$S/home" 2>/dev/null)
     hp=${h%%/*}
-    if [ -z "$h" ] || grep -qx "$hp" "$S/disabled" || ! grep -qx "$hp" "$S/installed"; then
+    # android/…ResolverActivity: Android asks which home screen to use.
+    if [ -z "$h" ] || { [ "$hp" != android ] && { grep -qx "$hp" "$S/disabled" || ! grep -qx "$hp" "$S/installed"; }; }; then
       if grep -qx com.google.android.apps.tv.launcherx "$S/installed" && ! grep -qx com.google.android.apps.tv.launcherx "$S/disabled"; then
         h=com.google.android.apps.tv.launcherx/.MainActivity
       else h=com.android.tv.settings/.FallbackHome; fi
@@ -91,7 +103,7 @@ case "$1 $2" in
     echo "$h" ;;
   "package set-home-activity")
     [ -f "$S/sticky-home" ] && { echo "Success: (ignored)"; exit 0; }
-    echo "$5" > "$S/home"; echo "Success: Activity $5 is now the home" ;;
+    echo "$5" > "$S/home"; rm -f "$S/home-before"; echo "Success: Activity $5 is now the home" ;;
   "package compile") echo Success ;;
   "notification allow_listener") echo "$3" > "$S/listener" ;;
 esac
@@ -615,7 +627,7 @@ class SwitchTest(unittest.TestCase):
         rc, out = tv.run(SETUP, "switch", "orbit")
         self.assertEqual(0, rc, out)
         calls = tv.lines("calls")
-        started = next(i for i, c in enumerate(calls) if c.startswith("am start -W") and c.endswith(f"-n {ORBIT_HOME}"))
+        started = next(i for i, c in enumerate(calls) if c.startswith("am start -W") and f"-n {ORBIT_HOME}" in c)
         offs = [i for i, c in enumerate(calls) if c.startswith("pm disable-user")]
         made_home = next(i for i, c in enumerate(calls) if c == f"cmd package set-home-activity --user 0 {ORBIT_HOME}")
         self.assertEqual(len(LATE), len(offs))
@@ -755,6 +767,201 @@ class UndoTest(unittest.TestCase):
         self.assertNotIn(OLD_HOME_PKG, tv.lines("installed"))
         self.assertNotIn(OLD_LIVE_PKG, tv.lines("installed"))
         self.assertNotIn("kept", out)
+
+
+class TrialTest(unittest.TestCase):
+    """`orbit-setup.sh trial`: Orbit Home for a look before setting up, the TV otherwise exactly as it was."""
+
+    def trial(self, tv, *args):
+        (tv.dir / "orbit-home.apk").write_bytes(b"PK home")
+        return tv.run(SETUP, "trial", *args)
+
+    def starts(self, tv):
+        return [l for l in tv.lines("calls") if l.startswith("am start")]
+
+    def test_a_trial_installs_orbit_home_and_changes_nothing_else(self):
+        tv = PretendTv(self)
+        rc, out = self.trial(tv, "900")
+        self.assertEqual(0, rc, out)
+        self.assertIn("@orbit done ok", out)
+        self.assertEqual({"check": "ok", "record": "ok", "install": "ok", "keep": "ok", "open": "ok"}, steps(out))
+        self.assertIn(HOME_PKG, tv.lines("installed"))
+        self.assertNotIn(LIVE_PKG, tv.lines("installed"))
+        self.assertEqual([], tv.lines("disabled"))
+        self.assertEqual(STOCK_HOME, tv.home())
+        self.assertEqual("com.other/.Helper", tv.helpers())
+        self.assertEqual("", tv.read("grants"), "no permission is granted beyond the install's own")
+        self.assertEqual("", tv.read("listener"))
+        self.assertFalse((tv.state / "setting-secure-screensaver_components").exists())
+        self.assertFalse(any("set-home-activity" in l for l in tv.lines("calls")), "Home was never touched")
+        self.assertEqual([f"home {STOCK_HOME}", f"uninstall {HOME_PKG}"], tv.record())
+        sent = [l[len("@orbit undo "):] for l in out.splitlines() if l.startswith("@orbit undo ")]
+        self.assertEqual(tv.record(), sent, "the phone hears the record")
+        self.assertFalse((tv.dir / "orbit-home.apk").exists(), "the APK does not stay behind")
+
+    def test_orbit_home_opens_as_an_app_with_its_time_limit(self):
+        tv = PretendTv(self)
+        self.trial(tv, "900")
+        starts = self.starts(tv)
+        self.assertEqual(1, len(starts), starts)
+        self.assertIn(f"-n {ORBIT_HOME}", starts[0])
+        self.assertIn(f"--ei {TRIAL_SECONDS} 900", starts[0])
+        self.assertIn(f"--es {TRIAL_ID} ", starts[0])
+        self.assertNotIn("category.HOME", starts[0], "not as Home: the TV's own home screen stays Home")
+        self.assertNotIn(SET_UP, starts[0])
+
+    def test_the_time_limit_stays_between_a_minute_and_an_hour(self):
+        for asked, given in (("5", "60"), ("99999", "3600"), ("", "900"), ("abc", "900"), ("1200", "1200")):
+            with self.subTest(asked=asked):
+                tv = PretendTv(self)
+                rc, out = self.trial(tv, asked)
+                self.assertEqual(0, rc, out)
+                self.assertIn(f"--ei {TRIAL_SECONDS} {given}", self.starts(tv)[0])
+
+    def test_a_tv_that_would_ask_which_home_keeps_its_own(self):
+        tv = PretendTv(self)
+        tv.write("chooser-on-install", "")
+        rc, out = self.trial(tv)
+        self.assertEqual(0, rc, out)
+        self.assertEqual("ok", steps(out)["keep"])
+        self.assertEqual(STOCK_HOME, tv.home())
+        self.assertIn(f"cmd package set-home-activity --user 0 {STOCK_HOME}", tv.lines("calls"))
+
+    def test_a_tv_that_will_not_keep_its_home_gets_orbit_home_taken_off_again(self):
+        tv = PretendTv(self)
+        tv.write("chooser-on-install", "")
+        tv.write("sticky-home", "")
+        rc, out = self.trial(tv)
+        self.assertEqual(1, rc)
+        self.assertEqual("fail", steps(out)["keep"])
+        self.assertIn("@orbit done fail", out)
+        self.assertNotIn(HOME_PKG, tv.lines("installed"))
+        self.assertEqual(STOCK_HOME, tv.home())
+        self.assertFalse((tv.dir / "undo.txt").exists(), "the record the trial began goes too")
+
+    def test_orbit_home_that_does_not_open_is_taken_off_again(self):
+        tv = PretendTv(self)
+        tv.write("fail-start", "")
+        rc, out = self.trial(tv)
+        self.assertEqual(1, rc)
+        self.assertEqual("fail", steps(out)["open"])
+        self.assertNotIn(HOME_PKG, tv.lines("installed"))
+        self.assertEqual(STOCK_HOME, tv.home())
+        self.assertFalse((tv.dir / "undo.txt").exists())
+
+    def test_an_install_that_fails_leaves_the_tv_as_it_was(self):
+        tv = PretendTv(self)
+        tv.write("fail-install", "")
+        rc, out = self.trial(tv)
+        self.assertEqual(1, rc)
+        self.assertEqual("fail", steps(out)["install"])
+        self.assertNotIn(HOME_PKG, tv.lines("installed"))
+        self.assertFalse((tv.dir / "undo.txt").exists())
+
+    def test_an_old_android_is_refused_and_keeps_no_trace(self):
+        tv = PretendTv(self)
+        tv.write("sdk", "25\n")
+        rc, out = self.trial(tv)
+        self.assertEqual(1, rc)
+        self.assertEqual("fail", steps(out)["check"])
+        self.assertNotIn(HOME_PKG, tv.lines("installed"))
+        self.assertFalse((tv.dir / "undo.txt").exists())
+
+    def test_a_tv_with_orbit_set_up_is_not_tried(self):
+        tv = PretendTv(self)
+        tv.plan(TRACKING + LATE)
+        tv.run(SETUP, "install")
+        before = tv.record()
+        rc, out = self.trial(tv)
+        self.assertEqual(1, rc)
+        self.assertIn("@orbit done fail Orbit OS is already set up on this TV", out)
+        self.assertEqual(before, tv.record())
+        self.assertEqual(ORBIT_HOME, tv.home())
+
+    def test_a_tv_switched_back_to_its_own_home_is_still_set_up(self):
+        tv = PretendTv(self)
+        tv.plan(TRACKING + LATE)
+        tv.run(SETUP, "install")
+        tv.run(SETUP, "switch", "stock")
+        rc, out = self.trial(tv)
+        self.assertEqual(1, rc)
+        self.assertIn("@orbit done fail Orbit OS is already set up on this TV", out)
+
+    def test_a_tv_an_earlier_setup_changed_is_not_tried(self):
+        tv = PretendTv(self)
+        (tv.dir / "undo.txt").write_text(f"home {STOCK_HOME}\nenable com.miui.tv.analytics\n")
+        rc, out = self.trial(tv)
+        self.assertEqual(1, rc)
+        self.assertIn("Orbit Setup changed this TV before", out)
+        self.assertNotIn(HOME_PKG, tv.lines("installed"))
+
+    def test_an_orbit_home_put_there_another_way_is_left_alone(self):
+        for pkg in (HOME_PKG, OLD_HOME_PKG):
+            with self.subTest(pkg=pkg):
+                tv = PretendTv(self)
+                tv.write("installed", "\n".join(FACTORY + [pkg]) + "\n")
+                rc, out = self.trial(tv)
+                self.assertEqual(1, rc)
+                self.assertIn("@orbit done fail Orbit Home is already on this TV", out)
+                self.assertIn(pkg, tv.lines("installed"))
+                self.assertEqual([], [l for l in tv.lines("pm-log") if l.startswith(("install", "uninstall"))])
+
+    def test_a_trial_left_on_the_tv_can_run_again(self):
+        tv = PretendTv(self)
+        self.trial(tv)
+        rc, out = self.trial(tv)
+        self.assertEqual(0, rc, out)
+        self.assertEqual([f"home {STOCK_HOME}", f"uninstall {HOME_PKG}"], tv.record())
+        self.assertEqual([HOME_PKG, HOME_PKG], tv.lines("stopped"), "the earlier one stops first")
+
+    def test_undo_after_a_trial_takes_orbit_home_off_and_nothing_else(self):
+        tv = PretendTv(self)
+        self.trial(tv)
+        rc, out = tv.run(UNDO)
+        self.assertEqual(0, rc, out)
+        self.assertIn(f"removed {HOME_PKG}", out)
+        self.assertNotIn(HOME_PKG, tv.lines("installed"))
+        self.assertEqual(STOCK_HOME, tv.home())
+        self.assertEqual([], tv.lines("disabled"))
+        self.assertEqual("com.other/.Helper", tv.helpers())
+        self.assertFalse((tv.state / "setting-secure-screensaver_components").exists())
+
+    def test_a_setup_after_a_trial_keeps_its_record_so_undo_still_takes_orbit_home_off(self):
+        tv = PretendTv(self)
+        self.trial(tv)
+        tv.plan(TRACKING + LATE)
+        rc, out = tv.run(SETUP, "install")
+        self.assertEqual(0, rc, out)
+        self.assertEqual(ORBIT_HOME, tv.home())
+        record = tv.record()
+        self.assertEqual([f"home {STOCK_HOME}"], [l for l in record if l.startswith("home ")])
+        self.assertEqual(1, record.count(f"uninstall {HOME_PKG}"))
+        rc, out = tv.run(UNDO)
+        self.assertEqual(0, rc, out)
+        self.assertNotIn(HOME_PKG, tv.lines("installed"))
+        self.assertEqual(STOCK_HOME, tv.home())
+
+    def test_the_setup_tells_orbit_home_that_it_stays(self):
+        tv = PretendTv(self)
+        tv.plan(TRACKING)
+        tv.run(SETUP, "install")
+        starts = [l for l in self.starts(tv) if ORBIT_HOME in l]
+        self.assertTrue(starts)
+        for start in starts:
+            self.assertIn(f"--ez {SET_UP} true", start)
+        tv.run(SETUP, "switch", "stock")
+        tv.run(SETUP, "switch", "orbit")
+        for start in [l for l in self.starts(tv) if ORBIT_HOME in l]:
+            self.assertIn(f"--ez {SET_UP} true", start)
+
+    def test_every_trial_line_follows_the_protocol(self):
+        tv = PretendTv(self)
+        _, out = self.trial(tv)
+        for line in orbit_lines(out):
+            self.assertRegex(line, GRAMMAR)
+        progress = [int(l.split()[2]) for l in orbit_lines(out) if l.startswith("@orbit progress")]
+        self.assertEqual(sorted(progress), progress, "progress only goes up")
+        self.assertEqual(100, progress[-1])
 
 
 if __name__ == "__main__":

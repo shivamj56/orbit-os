@@ -30,8 +30,8 @@ import { BackupCard } from "./Backup";
 import { Brand, Card, DoneMark, Lead, Primary, Quiet, Rise, Screen, SectionLabel, Spinner, StepBar, Switch, TextButton, Title, ease } from "./parts";
 import { t, tn, tm, rich, mark } from "../../i18n";
 
-/** The clock, once every `ms` while `on`: for "about a minute left". */
-function useNow(ms: number, on = true) {
+/** The clock, once every `ms` while `on`: for "about a minute left", and the trial's countdown. */
+export function useNow(ms: number, on = true) {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     if (!on) return;
@@ -61,8 +61,9 @@ function timeLeft(f: Flow, now: number): string {
   return tn(minutes, "about {n} minute left", "about {n} minutes left");
 }
 
-/** The ring of the canvas: a 10 px track and the setup's ribbon going round it. */
-export function Ring({ value, sub }: { value: number; sub: string }) {
+/** The ring of the canvas: a 10 px track and the setup's ribbon going round it. `label` in place of the per cent: the
+ *  trial's minutes left. */
+export function Ring({ value, sub, label }: { value: number; sub: string; label?: string }) {
   const r = 92;
   const around = 2 * Math.PI * r;
   const shown = useMotionValue(value);
@@ -72,7 +73,7 @@ export function Ring({ value, sub }: { value: number; sub: string }) {
     return () => a.stop();
   }, [value, shown]);
   return (
-    <div className="relative grid aspect-square h-full max-h-[210px] place-items-center" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)} aria-valuetext={t("{percent}%, {state}", { percent: Math.round(value), state: sub })}>
+    <div className="relative grid aspect-square h-full max-h-[210px] place-items-center" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)} aria-valuetext={label ? `${label}, ${sub}` : t("{percent}%, {state}", { percent: Math.round(value), state: sub })}>
       <svg viewBox="0 0 210 210" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <defs>
           <linearGradient id="setup-progress" x1="0" y1="0" x2="1" y2="1">
@@ -98,7 +99,7 @@ export function Ring({ value, sub }: { value: number; sub: string }) {
         />
       </svg>
       <div className="relative flex flex-col items-center gap-0.5">
-        <motion.span className="tabular font-display text-[46px] font-medium tracking-[-1px]">{text}</motion.span>
+        <motion.span className="tabular font-display text-[46px] font-medium tracking-[-1px]">{label ?? text}</motion.span>
         <span className="text-[13px] text-mist">{sub}</span>
       </div>
     </div>
