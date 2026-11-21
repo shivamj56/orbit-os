@@ -25,6 +25,7 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private var channel: MethodChannel? = null
     private var adbKey: AdbKey? = null
+    private var atvIdentity: AtvIdentity? = null
     private var volumeKeys = false
 
     /** The volume keys whose press was taken: their release is taken too, whatever happened in between. */
@@ -65,6 +66,9 @@ class MainActivity : FlutterActivity() {
 
         // Orbit Setup's RSA key and signing (phone/SPEC.md, `setupConnect`), on its own channel.
         adbKey = AdbKey(applicationContext).also { it.register(flutterEngine.dartExecutor.binaryMessenger) }
+
+        // The client certificate Google TVs pair with (tv/brands/android_tv.dart), on its own channel.
+        atvIdentity = AtvIdentity(applicationContext).also { it.register(flutterEngine.dartExecutor.binaryMessenger) }
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
@@ -72,6 +76,8 @@ class MainActivity : FlutterActivity() {
         channel = null
         adbKey?.unregister()
         adbKey = null
+        atvIdentity?.unregister()
+        atvIdentity = null
         volumeKeys = false
         heldKeys.clear()
         super.cleanUpFlutterEngine(flutterEngine)

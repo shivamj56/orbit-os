@@ -11,6 +11,8 @@ import '../cloud/firebase_backend.dart';
 import '../cloud/google_identity.dart';
 import '../native/native_host.dart';
 import '../setup/setup_host.dart';
+import '../tv/brands/direct_link.dart';
+import '../tv/brands/makers.dart';
 import '../tv/discovery.dart';
 import '../tv/icon_cache.dart';
 import '../tv/remote.dart';
@@ -41,6 +43,7 @@ class OrbitApp extends StatefulWidget {
 class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
   late final PlatformNativeHost _native;
   late final TvLink _link;
+  late final DirectLink _direct;
   late final TvRemote _remote;
   late final OrbitBridge _bridge;
 
@@ -57,7 +60,9 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
       client: TvClient(),
       discovery: TvDiscovery(nsd: const PluginNsdBrowser(), scanner: SubnetScanner()),
     );
-    _remote = TvRemote(wifi: _link);
+    // TVs of other makes, driven as a remote (phone/SPEC.md, "Every TV").
+    _direct = DirectLink(store: SecureDirectStore(), make: makeBrandTv, finder: makeBrandFinder());
+    _remote = TvRemote(wifi: _link, direct: _direct);
     _bridge = OrbitBridge(
       remote: _remote,
       native: _native,
@@ -75,7 +80,10 @@ class _OrbitAppState extends State<OrbitApp> with WidgetsBindingObserver {
     if (now != null && now != AppLifecycleState.resumed && now != AppLifecycleState.inactive) {
       _bridge.lifecycle(resumed: false);
     }
-    if (!widget.demo) unawaited(_link.start());
+    if (!widget.demo) {
+      unawaited(_link.start());
+      unawaited(_direct.start());
+    }
   }
 
   Future<void> _startCloud() async {

@@ -432,7 +432,7 @@ void main() {
           throwsA(
             isA<BrandError>()
                 .having((e) => e.unsupported, 'unsupported', isTrue)
-                .having((e) => e.message, 'message', "Samsung TVs can't do that from a phone."),
+                .having((e) => e.message, 'message', 'Samsung TVs cannot do that from a phone.'),
           ),
         );
       }

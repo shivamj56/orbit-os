@@ -96,7 +96,7 @@ for (const p of Object.values(catalog.packages)) add(p.label, "setup/catalog.jso
 // ---- messages from outside the page ----
 const sentence = (s) => /^[A-Z]/.test(s) && /\s/.test(s) && /\p{L}{3,}/u.test(s);
 // Words for developers, never shown to anyone using the app.
-const NOT_SHOWN = /(^\w+\(|^Bearer |^Content-Type|^Orbit\/\d|^Orbit needs "|^A tap needs|^Not with this method|^Unknown key|^Orbit has no "|^The message has no op|^No haptic called|^No pointer action called|^The direction is "|^That is not a 32-character key|^Nothing to push|^The record must be an object|tool\/sync_|^Unknown op|^Unknown action|^Not a move|^The request was not a JSON object|^The page is missing from this build|^The level must be a number|plan\.txt|Orbit cannot write to)/;
+const NOT_SHOWN = /(^\w+\(|^Bearer |^Content-Type|^Orbit\/\d|^Orbit needs "|^A tap needs|^Not with this method|^Unknown key|^Orbit has no "|^The message has no op|^No haptic called|^No pointer action called|^The direction is "|^That is not a 32-character key|^Nothing to push|^The record must be an object|tool\/sync_|^Unknown op|^Unknown action|^Not a move|^The request was not a JSON object|^The page is missing from this build|^The level must be a number|plan\.txt|Orbit cannot write to|^The platform gave no)/;
 
 // Flutter: '...' strings in lib/ (adjacent ones joined, as Dart joins them), with $name as {name}. A string with a
 // ${...} in it is left out: its words cannot be matched back when it arrives.

@@ -40,7 +40,7 @@ class SamsungTv extends BrandTv {
   // The words the person reads. Static on purpose: the page translates them by their exact text.
   static const String _msgAllow = 'Press Allow on the TV to let Orbit control it.';
   static const String _msgDenied = 'The TV said no. To try again, choose it again and press Allow.';
-  static const String _msgUnsupported = "Samsung TVs can't do that from a phone.";
+  static const String _msgUnsupported = 'Samsung TVs cannot do that from a phone.';
   static const String _msgSetting =
       'The TV blocks phones. Allow them in its settings under General, External Device Manager.';
   static const String _msgOdd = 'The TV did not answer as Orbit expected.';
