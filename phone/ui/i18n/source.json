@@ -3729,6 +3729,13 @@
       ]
     },
     {
+      "text": "Samsung TVs cannot do that from a phone.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/samsung.dart"
+      ]
+    },
+    {
       "text": "Saved how to undo all of it",
       "kind": "text",
       "where": [
@@ -4589,6 +4596,13 @@
       ]
     },
     {
+      "text": "That is not the code on the TV. Try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/android_tv.dart"
+      ]
+    },
+    {
       "text": "That language file is broken.",
       "kind": "message",
       "where": [
@@ -4824,6 +4838,13 @@
       ]
     },
     {
+      "text": "The phone could not make its key for the TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/android_tv.dart"
+      ]
+    },
+    {
       "text": "The phone could not sign the debugging token.",
       "kind": "message",
       "where": [
@@ -5021,6 +5042,7 @@
       "text": "The TV did not answer as Orbit expected.",
       "kind": "message",
       "where": [
+        "app/lib/tv/brands/android_tv.dart",
         "app/lib/tv/brands/samsung.dart"
       ]
     },
@@ -5389,6 +5411,13 @@
       "kind": "text",
       "where": [
         "ui/setup/Trial.tsx"
+      ]
+    },
+    {
+      "text": "The TV stopped showing the code. Ask for a new one.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/android_tv.dart"
       ]
     },
     {
@@ -5809,6 +5838,13 @@
       "kind": "message",
       "where": [
         "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "This TV cannot do that from a phone.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/android_tv.dart"
       ]
     },
     {
