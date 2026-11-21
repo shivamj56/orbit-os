@@ -1,10 +1,11 @@
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { bridge, BridgeError, cloud, haptic, type Status, type TvRef } from "../bridge";
+import { bridge, BridgeError, chooseTv, cloud, haptic, tv as tvOps, type Status, type TvRef } from "../bridge";
 import { setDemoMode, useDemo } from "../demo";
 import { Globe } from "../globe/Globe";
 import { openSetup } from "../setup/flow";
 import { setAccount, useWorld } from "../store";
+import { isOrbit, MAKE_NAMES, WAKES } from "../makes";
 import { Press, spring } from "./kit";
 import { Chevron, Gear, Globe as GlobeIcon, Planet, Try, Tv, Wifi } from "./icons";
 import { openSettings } from "./panel";
@@ -80,15 +81,26 @@ export function Connect({ status }: { status: Status }) {
               <p className="mt-2 text-center text-[14px] text-muted">{t("Tap your TV to connect.")}</p>
               <ul className="mt-5 space-y-2.5">
                 {(status.found ?? []).map((t) => (
-                  <li key={t.address}>
+                  <li key={`${t.kind ?? "orbit"}:${t.address}`}>
                     <TvRow tv={t} />
                   </li>
                 ))}
               </ul>
+              {(status.found ?? []).some((f) => !isOrbit(f)) && (
+                <p className="mx-auto mt-3 max-w-[36ch] text-center text-[12.5px] leading-snug text-faint">
+                  {t("Other TVs work as a remote. The full Orbit OS needs Google TV or Android TV.")}
+                </p>
+              )}
             </motion.div>
           ) : pairing ? (
-            <motion.div key="pair" {...fade}>
-              <Pairing tv={status.tv} />
+            <motion.div key={`pair-${status.pairing?.how ?? "orbit"}`} {...fade}>
+              {status.pairing?.how === "allow" ? (
+                <AllowOnTv status={status} />
+              ) : status.pairing?.how === "setting" ? (
+                <SettingOnTv status={status} />
+              ) : (
+                <Pairing tv={status.tv} chars={status.pairing?.chars === "hex" ? "hex" : "digits"} />
+              )}
             </motion.div>
           ) : (
             <motion.div key="offline" {...fade} className="text-center">
@@ -96,13 +108,17 @@ export function Connect({ status }: { status: Status }) {
               <p className="mx-auto mt-2 max-w-[32ch] text-[14px] text-muted">
                 {tm(status.error) || t("Is the TV on, and the phone on the home Wi-Fi?")}
               </p>
-              <Press
-                label={t("Try again")}
-                onPress={() => bridge.call("discover").catch(() => {})}
-                className="glass mx-auto mt-5 h-11 rounded-full px-6 text-[15px]"
-              >
-                {t("Try again")}
-              </Press>
+              <div className="mt-5 flex flex-wrap justify-center gap-2.5">
+                {status.tv?.kind && WAKES.has(status.tv.kind) && <WakeTv />}
+                <Press
+                  label={t("Try again")}
+                  onPress={() => bridge.call("discover").catch(() => {})}
+                  className="glass h-11 rounded-full px-6 text-[15px]"
+                >
+                  {t("Try again")}
+                </Press>
+              </div>
+              {!isOrbit(status.tv) && <ChooseAnother />}
             </motion.div>
           )}
         </AnimatePresence>
@@ -185,19 +201,22 @@ function Dots() {
 }
 
 function TvRow({ tv }: { tv: TvRef }) {
+  const orbit = isOrbit(tv);
   return (
     <Press
       label={t("Connect to {name}", { name: tv.name })}
-      onPress={() => bridge.call("connect", { address: tv.address, port: tv.port }).catch(() => {})}
+      onPress={() => chooseTv(tv).catch(() => {})}
       className="glass w-full rounded-[22px] px-4 py-3.5"
     >
       <span className="flex w-full items-center gap-3.5 text-left">
-        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/6 text-cyan">
-          <Tv size={22} />
+        <span className={`grid h-11 w-11 place-items-center rounded-2xl bg-white/6 ${orbit ? "text-cyan" : "text-muted"}`}>
+          {orbit ? <Planet size={22} /> : <Tv size={22} />}
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-[16px] font-medium">{tv.name === "TV" ? t("Your TV") : tv.name}</span>
-          <span className="tabular block text-[12.5px] text-faint">{tv.address}</span>
+          <span className="tabular block truncate text-[12.5px] text-faint">
+            {orbit ? tv.address : `${MAKE_NAMES[tv.kind!]} · ${t("as a remote")} · ${tv.address}`}
+          </span>
         </span>
         <span className="text-[13px] text-cyan">{t("Connect")}</span>
       </span>
@@ -206,13 +225,16 @@ function TvRow({ tv }: { tv: TvRef }) {
 }
 
 /** Digit boxes over one hidden input, in groups (3 + 3 for pairing, 4 + 4 for linking). */
-function CodeBoxes({ length, group, value, busy, onChange }: {
+function CodeBoxes({ length, group, value, busy, onChange, chars = "digits" }: {
   length: number;
   group: number;
   value: string;
   busy: boolean;
   onChange: (v: string) => void;
+  /** "hex": the 0-9 and A-F an Android TV shows (shown in capitals); "digits" otherwise. */
+  chars?: "digits" | "hex";
 }) {
+  const hex = chars === "hex";
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const t = window.setTimeout(() => input.current?.focus(), 450);
@@ -242,13 +264,16 @@ function CodeBoxes({ length, group, value, busy, onChange }: {
       <input
         ref={input}
         value={value}
-        inputMode="numeric"
+        inputMode={hex ? "text" : "numeric"}
+        autoCapitalize={hex ? "characters" : undefined}
+        autoCorrect="off"
+        spellCheck={false}
         autoComplete="one-time-code"
-        aria-label={t("{length}-digit code", { length })}
+        aria-label={hex ? t("{length}-character code", { length }) : t("{length}-digit code", { length })}
         maxLength={length}
         className="absolute inset-0 opacity-0"
         onChange={(e) => {
-          const v = e.target.value.replace(/\D/g, "").slice(0, length);
+          const v = (hex ? e.target.value.toUpperCase().replace(/[^0-9A-F]/g, "") : e.target.value.replace(/\D/g, "")).slice(0, length);
           if (v.length > value.length) haptic("tick");
           onChange(v);
         }}
@@ -257,7 +282,7 @@ function CodeBoxes({ length, group, value, busy, onChange }: {
   );
 }
 
-function Pairing({ tv }: { tv: TvRef | null }) {
+function Pairing({ tv, chars = "digits" }: { tv: TvRef | null; chars?: "digits" | "hex" }) {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -293,10 +318,14 @@ function Pairing({ tv }: { tv: TvRef | null }) {
     <div className="text-center">
       <h1 className="font-display text-[28px] leading-tight font-light tracking-[-0.015em]">{t("Enter the code on your TV")}</h1>
       <p className="mt-2 text-[14px] text-muted">
-        {tv && tv.name !== "TV" ? rich(t("It is at the top of {tv} now."), { tv: <span className="text-text">{tv.name}</span> }) : t("It is at the top of the TV now.")}
+        {chars === "hex"
+          ? t("It is on the TV's screen now.")
+          : tv && tv.name !== "TV"
+            ? rich(t("It is at the top of {tv} now."), { tv: <span className="text-text">{tv.name}</span> })
+            : t("It is at the top of the TV now.")}
       </p>
       <motion.div animate={shake} className="mt-6">
-        <CodeBoxes length={6} group={3} value={code} busy={busy} onChange={(v) => {
+        <CodeBoxes length={6} group={3} value={code} busy={busy} chars={chars} onChange={(v) => {
           setCode(v);
           if (v.length === 6) submit(v);
         }} />
@@ -305,7 +334,99 @@ function Pairing({ tv }: { tv: TvRef | null }) {
       <Press label={t("Show a new code on the TV")} onPress={() => { setError(null); ask(); }} className="mx-auto mt-1 h-10 rounded-full px-4 text-[14px] text-cyan">
         {t("Show a new code on the TV")}
       </Press>
+      {!isOrbit(tv) && <ChooseAnother />}
     </div>
+  );
+}
+
+/** A TV of another make shows its own prompt the first time (Samsung, LG, Fire TV): the person accepts it there. */
+function AllowOnTv({ status }: { status: Status }) {
+  const kind = status.tv?.kind;
+  const waiting = status.state === "pairing";
+  const [busy, setBusy] = useState(false);
+  const again = async () => {
+    setBusy(true);
+    try {
+      await tvOps.again();
+    } catch {
+      /* the status says what happened */
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="text-center">
+      <h1 className="font-display text-[28px] leading-tight font-light tracking-[-0.015em]">{t("Look at your TV")}</h1>
+      <p className="mx-auto mt-2 max-w-[34ch] text-[14px] text-muted">
+        {kind === "lg"
+          ? t("Choose Accept on the TV with its own remote.")
+          : kind === "firetv"
+            ? t("Tick “Always allow from this computer”, then choose Allow, with the TV's own remote.")
+            : t("Choose Allow on the TV with its own remote.")}
+      </p>
+      {waiting && !busy ? (
+        <Dots />
+      ) : (
+        <>
+          <p className="mx-auto mt-4 min-h-[22px] max-w-[34ch] text-[13.5px] text-rose" role="alert">{tm(status.error)}</p>
+          <Press label={t("Try again")} onPress={again} disabled={busy} className="glass mx-auto mt-2 h-11 rounded-full px-6 text-[15px]">
+            {busy ? t("Connecting…") : t("Try again")}
+          </Press>
+        </>
+      )}
+      <ChooseAnother />
+    </div>
+  );
+}
+
+/** A setting on the TV stops phones (Roku's network access, Fire TV's debugging, Samsung's device manager). */
+function SettingOnTv({ status }: { status: Status }) {
+  const [busy, setBusy] = useState(false);
+  const again = async () => {
+    setBusy(true);
+    try {
+      await tvOps.again();
+    } catch {
+      /* the status says what happened */
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="text-center">
+      <h1 className="font-display text-[28px] leading-tight font-light tracking-[-0.015em]">{t("One setting on the TV")}</h1>
+      <p className="mx-auto mt-3 max-w-[34ch] text-[14.5px] leading-relaxed text-muted">{tm(status.error)}</p>
+      <Press label={t("Try again")} onPress={again} disabled={busy} className="glass mx-auto mt-5 h-11 rounded-full px-6 text-[15px]">
+        {busy ? t("Connecting…") : t("Try again")}
+      </Press>
+      <ChooseAnother />
+    </div>
+  );
+}
+
+/** Back to the list of TVs: the chosen TV of another make is forgotten. */
+function ChooseAnother() {
+  return (
+    <Press label={t("Choose another TV")} onPress={() => bridge.call("forget").catch(() => {})} feel={null} className="mx-auto mt-2 h-10 rounded-full px-4 text-[13.5px] text-faint">
+      {t("Choose another TV")}
+    </Press>
+  );
+}
+
+/** Wake-on-LAN for a Samsung or LG that is off but still on the network. */
+function WakeTv() {
+  const [sent, setSent] = useState(false);
+  return (
+    <Press
+      label={t("Turn the TV on")}
+      onPress={() => {
+        haptic("medium");
+        tvOps.wake().then((r) => setSent(r.sent)).catch(() => {});
+      }}
+      className="h-11 rounded-full bg-text px-6 text-[15px] font-medium text-ink"
+    >
+      {sent ? t("Connecting…") : t("Turn the TV on")}
+    </Press>
   );
 }
 

@@ -10,6 +10,7 @@ import '../app/review_prompt.dart';
 import '../cloud/drive.dart';
 import '../native/native_host.dart';
 import '../setup/setup_host.dart';
+import '../tv/brands/brand.dart';
 import '../tv/icon_cache.dart';
 import '../tv/models.dart';
 import '../tv/remote.dart';
@@ -36,8 +37,10 @@ class OrbitBridge {
     this.demoStore,
     this.review,
     Future<String> Function(String key)? loadAsset,
+    Future<Uint8List> Function(String key)? loadBytes,
   })  : setup = setup ?? const _NoSetup(),
-        _loadAsset = loadAsset ?? rootBundle.loadString {
+        _loadAsset = loadAsset ?? rootBundle.loadString,
+        _loadBytes = loadBytes ?? _bundleBytes {
     _events = EventQueue(_send);
     remote.onStatus = (status) => _events.push('status', status.toJson());
     remote.onTvState = (state) => _events.push('tvstate', state);
@@ -70,6 +73,14 @@ class OrbitBridge {
 
   /// Reads one of the app's assets: the page's translations live in assets/ui/locales/ (phone/SPEC.md, "Languages").
   final Future<String> Function(String key) _loadAsset;
+
+  /// Reads one of the app's assets as bytes: the bundled TV apps (assets/setup/, phone/SPEC.md "Orbit Setup").
+  final Future<Uint8List> Function(String key) _loadBytes;
+
+  static Future<Uint8List> _bundleBytes(String key) async {
+    final data = await rootBundle.load(key);
+    return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+  }
 
   /// The page shows the opening intro's first frame (`intro` op): the screen's own copy of the mark can go.
   void Function()? onIntro;
@@ -163,6 +174,8 @@ class OrbitBridge {
     if (remote.demo && !phoneOps.contains(op)) {
       throw const OpError(409, 'Orbit is showing its demo. Leave the demo to use your TV.');
     }
+    // A TV of another make (phone/SPEC.md, "Every TV"): the TV ops go to its own link.
+    if (remote.directActive && directOps.contains(op)) return _direct(op, a);
     switch (op) {
       case 'hello':
         return (await remote.hello()).toJson();
@@ -171,18 +184,28 @@ class OrbitBridge {
         return remote.status.toJson();
       case 'discover':
         return {
-          'found': [for (final tv in await link.discover()) tv.toJson()],
+          'found': [for (final tv in await remote.discover()) tv.toJson()],
         };
       case 'connect':
-        return (await remote.connect(checkedHost(a.text('address', max: 253)), a.port('port'))).toJson();
+        return (await remote.connect(
+          checkedHost(a.text('address', max: 253)),
+          a.port('port'),
+          kind: a.has('kind') ? a.text('kind', max: 16).trim() : null,
+          name: a.has('name') ? a.text('name', max: 128, allowEmpty: true) : null,
+          model: a.has('model') ? a.text('model', max: 128, allowEmpty: true) : null,
+        )).toJson();
       case 'manualAddress':
         final (host, port) = parseTypedAddress(a.text('address', max: 300));
-        return (await remote.connect(host, port)).toJson();
+        return (await remote.connectTyped(host, port)).toJson();
       case 'askCode':
-        await link.askCode();
+        await remote.askCode();
         return const <String, Object?>{};
+      case 'again':
+        return (await remote.again()).toJson();
+      case 'wake' || 'installLive':
+        throw const OpError(501, 'This works only with a TV of another make.');
       case 'pair':
-        return (await remote.pair(_code(a))).toJson();
+        return (await remote.pair(remote.directActive ? _hexCode(a) : _code(a))).toJson();
       case 'forget':
         return (await remote.forget()).toJson();
       case 'state':
@@ -333,6 +356,85 @@ class OrbitBridge {
     }
   }
 
+  /// The TV ops a TV of another make answers itself ([_direct]).
+  static const Set<String> directOps = {
+    'state', 'apps', 'icon', 'key', 'media', 'volume', 'volumeStep', 'type', 'open', 'launch', 'sleep', 'pointer',
+    'help', 'tapAt', 'wake', 'installLive',
+  };
+
+  /// An app's id on a TV of another make: Samsung "3201907018807", LG "youtube.leanback.v4", Roku "12", a package.
+  static final RegExp appId = RegExp(r'^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$');
+
+  /// A TV op for the chosen TV of another make.
+  Future<Object?> _direct(String op, Args a) async {
+    final direct = remote.direct!;
+    switch (op) {
+      case 'state':
+        return direct.fetchState();
+      case 'apps':
+        return direct.apps();
+      case 'icon':
+        final id = a.text('pkg', max: 128).trim();
+        if (!appId.hasMatch(id)) throw const OpError(400, 'That is not an app.');
+        final (type, bytes) = await _iconSlots.use(() => direct.icon(id));
+        if (!IconCache.isSupported(type) || bytes.isEmpty) throw const OpError(502, 'The TV did not send a picture.');
+        return {'src': 'data:$type;base64,${base64Encode(bytes)}'};
+      case 'key':
+        final key = a.word('key');
+        if (!RemoteKey.all.contains(key)) throw OpError(400, '"$key" is not something the TV takes.');
+        await direct.key(key);
+        return const <String, Object?>{};
+      case 'media':
+        final action = a.word('action');
+        if (!RemoteKey.all.contains(action)) throw OpError(400, '"$action" is not something the TV takes.');
+        await direct.media(action);
+        return const <String, Object?>{};
+      case 'volume':
+        return direct.volume(a.number('level').round().clamp(0, 100));
+      case 'volumeStep':
+        await _volumeStep(_dir(a));
+        return const <String, Object?>{};
+      case 'type':
+        return direct.type(a.text('text', max: 4000, allowEmpty: true), submit: a.flag('submit', fallback: false));
+      case 'launch':
+        final id = a.text('pkg', max: 128).trim();
+        if (!appId.hasMatch(id)) throw const OpError(400, 'That is not an app.');
+        return direct.launch(id);
+      case 'sleep':
+        await direct.sleep();
+        return const <String, Object?>{};
+      case 'pointer':
+        final type = a.text('type', max: 16).trim();
+        switch (type) {
+          case 'move' || 'scroll':
+            direct.pointer(type == 'move' ? 'm' : 's', a.delta('dx'), a.delta('dy'));
+            return null;
+          case 'click':
+            await direct.click();
+            return const <String, Object?>{};
+          case 'longpress' || 'hide':
+            return const <String, Object?>{};
+          default:
+            throw OpError(400, 'No pointer action called "$type".');
+        }
+      case 'wake':
+        return direct.wake();
+      case 'installLive':
+        // Orbit Live TV on a Fire TV, as an app (Amazon keeps its own home screen).
+        final Uint8List apk;
+        try {
+          apk = await _loadBytes('assets/setup/orbit-live.apk');
+        } catch (_) {
+          throw const OpError(501, 'This build of Orbit does not carry Orbit Live TV.');
+        }
+        await direct.install(apk, 'orbit-live.apk');
+        return const <String, Object?>{};
+      default:
+        // help, tapAt, open: the TV's screen and links need Orbit OS on the TV.
+        throw const OpError(501, 'This needs Orbit OS on the TV.');
+    }
+  }
+
   DriveBackups _drive() =>
       drive ?? (throw const DriveError('auth', 'Google Drive backups are not available in this build of Orbit.'));
 
@@ -370,6 +472,15 @@ class OrbitBridge {
     };
     final code = text.replaceAll(RegExp(r'[\s-]'), '');
     if (!RegExp(r'^[0-9]{6}$').hasMatch(code)) throw const OpError(400, 'Type the 6 digits shown on the TV.');
+    return code;
+  }
+
+  /// The 6 characters an Android TV shows to pair (0-9 and A-F); spaces and dashes are let go, letters may be small.
+  static String _hexCode(Args a) {
+    final value = a.raw('code');
+    final text = value is String && value.length <= 32 ? value : '';
+    final code = text.replaceAll(RegExp(r'[\s-]'), '').toUpperCase();
+    if (!RegExp(r'^[0-9A-F]{6}$').hasMatch(code)) throw const OpError(400, 'Type the 6 characters shown on the TV.');
     return code;
   }
 
@@ -468,7 +579,12 @@ class OrbitBridge {
   }
 
   Future<void> _volumeStep(String dir) async {
-    await _volume.run(() => remote.postJson('/api/key', {'key': dir == 'up' ? 'volup' : 'voldown'}));
+    final key = dir == 'up' ? 'volup' : 'voldown';
+    if (remote.directActive) {
+      await _volume.run(() => remote.direct!.key(key));
+    } else {
+      await _volume.run(() => remote.postJson('/api/key', {'key': key}));
+    }
     remote.pollSoon();
   }
 

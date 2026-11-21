@@ -612,3 +612,50 @@ How texts are written, translated and checked is in `tools/i18n/README.md`.
 - The launcher's older texts and Orbit Live TV's are Android strings.xml files.
 - The weekday and month of the date follow the language's own order (`DateFormat.getBestDateTimePattern`).
 
+
+## Every TV (Orbit 1.6.0)
+
+Orbit OS itself (Orbit Home, switching apps off, backups) needs Google TV or Android TV: only those let an app change
+the home screen, through their debugging connection. Every other smart TV keeps its own home screen and apps, and no
+app can change that without rooting the TV. So on those TVs Orbit is the phone remote, through each make's own
+remote-control service on the home Wi-Fi. The code is `phone/app/lib/tv/brands/`; the research behind it (ports,
+protocols, market shares, sources) is [docs/every-tv.md](../docs/every-tv.md).
+
+| `kind` | Make | How the phone talks to it | Pairing (`pairing.how`) | Can do (`caps`) |
+|---|---|---|---|---|
+| `samsung` | Samsung (Tizen) | WebSocket remote, `wss://tv:8002/api/v2/channels/samsung.remote.control` (8001 plain on older sets); apps over `ed.installedApp.get`; volume level over UPnP RenderingControl (9197) when it answers | `allow` once on the TV; the token is kept | keys, volume, mute, media, type, apps, launch, power, settings (+ volumeLevel) |
+| `lg` | LG (webOS) | SSAP over WebSocket, `wss://tv:3001` (3000 plain); keys and the pointer over its pointer socket | `allow` (Accept) once; the client key is kept | keys, volume, mute, volumeLevel, media, type, apps, launch, power, pointer, settings, nowPlaying |
+| `roku` | Roku players and Roku TVs | ECP over HTTP, `http://tv:8060` | none; a 403 means "Control by mobile apps" stops phones (`setting`) | keys, media, type, apps, launch, settings, nowPlaying (+ volume, mute, power on a Roku TV) |
+| `androidtv` | Google TV / Android TV without Orbit OS | Google's own remote protocol (the Google TV app's): TLS on 6466, paired on 6467 with the phone's own certificate | `code`: 6 characters (0-9, A-F) the TV shows | keys, volume, mute, media, recents, settings, power, launch, apps (a fixed list), nowPlaying |
+| `firetv` | Amazon Fire TV (Fire OS) | its debugging connection (ADB over Wi-Fi, 5555), as Orbit Setup uses on Google TV | `allow` (the debugging prompt); `setting` when ADB debugging is off | keys, volume, mute, media, type, apps, launch, power, settings, nowPlaying; Orbit Live TV can go on it as an app |
+
+**Finding them.** While no TV is chosen, a search runs beside the Orbit TVs' own: SSDP (M-SEARCH for Samsung's
+RemoteControlReceiver, LG's webos-second-screen, `roku:ecp` and DIAL) and mDNS (`_androidtvremote2._tcp`,
+`_amzn-wplay._tcp`). Each answer is checked with the make's own request (Samsung `/api/v2/`, LG's description XML,
+Roku `/query/device-info`). An address where an Orbit TV's door answers is always the Orbit TV. A typed address
+(`manualAddress`) is asked the same way when no door answers there.
+
+**The status.** The same states as an Orbit TV's. `found` entries of another make carry `kind` and `model`;
+`tv` carries `kind`, `model` and `caps`; `pairing` is `{"how":"allow"}`, `{"how":"code","length":6,"chars":"hex"}` or
+`{"how":"setting"}` (then `error` says where the setting is) while the TV needs it. A TV with Orbit OS keeps the shape
+it always had (no `kind`). `tvstate` keeps the Orbit TV's shape, with `kind` and `volumeKnown` (false when the make
+does not tell its volume). The page shows only the controls in `caps`.
+
+**Ops.** `connect` takes `kind` (and `name`, `model`) from a `found` entry. `askCode` and `pair` work as for an Orbit
+TV (`pair` takes the 6 hex characters for `androidtv`). New:
+
+| op | args | does | reply |
+|---|---|---|---|
+| again | – | tries the chosen TV again now (after its prompt was refused or timed out, or a setting changed) | status |
+| wake | – | Wake-on-LAN to the TV's MAC address (Samsung and LG say it) | `{"sent":bool}` |
+| installLive | – | Fire TV: pushes the bundled `orbit-live.apk` and installs it (`pm install -r -g`) | `{}` |
+
+`help`, `tapAt` and `open` answer 501 for a TV of another make: they need Orbit OS on the TV.
+
+**What is kept.** The chosen TV of another make, its secret (Samsung's token, LG's client key) and whether it is the
+active one live in secure storage next to the Orbit TV's (`orbit.direct.*`). Choosing an Orbit TV again leaves it kept;
+the Orbit TV's own pairing stays while the other is used. The Android TV certificate (`atv_cert.der`, `atv_key.pk8`)
+and the ADB key are the app's own, made once on the phone.
+
+**Not yet seen on a real TV** (Orbit 1.6.0): every make here was built from its published or widely used protocol
+and tested against pretend TVs on the phone's own loopback, not against real Samsung, LG, Roku or Fire TV sets.

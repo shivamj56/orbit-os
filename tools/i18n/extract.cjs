@@ -112,6 +112,9 @@ for (const file of walk(path.join(repo, "phone/app/lib"), (p) => p.endsWith(".da
     let s = m[1] + [...m[2].matchAll(/'((?:[^'\\\n]|\\.)*)'/g)].map((x) => x[1]).join("");
     s = s.replace(/\\'/g, "'").replace(/\\\$/g, "$").replace(/\\n/g, " ");
     if (s.includes("${") || !sentence(s) || NOT_SHOWN.test(s)) continue;
+    // The TVs of other makes (tv/brands): only whole sentences are words for the person; the rest are brand and app
+    // names, the TVs' own protocol and what their shells print.
+    if (rel.includes("/tv/brands/") && !/[.!?]$/.test(s.trim())) continue;
     add(s.replace(/\$(\w+)/g, "{$1}"), rel, "message");
   }
 }

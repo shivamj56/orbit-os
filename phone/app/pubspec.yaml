@@ -14,6 +14,8 @@ dependencies:
   firebase_database: ^13.0.1
   flutter:
     sdk: flutter
+  # SHA-256 for pairing with Android TVs (Google's remote protocol; tv/brands/android_tv.dart).
+  crypto: ^3.0.8
   # Token and the chosen TV, under a key in the Android Keystore.
   flutter_secure_storage: ^11.2.0
   # The TV's door: plain HTTP/1.1 on the home Wi-Fi.

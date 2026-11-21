@@ -146,7 +146,7 @@ class PlatformSetupHost implements SetupHost {
       throw const SetupError('unreachable', 'The TV is not answering on its debugging connection. Is it on?');
     }
     socket.setOption(SocketOption.tcpNoDelay, true);
-    final transport = _SocketTransport(socket);
+    final transport = SocketTransport(socket);
     final AdbConnection connection;
     try {
       connection = await AdbConnection.open(transport, _crypto, onAuthWaiting: () => _onAuthWaiting?.call());
@@ -259,9 +259,9 @@ class PlatformSetupHost implements SetupHost {
   }
 }
 
-/// An [AdbTransport] over a real TCP socket.
-class _SocketTransport implements AdbTransport {
-  _SocketTransport(this._socket);
+/// [AdbTransport] over a TCP socket (Orbit Setup, and the Fire TV remote in tv/brands/fire_tv.dart).
+class SocketTransport implements AdbTransport {
+  SocketTransport(this._socket);
 
   final Socket _socket;
 

@@ -42,6 +42,14 @@ export const Recents = (p: P) => (
     <path d="M20 10.5v6" opacity=".55" />
   </Svg>
 );
+/** The TV's own menu (Samsung's Menu, LG's settings, Roku's *, Fire TV's ≡): three lines of a list, one shorter. */
+export const Menu = (p: P) => (
+  <Svg {...p}>
+    <path d="M5 7h14" />
+    <path d="M5 12h14" />
+    <path d="M5 17h9" />
+  </Svg>
+);
 export const Keyboard = (p: P) => (
   <Svg {...p}>
     <rect x="2.75" y="6" width="18.5" height="12" rx="2.6" />

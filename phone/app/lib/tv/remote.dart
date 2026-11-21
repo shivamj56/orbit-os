@@ -7,6 +7,8 @@ import '../cloud/account.dart';
 import '../cloud/backend.dart';
 import '../cloud/cloud_tv.dart';
 import '../cloud/drive.dart';
+import 'brands/brand.dart';
+import 'brands/direct_link.dart';
 import 'help_mode.dart';
 import 'models.dart';
 import 'tv_link.dart';
@@ -23,16 +25,36 @@ import 'tv_link.dart';
 /// 5. signed in with a TV linked but not online: `{"state":"offline","via":"cloud","tv":{…"address":"cloud"…},
 ///    "error":"Family room is not online. Is it on?"}` (or "No internet on the phone.");
 /// 6. the Wi-Fi status as it is.
+///
+/// A TV of another make (Samsung, LG, Roku, Google TV without Orbit OS, Fire TV; phone/SPEC.md, "Every TV") is driven
+/// through [direct] instead: once one is chosen, its status is the status, every TV op goes to it, and the Orbit TV's
+/// link rests (its pairing stays for later). While no TV is chosen, the TVs of other makes the search finds join the
+/// `found` list beside the Orbit TVs.
 class TvRemote {
-  TvRemote({required this.wifi, this._helpTimings = const HelpTimings()}) {
+  TvRemote({required this.wifi, this.direct, this._helpTimings = const HelpTimings()}) {
     wifi.onStatus = (_) => _refresh();
     wifi.onTvState = (state) {
-      if (!onCloud) onTvState?.call(state);
+      if (!onCloud && !directActive) onTvState?.call(state);
     };
     wifi.onConnectedChanged = (_) => _refresh();
+    final direct = this.direct;
+    if (direct != null) {
+      direct.onStatus = (_) => _refresh();
+      direct.onTvState = (state) {
+        if (directActive) onTvState?.call(state);
+      };
+      direct.onConnectedChanged = (_) => _refresh();
+      direct.onFound = (_) => _refresh();
+    }
   }
 
   final TvLink wifi;
+
+  /// TVs of other makes; null in a build (or a test) without them.
+  final DirectLink? direct;
+
+  /// A TV of another make is the chosen one.
+  bool get directActive => direct?.active ?? false;
   CloudAccount? _account;
   CloudTv? _cloud;
   final Completer<void> _cloudSettled = Completer<void>();
@@ -58,6 +80,7 @@ class TvRemote {
   bool _connectedSent = false;
   bool _inFront = true;
   bool _demo = false;
+  bool _helloSeen = false;
 
   /// Completes once Firebase has started or failed (the account ops wait for it).
   Future<void> get cloudReady => _cloudSettled.future;
@@ -95,7 +118,7 @@ class TvRemote {
   /// The TV is reached through the cloud now.
   bool get onCloud {
     final cloud = _cloud;
-    if (cloud == null || wifi.isConnected || _wifiAnswersUnpaired) return false;
+    if (cloud == null || directActive || wifi.isConnected || _wifiAnswersUnpaired) return false;
     return cloud.usable;
   }
 
@@ -104,9 +127,58 @@ class TvRemote {
     return state == LinkState.needsPairing || state == LinkState.pairing;
   }
 
-  bool get isConnected => wifi.isConnected || onCloud;
+  bool get isConnected => directActive ? direct!.isConnected : (wifi.isConnected || onCloud);
 
   LinkStatus get status {
+    final direct = this.direct;
+    if (direct != null && direct.active) {
+      final d = direct.status;
+      return LinkStatus(state: d.state, tv: d.tv, found: _allFound(), error: d.error, pairing: d.pairing);
+    }
+    final orbit = _orbitStatus;
+    final others = _otherFound();
+    if (others.isEmpty) return orbit;
+    final found = [...orbit.found, ...others];
+    // Nothing with Orbit OS found yet, but TVs of other makes are here: the page lists them.
+    if (orbit.state == LinkState.searching && orbit.tv == null) {
+      return LinkStatus(state: LinkState.found, found: found, via: orbit.via);
+    }
+    return LinkStatus(
+      state: orbit.state,
+      tv: orbit.tv,
+      found: found,
+      error: orbit.error,
+      via: orbit.via,
+      pairing: orbit.pairing,
+    );
+  }
+
+  /// The TVs of other makes the search found, as `found` entries; an address with an Orbit TV is the Orbit TV.
+  List<FoundTv> _otherFound() {
+    final direct = this.direct;
+    if (direct == null) return const [];
+    final orbitAddresses = {
+      for (final tv in wifi.status.found) tv.address,
+      if (wifi.status.tv != null) wifi.status.tv!.address,
+    };
+    return [
+      for (final f in direct.found)
+        if (!orbitAddresses.contains(f.address))
+          FoundTv(
+            name: f.name,
+            address: f.address,
+            port: f.effectivePort,
+            named: true,
+            kind: f.kind.wire,
+            model: f.model,
+          ),
+    ];
+  }
+
+  List<FoundTv> _allFound() => [...wifi.status.found, ..._otherFound()];
+
+  /// The Orbit TV's status: the Wi-Fi door, or the cloud.
+  LinkStatus get _orbitStatus {
     final w = wifi.status;
     final cloud = _cloud;
     final account = _account;
@@ -132,30 +204,110 @@ class TvRemote {
       const {'signedIn': false, 'email': null, 'tvLinked': false, 'tvOnline': false, 'tvName': null};
 
   /// The last TV state from the way in use (for a page that loads again).
-  Map<String, Object?>? get tvState => onCloud ? _cloud?.lastState : wifi.tvState;
+  Map<String, Object?>? get tvState =>
+      directActive ? direct!.tvState : (onCloud ? _cloud?.lastState : wifi.tvState);
 
   // ---- what the page asks for ----
 
   Future<LinkStatus> hello() async {
+    await direct?.ready;
+    _helloSeen = true;
+    _applyFront();
     await wifi.hello();
+    if (!directActive && wifi.status.tv == null) unawaited(direct?.discover());
     _refresh();
     return status;
   }
 
-  Future<LinkStatus> connect(String address, int port) async {
+  /// `discover`: one search for Orbit TVs and, side by side, for TVs of other makes; the merged list.
+  Future<List<FoundTv>> discover() async {
+    await Future.wait<void>([wifi.discover(), if (direct != null) direct!.discover()]);
+    _refresh();
+    return status.found;
+  }
+
+  /// `connect`: the TV at [address] becomes the chosen one. With [kind] of another make (a `found` entry's `kind`), the
+  /// phone drives it as that make; without one (or "orbit"), it is a TV with Orbit OS, as always.
+  Future<LinkStatus> connect(String address, int port, {String? kind, String? name, String? model, String? mac}) async {
+    final make = TvKind.parse(kind);
+    final direct = this.direct;
+    if (make != null) {
+      if (direct == null) throw const OpError(501, 'This build of Orbit drives only TVs with Orbit OS.');
+      await direct.choose(
+        make,
+        address,
+        port: port <= 0 || port == kDoorPort ? null : port,
+        name: name,
+        model: model,
+        mac: mac,
+      );
+      _applyFront();
+      _refresh();
+      return status;
+    }
+    if (direct != null && direct.active) {
+      await direct.release();
+      _applyFront();
+    }
     await wifi.connect(address, port);
     _refresh();
     return status;
   }
 
+  /// `manualAddress`: an address the person typed. A TV with Orbit OS answers at its door; otherwise the search asks
+  /// which make answers there; with neither, the address is kept as an Orbit TV that is off, as before.
+  Future<LinkStatus> connectTyped(String address, int port) async {
+    final direct = this.direct;
+    if (direct == null || port != kDoorPort || await wifi.answersAsDoor(address, port)) {
+      return connect(address, port);
+    }
+    final found = await direct.probe(address);
+    if (found == null) return connect(address, port);
+    return connect(
+      address,
+      found.effectivePort,
+      kind: found.kind.wire,
+      name: found.name,
+      model: found.model,
+      mac: found.mac,
+    );
+  }
+
+  /// `askCode`: the Orbit TV's 6 digits, or the code of a TV of another make (or its prompt again).
+  Future<void> askCode() async {
+    if (directActive) {
+      await direct!.askCode();
+    } else {
+      await wifi.askCode();
+    }
+    _refresh();
+  }
+
   Future<LinkStatus> pair(String code) async {
-    await wifi.pair(code);
+    if (directActive) {
+      await direct!.pair(code);
+    } else {
+      await wifi.pair(code);
+    }
+    _refresh();
+    return status;
+  }
+
+  /// `again`: try the chosen TV of another make again now (after its prompt was refused or a setting changed).
+  Future<LinkStatus> again() async {
+    if (!directActive) throw const OpError(409, 'There is nothing to try again.');
+    await direct!.again();
     _refresh();
     return status;
   }
 
   Future<LinkStatus> forget() async {
-    await wifi.forget();
+    if (directActive) {
+      await direct!.forget();
+      _applyFront();
+    } else {
+      await wifi.forget();
+    }
     _refresh();
     return status;
   }
@@ -169,6 +321,7 @@ class TvRemote {
 
   /// GET /api/state, or the `/api/state` command; the state also goes out as a `tvstate` event.
   Future<Object?> fetchState() async {
+    if (directActive) return direct!.fetchState();
     if (_useCloud()) {
       final state = await _cloud!.command('/api/state', const {});
       if (state is Map<String, Object?>) onTvState?.call(state);
@@ -178,15 +331,25 @@ class TvRemote {
   }
 
   /// A read route (`/api/apps`).
-  Future<Object?> getJson(String path) async =>
-      _useCloud() ? await _cloud!.command(path, const {}) : await wifi.getJson(path);
+  Future<Object?> getJson(String path) async {
+    _refuseDirect();
+    return _useCloud() ? await _cloud!.command(path, const {}) : await wifi.getJson(path);
+  }
 
   /// A POST route of the door.
-  Future<Object?> postJson(String path, Map<String, Object?> body) async =>
-      _useCloud() ? await _cloud!.command(path, body) : await wifi.postJson(path, body);
+  Future<Object?> postJson(String path, Map<String, Object?> body) async {
+    _refuseDirect();
+    return _useCloud() ? await _cloud!.command(path, body) : await wifi.postJson(path, body);
+  }
+
+  /// The door's routes exist only on a TV with Orbit OS (help, the pointer's taps, opening a link…).
+  void _refuseDirect() {
+    if (directActive) throw const OpError(501, 'This needs Orbit OS on the TV.');
+  }
 
   /// An app's picture: (media type, bytes). Over the cloud the TV answers `{"png":"<base64>"}`.
   Future<(String, Uint8List)> icon(String pkg) async {
+    if (directActive) return direct!.icon(pkg);
     if (_useCloud()) {
       final answer = await _cloud!.command('/api/icon', {'pkg': pkg});
       final png = answer is Map ? answer['png'] : null;
@@ -203,7 +366,9 @@ class TvRemote {
 
   /// A pointer move ('m') or scroll ('s'): a datagram on the Wi-Fi, a summed command (≤ 10 a second) over the cloud.
   void pointer(String kind, double dx, double dy) {
-    if (onCloud) {
+    if (directActive) {
+      direct!.pointer(kind, dx, dy);
+    } else if (onCloud) {
       _cloud!.pointer(kind == 'm' ? 'move' : 'scroll', dx, dy);
     } else {
       wifi.pointer(kind, dx, dy);
@@ -212,7 +377,11 @@ class TvRemote {
 
   /// A fresh state soon after an action (over the cloud the TV writes one after each command by itself).
   void pollSoon() {
-    if (!onCloud) wifi.pollSoon();
+    if (directActive) {
+      direct!.pollSoon();
+    } else if (!onCloud) {
+      wifi.pollSoon();
+    }
   }
 
   /// The app came to the front or left it: polls, the heartbeat and help mode follow (help ends in the background).
@@ -231,13 +400,19 @@ class TvRemote {
     _demo = on;
     _applyFront();
     // A start of the app in demo mode left the saved TV unread; now it is read and checked.
-    if (!on) unawaited(wifi.start());
+    if (!on) {
+      unawaited(wifi.start());
+      unawaited(direct?.start());
+    }
   }
 
   void _applyFront() {
     final front = _inFront && !_demo;
-    wifi.setForeground(front);
-    _cloud?.inFront = front;
+    final mine = directActive;
+    // The Orbit TV's link rests while a TV of another make is the chosen one (no polls, no search, no cloud).
+    wifi.setForeground(front && !mine);
+    direct?.setForeground(front);
+    _cloud?.inFront = front && !mine;
     _refresh();
     help.inFront = front;
   }
@@ -353,6 +528,8 @@ class TvRemote {
     final carried = onCloud;
     cloud?.active = carried;
     wifi.quietSearch = carried;
+    // TVs of other makes are looked for while the page is looking for a TV.
+    direct?.searching = _helloSeen && !directActive && wifi.status.tv == null && !carried;
     final now = status;
     final text = jsonEncode(now.toJson());
     if (text != _statusText) {
@@ -375,6 +552,7 @@ class TvRemote {
 
   void dispose() {
     help.dispose();
+    direct?.dispose();
     wifi.dispose();
     _cloud?.dispose();
     _account?.dispose();

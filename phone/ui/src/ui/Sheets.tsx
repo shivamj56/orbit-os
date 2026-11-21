@@ -10,9 +10,12 @@ import { ORBIT_HOMES } from "../setup/plan";
 import * as I from "./icons";
 import { Press, Sheet, spring } from "./kit";
 import { chooseLanguage, READY, rich, systemLanguage, t, tm, useLanguage, type Language } from "../i18n";
+import { isOrbit, MAKE_NAMES } from "../makes";
 
 // ---- app pictures, kept for the whole run ----
 
+// A picture the TV does not have is kept as "" (many TVs of other makes have none): the tile then shows the app's
+// first letter instead of waiting forever.
 const icons = new Map<string, string>();
 const asking = new Map<string, Promise<string | null>>();
 
@@ -27,7 +30,7 @@ function iconOf(pkg: string): Promise<string | null> {
           icons.set(pkg, src);
           return src;
         })
-        .catch(() => null),
+        .catch(() => ""),
     );
   }
   return asking.get(pkg)!;
@@ -106,6 +109,10 @@ function AppTile({ app, onPress }: { app: AppEntry; onPress: () => void }) {
         <span className="relative block aspect-video w-full overflow-hidden rounded-[18px] border border-white/8 bg-white/5">
           {src ? (
             <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          ) : src === "" ? (
+            <span className="absolute inset-0 grid place-items-center bg-gradient-to-br from-white/8 to-white/2 font-display text-[30px] font-light text-muted">
+              {Array.from(app.label.trim())[0]?.toUpperCase() ?? "·"}
+            </span>
           ) : (
             <span className="absolute inset-0 animate-pulse bg-white/4" />
           )}
@@ -124,16 +131,19 @@ export function TypeSheet({
   onClose,
   onDone,
   onFail,
+  links = true,
 }: {
   open: boolean;
   onClose: () => void;
   onDone: (text: string) => void;
   onFail: (e: unknown) => void;
+  /** False for a TV of another make: it cannot open links from the phone, so a link is typed like any text. */
+  links?: boolean;
 }) {
   const [text, setText] = useState("");
   const [enter, setEnter] = useState(true);
   const box = useRef<HTMLTextAreaElement>(null);
-  const link = /^\s*https?:\/\/\S+\s*$/i.test(text) || /^\s*(www\.|youtu\.be\/|youtube\.com\/)\S+\s*$/i.test(text);
+  const link = links && (/^\s*https?:\/\/\S+\s*$/i.test(text) || /^\s*(www\.|youtu\.be\/|youtube\.com\/)\S+\s*$/i.test(text));
   useEffect(() => {
     if (open) window.setTimeout(() => box.current?.focus(), 380);
   }, [open]);
@@ -210,7 +220,14 @@ function clock(ms: number) {
   return h ? `${h}:${String(m).padStart(2, "0")}:${String(r).padStart(2, "0")}` : `${m}:${String(r).padStart(2, "0")}`;
 }
 
-export function PlayerSheet({ open, onClose, state, onFail }: { open: boolean; onClose: () => void; state: TvState | null; onFail: (e: unknown) => void }) {
+export function PlayerSheet({ open, onClose, state, onFail, volume = true }: {
+  open: boolean;
+  onClose: () => void;
+  state: TvState | null;
+  onFail: (e: unknown) => void;
+  /** False when the TV does not take a volume level (only its volume keys). */
+  volume?: boolean;
+}) {
   const [now, setNow] = useState(Date.now());
   const [seen, setSeen] = useState({ at: Date.now(), position: state?.position ?? 0 });
   useEffect(() => setSeen({ at: Date.now(), position: state?.position ?? 0 }), [state?.position]);
@@ -259,7 +276,7 @@ export function PlayerSheet({ open, onClose, state, onFail }: { open: boolean; o
         <Press label={t("Forward 10 seconds")} onPress={() => media("forward")} className="h-14 w-14 rounded-full text-text"><I.Forward size={28} /></Press>
         <Press label={t("Next")} onPress={() => media("next")} className="h-14 w-14 rounded-full text-muted"><I.Next size={24} /></Press>
       </div>
-      {state && <VolumeSlider state={state} onFail={onFail} />}
+      {state && volume && <VolumeSlider state={state} onFail={onFail} />}
     </Sheet>
   );
 }
@@ -475,7 +492,26 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
             </Row>
           </div>
 
-          {tv && (
+          {tv && !isOrbit(tv) && (
+            <section className="mt-4" aria-label={t("This TV")}>
+              <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">{t("This TV")}</p>
+              <div className="divide-y divide-white/6">
+                <Row
+                  icon={<I.Remote size={20} />}
+                  title={`${MAKE_NAMES[tv.kind!]}${tv.model ? ` · ${tv.model}` : ""}`}
+                  note={t("Orbit works with this TV as a remote. Only Google TV and Android TV let an app change the home screen or switch apps off.")}
+                />
+                {tv.kind === "androidtv" && (
+                  <Row icon={<I.Planet size={20} />} title={t("Set up Orbit OS on this TV")} note={t("A calm home screen and the ad apps switched off, with one-tap undo.")} onPress={go("install")}>
+                    <Chevron />
+                  </Row>
+                )}
+                {tv.kind === "firetv" && <LiveTvRow />}
+              </div>
+            </section>
+          )}
+
+          {tv && isOrbit(tv) && (
             <section className="mt-4" aria-label={t("This TV")}>
               <p className="px-1 text-[12px] font-medium tracking-[0.08em] text-faint uppercase">{t("This TV")}</p>
               <div className="divide-y divide-white/6">
@@ -563,6 +599,41 @@ export function SettingsSheet({ open, onClose, status }: { open: boolean; onClos
 }
 
 const Chevron = () => <I.Chevron dir="right" size={18} className="shrink-0 text-faint" />;
+
+/** A Fire TV: put Orbit Live TV on it as an app (Amazon keeps its own home screen). */
+function LiveTvRow() {
+  const [state, setState] = useState<"idle" | "busy" | "done" | "failed">("idle");
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <Row
+      icon={<I.Channels size={20} />}
+      title={state === "done" ? t("Installed Orbit Live TV") : state === "busy" ? t("Installing Orbit Live TV") : t("Put Orbit Live TV on this TV")}
+      note={error ?? t("Free Hindi channels as an app on the Fire TV. It opens from the TV's own list of apps.")}
+      onPress={
+        state === "busy" || state === "done"
+          ? undefined
+          : () => {
+              haptic("medium");
+              setState("busy");
+              setError(null);
+              bridge
+                .call("installLive", {}, 180_000)
+                .then(() => {
+                  haptic("success");
+                  setState("done");
+                })
+                .catch((e: Error) => {
+                  haptic("error");
+                  setError(tm(e.message));
+                  setState("failed");
+                });
+            }
+      }
+    >
+      {state === "busy" ? <span className="text-[13px] text-faint">…</span> : state === "done" ? <I.Check size={18} className="text-mint" /> : <Chevron />}
+    </Row>
+  );
+}
 
 /** The Google account Orbit uses away from the Wi-Fi, and the TV linked to it. */
 function AnywhereCard({ onDone, onDelete }: { onDone: () => void; onDelete: () => void }) {

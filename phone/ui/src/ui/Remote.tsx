@@ -9,6 +9,7 @@ import * as I from "./icons";
 import { Press, Toast, spring } from "./kit";
 import { AppsSheet, PlayerSheet, SleepSheet, TypeSheet, useIcon } from "./Sheets";
 import { t, tm } from "../i18n";
+import { capsOf, isOrbit, MAKE_NAMES } from "../makes";
 
 type SheetName = "apps" | "type" | "player" | "sleep" | null;
 
@@ -20,7 +21,11 @@ export function Remote({ status }: { status: Status }) {
   const [touching, setTouching] = useState(false);
   const [flash, setFlash] = useState<{ dir: Dir; n: number } | null>(null);
   const toastTimer = useRef(0);
-  const mode = settings.mode;
+  // A TV of another make shows only what it can do (makes.ts); a TV with Orbit OS shows everything.
+  const caps = capsOf(status.tv);
+  const orbit = isOrbit(status.tv);
+  const make = status.tv?.kind ? MAKE_NAMES[status.tv.kind] : null;
+  const mode = caps.has("pointer") ? settings.mode : "focus";
 
   const say = useCallback((text: string) => {
     setToast(text);
@@ -49,33 +54,39 @@ export function Remote({ status }: { status: Status }) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mint/60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-mint" />
             </span>
-            {status.via === "cloud" ? t("Connected from anywhere") : t("On your home Wi-Fi")}
+            {status.via === "cloud" ? t("Connected from anywhere") : !orbit && make ? `${make} · ${t("as a remote")}` : t("On your home Wi-Fi")}
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <Press label={t("Help: see the TV's screen")} onPress={openHelp} feel="medium" className="glass h-11 rounded-full pr-4 pl-3 text-text">
-            <span className="flex items-center gap-2 text-[14px] font-medium">
-              <I.Lifebuoy size={18} className="text-gold" />
-              {t("Help")}
-            </span>
-          </Press>
+          {caps.has("help") && (
+            <Press label={t("Help: see the TV's screen")} onPress={openHelp} feel="medium" className="glass h-11 rounded-full pr-4 pl-3 text-text">
+              <span className="flex items-center gap-2 text-[14px] font-medium">
+                <I.Lifebuoy size={18} className="text-gold" />
+                {t("Help")}
+              </span>
+            </Press>
+          )}
           <Press label={t("Settings")} onPress={openSettings} className="glass h-11 w-11 shrink-0 rounded-full text-muted">
             <I.Gear size={20} />
           </Press>
         </div>
       </header>
 
-      <NowPlaying state={state} onOpen={() => setSheet("player")} onFail={fail} />
+      <NowPlaying state={state} caps={caps} make={make} onOpen={() => setSheet("player")} onFail={fail} />
 
-      <ModeSwitch
-        mode={mode}
-        onChange={(m) => {
-          haptic("medium");
-          updateSettings({ mode: m });
-          // Back to the remote's own focus: the pointer leaves the TV's screen at once.
-          if (m === "focus") tv.hidePointer().catch(() => {});
-        }}
-      />
+      {caps.has("pointer") ? (
+        <ModeSwitch
+          mode={mode}
+          onChange={(m) => {
+            haptic("medium");
+            updateSettings({ mode: m });
+            // Back to the remote's own focus: the pointer leaves the TV's screen at once.
+            if (m === "focus") tv.hidePointer().catch(() => {});
+          }}
+        />
+      ) : (
+        <div className="mt-4 h-11" aria-hidden="true" />
+      )}
 
       <div className="relative flex min-h-0 flex-1 items-center justify-center">
         <div className="relative aspect-square h-full max-h-[min(84vw,400px)] max-w-full">
@@ -95,11 +106,15 @@ export function Remote({ status }: { status: Status }) {
               else tv.click(false).catch(fail);
             }}
             onLong={() => {
-              haptic("medium");
               if (mode === "focus") {
+                if (!caps.has("recents")) return;
+                haptic("medium");
                 key("recents");
                 say(t("Recent apps"));
-              } else tv.click(true).catch(fail);
+              } else {
+                haptic("medium");
+                tv.click(true).catch(fail);
+              }
             }}
             onMove={(dx, dy) => tv.move(dx, dy)}
             onScroll={(dx, dy) => tv.scroll(dx, dy)}
@@ -107,26 +122,36 @@ export function Remote({ status }: { status: Status }) {
         </div>
       </div>
       <p className={`-mt-1 mb-3 text-center text-[12px] text-faint transition-opacity duration-300 ${touching ? "opacity-0" : "opacity-100"}`}>
-        {mode === "focus" ? t("Roll to move · tap for OK · hold for recent apps") : t("Glide to point · tap to click · two fingers to scroll")}
+        {mode === "cursor"
+          ? t("Glide to point · tap to click · two fingers to scroll")
+          : caps.has("recents")
+            ? t("Roll to move · tap for OK · hold for recent apps")
+            : t("Roll to move · tap for OK")}
       </p>
 
-      <div className="mb-4 grid grid-cols-3 gap-3">
+      <div className={`mb-4 grid gap-3 ${caps.has("recents") || caps.has("settings") ? "grid-cols-3" : "grid-cols-2"}`}>
         <KeyButton label={t("Back")} onPress={() => key("back")}>
           <I.Back size={24} />
         </KeyButton>
         <KeyButton label={t("Home")} onPress={() => key("home")}>
           <I.Home size={24} />
         </KeyButton>
-        <KeyButton label={t("Recent")} onPress={() => key("recents")}>
-          <I.Recents size={24} />
-        </KeyButton>
+        {caps.has("recents") ? (
+          <KeyButton label={t("Recent")} onPress={() => key("recents")}>
+            <I.Recents size={24} />
+          </KeyButton>
+        ) : caps.has("settings") ? (
+          <KeyButton label={t("Menu")} onPress={() => key("settings")}>
+            <I.Menu size={24} />
+          </KeyButton>
+        ) : null}
       </div>
 
-      <Dock state={state} {...volumeKeys(state, fail)} onSheet={setSheet} />
+      <Dock state={state} caps={caps} {...volumeKeys(state, fail)} onSheet={setSheet} />
 
       <AppsSheet open={sheet === "apps"} onClose={() => setSheet(null)} onLaunched={(label) => say(t("Opening {app}", { app: label }))} onFail={fail} />
-      <TypeSheet open={sheet === "type"} onClose={() => setSheet(null)} onDone={say} onFail={fail} />
-      <PlayerSheet open={sheet === "player"} onClose={() => setSheet(null)} state={state} onFail={fail} />
+      <TypeSheet open={sheet === "type"} onClose={() => setSheet(null)} onDone={say} onFail={fail} links={caps.has("open")} />
+      <PlayerSheet open={sheet === "player"} onClose={() => setSheet(null)} state={state} onFail={fail} volume={caps.has("volumeLevel")} />
       <SleepSheet
         open={sheet === "sleep"}
         onClose={() => setSheet(null)}
@@ -139,11 +164,20 @@ export function Remote({ status }: { status: Status }) {
   );
 }
 
-function NowPlaying({ state, onOpen, onFail }: { state: TvState | null; onOpen: () => void; onFail: (e: unknown) => void }) {
-  const pkg = state?.pkg && !ORBIT_HOMES.has(state.pkg) ? state.pkg : null;
+function NowPlaying({ state, caps, make, onOpen, onFail }: {
+  state: TvState | null;
+  caps: ReadonlySet<string>;
+  make: string | null;
+  onOpen: () => void;
+  onFail: (e: unknown) => void;
+}) {
+  // A TV of another make tells only the app in front (some not even that), never what plays in it.
+  const direct = !!state?.kind && state.kind !== "orbit";
+  const pkg = state?.pkg && !ORBIT_HOMES.has(state.pkg) && caps.has("apps") ? state.pkg : null;
   const art = useIcon(pkg);
   const hasMedia = !!state?.title;
-  const head = hasMedia ? state!.title : state?.app || t("Home");
+  const app = state?.app === "Home" ? t("Home") : state?.app;
+  const head = hasMedia ? state!.title : app || (direct && make ? make : t("Home"));
   const sub = hasMedia ? [state!.player || state!.app, state!.playing ? t("Playing") : t("Paused")].filter(Boolean).join("  ·  ") : t("On the TV now");
   return (
     <motion.div layout className="glass mt-4 flex items-center gap-3 rounded-[22px] p-2.5 pr-3" transition={spring}>
@@ -164,7 +198,7 @@ function NowPlaying({ state, onOpen, onFail }: { state: TvState | null; onOpen: 
           <span className="block truncate text-[12.5px] text-muted">{sub}</span>
         </span>
       </button>
-      {hasMedia && (
+      {hasMedia ? (
         <Press
           label={state!.playing ? t("Pause") : t("Play")}
           onPress={() => {
@@ -175,7 +209,11 @@ function NowPlaying({ state, onOpen, onFail }: { state: TvState | null; onOpen: 
         >
           {state!.playing ? <I.Pause size={17} /> : <I.Play size={17} />}
         </Press>
-      )}
+      ) : direct && caps.has("media") ? (
+        <Press label={t("Play or pause")} onPress={() => tv.media("play_pause").catch(onFail)} className="h-10 w-10 shrink-0 rounded-full bg-text text-ink">
+          <I.Play size={17} />
+        </Press>
+      ) : null}
     </motion.div>
   );
 }
@@ -247,27 +285,39 @@ export function KeyButton({ label, onPress, children }: { label: string; onPress
 
 function Dock({
   state,
+  caps,
   onVolume,
   onMute,
   onSheet,
 }: {
   state: TvState | null;
+  caps: ReadonlySet<string>;
   onVolume: (dir: 1 | -1) => void;
   onMute: () => void;
   onSheet: (s: SheetName) => void;
 }) {
   return (
     <nav className="glass flex items-center gap-1 rounded-[26px] p-1.5" aria-label={t("TV controls")}>
-      <VolumeGroup state={state} onVolume={onVolume} onMute={onMute} />
-      <Press label={t("Keyboard")} onPress={() => onSheet("type")} className="h-[54px] w-[52px] rounded-[20px] text-text">
-        <I.Keyboard size={22} />
-      </Press>
-      <Press label={t("Apps")} onPress={() => onSheet("apps")} className="h-[54px] w-[52px] rounded-[20px] text-text">
-        <I.Apps size={21} />
-      </Press>
-      <Press label={t("Sleep")} onPress={() => onSheet("sleep")} className="h-[54px] w-[52px] rounded-[20px] text-rose">
-        <I.Power size={21} />
-      </Press>
+      {caps.has("volume") ? (
+        <VolumeGroup state={state} onVolume={onVolume} onMute={onMute} mute={caps.has("mute")} />
+      ) : (
+        <span className="flex-1 px-3 text-[12px] leading-snug text-faint">{t("The volume is on the TV's own remote.")}</span>
+      )}
+      {caps.has("type") && (
+        <Press label={t("Keyboard")} onPress={() => onSheet("type")} className="h-[54px] w-[52px] rounded-[20px] text-text">
+          <I.Keyboard size={22} />
+        </Press>
+      )}
+      {caps.has("apps") && (
+        <Press label={t("Apps")} onPress={() => onSheet("apps")} className="h-[54px] w-[52px] rounded-[20px] text-text">
+          <I.Apps size={21} />
+        </Press>
+      )}
+      {caps.has("power") && (
+        <Press label={t("Sleep")} onPress={() => onSheet("sleep")} className="h-[54px] w-[52px] rounded-[20px] text-rose">
+          <I.Power size={21} />
+        </Press>
+      )}
     </nav>
   );
 }
@@ -277,23 +327,28 @@ export function VolumeGroup({
   state,
   onVolume,
   onMute,
+  mute = true,
 }: {
   state: TvState | null;
   onVolume: (dir: 1 | -1) => void;
   onMute: () => void;
+  /** False for a TV of another make without a mute key: the middle only shows the level. */
+  mute?: boolean;
 }) {
-  const share = state && state.max > 0 ? state.volume / state.max : 0;
+  // A TV that does not tell its volume (Roku, some Samsungs): no number and no bar, only the keys.
+  const known = state?.volumeKnown !== false;
+  const share = state && known && state.max > 0 ? state.volume / state.max : 0;
   const level: 0 | 1 | 2 = share < 0.05 ? 0 : share < 0.5 ? 1 : 2;
   return (
     <div className="flex flex-1 items-center rounded-[20px] bg-white/[0.035]">
       <Press label={t("Volume down")} onPress={() => onVolume(-1)} repeat feel="tick" className="h-[54px] w-12 rounded-[20px] text-text">
         <I.Minus size={20} />
       </Press>
-      <Press label={state?.muted ? t("Unmute") : t("Mute")} onPress={onMute} className="h-[54px] flex-1 rounded-[16px]">
+      <Press label={state?.muted ? t("Unmute") : t("Mute")} onPress={onMute} disabled={!mute} className="h-[54px] flex-1 rounded-[16px]">
         <span className="flex flex-col items-center gap-1">
           <span className={`flex items-center gap-1.5 ${state?.muted ? "text-rose" : "text-text"}`}>
             <I.Speaker size={17} level={level} muted={state?.muted} />
-            <span className="tabular text-[14px] font-medium">{state ? state.volume : "–"}</span>
+            <span className="tabular text-[14px] font-medium">{state && known ? state.volume : "–"}</span>
           </span>
           <span className="h-[3px] w-12 overflow-hidden rounded-full bg-white/10">
             <motion.span
@@ -316,7 +371,7 @@ export function volumeKeys(state: TvState | null, fail: (e: unknown) => void) {
   return {
     onVolume: (dir: 1 | -1) => {
       tv.key(dir === 1 ? "volup" : "voldown").catch(fail);
-      if (state) {
+      if (state && state.volumeKnown !== false) {
         const step = Math.max(1, Math.round(state.max / 30));
         patchTv({ volume: Math.max(0, Math.min(state.max, state.volume + dir * step)), muted: false });
       }

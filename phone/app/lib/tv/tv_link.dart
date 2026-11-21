@@ -223,6 +223,19 @@ class TvLink {
     return status;
   }
 
+  /// Whether Orbit's door answers at [address]:[port] (a TV with Orbit OS: 200, or its own 401), without choosing it.
+  /// A typed address that is not one is asked which other make it is (TvRemote.connectTyped).
+  Future<bool> answersAsDoor(String address, int port) async {
+    try {
+      final answer = (await _client.request('GET', address, port, '/api/state')).json;
+      return answer is Map && answer['ok'] == true;
+    } on TvHttpException catch (e) {
+      return e.fromDoor;
+    } on TvUnreachableException {
+      return false;
+    }
+  }
+
   /// `askCode`: the TV shows a 6-digit code for 3 minutes; the state is `pairing` meanwhile.
   Future<void> askCode() async {
     await ready;

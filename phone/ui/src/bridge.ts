@@ -5,11 +5,28 @@ import { mark } from "./i18n";
 
 export type ConnState = "searching" | "found" | "needsPairing" | "pairing" | "connected" | "offline";
 
+/**
+ * What a TV is: "orbit" (Orbit OS on it: every control), or a make Orbit drives as a remote (phone/SPEC.md, "Every TV").
+ */
+export type TvKind = "orbit" | "samsung" | "lg" | "roku" | "androidtv" | "firetv";
+
 export interface TvRef {
   name: string;
   address: string;
   port: number;
   udp?: number | null;
+  /** Absent for a TV with Orbit OS. */
+  kind?: TvKind;
+  model?: string | null;
+  /** What a TV of another make can do from the phone (makes.ts); absent for a TV with Orbit OS. */
+  caps?: string[] | null;
+}
+
+/** How a TV of another make pairs, while it needs to: accept on the TV, type its code, or change one of its settings. */
+export interface Pairing {
+  how: "allow" | "code" | "setting";
+  length?: number;
+  chars?: "digits" | "hex";
 }
 
 export interface Status {
@@ -18,6 +35,7 @@ export interface Status {
   found?: TvRef[];
   via?: "wifi" | "cloud";
   error?: string | null;
+  pairing?: Pairing | null;
 }
 
 export interface TvState {
@@ -36,6 +54,9 @@ export interface TvState {
   muted: boolean;
   udp: number | null;
   pointer: boolean;
+  /** A TV of another make: which, and whether it tells its volume (Roku, Samsung without UPnP and others do not). */
+  kind?: TvKind;
+  volumeKnown?: boolean;
 }
 
 export interface AppEntry {
@@ -228,7 +249,19 @@ export const tv = {
   help: (on: boolean) => bridge.call<{ ok: boolean; on: boolean }>("help", { on }),
   /** A click at a spot of the TV's screen, in its pixels (1280 x 720). */
   tapAt: (x: number, y: number) => bridge.call("tapAt", { x, y }),
+  /** A TV of another make: try it again now (after its prompt was refused, timed out, or a setting changed). */
+  again: () => bridge.call<Status>("again"),
+  /** A TV of another make: Wake-on-LAN, when its MAC address is known. */
+  wake: () => bridge.call<{ sent: boolean }>("wake"),
 };
+
+/** Choose a TV the search found (an Orbit TV, or a TV of another make, driven as a remote). */
+export const chooseTv = (tv: TvRef) =>
+  bridge.call<Status>("connect", {
+    address: tv.address,
+    port: tv.port,
+    ...(tv.kind && tv.kind !== "orbit" ? { kind: tv.kind, name: tv.name, model: tv.model ?? null } : {}),
+  });
 
 /** A TV found by Orbit Setup's scan (phone/SPEC.md, "Orbit Setup"): `orbit` when it already answers as Orbit OS. */
 export interface SetupTvFound {

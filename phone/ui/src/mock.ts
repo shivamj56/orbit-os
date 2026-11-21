@@ -1,6 +1,6 @@
 // A pretend TV for a plain browser (the demo page): it answers every op in phone/SPEC.md the way the real door does,
 // and tells the demo's TV picture what happened through window events ("orbit-mock").
-import type { Account, AppEntry, DriveBackup, Message, Status, TvState } from "./bridge";
+import type { Account, AppEntry, DriveBackup, Message, Status, TvKind, TvRef, TvState } from "./bridge";
 import { MockScreen } from "./mock-screen";
 import { createSetupMock } from "./mock-setup";
 import { mark } from "./i18n";
@@ -81,7 +81,30 @@ function keepDrive(files: DriveFile[]) {
 }
 
 const listed = ({ text: _text, ...b }: DriveFile): DriveBackup => b;
-const TV = { name: "Family room", address: "192.168.1.20", port: 8090, udp: 8091 };
+const ORBIT_TV = { name: "Family room", address: "192.168.1.20", port: 8090, udp: 8091 };
+
+/**
+ * `?make=samsung` (lg, roku, androidtv, firetv) in a browser: the pretend TV is one of another make (phone/SPEC.md,
+ * "Every TV"), to see the remote as such a TV shows it. Never set inside the app.
+ */
+const PREVIEW_CAPS: Record<string, string[]> = {
+  samsung: ["apps", "keys", "launch", "media", "mute", "power", "settings", "type", "volume"],
+  lg: ["apps", "keys", "launch", "media", "mute", "nowPlaying", "pointer", "power", "settings", "type", "volume", "volumeLevel"],
+  roku: ["apps", "keys", "launch", "media", "nowPlaying", "settings", "type"],
+  androidtv: ["apps", "keys", "launch", "media", "mute", "nowPlaying", "power", "recents", "settings", "volume"],
+  firetv: ["apps", "keys", "launch", "media", "mute", "nowPlaying", "power", "settings", "type", "volume"],
+};
+const PREVIEW_MAKE = (() => {
+  try {
+    const make = new URLSearchParams(location.search).get("make");
+    return make && PREVIEW_CAPS[make] ? (make as TvKind) : null;
+  } catch {
+    return null;
+  }
+})();
+const TV: TvRef = PREVIEW_MAKE
+  ? { ...ORBIT_TV, port: 8002, udp: null, kind: PREVIEW_MAKE, model: "Preview", caps: PREVIEW_CAPS[PREVIEW_MAKE] }
+  : ORBIT_TV;
 
 export function emitMock(e: MockEvent) {
   window.dispatchEvent(new CustomEvent<MockEvent>("orbit-mock", { detail: e }));
@@ -141,6 +164,21 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
     muted: false,
     udp: 8091,
     pointer: true,
+    ...(PREVIEW_MAKE
+      ? {
+          app: "Netflix",
+          pkg: "com.netflix.ninja",
+          title: "",
+          artist: "",
+          player: null,
+          playing: false,
+          duration: 0,
+          kind: PREVIEW_MAKE,
+          volumeKnown: PREVIEW_MAKE === "lg",
+          pointer: PREVIEW_MAKE === "lg",
+          udp: null,
+        }
+      : {}),
   };
   let ticking = 0;
   let account: Account = { signedIn: false, email: null, tvLinked: false, tvOnline: false, tvName: null };
@@ -215,8 +253,9 @@ export function createMock(deliver: (m: Message) => void): (text: string) => voi
   const find = () => {
     setStatus({ state: "searching", found: [], tv: null, error: null });
     later(1400, () => {
-      // A TV without Orbit OS has no door to find: the phone keeps looking (and offers Orbit Setup).
-      if (!setup.orbitOn()) return;
+      // A TV without Orbit OS has no door to find: the phone keeps looking (and offers Orbit Setup). A preview of
+      // another make (?make=) is found by its own remote service.
+      if (!PREVIEW_MAKE && !setup.orbitOn()) return;
       if (token) connected();
       else setStatus({ state: "found", found: [TV] });
     });

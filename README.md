@@ -259,6 +259,17 @@ Help is welcome: a report of how Orbit runs on your TV, a bug, an idea or code. 
 the [code of conduct](CODE_OF_CONDUCT.md). A security problem goes in private, as [SECURITY.md](SECURITY.md) says,
 never in a public issue.
 
+## Which TVs
+
+| TV | What Orbit does |
+|---|---|
+| **Google TV, Android TV** (Sony, TCL, Xiaomi, Vu, Acer, Haier, Philips, Toshiba and more) | **All of Orbit OS**: Orbit Home, the ad apps switched off, backups, Live TV, and the phone remote |
+| **Samsung** (Tizen), **LG** (webOS), **Roku**, **Amazon Fire TV** | **The phone remote** (since Orbit 1.6.0): arrows, OK, volume, typing, opening apps. Fire TV can also take Orbit Live TV |
+| Hisense and Toshiba with VIDAA, Apple TV, JioTele OS and others | Not yet |
+
+None of the second row's makes lets any app change the home screen or switch apps off, so there Orbit is a remote.
+The research behind this, with sources, is in [docs/every-tv.md](docs/every-tv.md).
+
 ## Tested on
 
 | TV | System | Since |
@@ -279,7 +290,10 @@ The goal: anyone can put Orbit OS on their TV without a computer, a terminal or 
 - [ ] **First-run setup on the TV**: your name for the greeting, your email, and a code to pair your phone. No names built in.
 - [ ] **One account on TV and phone**: sign in to Orbit with the same email and pair one or more TVs.
 - [ ] **Any Android TV or Google TV**: a library of TV models that says what each built-in app does and whether it is safe to switch off.
-- [ ] **A remote that fits each TV**: its buttons, inputs and apps.
+- [x] **Every TV as a remote**: Samsung, LG, Roku, Fire TV and Google TV without Orbit OS, each with only the buttons
+  it has (Orbit 1.6.0).
+- [ ] **Wireless debugging**: Orbit Setup on Google TVs that offer only Android 11's paired debugging, not port 5555.
+- [ ] **More TVs as a remote**: VIDAA (Hisense, Toshiba), Apple TV, JioTele OS, when people ask for them.
 - [ ] **Tablets.**
 - [ ] **Public release**: signed releases on GitHub, a demo video.
 
