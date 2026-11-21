@@ -72,6 +72,13 @@
       ]
     },
     {
+      "text": "{length}-character code",
+      "kind": "spoken",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
       "text": "{length}-digit code",
       "kind": "spoken",
       "where": [
@@ -277,6 +284,13 @@
       ]
     },
     {
+      "text": "A calm home screen and the ad apps switched off, with one-tap undo.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
       "text": "a demo with a pretend TV",
       "kind": "text",
       "where": [
@@ -461,6 +475,7 @@
       "text": "Another TV was chosen meanwhile.",
       "kind": "message",
       "where": [
+        "app/lib/tv/brands/direct_link.dart",
         "app/lib/tv/tv_link.dart"
       ]
     },
@@ -486,6 +501,14 @@
       "kind": "heading",
       "where": [
         "setup/catalog.json"
+      ]
+    },
+    {
+      "text": "as a remote",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx",
+        "ui/Remote.tsx"
       ]
     },
     {
@@ -713,6 +736,27 @@
       ]
     },
     {
+      "text": "Choose Accept on the TV with its own remote.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Choose Allow on the TV with its own remote.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "Choose another TV",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
       "text": "Choose the TV to put back. When the backup was made it was at {address}.",
       "kind": "text",
       "where": [
@@ -730,6 +774,7 @@
       "text": "Choose your TV first.",
       "kind": "message",
       "where": [
+        "app/lib/tv/brands/direct_link.dart",
         "app/lib/tv/tv_link.dart"
       ]
     },
@@ -849,7 +894,7 @@
     },
     {
       "text": "Connecting…",
-      "kind": "text",
+      "kind": "button",
       "where": [
         "ui/Connect.tsx"
       ]
@@ -1201,6 +1246,20 @@
       ]
     },
     {
+      "text": "Fire TV cannot do that from a phone.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
+      ]
+    },
+    {
+      "text": "Fire TV takes only plain letters and numbers from a phone.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
+      ]
+    },
+    {
       "text": "Firebase did not sign you in. Try again.",
       "kind": "message",
       "where": [
@@ -1261,6 +1320,13 @@
       "kind": "text",
       "where": [
         "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Free Hindi channels as an app on the Fire TV. It opens from the TV's own list of apps.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
       ]
     },
     {
@@ -1735,7 +1801,8 @@
       "text": "Installed Orbit Live TV",
       "kind": "text",
       "where": [
-        "setup/lines.ts"
+        "setup/lines.ts",
+        "ui/Sheets.tsx"
       ]
     },
     {
@@ -1756,7 +1823,8 @@
       "text": "Installing Orbit Live TV",
       "kind": "text",
       "where": [
-        "setup/lines.ts"
+        "setup/lines.ts",
+        "ui/Sheets.tsx"
       ]
     },
     {
@@ -1803,6 +1871,13 @@
     },
     {
       "text": "It is at the top of the TV now.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
+      "text": "It is on the TV's screen now.",
       "kind": "text",
       "where": [
         "ui/Connect.tsx"
@@ -2030,6 +2105,13 @@
       ]
     },
     {
+      "text": "Look at your TV",
+      "kind": "heading",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
       "text": "Looking for it",
       "kind": "text",
       "where": [
@@ -2076,6 +2158,13 @@
       "kind": "text",
       "where": [
         "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "Menu",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
       ]
     },
     {
@@ -2483,6 +2572,13 @@
       ]
     },
     {
+      "text": "On the Roku, go to Settings › System › Advanced system settings › Control by mobile apps, and set Network access to Default or Enabled.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/roku.dart"
+      ]
+    },
+    {
       "text": "On the TV now",
       "kind": "text",
       "where": [
@@ -2529,6 +2625,13 @@
       "kind": "spoken",
       "where": [
         "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "One setting on the TV",
+      "kind": "heading",
+      "where": [
+        "ui/Connect.tsx"
       ]
     },
     {
@@ -3193,6 +3296,13 @@
       ]
     },
     {
+      "text": "Orbit works with this TV as a remote. Only Google TV and Android TV let an app change the home screen or switch apps off.",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
       "text": "Orbit's apps are still on the TV",
       "kind": "text",
       "where": [
@@ -3200,9 +3310,18 @@
       ]
     },
     {
+      "text": "Other TVs work as a remote. The full Orbit OS needs Google TV or Android TV.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
+      ]
+    },
+    {
       "text": "Pair this phone with the TV first.",
       "kind": "message",
       "where": [
+        "app/lib/tv/brands/brand.dart",
+        "app/lib/tv/brands/direct_link.dart",
         "app/lib/tv/tv_link.dart"
       ]
     },
@@ -3288,6 +3407,13 @@
       ]
     },
     {
+      "text": "Play or pause",
+      "kind": "spoken",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
       "text": "Playing",
       "kind": "text",
       "where": [
@@ -3309,10 +3435,24 @@
       ]
     },
     {
+      "text": "Press Accept on the TV to let Orbit control it.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/lg.dart"
+      ]
+    },
+    {
       "text": "Press Allow on the TV",
       "kind": "heading",
       "where": [
         "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Press Allow on the TV to let Orbit control it.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/samsung.dart"
       ]
     },
     {
@@ -3371,6 +3511,13 @@
       "kind": "button",
       "where": [
         "ui/setup/Install.tsx"
+      ]
+    },
+    {
+      "text": "Put Orbit Live TV on this TV",
+      "kind": "text",
+      "where": [
+        "ui/Sheets.tsx"
       ]
     },
     {
@@ -3568,6 +3715,13 @@
       ]
     },
     {
+      "text": "Roll to move · tap for OK",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
       "text": "Roll to move · tap for OK · hold for recent apps",
       "kind": "text",
       "where": [
@@ -3742,6 +3896,13 @@
       "kind": "text",
       "where": [
         "ui/Connect.tsx",
+        "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Set up Orbit OS on this TV",
+      "kind": "text",
+      "where": [
         "ui/Sheets.tsx"
       ]
     },
@@ -4291,6 +4452,13 @@
       ]
     },
     {
+      "text": "That app would not open.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
+      ]
+    },
+    {
       "text": "That backup could not be read",
       "kind": "text",
       "where": [
@@ -4333,6 +4501,13 @@
       "where": [
         "app/lib/cloud/drive.dart",
         "setup/backup.ts"
+      ]
+    },
+    {
+      "text": "That file name cannot be installed.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
       ]
     },
     {
@@ -4585,10 +4760,38 @@
       ]
     },
     {
+      "text": "The Fire TV did not get a Yes in time.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
+      ]
+    },
+    {
+      "text": "The Fire TV did not offer a debugging connection Orbit can use.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
+      ]
+    },
+    {
+      "text": "The Fire TV was told not to allow this phone.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
+      ]
+    },
+    {
       "text": "The helper did not get what it needs",
       "kind": "text",
       "where": [
         "setup/lines.ts"
+      ]
+    },
+    {
+      "text": "The install failed.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
       ]
     },
     {
@@ -4699,6 +4902,13 @@
       ]
     },
     {
+      "text": "The Roku did not accept that.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/roku.dart"
+      ]
+    },
+    {
       "text": "The setup stopped before it finished",
       "kind": "text",
       "where": [
@@ -4779,6 +4989,13 @@
       ]
     },
     {
+      "text": "The TV blocks phones. Allow them in its settings under General, External Device Manager.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/samsung.dart"
+      ]
+    },
+    {
       "text": "The TV closed the debugging connection.",
       "kind": "message",
       "where": [
@@ -4796,7 +5013,15 @@
       "text": "The TV could not do that.",
       "kind": "message",
       "where": [
+        "app/lib/tv/brands/lg.dart",
         "tv/PhonePortal.java"
+      ]
+    },
+    {
+      "text": "The TV did not answer as Orbit expected.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/samsung.dart"
       ]
     },
     {
@@ -4817,6 +5042,7 @@
       "text": "The TV did not answer.",
       "kind": "message",
       "where": [
+        "app/lib/tv/brands/lg.dart",
         "bridge.ts",
         "mock-setup.ts"
       ]
@@ -4894,8 +5120,9 @@
     },
     {
       "text": "The TV did not take that.",
-      "kind": "text",
+      "kind": "message",
       "where": [
+        "app/lib/tv/brands/direct_link.dart",
         "ui/Help.tsx",
         "ui/Remote.tsx"
       ]
@@ -5087,6 +5314,20 @@
       "kind": "message",
       "where": [
         "app/lib/tv/tv_client.dart"
+      ]
+    },
+    {
+      "text": "The TV said no. To try again, choose it again and accept on the TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/lg.dart"
+      ]
+    },
+    {
+      "text": "The TV said no. To try again, choose it again and press Allow.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/samsung.dart"
       ]
     },
     {
@@ -5336,6 +5577,13 @@
       ]
     },
     {
+      "text": "The volume is on the TV's own remote.",
+      "kind": "text",
+      "where": [
+        "ui/Remote.tsx"
+      ]
+    },
+    {
       "text": "There is no pairing code on the TV now. Ask the TV for one.",
       "kind": "message",
       "where": [
@@ -5387,6 +5635,13 @@
       ]
     },
     {
+      "text": "There is nothing to try again.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/remote.dart"
+      ]
+    },
+    {
       "text": "There were no TV backups in your Google Drive",
       "kind": "text",
       "where": [
@@ -5415,6 +5670,20 @@
       ]
     },
     {
+      "text": "This build of Orbit does not carry Orbit Live TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
+      "text": "This build of Orbit drives only TVs with Orbit OS.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/remote.dart"
+      ]
+    },
+    {
       "text": "This copy of Orbit Setup cannot run a trial",
       "kind": "text",
       "where": [
@@ -5433,6 +5702,21 @@
       "kind": "message",
       "where": [
         "app/lib/cloud/firebase_backend.dart"
+      ]
+    },
+    {
+      "text": "This is a Fire TV. Amazon does not let any app change its home screen, so Orbit OS cannot go on it. Choose it on Orbit's first screen to use your phone as its remote.",
+      "kind": "text",
+      "where": [
+        "setup/flow.ts"
+      ]
+    },
+    {
+      "text": "This needs Orbit OS on the TV.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart",
+        "app/lib/tv/remote.dart"
       ]
     },
     {
@@ -5500,6 +5784,13 @@
       ]
     },
     {
+      "text": "This Roku cannot do that.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/roku.dart"
+      ]
+    },
+    {
       "text": "this TV",
       "kind": "text",
       "where": [
@@ -5521,9 +5812,24 @@
       ]
     },
     {
+      "text": "This TV cannot take an app from the phone.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/direct_link.dart"
+      ]
+    },
+    {
+      "text": "This TV has no picture for that app.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/direct_link.dart"
+      ]
+    },
+    {
       "text": "This TV has no pointer.",
       "kind": "message",
       "where": [
+        "app/lib/tv/brands/brand.dart",
         "tv/PhonePortal.java"
       ]
     },
@@ -5550,10 +5856,24 @@
       ]
     },
     {
+      "text": "This works only with a TV of another make.",
+      "kind": "message",
+      "where": [
+        "app/lib/bridge/orbit_bridge.dart"
+      ]
+    },
+    {
       "text": "Through Google, from anywhere",
       "kind": "text",
       "where": [
         "ui/Sheets.tsx"
+      ]
+    },
+    {
+      "text": "Tick “Always allow from this computer”, then choose Allow, with the TV's own remote.",
+      "kind": "text",
+      "where": [
+        "ui/Connect.tsx"
       ]
     },
     {
@@ -5672,6 +5992,13 @@
       ]
     },
     {
+      "text": "Turn on ADB debugging on the Fire TV: Settings › My Fire TV › Developer options › ADB debugging.",
+      "kind": "message",
+      "where": [
+        "app/lib/tv/brands/fire_tv.dart"
+      ]
+    },
+    {
       "text": "Turn on developer mode",
       "kind": "heading",
       "where": [
@@ -5683,6 +6010,13 @@
       "kind": "heading",
       "where": [
         "ui/setup/Setup.tsx"
+      ]
+    },
+    {
+      "text": "Turn the TV on",
+      "kind": "button",
+      "where": [
+        "ui/Connect.tsx"
       ]
     },
     {

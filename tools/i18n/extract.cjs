@@ -100,7 +100,9 @@ const NOT_SHOWN = /(^\w+\(|^Bearer |^Content-Type|^Orbit\/\d|^Orbit needs "|^A t
 
 // Flutter: '...' strings in lib/ (adjacent ones joined, as Dart joins them), with $name as {name}. A string with a
 // ${...} in it is left out: its words cannot be matched back when it arrives.
-for (const file of walk(path.join(repo, "phone/app/lib"), (p) => p.endsWith(".dart"))) {
+// The Android TV protocol's codecs (tv/brands/atv_proto.dart, der.dart) fail only inside the driver, which says it
+// in its own words: their texts never reach a person.
+for (const file of walk(path.join(repo, "phone/app/lib"), (p) => p.endsWith(".dart") && !/\/(atv_proto|der)\.dart$/.test(p))) {
   const rel = "app/" + path.relative(path.join(repo, "phone/app"), file);
   const code = fs
     .readFileSync(file, "utf8")

@@ -17,7 +17,7 @@ People in a home with a Google TV or Android TV who want:
 - free Hindi Live TV channels on the TV,
 - all of that without a computer, and with a way back.
 
-It is not made for IR-only TVs, Samsung (Tizen), LG (webOS), Roku or Fire TV, or for iPhones (Orbit needs an Android phone for now).
+From Orbit 1.6.0 the phone app is also a remote for Samsung (Tizen), LG (webOS), Roku and Amazon Fire TV, and for Google TVs without Orbit OS: arrows, OK, volume, typing and opening apps, as each TV allows. Orbit OS itself (the new home screen, switching apps off, Undo) needs Google TV or Android TV, because only they let an app change the home screen. It is not made for IR-only TVs, or for iPhones (Orbit needs an Android phone for now).
 
 ## The remote
 

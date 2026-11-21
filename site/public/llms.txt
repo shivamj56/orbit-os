@@ -12,7 +12,8 @@ Key facts:
 - Undo: every change is written down first; one tap brings back the TV's own home screen, apps and settings.
 - Wikidata: https://www.wikidata.org/wiki/Q142179520
 - Open source: the code of the phone app, the TV apps and the setup script is on GitHub under the GNU GPL v3.0 or later, https://github.com/shivamj56/orbit-os.
-- Not made for: IR-only TVs, Samsung (Tizen), LG (webOS), Roku or Fire TV, and iPhones.
+- Other TVs: from Orbit 1.6.0 the phone app is also a remote for Samsung (Tizen), LG (webOS), Roku and Amazon Fire TV, and for Google TVs without Orbit OS. Orbit OS itself (the new home screen, switching apps off, Undo) needs Google TV or Android TV, because only they let an app change the home screen.
+- Not made for: IR-only TVs and iPhones.
 
 ## Pages
 

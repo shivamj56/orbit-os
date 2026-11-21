@@ -39,12 +39,17 @@ up on a TV. These texts are what people read in the phone app and on the TV.
      is natural.
 2. **Never translate these names**: Orbit, Orbit OS, Orbit Home, Orbit Live TV, Orbit Setup, Google, Google Drive,
    Google TV, Android, Android TV, Chromecast, Wi-Fi, Bluetooth, USB, HDMI, YouTube, Netflix, Prime Video,
-   Firebase, JSON, TLS, VPN, CPU, MB, GB, KB.
+   Firebase, JSON, TLS, VPN, CPU, MB, GB, KB. Other makes of TV (Orbit 1.6.0 is their remote): Samsung, LG, Roku,
+   Amazon, Fire TV, Apple TV, Tizen, webOS, ADB.
    - Keep **OK** as the remote's button name (Android shows "OK" on TVs in every language).
 3. **The TV's own menus**: use the exact words Android TV / Google TV shows in your language. This covers Settings,
    System, About, Developer options, USB debugging, Wireless debugging, Android TV OS build, Allow, Always allow,
    Stay awake, Network & Internet, Display & Sound, and "You are now a developer!".
    - People must find these on their TV, so use Android's official translation even when another word sounds nicer.
+   - The same holds for the other makes' menus: Samsung (General, External Device Manager), LG, Roku (Settings,
+     System, Advanced system settings, Control by mobile apps, Network access, Default, Enabled) and Fire TV (My Fire
+     TV, Developer options, ADB debugging, "Always allow from this computer"). Use the words those TVs show in your
+     language when you know them; a TV that has no menu in your language keeps its English words.
 4. **Voice**: plain, warm, short. Write what a careful native speaker would write for a polished app (the way Google
    writes its own apps in your language). Don't write word-for-word English.
    - Use the address form your language's Google apps use (for example German "du", French "vous", Hindi "आप").

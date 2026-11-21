@@ -3,7 +3,7 @@ description: "Orbit: the phone remote for the Family room TV. A full-screen WebV
 publish_to: 'none'
 
 # versionName+versionCode on Android.
-version: 1.5.2+8
+version: 1.6.0+9
 
 environment:
   sdk: ^3.13.7

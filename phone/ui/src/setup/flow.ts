@@ -32,10 +32,10 @@ import {
   visibleQuestions,
   type Plan,
 } from "./plan";
-import { t } from "../i18n";
+import { mark, t } from "../i18n";
 
 /** The app's own version, for the backups it makes (phone/app/pubspec.yaml). */
-export const APP_VERSION = "1.5.2";
+export const APP_VERSION = "1.6.0";
 
 export type SetupStep =
   | "welcome"
@@ -653,6 +653,11 @@ export async function itsOn() {
 
 let connectJob = 0;
 
+/** Why Orbit Setup stops on a Fire TV (startConnect). */
+export const FIRE_TV_SETUP = mark(
+  "This is a Fire TV. Amazon does not let any app change its home screen, so Orbit OS cannot go on it. Choose it on Orbit's first screen to use your phone as its remote.",
+);
+
 export function connectError(e: unknown): string {
   const reason = (e as { reason?: string }).reason ?? "";
   const said = (e as Error).message || "";
@@ -684,6 +689,14 @@ async function startConnect() {
   try {
     const props = await setupTv.connect(tv.address);
     if (job !== connectJob || !flow.open) return;
+    // A Fire TV answers too (Fire OS is Android), but Amazon lets no app become its home screen: Orbit Setup stops
+    // here, before anything changes, and points to the remote instead (phone/SPEC.md, "Every TV").
+    if ((flow.mode === "install" || flow.mode === "trial") && props?.manufacturer?.trim().toLowerCase() === "amazon") {
+      setupTv.close().catch(() => {});
+      haptic("error");
+      set({ conn: { state: "failed", error: FIRE_TV_SETUP, props: null } });
+      return;
+    }
     const named = tv.manual && tv.name === "Your TV" ? { ...tv, name: modelName({ tv, conn: { ...flow.conn, props } }) ?? tv.name } : tv;
     set({ conn: { state: "connected", error: null, props }, tv: { ...named, model: props?.model || named.model } });
     haptic("success");
