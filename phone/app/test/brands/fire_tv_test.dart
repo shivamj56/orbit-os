@@ -490,11 +490,25 @@ void main() {
         TvApp('com.amazon.firebat', 'Prime Video'),
         TvApp('com.amazon.firetv.youtube', 'YouTube'),
       ]);
-      expect(rig.sent, [_leanbackCmd], reason: 'no fallback when the first list has apps');
+      expect(rig.sent, [_launcherCmd, _leanbackCmd], reason: 'both categories are always read');
       await rig.tv.close();
     });
 
-    test('with nothing in the leanback list it asks for the LAUNCHER category', () async {
+    test('a Fire OS without query-activities --brief: the installed apps are listed instead', () async {
+      final rig = Rig(
+        answers: {
+          _leanbackCmd: 'Error: Unknown option: --brief\n',
+          _launcherCmd: 'Error: Unknown option: --brief\n',
+          'pm list packages -3': 'package:com.netflix.ninja\npackage:com.amazon.tv.launcher\npackage:com.example.coolapp\n',
+        },
+      );
+      await rig.tv.connect();
+      final apps = await rig.tv.apps();
+      expect(apps, const [TvApp('com.example.coolapp', 'Coolapp'), TvApp('com.netflix.ninja', 'Netflix')]);
+      await rig.tv.close();
+    });
+
+    test('with nothing in the leanback list the LAUNCHER list stands alone', () async {
       final rig = Rig(
         answers: {
           _leanbackCmd: '0 activities found:\n',
@@ -506,7 +520,23 @@ void main() {
       await rig.tv.connect();
       final apps = await rig.tv.apps();
       expect(apps, const [TvApp('com.some_vendor.tv_player', 'Tv player'), TvApp('org.videolan.vlc', 'VLC')]);
-      expect(rig.sent, [_leanbackCmd, _launcherCmd]);
+      expect(rig.sent, [_launcherCmd, _leanbackCmd]);
+      await rig.tv.close();
+    });
+
+    test('apps with only the LAUNCHER category are listed beside the leanback ones, each once', () async {
+      final rig = Rig(
+        answers: {
+          _leanbackCmd: '  com.netflix.ninja/.MainActivity\n  org.videolan.vlc/.gui.tv.MainTvActivity\n',
+          _launcherCmd: '  in.startv.hotstar/.Main\n  org.videolan.vlc/.StartActivity\n',
+        },
+      );
+      await rig.tv.connect();
+      expect(await rig.tv.apps(), const [
+        TvApp('in.startv.hotstar', 'Disney+ Hotstar'),
+        TvApp('com.netflix.ninja', 'Netflix'),
+        TvApp('org.videolan.vlc', 'VLC'),
+      ]);
       await rig.tv.close();
     });
 
@@ -524,22 +554,29 @@ void main() {
   });
 
   group('launch', () {
-    test('opens through monkey with the leanback category', () async {
+    // What monkey prints on a Fire TV: success ends with these two lines; a refusal is a "** " line and nothing else.
+    const injected =
+        'Events injected: 1\n'
+        '## Network stats: elapsed time=29ms (0ms mobile, 0ms wifi, 29ms not connected)\n';
+    const noActivity = '** No activities found to run, monkey aborted.\n';
+
+    test('opens through monkey with the leanback category, system keys off', () async {
       final rig = Rig(
-        answers: {'monkey -p com.netflix.ninja -c android.intent.category.LEANBACK_LAUNCHER 1': 'Events injected: 1\n'},
+        answers: {
+          'monkey -p com.netflix.ninja -c android.intent.category.LEANBACK_LAUNCHER --pct-syskeys 0 1': injected,
+        },
       );
       await rig.tv.connect();
       await rig.tv.launch('com.netflix.ninja');
-      expect(rig.sent, ['monkey -p com.netflix.ninja -c android.intent.category.LEANBACK_LAUNCHER 1']);
+      expect(rig.sent, ['monkey -p com.netflix.ninja -c android.intent.category.LEANBACK_LAUNCHER --pct-syskeys 0 1']);
       await rig.tv.close();
     });
 
     test('falls back to the LAUNCHER category when there is no leanback activity', () async {
       final rig = Rig(
         answers: {
-          'monkey -p org.videolan.vlc -c android.intent.category.LEANBACK_LAUNCHER 1':
-              '** No activities found to run, monkey aborted.\n',
-          'monkey -p org.videolan.vlc -c android.intent.category.LAUNCHER 1': 'Events injected: 1\n',
+          'monkey -p org.videolan.vlc -c android.intent.category.LEANBACK_LAUNCHER --pct-syskeys 0 1': noActivity,
+          'monkey -p org.videolan.vlc -c android.intent.category.LAUNCHER --pct-syskeys 0 1': injected,
         },
       );
       await rig.tv.connect();
@@ -551,14 +588,26 @@ void main() {
     test('an app with neither category is a BrandError', () async {
       final rig = Rig(
         answers: {
-          'monkey -p com.gone.app -c android.intent.category.LEANBACK_LAUNCHER 1':
-              '** No activities found to run, monkey aborted.\n',
-          'monkey -p com.gone.app -c android.intent.category.LAUNCHER 1':
-              '** No activities found to run, monkey aborted.\n',
+          'monkey -p com.gone.app -c android.intent.category.LEANBACK_LAUNCHER --pct-syskeys 0 1': noActivity,
+          'monkey -p com.gone.app -c android.intent.category.LAUNCHER --pct-syskeys 0 1': noActivity,
         },
       );
       await rig.tv.connect();
       await expectLater(rig.tv.launch('com.gone.app'), throwsA(isA<BrandError>()));
+      await rig.tv.close();
+    });
+
+    test('any monkey refusal without "Events injected" counts as not opened', () async {
+      final rig = Rig(
+        answers: {
+          'monkey -p com.netflix.ninja -c android.intent.category.LEANBACK_LAUNCHER --pct-syskeys 0 1':
+              '** SYS_KEYS has no physical keys but with factor 2.0%.\n',
+          'monkey -p com.netflix.ninja -c android.intent.category.LAUNCHER --pct-syskeys 0 1': '',
+        },
+      );
+      await rig.tv.connect();
+      await expectLater(rig.tv.launch('com.netflix.ninja'), throwsA(isA<BrandError>()));
+      expect(rig.sent.length, 2);
       await rig.tv.close();
     });
 

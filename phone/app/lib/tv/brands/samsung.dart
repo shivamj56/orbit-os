@@ -73,6 +73,7 @@ class SamsungTv extends BrandTv {
   String? _mac;
   String? _name;
   bool? _powerOn;
+  bool _frame = false;
   bool _hasLevel = false;
   bool _open = false;
   bool _closedForGood = false;
@@ -166,6 +167,7 @@ class SamsungTv extends BrandTv {
       cancelOnError: true,
     );
 
+    final hadToken = _secret != null && _secret!.isNotEmpty;
     final answer = await _await(first, allowWait);
     final event = answer?['event'];
     if (event != 'ms.channel.connect') {
@@ -173,6 +175,9 @@ class SamsungTv extends BrandTv {
       await _drop();
       if (answer == null && !alive) throw const BrandUnreachable('closed');
       if (event == 'ms.channel.unauthorized') throw const BrandRefused(BrandRefused.denied, _msgDenied);
+      // With a token the TV already took, a timeOut is a TV that is asleep (Home Assistant's samsungtv reads it so),
+      // not a prompt nobody answered: no new pairing is asked for.
+      if (hadToken && event == 'ms.channel.timeOut') throw const BrandUnreachable('asleep');
       throw const BrandRefused(BrandRefused.timeout, _msgAllow);
     }
 
@@ -194,6 +199,7 @@ class SamsungTv extends BrandTv {
     _mac = device['wifiMac']?.toString() ?? _mac;
     final power = device['PowerState']?.toString();
     _powerOn = power == null ? null : power == 'on';
+    _frame = device['FrameTVSupport']?.toString() == 'true';
     return device;
   }
 
@@ -317,9 +323,15 @@ class SamsungTv extends BrandTv {
     RemoteKey.rewind: 'KEY_REWIND',
   };
 
-  Future<void> _sendKey(String samsungKey) => _send({
+  /// A Frame is switched off the way its own remote does it: the power key held, one Press every 100 ms for about 4 s,
+  /// then Release (Home Assistant's samsungtv, FRAME_POWER_OFF_PRESSES). A short press only flips TV and Art Mode.
+  static const int _framePresses = 40;
+  static const Duration _framePressGap = Duration(milliseconds: 100);
+
+  /// [cmd] is Click, or Press and Release for a held key.
+  Future<void> _sendKey(String samsungKey, {String cmd = 'Click'}) => _send({
     'method': 'ms.remote.control',
-    'params': {'Cmd': 'Click', 'DataOfCmd': samsungKey, 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'},
+    'params': {'Cmd': cmd, 'DataOfCmd': samsungKey, 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'},
   });
 
   @override
@@ -337,8 +349,14 @@ class SamsungTv extends BrandTv {
     await _sendKey(mapped);
   }
 
+  /// Some sets take text only after a "text received" broadcast, so it goes first (samsungtvws sends it before the
+  /// first text for that reason); then the text as base64, and the end marker.
   @override
   Future<void> type(String text, {bool submit = false}) async {
+    await _send({
+      'method': 'ms.channel.emit',
+      'params': {'event': 'custom.remote.textReceived', 'to': 'broadcast'},
+    });
     await _send({
       'method': 'ms.remote.control',
       'params': {'Cmd': base64.encode(utf8.encode(text)), 'DataOfCmd': 'base64', 'TypeOfRemote': 'SendInputString'},
@@ -350,8 +368,16 @@ class SamsungTv extends BrandTv {
     if (submit) await _sendKey('KEY_ENTER');
   }
 
+  /// KEY_POWER; on a Frame (`FrameTVSupport` in the device info) held, since a click there only starts Art Mode.
   @override
-  Future<void> sleep() => _sendKey('KEY_POWER');
+  Future<void> sleep() async {
+    if (!_frame) return _sendKey('KEY_POWER');
+    for (var i = 0; i < _framePresses; i++) {
+      await _sendKey('KEY_POWER', cmd: 'Press');
+      await Future<void>.delayed(_framePressGap);
+    }
+    await _sendKey('KEY_POWER', cmd: 'Release');
+  }
 
   // ---- apps ----
 
@@ -406,12 +432,16 @@ class SamsungTv extends BrandTv {
         // The socket path below says so if the TV is really gone.
       }
     }
+    // Web apps (app_type 2, nearly all) open as DEEP_LINK, native ones as NATIVE_LAUNCH. An id without a known type
+    // goes as DEEP_LINK, the default samsungtvws and Home Assistant send for every launch.
+    final type = _appType[id];
+    final action = type == null || type.isEmpty || type == '2' ? 'DEEP_LINK' : 'NATIVE_LAUNCH';
     await _send({
       'method': 'ms.channel.emit',
       'params': {
         'event': 'ed.apps.launch',
         'to': 'host',
-        'data': {'appId': id, 'action_type': _appType[id] == '2' ? 'DEEP_LINK' : 'NATIVE_LAUNCH'},
+        'data': {'appId': id, 'action_type': action},
       },
     });
   }
@@ -514,7 +544,7 @@ class SamsungTv extends BrandTv {
     final (status, body) = await _http(
       'POST',
       Uri(scheme: 'http', host: address, port: upnpPort, path: '/upnp/control/RenderingControl1'),
-      headers: {'content-type': 'text/xml; charset="utf-8"', 'soapaction': '"$_upnpService#$action"'},
+      headers: {'Content-Type': 'text/xml; charset="utf-8"', 'SOAPAction': '"$_upnpService#$action"'},
       body: envelope,
     );
     if (status != 200) throw const BrandError(_msgOdd);
@@ -529,7 +559,8 @@ class SamsungTv extends BrandTv {
     try {
       return await () async {
         final request = await client.openUrl(method, uri);
-        headers?.forEach(request.headers.set);
+        // Header names as written: some UPnP servers compare `SOAPAction` with its case.
+        headers?.forEach((name, value) => request.headers.set(name, value, preserveHeaderCase: true));
         if (body != null) request.add(utf8.encode(body));
         final response = await request.close();
         final text = await utf8.decodeStream(response);

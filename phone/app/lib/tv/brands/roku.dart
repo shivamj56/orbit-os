@@ -11,8 +11,8 @@ import 'dart:typed_data';
 
 import 'brand.dart';
 
-/// A Roku at [address]. Volume and power keys exist only on a Roku TV ([isTv]); a streaming player has no say over
-/// the TV's volume or power, so those stay hidden.
+/// A Roku at [address]. Volume and power keys work on a Roku TV ([isTv]), and on a streaming player that says it was
+/// set up to work the TV's volume or power (device-info since Roku OS 15.0); on any other player they stay hidden.
 class RokuTv extends BrandTv {
   RokuTv({required this.address, this.port = 8060, this.timeout = const Duration(seconds: 3)});
 
@@ -48,7 +48,7 @@ class RokuTv extends BrandTv {
     RemoteKey.previous: 'InstantReplay',
   };
 
-  /// Keys that only a Roku TV answers (its own volume).
+  /// Volume keys: a Roku TV's own, or the TV's through a player set up for it.
   static const Map<String, String> _tvKeys = {
     RemoteKey.mute: 'VolumeMute',
     RemoteKey.volumeUp: 'VolumeUp',
@@ -62,6 +62,8 @@ class RokuTv extends BrandTv {
   bool _open = false;
   bool _closedForGood = false;
   bool _isTv = false;
+  bool _volumeKeys = false;
+  bool _powerKey = false;
   String? _model;
   String? _deviceName;
   bool _powerOn = true;
@@ -113,7 +115,8 @@ class RokuTv extends BrandTv {
     Cap.launch,
     Cap.settings,
     Cap.nowPlaying,
-    if (_isTv) ...{Cap.volume, Cap.mute, Cap.power},
+    if (_volumeKeys) ...{Cap.volume, Cap.mute},
+    if (_powerKey) Cap.power,
   };
 
   @override
@@ -131,7 +134,7 @@ class RokuTv extends BrandTv {
 
   @override
   Future<void> key(String key) async {
-    final word = _keys[key] ?? (_isTv ? _tvKeys[key] : null);
+    final word = _keys[key] ?? (_volumeKeys ? _tvKeys[key] : null);
     if (word == null) throw const BrandError(_cannot, unsupported: true);
     await _post('/keypress/$word');
   }
@@ -146,7 +149,8 @@ class RokuTv extends BrandTv {
     if (submit) await _post('/keypress/Enter');
   }
 
-  /// Apps and the Roku's own menus; the TV inputs (HDMI, antenna) are not apps and stay out.
+  /// Apps and the Roku's own menus; the TV inputs (HDMI, antenna: type `tvin`) are not apps and stay out. Older Roku
+  /// OS lists apps with no type at all (`<app id="12">Netflix</app>`), and those are apps too.
   @override
   Future<List<TvApp>> apps() async {
     final body = utf8.decode((await _get('/query/apps')).bytes, allowMalformed: true);
@@ -154,7 +158,7 @@ class RokuTv extends BrandTv {
     for (final tag in _appTags(body)) {
       final type = tag.attrs['type'];
       final id = tag.attrs['id'];
-      if (id == null || id.isEmpty || (type != 'appl' && type != 'menu')) continue;
+      if (id == null || id.isEmpty || (type != null && type != 'appl' && type != 'menu')) continue;
       list.add(TvApp(id, tag.text));
     }
     list.sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
@@ -189,10 +193,11 @@ class RokuTv extends BrandTv {
   @override
   Future<void> setVolume(int level) async => throw const BrandError(_cannot, unsupported: true);
 
-  /// A Roku TV goes to standby with PowerOff; a player has no off key that ECP offers.
+  /// PowerOff: a Roku TV goes to standby, and so does the TV behind a player set up for TV power control. Any other
+  /// player has no off key that ECP offers.
   @override
   Future<void> sleep() async {
-    if (!_isTv) throw const BrandError(_cannot, unsupported: true);
+    if (!_powerKey) throw const BrandError(_cannot, unsupported: true);
     await _post('/keypress/PowerOff');
   }
 
@@ -218,6 +223,9 @@ class RokuTv extends BrandTv {
     }
 
     _isTv = field('is-tv')?.toLowerCase() == 'true';
+    // Roku OS 15.0 and later: a player set up to work the TV (HDMI-CEC or IR) says so, and then takes the same keys.
+    _volumeKeys = _isTv || field('supports-audio-volume-control')?.toLowerCase() == 'true';
+    _powerKey = _isTv || field('supports-tv-power-control')?.toLowerCase() == 'true';
     _model = field('model-name');
     _deviceName = firstOf(['user-device-name', 'friendly-device-name', 'default-device-name']);
     final power = field('power-mode');
@@ -245,7 +253,8 @@ class RokuTv extends BrandTv {
       _dropped();
       throw BrandUnreachable(e);
     }
-    if (reply.status == 403) throw const BrandRefused(BrandRefused.setting, settingMessage);
+    // 403, and on some firmware of 2024 401: the network-access setting stops phones.
+    if (reply.status == 403 || reply.status == 401) throw const BrandRefused(BrandRefused.setting, settingMessage);
     if (missingOk && reply.status == 404) return reply;
     if (reply.status < 200 || reply.status >= 300) throw const BrandError(_failed);
     return reply;

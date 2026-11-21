@@ -414,7 +414,14 @@ class LgTv extends BrandTv {
 
   // ---- requests ----
 
-  Future<Map<String, Object?>> _request(String uri, {Map<String, Object?>? payload, bool reconnect = true}) async {
+  /// One SSAP request and its answer. With [answerOptional], no answer in time, or the socket closing once the request
+  /// is out, counts as done (an empty answer): for a request the TV may not live to answer.
+  Future<Map<String, Object?>> _request(
+    String uri, {
+    Map<String, Object?>? payload,
+    bool reconnect = true,
+    bool answerOptional = false,
+  }) async {
     if (reconnect) await _ensureOpen();
     final ws = _ws;
     if (ws == null) throw const BrandUnreachable('closed');
@@ -431,7 +438,11 @@ class LgTv extends BrandTv {
       reply = await waiter.future.timeout(timeout);
     } on TimeoutException {
       _pending.remove(id);
+      if (answerOptional) return const {};
       throw const BrandError(_msgSilent);
+    } on BrandUnreachable {
+      if (answerOptional) return const {};
+      rethrow;
     }
     final body = _map(reply['payload']) ?? const <String, Object?>{};
     if (reply['type'] == 'error' || body['returnValue'] == false) throw const BrandError(_msgFailed);
@@ -477,7 +488,17 @@ class LgTv extends BrandTv {
     final body = await _request('ssap://audio/getVolume');
     final status = _map(body['volumeStatus']);
     final level = status?['volume'] ?? body['volume'];
-    final muted = status?['muteStatus'] ?? body['muted'];
+    var muted = status?['muteStatus'] ?? body['muted'];
+    // Some firmware leaves mute out of getVolume; audio/getStatus has it (aiowebostv and homebridge-webos-tv read it
+    // there). Without it the mute key could only ever mute.
+    if (muted is! bool) {
+      try {
+        final more = await _request('ssap://audio/getStatus');
+        muted = more['mute'] ?? more['muted'];
+      } on BrandError {
+        muted = null;
+      }
+    }
     return (level: level is num ? level.round() : null, muted: muted is bool ? muted : null);
   }
 
@@ -486,9 +507,11 @@ class LgTv extends BrandTv {
     await _request('ssap://audio/setVolume', payload: {'volume': level.clamp(0, 100)});
   }
 
+  /// A TV switching off often goes before it answers (aiowebostv sends turnOff without waiting: "response is
+  /// unreliable"), so no answer, or the socket closing, is success. A "no" from the TV is still an error.
   @override
   Future<void> sleep() async {
-    await _request('ssap://system/turnOff');
+    await _request('ssap://system/turnOff', answerOptional: true);
   }
 
   // ---- the pointer socket ----

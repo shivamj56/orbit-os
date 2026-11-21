@@ -369,6 +369,14 @@ class FireTv extends BrandTv implements InstallsApps {
     return name[0].toUpperCase() + name.substring(1);
   }
 
+  Future<Set<String>> _installed() async {
+    final out = await _queued('pm list packages -3', timeout: const Duration(seconds: 30));
+    return {
+      for (final line in out.split('\n'))
+        if (line.trim().startsWith('package:') && !_isSystem(line.trim().substring(8))) line.trim().substring(8),
+    };
+  }
+
   Future<List<String>> _query(String category) async {
     final out = await _queued(
       'cmd package query-activities --brief -a android.intent.action.MAIN -c $category',
@@ -384,23 +392,29 @@ class FireTv extends BrandTv implements InstallsApps {
     return packages;
   }
 
+  /// Both lists, merged: apps made for Fire OS declare the plain LAUNCHER category (the one python-androidtv launches
+  /// Fire TV apps with), Android TV builds LEANBACK_LAUNCHER, and an app may declare only one of the two.
   @override
   Future<List<TvApp>> apps() async {
-    var packages = await _query(_leanback);
-    if (packages.isEmpty) packages = await _query(_launcher);
+    var packages = {...await _query(_launcher), ...await _query(_leanback)};
+    // Fire OS 6 (Android 7.1) may not know `query-activities --brief`: then the installed apps' own list, without
+    // Amazon's and Android's system packages.
+    if (packages.isEmpty) packages = await _installed();
     final apps = [for (final package in packages) TvApp(package, _labelOf(package))];
     apps.sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
     return apps;
   }
 
+  /// One monkey event that starts the app. `--pct-syskeys 0` because a Fire TV has no physical system keys, and without
+  /// it monkey stops at once ("** SYS_KEYS has no physical keys but with factor 2.0%.", seen on a Fire TV Stick 4K);
+  /// so success is the line monkey prints only after it ran, not the absence of an error.
   @override
   Future<void> launch(String id) async {
     // The id goes into a shell line, so it must be a package name and nothing else.
     if (!_packageName.hasMatch(id)) throw const BrandError('That app would not open.');
     for (final category in const [_leanback, _launcher]) {
-      final out = await _queued('monkey -p $id -c $category 1');
-      final failed = out.contains('No activities found') || out.contains('monkey aborted') || out.contains('Error');
-      if (!failed) return;
+      final out = await _queued('monkey -p $id -c $category --pct-syskeys 0 1');
+      if (out.contains('Events injected: 1')) return;
     }
     throw const BrandError('That app would not open.');
   }

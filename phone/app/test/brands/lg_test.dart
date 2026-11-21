@@ -22,6 +22,9 @@ class _FakeLg {
   bool rejectSigned = false;
   final String issuedKey = 'issued-key-1';
 
+  /// What a real set often does with turnOff: 'answer', 'close' (the socket goes, no answer) or 'silent'.
+  String turnOff = 'answer';
+
   final List<Map<String, Object?>> registers = [];
   final List<Map<String, Object?>> requests = [];
   final List<String> frames = [];
@@ -118,6 +121,10 @@ class _FakeLg {
         requests.add(m);
         final uri = m['uri'] as String;
         if (m['type'] == 'subscribe') subscribed[uri] = m['id'] as String;
+        if (uri == 'ssap://system/turnOff' && turnOff != 'answer') {
+          if (turnOff == 'close') unawaited(ws.close());
+          return;
+        }
         final answer = answers[uri] ?? {'returnValue': true};
         if (uri.endsWith('getPointerInputSocket')) {
           final scheme = secure ? 'wss' : 'ws';
@@ -383,6 +390,13 @@ void main() {
       expect(fake.lastPayload('ssap://audio/setMute'), {'mute': false});
     });
 
+    test('mute left out of getVolume is read from audio/getStatus', () async {
+      fake.answers['ssap://audio/getVolume'] = {'returnValue': true, 'volume': 9};
+      fake.answers['ssap://audio/getStatus'] = {'returnValue': true, 'volume': 9, 'mute': true};
+      await tv.key(RemoteKey.mute);
+      expect(fake.lastPayload('ssap://audio/setMute'), {'mute': false});
+    });
+
     test('media: play_pause alternates starting with pause; forward and rewind', () async {
       await tv.key(RemoteKey.playPause);
       await tv.key(RemoteKey.playPause);
@@ -437,6 +451,21 @@ void main() {
     test('an answer with returnValue false is a BrandError', () async {
       fake.answers['ssap://system/turnOff'] = {'returnValue': false};
       await expectLater(tv.sleep(), throwsA(isA<BrandError>()));
+    });
+
+    test('a set that switches off before it answers: sleep is done, and the drop is reported', () async {
+      fake.turnOff = 'close';
+      final closed = Completer<void>();
+      tv.onClosed = closed.complete;
+      await tv.sleep();
+      await closed.future.timeout(const Duration(seconds: 3));
+      expect(fake.uris.last, 'ssap://system/turnOff');
+    });
+
+    test('a set that never answers turnOff: sleep is still done', () async {
+      fake.turnOff = 'silent';
+      await tv.sleep();
+      expect(fake.uris.last, 'ssap://system/turnOff');
     });
   });
 

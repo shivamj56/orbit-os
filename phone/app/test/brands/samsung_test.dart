@@ -18,6 +18,9 @@ class FakeTv {
 
   String tokenAuth = 'false';
   String? powerState;
+
+  /// `FrameTVSupport` in the device info ("true" on The Frame).
+  String? frameTv;
   Prompt prompt = Prompt.allow;
   final String issuedToken = '12345678';
 
@@ -80,6 +83,7 @@ class FakeTv {
               'wifiMac': 'aa:bb:cc:dd:ee:ff',
               'TokenAuthSupport': tokenAuth,
               'PowerState': ?powerState,
+              'FrameTVSupport': ?frameTv,
             },
           }),
         );
@@ -334,6 +338,13 @@ void main() {
       expect(s.isOpen, isFalse);
     });
 
+    test('a timeOut with a token the TV took is a TV asleep: unreachable, no new pairing', () async {
+      tv.prompt = Prompt.timeOut;
+      final s = await make(secret: 'kept-token');
+      await expectLater(s.connect(), throwsA(isA<BrandUnreachable>()));
+      expect(s.secret, 'kept-token');
+    });
+
     test('nobody answers within allowWait: BrandRefused timeout', () async {
       tv.prompt = Prompt.silent;
       final s = await make(allowWait: const Duration(milliseconds: 300));
@@ -448,6 +459,19 @@ void main() {
       expect(tv.commands, [keyJson('KEY_POWER')]);
     });
 
+    test('a Frame is switched off with the power key held: Press every 100 ms for about 4 s, then Release', () async {
+      tv.frameTv = 'true';
+      final s = await make();
+      await s.connect();
+      await s.sleep();
+      await pause();
+      Map<String, Object?> power(String cmd) => {
+        'method': 'ms.remote.control',
+        'params': {'Cmd': cmd, 'DataOfCmd': 'KEY_POWER', 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'},
+      };
+      expect(tv.commands, [for (var i = 0; i < 40; i++) power('Press'), power('Release')]);
+    });
+
     test('pointer and click are not offered', () async {
       final s = await make();
       await s.connect();
@@ -459,11 +483,15 @@ void main() {
   });
 
   group('typing', () {
-    test('text as base64 utf8, then the end marker', () async {
+    test('the text-received broadcast, then text as base64 utf8, then the end marker', () async {
       final s = await make();
       await s.connect();
       await s.type('héllo ✓');
       await pause();
+      expect(tv.received.first, {
+        'method': 'ms.channel.emit',
+        'params': {'event': 'custom.remote.textReceived', 'to': 'broadcast'},
+      });
       expect(tv.commands, [
         {
           'method': 'ms.remote.control',
@@ -508,7 +536,7 @@ void main() {
       expect(apps.first, const TvApp('3201606009684', 'amazon prime'));
     });
 
-    test('launch: app_type 2 is a deep link, others are native', () async {
+    test('launch: app_type 2 and unknown ids are deep links, other types are native', () async {
       final s = await make();
       await s.connect();
       await s.apps();
@@ -528,7 +556,7 @@ void main() {
       expect(launches, [
         launch('3201907018807', 'DEEP_LINK'),
         launch('3201606009684', 'NATIVE_LAUNCH'),
-        launch('999', 'NATIVE_LAUNCH'),
+        launch('999', 'DEEP_LINK'),
       ]);
       expect(tv.restLaunches, isEmpty);
     });
@@ -550,7 +578,7 @@ void main() {
       await pause();
       expect(tv.restLaunches, ['111299001912']);
       final emit = tv.received.singleWhere((m) => m['method'] == 'ms.channel.emit');
-      expect(((emit['params']! as Map)['data']! as Map)['action_type'], 'NATIVE_LAUNCH');
+      expect(((emit['params']! as Map)['data']! as Map)['action_type'], 'DEEP_LINK');
     });
 
     test('an icon comes back as png bytes; unknown app is null', () async {

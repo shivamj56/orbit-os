@@ -5,14 +5,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:orbit/tv/brands/brand.dart';
 import 'package:orbit/tv/brands/roku.dart';
 
-String _info({bool tv = false, String power = 'PowerOn', String user = ''}) =>
+/// [volumeControl] and [powerControl]: the Roku OS 15.0 fields a player sets when it was set up to work the TV.
+String _info({
+  bool tv = false,
+  String power = 'PowerOn',
+  String user = '',
+  bool volumeControl = false,
+  bool powerControl = false,
+}) =>
     '<?xml version="1.0" encoding="UTF-8" ?>'
     '<device-info><model-name>${tv ? '55R6A5R' : 'Roku Ultra'}</model-name>'
     '<is-tv>$tv</is-tv><power-mode>$power</power-mode>'
     '<user-device-name>$user</user-device-name>'
     '<friendly-device-name>Friendly &amp; Co</friendly-device-name>'
-    '<default-device-name>Roku Ultra - X</default-device-name></device-info>';
+    '<default-device-name>Roku Ultra - X</default-device-name>'
+    '<supports-tv-power-control>$powerControl</supports-tv-power-control>'
+    '<supports-audio-volume-control>$volumeControl</supports-audio-volume-control></device-info>';
 
+/// The last entry is how older Roku OS lists an app: no type at all.
 const _appsXml =
     '<?xml version="1.0" encoding="UTF-8" ?><apps>'
     '<app id="tvinput.hdmi1" type="tvin" version="1.0.0">HDMI 1</app>'
@@ -20,6 +30,7 @@ const _appsXml =
     '<app id="12" type="appl" version="4.2">Netflix</app>'
     '<app id="9" type="menu" version="1">Roku Channel &#x2014; Menu</app>'
     '<app id="14" type="appl" version="1">Caf&#233;</app>'
+    '<app id="28">Pandora</app>'
     '</apps>';
 
 class _Seen {
@@ -127,6 +138,25 @@ void main() {
     expect(keysSent(), isEmpty);
   });
 
+  test('a player set up to work the TV (Roku OS 15.0) gets the volume keys and PowerOff', () async {
+    routes['/query/device-info'] = (200, _info(volumeControl: true, powerControl: true), 'text/xml');
+    await tv.connect();
+    expect(tv.isTv, isFalse);
+    expect(tv.caps, containsAll([Cap.volume, Cap.mute, Cap.power]));
+    await tv.key('volup');
+    await tv.key('mute');
+    await tv.sleep();
+    expect(keysSent(), ['VolumeUp', 'VolumeMute', 'PowerOff']);
+  });
+
+  test('a player with volume control only keeps power hidden', () async {
+    routes['/query/device-info'] = (200, _info(volumeControl: true), 'text/xml');
+    await tv.connect();
+    expect(tv.caps, containsAll([Cap.volume, Cap.mute]));
+    expect(tv.caps, isNot(contains(Cap.power)));
+    await expectLater(tv.sleep(), throwsA(isA<BrandError>().having((e) => e.unsupported, 'unsupported', isTrue)));
+  });
+
   test('a TV sends volume keys and PowerOff; next and recents stay unsupported', () async {
     routes['/query/device-info'] = (200, _info(tv: true), 'text/xml');
     await tv.connect();
@@ -148,12 +178,12 @@ void main() {
     expect(keysSent(), ['Lit_h', 'Lit_i']);
   });
 
-  test('apps: entities decoded, tvin left out, sorted by label', () async {
+  test('apps: entities decoded, tvin left out, an app without a type kept, sorted by label', () async {
     routes['/query/apps'] = (200, _appsXml, 'text/xml');
     await tv.connect();
     final apps = await tv.apps();
-    expect(apps.map((a) => a.label).toList(), ['Café', 'Netflix', 'Prime & Video', 'Roku Channel — Menu']);
-    expect(apps.map((a) => a.id).toList(), ['14', '12', '13', '9']);
+    expect(apps.map((a) => a.label).toList(), ['Café', 'Netflix', 'Pandora', 'Prime & Video', 'Roku Channel — Menu']);
+    expect(apps.map((a) => a.id).toList(), ['14', '12', '28', '13', '9']);
   });
 
   test('launch posts the id; icon returns type and bytes, null when missing', () async {
@@ -209,6 +239,14 @@ void main() {
       throwsA(isA<BrandRefused>().having((e) => e.reason, 'reason', BrandRefused.setting)),
     );
     expect(tv.isOpen, isTrue);
+  });
+
+  test('a 401 (some firmware of 2024) is the same setting refusal', () async {
+    routes['/query/device-info'] = (401, '', '');
+    await expectLater(
+      tv.connect(),
+      throwsA(isA<BrandRefused>().having((e) => e.reason, 'reason', BrandRefused.setting)),
+    );
   });
 
   test('nothing answering: unreachable on connect, and onClosed once when open', () async {
